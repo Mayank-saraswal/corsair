@@ -187,6 +187,9 @@ export type ExternalGeminiPlugin<T extends GeminiPluginOptions> =
 	BaseGeminiPlugin<T>;
 
 export function gemini<const T extends GeminiPluginOptions>(
+	// Type assertion required to provide a default empty options object while
+	// satisfying the generic `T extends GeminiPluginOptions` constraint —
+	// TypeScript cannot verify `{}` matches `T` for an arbitrary caller-supplied T.
 	incomingOptions: GeminiPluginOptions & T = {} as GeminiPluginOptions & T,
 ): ExternalGeminiPlugin<T> {
 	const options = {

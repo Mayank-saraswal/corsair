@@ -11,7 +11,7 @@ export class GeminiAPIError extends Error {
 	}
 }
 
-const GEMINI_API_BASE = 'https://generativelanguage.googleapis.com/v1beta';
+export const GEMINI_API_BASE = 'https://generativelanguage.googleapis.com/v1beta';
 
 /**
  * Performs a request against the Gemini API.
