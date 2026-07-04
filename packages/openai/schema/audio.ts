@@ -38,6 +38,7 @@ export type AudioCreateTranscriptionInput = z.infer<
 	typeof AudioCreateTranscriptionInputSchema
 >;
 
+// Extra fields (language, duration, segments, etc.) vary by responseFormat; using catchall to accept whatever the API returns.
 export const AudioCreateTranscriptionResponseSchema = z
 	.object({
 		text: z.string(),
@@ -61,6 +62,7 @@ export type AudioCreateTranslationInput = z.infer<
 	typeof AudioCreateTranslationInputSchema
 >;
 
+// Extra fields vary by responseFormat, same as AudioCreateTranscriptionResponseSchema; using catchall to accept them.
 export const AudioCreateTranslationResponseSchema = z
 	.object({
 		text: z.string(),

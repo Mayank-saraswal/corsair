@@ -128,6 +128,7 @@ const SearchResultContentSchema = z.object({
 export const VectorStoresSearchInputSchema = z.object({
 	vectorStoreId: z.string(),
 	query: z.union([z.string(), z.array(z.string())]),
+	// Filter shape is a comparison/compound-filter tree whose structure varies by operator; kept loose.
 	filters: z.record(z.string(), z.unknown()).optional(),
 	maxNumResults: z.number().optional(),
 	rankingOptions: z
@@ -150,6 +151,7 @@ export const VectorStoresSearchResponseSchema = z.object({
 			file_id: z.string(),
 			filename: z.string(),
 			score: z.number(),
+			// See VectorStoreFileObjectSchema below: file attributes are caller-defined key/value metadata, kept loose.
 			attributes: z.record(z.string(), z.unknown()).nullable().optional(),
 			content: z.array(SearchResultContentSchema),
 		}),
@@ -174,6 +176,7 @@ const VectorStoreFileObjectSchema = z.object({
 		.object({ code: z.string(), message: z.string() })
 		.nullable()
 		.optional(),
+	// File attributes are arbitrary caller-defined key/value metadata used for filtering search results; kept loose.
 	attributes: z.record(z.string(), z.unknown()).nullable().optional(),
 });
 export type VectorStoreFileObject = z.infer<typeof VectorStoreFileObjectSchema>;
@@ -182,6 +185,7 @@ export const VectorStoreFilesCreateInputSchema = z.object({
 	vectorStoreId: z.string(),
 	fileId: z.string(),
 	chunkingStrategy: ChunkingStrategySchema,
+	// See VectorStoreFileObjectSchema above: caller-defined key/value metadata, kept loose.
 	attributes: z.record(z.string(), z.unknown()).nullable().optional(),
 });
 export type VectorStoreFilesCreateInput = z.infer<
@@ -248,6 +252,7 @@ export type VectorStoreFilesDeleteResponse = z.infer<
 export const VectorStoreFilesUpdateAttributesInputSchema = z.object({
 	vectorStoreId: z.string(),
 	fileId: z.string(),
+	// See VectorStoreFileObjectSchema above: caller-defined key/value metadata, kept loose.
 	attributes: z.record(z.string(), z.unknown()).nullable(),
 });
 export type VectorStoreFilesUpdateAttributesInput = z.infer<
@@ -299,6 +304,7 @@ export const VectorStoreFileBatchesCreateInputSchema = z.object({
 	vectorStoreId: z.string(),
 	fileIds: z.array(z.string()),
 	chunkingStrategy: ChunkingStrategySchema,
+	// See VectorStoreFileObjectSchema above: caller-defined key/value metadata, kept loose.
 	attributes: z.record(z.string(), z.unknown()).nullable().optional(),
 });
 export type VectorStoreFileBatchesCreateInput = z.infer<

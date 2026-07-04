@@ -9,6 +9,7 @@ const EvalObjectSchema = z.object({
 	object: z.literal('eval'),
 	name: z.string().nullable().optional(),
 	created_at: z.number(),
+	// data_source_config/testing_criteria shape varies by eval type (custom, logs, stored_completions, etc.); kept loose.
 	data_source_config: z.record(z.string(), z.unknown()),
 	testing_criteria: z.array(z.record(z.string(), z.unknown())),
 	metadata: z.record(z.string(), z.string()).nullable().optional(),
@@ -23,12 +24,14 @@ const EvalRunObjectSchema = z.object({
 	created_at: z.number(),
 	status: z.string(),
 	model: z.string().optional(),
+	// data_source shape varies by run type (completions, responses, jsonl, stored_completions); kept loose.
 	data_source: z.record(z.string(), z.unknown()).optional(),
 	metadata: z.record(z.string(), z.string()).nullable().optional(),
 	result_counts: z.record(z.string(), z.number()).optional(),
 });
 export type EvalRunObject = z.infer<typeof EvalRunObjectSchema>;
 
+// Output item fields (sample, results, datasource_item, etc.) vary by eval/grader type; using catchall to accept them.
 const EvalRunOutputItemObjectSchema = z
 	.object({
 		id: z.string(),
@@ -43,6 +46,7 @@ export type EvalRunOutputItemObject = z.infer<
 
 export const EvalsCreateInputSchema = z.object({
 	name: z.string().optional(),
+	// See EvalObjectSchema above: shape varies by eval type, kept loose.
 	dataSourceConfig: z.record(z.string(), z.unknown()),
 	testingCriteria: z.array(z.record(z.string(), z.unknown())),
 	metadata: z.record(z.string(), z.string()).optional(),
@@ -93,6 +97,7 @@ export type EvalsDeleteResponse = z.infer<typeof EvalsDeleteResponseSchema>;
 export const EvalRunsCreateInputSchema = z.object({
 	evalId: z.string(),
 	name: z.string().optional(),
+	// See EvalRunObjectSchema above: data_source shape varies by run type, kept loose.
 	dataSource: z.record(z.string(), z.unknown()),
 	metadata: z.record(z.string(), z.string()).optional(),
 });
@@ -175,6 +180,7 @@ export type EvalRunsListOutputItemsInput = z.infer<
 >;
 export const EvalRunsListOutputItemsResponseSchema = z.object({
 	object: z.literal('list'),
+	// See EvalRunOutputItemObjectSchema above: fields beyond id vary by eval/grader type, kept loose.
 	data: z.array(z.object({ id: z.string() }).catchall(z.unknown())),
 	has_more: z.boolean(),
 });
@@ -185,20 +191,25 @@ export type EvalRunsListOutputItemsResponse = z.infer<
 // --- Graders ---
 
 export const GradersRunInputSchema = z.object({
+	// Grader config shape varies by grader type (string_check, score_model, python, etc.); kept loose.
 	grader: z.record(z.string(), z.unknown()),
+	// item is an arbitrary sample record the grader is evaluated against; shape is caller-defined.
 	item: z.record(z.string(), z.unknown()).optional(),
 	modelSample: z.string(),
 });
 export type GradersRunInput = z.infer<typeof GradersRunInputSchema>;
+// Response fields beyond reward vary by grader type; using catchall to accept whatever the API returns.
 export const GradersRunResponseSchema = z
 	.object({ reward: z.number().optional() })
 	.catchall(z.unknown());
 export type GradersRunResponse = z.infer<typeof GradersRunResponseSchema>;
 
 export const GradersValidateInputSchema = z.object({
+	// See GradersRunInputSchema above: grader config shape varies by grader type, kept loose.
 	grader: z.record(z.string(), z.unknown()),
 });
 export type GradersValidateInput = z.infer<typeof GradersValidateInputSchema>;
+// Echoed grader config (shape varies by grader type) plus any other validation fields; using catchall to accept them.
 export const GradersValidateResponseSchema = z
 	.object({ grader: z.record(z.string(), z.unknown()).optional() })
 	.catchall(z.unknown());

@@ -16,6 +16,7 @@ const FineTuningJobObjectSchema = z.object({
 	]),
 	training_file: z.string(),
 	validation_file: z.string().nullable().optional(),
+	// Hyperparameter keys/values vary by fine-tuning method (supervised, dpo, reinforcement); kept loose.
 	hyperparameters: z.record(z.string(), z.unknown()).optional(),
 	result_files: z.array(z.string()).optional(),
 	trained_tokens: z.number().nullable().optional(),
@@ -33,10 +34,13 @@ export const FineTuningCreateJobInputSchema = z.object({
 	model: z.string(),
 	trainingFile: z.string(),
 	validationFile: z.string().optional(),
+	// Hyperparameter keys/values vary by fine-tuning method; kept loose rather than modeling each method's shape.
 	hyperparameters: z.record(z.string(), z.unknown()).optional(),
 	suffix: z.string().optional(),
+	// Integration config (e.g. wandb) has provider-specific fields; kept loose.
 	integrations: z.array(z.record(z.string(), z.unknown())).optional(),
 	seed: z.number().optional(),
+	// method selects supervised/dpo/reinforcement and each has a different config shape; kept loose.
 	method: z.record(z.string(), z.unknown()).optional(),
 	metadata: z.record(z.string(), z.string()).optional(),
 });
@@ -125,6 +129,7 @@ const FineTuningEventObjectSchema = z.object({
 	created_at: z.number(),
 	level: z.string(),
 	message: z.string(),
+	// Event data payload varies by event level/type (metrics, warnings, etc.); kept loose.
 	data: z.record(z.string(), z.unknown()).optional(),
 });
 export type FineTuningEventObject = z.infer<typeof FineTuningEventObjectSchema>;

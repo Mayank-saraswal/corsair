@@ -6,6 +6,7 @@ export const SkillsCreateInputSchema = z.object({
 });
 export type SkillsCreateInput = z.infer<typeof SkillsCreateInputSchema>;
 
+// Skill object fields beyond the ones modeled below are not fully documented publicly; using catchall to accept them.
 export const SkillsCreateResponseSchema = z
 	.object({
 		id: z.string(),
@@ -27,6 +28,7 @@ export type SkillsListInput = z.infer<typeof SkillsListInputSchema>;
 
 export const SkillsListResponseSchema = z.object({
 	object: z.literal('list'),
+	// See SkillsCreateResponseSchema above: fields beyond id are not fully documented publicly, kept loose.
 	data: z.array(z.object({ id: z.string() }).catchall(z.unknown())),
 	first_id: z.string().optional(),
 	last_id: z.string().optional(),

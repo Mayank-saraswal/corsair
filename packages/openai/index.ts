@@ -1307,7 +1307,10 @@ export function openai<const T extends OpenaiPluginOptions>(
 
 			if (source === 'endpoint' && ctx.authType === 'api_key') {
 				const res = await ctx.keys.get_api_key();
-				return res ?? '';
+				if (!res) {
+					throw new AuthMissingError('openai', 'api_key');
+				}
+				return res;
 			}
 
 			throw new AuthMissingError('openai', 'api_key');

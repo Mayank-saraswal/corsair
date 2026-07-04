@@ -7,6 +7,7 @@ const FunctionToolSchema = z.object({
 	function: z.object({
 		name: z.string(),
 		description: z.string().optional(),
+		// Function tool parameters are an arbitrary JSON Schema object defined by the caller.
 		parameters: z.record(z.string(), z.unknown()).optional(),
 		strict: z.boolean().nullable().optional(),
 	}),
@@ -195,6 +196,7 @@ const MessageContentPartSchema = z.union([
 		type: z.literal('text'),
 		text: z.object({
 			value: z.string(),
+			// Annotation shape varies by citation type (file_citation, file_path); not modeled field-by-field.
 			annotations: z.array(z.record(z.string(), z.unknown())),
 		}),
 	}),
@@ -363,6 +365,7 @@ const RunObjectSchema = z.object({
 		'incomplete',
 		'expired',
 	]),
+	// required_action shape depends on the action type (currently only submit_tool_outputs); kept loose to avoid breaking on new action types.
 	required_action: z.record(z.string(), z.unknown()).nullable().optional(),
 	last_error: z
 		.object({ code: z.string(), message: z.string() })
@@ -485,6 +488,7 @@ const RunStepObjectSchema = z.object({
 		'completed',
 		'expired',
 	]),
+	// step_details shape depends on the step type (message_creation vs tool_calls); kept loose rather than modeling both variants.
 	step_details: z.record(z.string(), z.unknown()),
 	last_error: z
 		.object({ code: z.string(), message: z.string() })

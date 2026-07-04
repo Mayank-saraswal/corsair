@@ -29,6 +29,7 @@ export type CompletionsCreateInput = z.infer<
 const CompletionChoiceSchema = z.object({
 	text: z.string(),
 	index: z.number(),
+	// logprobs structure varies with the requested logprobs count; kept loose rather than modeling it.
 	logprobs: z.record(z.string(), z.unknown()).nullable(),
 	finish_reason: z.string(),
 });
@@ -53,11 +54,13 @@ export type CompletionsCreateResponse = z.infer<
 
 // --- Responses API ---
 
+// Input items (message, function_call, tool output, etc.) have a shape that varies by type; kept loose rather than modeling each variant.
 const ResponseInputSchema = z.union([
 	z.string(),
 	z.array(z.record(z.string(), z.unknown())),
 ]);
 
+// Non-string tool choice targets a specific tool and its shape varies by tool type; kept loose.
 const ResponseToolChoiceSchema = z.union([
 	z.enum(['none', 'auto', 'required']),
 	z.record(z.string(), z.unknown()),
@@ -73,6 +76,7 @@ export const ResponsesCreateInputSchema = z.object({
 	model: z.string(),
 	input: ResponseInputSchema,
 	instructions: z.string().optional(),
+	// Tool definitions vary by tool type (function, file_search, web_search, etc.); kept loose rather than modeling each variant.
 	tools: z.array(z.record(z.string(), z.unknown())).optional(),
 	toolChoice: ResponseToolChoiceSchema.optional(),
 	temperature: z.number().min(0).max(2).nullable().optional(),
@@ -101,6 +105,7 @@ const ResponseObjectSchema = z.object({
 		'incomplete',
 	]),
 	model: z.string(),
+	// Output items (message, function_call, reasoning, etc.) have a shape that varies by type; kept loose rather than modeling each variant.
 	output: z.array(z.record(z.string(), z.unknown())),
 	previous_response_id: z.string().nullable().optional(),
 	usage: z
@@ -153,6 +158,7 @@ export type ResponsesCancelResponse = z.infer<
 
 export const ResponsesCompactInputSchema = z.object({
 	model: z.string(),
+	// See ResponseInputSchema above: input item shape varies by type, kept loose.
 	input: z.array(z.record(z.string(), z.unknown())),
 });
 export type ResponsesCompactInput = z.infer<typeof ResponsesCompactInputSchema>;
@@ -161,6 +167,7 @@ export const ResponsesCompactResponseSchema = z.object({
 	id: z.string(),
 	object: z.literal('response.compaction'),
 	created_at: z.number(),
+	// See ResponseObjectSchema above: output item shape varies by type, kept loose.
 	output: z.array(z.record(z.string(), z.unknown())),
 	usage: z
 		.object({
@@ -187,6 +194,7 @@ export type ResponsesListInputItemsInput = z.infer<
 
 export const ResponsesListInputItemsResponseSchema = z.object({
 	object: z.literal('list'),
+	// See ResponseInputSchema above: input item shape varies by type, kept loose.
 	data: z.array(z.record(z.string(), z.unknown())),
 	first_id: z.string().optional(),
 	last_id: z.string().optional(),
@@ -198,6 +206,7 @@ export type ResponsesListInputItemsResponse = z.infer<
 
 // --- Chat Completions storage CRUD ---
 
+// Stored chat completion fields beyond id/object/created/model vary (choices, usage, metadata, etc.); using catchall to accept them.
 const StoredChatCompletionObjectSchema = z
 	.object({
 		id: z.string(),
@@ -223,6 +232,7 @@ export type ChatCompletionsListInput = z.infer<
 
 export const ChatCompletionsListResponseSchema = z.object({
 	object: z.literal('list'),
+	// See StoredChatCompletionObjectSchema above: fields beyond the required ones vary, kept loose.
 	data: z.array(z.record(z.string(), z.unknown())),
 	first_id: z.string().optional(),
 	last_id: z.string().optional(),
@@ -284,6 +294,7 @@ export type ChatCompletionsListMessagesInput = z.infer<
 
 export const ChatCompletionsListMessagesResponseSchema = z.object({
 	object: z.literal('list'),
+	// Stored message fields vary by role/content type; kept loose rather than modeling each variant.
 	data: z.array(z.record(z.string(), z.unknown())),
 	first_id: z.string().optional(),
 	last_id: z.string().optional(),
@@ -297,7 +308,9 @@ export type ChatCompletionsListMessagesResponse = z.infer<
 
 export const TokensCountInputInputSchema = z.object({
 	model: z.string(),
+	// See ResponseInputSchema above: input item shape varies by type, kept loose.
 	input: z.union([z.string(), z.array(z.record(z.string(), z.unknown()))]),
+	// See ResponsesCreateInputSchema above: tool definition shape varies by tool type, kept loose.
 	tools: z.array(z.record(z.string(), z.unknown())).optional(),
 });
 export type TokensCountInputInput = z.infer<typeof TokensCountInputInputSchema>;

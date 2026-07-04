@@ -13,6 +13,8 @@ export type ChatkitListThreadsInput = z.infer<
 	typeof ChatkitListThreadsInputSchema
 >;
 
+// ChatKit's thread object shape (status detail and any other fields) is not fully
+// documented publicly; using catchall/unknown to accept whatever the API returns.
 const ChatkitThreadObjectSchema = z
 	.object({
 		id: z.string(),
@@ -59,6 +61,7 @@ export type ChatkitListThreadItemsInput = z.infer<
 
 export const ChatkitListThreadItemsResponseSchema = z.object({
 	object: z.literal('list'),
+	// Thread item shape varies by item type and isn't fully documented publicly; kept loose.
 	data: z.array(z.record(z.string(), z.unknown())),
 	first_id: z.string().optional(),
 	last_id: z.string().optional(),

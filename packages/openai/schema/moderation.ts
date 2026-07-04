@@ -4,6 +4,7 @@ export const ModerationCreateInputSchema = z.object({
 	input: z.union([
 		z.string(),
 		z.array(z.string()),
+		// Multi-modal input items (text/image_url parts) have a shape that varies by type; kept loose rather than modeling each variant.
 		z.array(z.record(z.string(), z.unknown())),
 	]),
 	model: z.string().optional(),

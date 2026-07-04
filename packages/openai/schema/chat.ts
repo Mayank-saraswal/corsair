@@ -63,6 +63,7 @@ const FunctionToolSchema = z.object({
 	function: z.object({
 		name: z.string(),
 		description: z.string().optional(),
+		// Function tool parameters are an arbitrary JSON Schema object defined by the caller.
 		parameters: z.record(z.string(), z.unknown()).optional(),
 		strict: z.boolean().nullable().optional(),
 	}),
@@ -84,6 +85,7 @@ const ResponseFormatSchema = z.union([
 		json_schema: z.object({
 			name: z.string(),
 			description: z.string().optional(),
+			// json_schema is an arbitrary JSON Schema document defined by the caller.
 			schema: z.record(z.string(), z.unknown()).optional(),
 			strict: z.boolean().nullable().optional(),
 		}),
@@ -129,6 +131,7 @@ const ChoiceSchema = z.object({
 		refusal: z.string().nullable().optional(),
 		tool_calls: z.array(ToolCallSchema).optional(),
 	}),
+	// logprobs structure varies with the requested top_logprobs count; kept loose rather than modeling it.
 	logprobs: z.record(z.string(), z.unknown()).nullable().optional(),
 	finish_reason: z.enum([
 		'stop',

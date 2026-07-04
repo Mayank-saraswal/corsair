@@ -1,5 +1,6 @@
 import { z } from 'zod';
 
+// Conversation item shape varies by type (message, function_call, tool output, etc.); kept loose rather than modeling each variant.
 const ConversationItemSchema = z.record(z.string(), z.unknown());
 
 const ConversationMetadataSchema = z.record(z.string(), z.string());
@@ -114,6 +115,7 @@ export type ConversationsGetItemInput = z.infer<
 	typeof ConversationsGetItemInputSchema
 >;
 
+// Item fields beyond id/type vary by item type; using catchall to accept whatever the API returns.
 export const ConversationsGetItemResponseSchema = z
 	.object({ id: z.string(), type: z.string() })
 	.catchall(z.unknown());
