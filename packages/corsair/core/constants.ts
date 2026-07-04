@@ -42,12 +42,14 @@ export const BaseProviders = [
 	'grafana',
 	'hackernews',
 	'hubspot',
+	'instagram',
 	'intercom',
 	'jira',
 	'linear',
 	'monday',
 	'notion',
 	'onedrive',
+	'openai',
 	'openweathermap',
 	'oura',
 	'outlook',
@@ -79,7 +81,6 @@ export const BaseProviders = [
 	'zendesk',
 	'zohomail',
 	'zoom',
-	'instagram',
 ] as const;
 
 export const ProviderDisplayNames = {
@@ -118,6 +119,7 @@ export const ProviderDisplayNames = {
 	monday: 'Monday',
 	notion: 'Notion',
 	onedrive: 'OneDrive',
+	openai: 'OpenAI',
 	openweathermap: 'OpenWeatherMap',
 	oura: 'Oura',
 	outlook: 'Outlook',
@@ -189,12 +191,14 @@ export type AllProviders =
 	| 'grafana'
 	| 'hackernews'
 	| 'hubspot'
+	| 'instagram'
 	| 'intercom'
 	| 'jira'
 	| 'linear'
 	| 'monday'
 	| 'notion'
 	| 'onedrive'
+	| 'openai'
 	| 'openweathermap'
 	| 'oura'
 	| 'outlook'
@@ -226,7 +230,6 @@ export type AllProviders =
 	| 'zendesk'
 	| 'zohomail'
 	| 'zoom'
-	| 'instagram'
 	| (string & {});
 
 export type AuthTypes = 'oauth_2' | 'api_key' | 'bot_token' | 'managed';

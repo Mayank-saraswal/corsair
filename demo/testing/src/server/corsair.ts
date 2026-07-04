@@ -9,6 +9,7 @@ import { googlesheets } from '@corsair-dev/googlesheets';
 import { hubspot } from '@corsair-dev/hubspot';
 import { linear } from '@corsair-dev/linear';
 import { onedrive } from '@corsair-dev/onedrive';
+import { openai } from '@corsair-dev/openai';
 import { sharepoint } from '@corsair-dev/sharepoint';
 import { slack } from '@corsair-dev/slack';
 import { twilio } from '@corsair-dev/twilio';
@@ -62,6 +63,9 @@ export const corsair = createCorsair({
 		vapi({
 			key: process.env.VAPI_API_KEY,
 			webhookSecret: process.env.VAPI_WEBHOOK_SECRET,
+		}),
+		openai({
+			key: process.env.OPENAI_API_KEY,
 		}),
 		instagram(),
 	],
