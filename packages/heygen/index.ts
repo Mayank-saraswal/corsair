@@ -869,10 +869,16 @@ export function heygen<const T extends HeygenPluginOptions>(
 		endpointSchemas: heygenEndpointSchemas,
 		authConfig: heygenAuthConfig,
 		pluginWebhookMatcher: () => false,
-		errorHandlers: {
-			...errorHandlers,
-			...options.errorHandlers,
-		},
+		errorHandlers: (() => {
+			// DEFAULT matches everything (`() => true`), so it must always be evaluated
+			// last — otherwise it shadows any custom handler contributed via options.
+			const { DEFAULT: defaultHandler, ...specificDefaults } = errorHandlers;
+			return {
+				...specificDefaults,
+				...(options.errorHandlers || {}),
+				DEFAULT: options.errorHandlers?.DEFAULT || defaultHandler,
+			};
+		})(),
 		keyBuilder: async (ctx: HeygenKeyBuilderContext, source) => {
 			if (source === 'endpoint' && options.key) {
 				return options.key;

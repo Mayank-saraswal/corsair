@@ -21,6 +21,7 @@ const describeIfApiKey = TEST_API_KEY ? describe : describe.skip;
 const FIXTURES: {
 	[K in keyof HeygenEndpointInputs]: {
 		input: HeygenEndpointInputs[K];
+		// output shape varies across all 72 test fixtures and is dynamically verified against each operation schema at runtime
 		output: unknown;
 	};
 } = {

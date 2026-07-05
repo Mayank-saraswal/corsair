@@ -36,6 +36,7 @@ export type HeygenQueryValue =
 
 type HeygenRequestOptions = {
 	method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
+	// body shape varies per endpoint and is validated by callers via typed Zod input schemas before being passed here
 	body?: Record<string, unknown>;
 	query?: Record<string, HeygenQueryValue>;
 	headers?: Record<string, string>;
