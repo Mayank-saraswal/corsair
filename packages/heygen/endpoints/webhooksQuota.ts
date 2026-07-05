@@ -1,0 +1,116 @@
+import { logEventFromContext } from 'corsair/core';
+import { makeHeygenRequest } from '../client';
+import type { HeygenEndpoints } from '../index';
+import type { HeygenEndpointOutputs } from './types';
+
+export const addEndpoint: HeygenEndpoints['webhooksQuotaAddEndpoint'] = async (
+	ctx,
+	input,
+) => {
+	const result = await makeHeygenRequest<
+		HeygenEndpointOutputs['webhooksQuotaAddEndpoint']
+	>('/v1/webhook/endpoint.add', ctx.key, { method: 'POST', body: input });
+
+	await logEventFromContext(
+		ctx,
+		'heygen.webhooksQuota.addEndpoint',
+		{ itemCount: input.events.length },
+		'completed',
+	);
+	return result;
+};
+
+export const listEndpoints: HeygenEndpoints['webhooksQuotaListEndpoints'] =
+	async (ctx) => {
+		const result = await makeHeygenRequest<
+			HeygenEndpointOutputs['webhooksQuotaListEndpoints']
+		>('/v1/webhook/endpoint.list', ctx.key, { method: 'GET' });
+
+		await logEventFromContext(
+			ctx,
+			'heygen.webhooksQuota.listEndpoints',
+			{},
+			'completed',
+		);
+		return result;
+	};
+
+export const listEventTypes: HeygenEndpoints['webhooksQuotaListEventTypes'] =
+	async (ctx) => {
+		const result = await makeHeygenRequest<
+			HeygenEndpointOutputs['webhooksQuotaListEventTypes']
+		>('/v1/webhook/webhook.list', ctx.key, { method: 'GET' });
+
+		await logEventFromContext(
+			ctx,
+			'heygen.webhooksQuota.listEventTypes',
+			{},
+			'completed',
+		);
+		return result;
+	};
+
+// [B] Path inferred as `PATCH /v1/webhook/endpoint.update`; see endpoints/types.ts.
+export const updateEndpoint: HeygenEndpoints['webhooksQuotaUpdateEndpoint'] =
+	async (ctx, input) => {
+		const result = await makeHeygenRequest<
+			HeygenEndpointOutputs['webhooksQuotaUpdateEndpoint']
+		>('/v1/webhook/endpoint.update', ctx.key, { method: 'PATCH', body: input });
+
+		await logEventFromContext(
+			ctx,
+			'heygen.webhooksQuota.updateEndpoint',
+			{ endpointId: input.endpoint_id },
+			'completed',
+		);
+		return result;
+	};
+
+export const deleteEndpoint: HeygenEndpoints['webhooksQuotaDeleteEndpoint'] =
+	async (ctx, input) => {
+		const result = await makeHeygenRequest<
+			HeygenEndpointOutputs['webhooksQuotaDeleteEndpoint']
+		>('/v1/webhook/endpoint.delete', ctx.key, {
+			method: 'DELETE',
+			query: { endpoint_id: input.endpoint_id },
+		});
+
+		await logEventFromContext(
+			ctx,
+			'heygen.webhooksQuota.deleteEndpoint',
+			{ endpointId: input.endpoint_id },
+			'completed',
+		);
+		return result;
+	};
+
+// [B] Path inferred as `/v2/user/me`; see endpoints/types.ts for details.
+export const getCurrentUser: HeygenEndpoints['webhooksQuotaGetCurrentUser'] =
+	async (ctx) => {
+		const result = await makeHeygenRequest<
+			HeygenEndpointOutputs['webhooksQuotaGetCurrentUser']
+		>('/v2/user/me', ctx.key, { method: 'GET' });
+
+		await logEventFromContext(
+			ctx,
+			'heygen.webhooksQuota.getCurrentUser',
+			{},
+			'completed',
+		);
+		return result;
+	};
+
+export const remainingQuota: HeygenEndpoints['webhooksQuotaRemainingQuota'] =
+	async (ctx) => {
+		const result = await makeHeygenRequest<
+			HeygenEndpointOutputs['webhooksQuotaRemainingQuota']
+		>('/v2/user/remaining_quota', ctx.key, { method: 'GET' });
+
+		await logEventFromContext(
+			ctx,
+			'heygen.webhooksQuota.remainingQuota',
+			{},
+			'completed',
+		);
+		return result;
+	};

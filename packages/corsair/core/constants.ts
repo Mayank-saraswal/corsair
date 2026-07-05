@@ -41,7 +41,9 @@ export const BaseProviders = [
 	'googlesheets',
 	'grafana',
 	'hackernews',
+	'heygen',
 	'hubspot',
+	'instagram',
 	'intercom',
 	'jira',
 	'linear',
@@ -79,7 +81,6 @@ export const BaseProviders = [
 	'zendesk',
 	'zohomail',
 	'zoom',
-	'instagram',
 ] as const;
 
 export const ProviderDisplayNames = {
@@ -111,6 +112,7 @@ export const ProviderDisplayNames = {
 	googlemeet: 'Google Meet',
 	grafana: 'Grafana',
 	hackernews: 'Hacker News',
+	heygen: 'HeyGen',
 	hubspot: 'HubSpot',
 	intercom: 'Intercom',
 	jira: 'Jira',
@@ -188,7 +190,9 @@ export type AllProviders =
 	| 'googlesheets'
 	| 'grafana'
 	| 'hackernews'
+	| 'heygen'
 	| 'hubspot'
+	| 'instagram'
 	| 'intercom'
 	| 'jira'
 	| 'linear'
@@ -226,7 +230,6 @@ export type AllProviders =
 	| 'zendesk'
 	| 'zohomail'
 	| 'zoom'
-	| 'instagram'
 	| (string & {});
 
 export type AuthTypes = 'oauth_2' | 'api_key' | 'bot_token' | 'managed';
