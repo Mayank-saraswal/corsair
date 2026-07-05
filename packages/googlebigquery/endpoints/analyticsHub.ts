@@ -43,6 +43,7 @@ export const listDataexchangesListings: GoogleBigqueryEndpoints['analyticsHubLis
 		return result;
 	};
 
+// Targets the Analytics Hub v1 API (`analyticsHub` host).
 export const createListing: GoogleBigqueryEndpoints['analyticsHubCreateListing'] =
 	async (ctx, input) => {
 		const { projectId, location, dataExchangeId, listingId, ...body } = input;
@@ -63,6 +64,8 @@ export const createListing: GoogleBigqueryEndpoints['analyticsHubCreateListing']
 		return result;
 	};
 
+// Targets the Analytics Hub v1beta1 API (`analyticsHubBeta` host), distinct from
+// createListing's v1 endpoint above.
 export const createDataexchangesListings: GoogleBigqueryEndpoints['analyticsHubCreateDataexchangesListings'] =
 	async (ctx, input) => {
 		const { projectId, location, dataExchangeId, listingId, ...body } = input;
@@ -71,7 +74,12 @@ export const createDataexchangesListings: GoogleBigqueryEndpoints['analyticsHubC
 		>(
 			`/projects/${projectId}/locations/${location}/dataExchanges/${dataExchangeId}/listings`,
 			ctx,
-			{ method: 'POST', host: 'analyticsHub', query: { listingId }, body },
+			{
+				method: 'POST',
+				host: 'analyticsHubBeta',
+				query: { listingId },
+				body,
+			},
 		);
 
 		await logEventFromContext(

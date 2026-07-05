@@ -154,7 +154,12 @@ export const insertAll: GoogleBigqueryEndpoints['queriesInsertAll'] = async (
 	await logEventFromContext(
 		ctx,
 		'googlebigquery.queries.insertAll',
-		{ ...input },
+		{
+			projectId: input.projectId,
+			datasetId: input.datasetId,
+			tableId: input.tableId,
+			rowsCount: input.rows?.length,
+		},
 		'completed',
 	);
 	return result;

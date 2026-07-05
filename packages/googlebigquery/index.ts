@@ -847,6 +847,7 @@ export function googlebigquery<const T extends GoogleBigqueryPluginOptions>(
 						]);
 					}
 
+					// ctx type doesn't declare _refreshAuth; cast to attach side-channel callback for token refresh
 					(ctx as Record<string, unknown>)._refreshAuth = async () => {
 						const freshResult = await getValidAccessToken({
 							accessToken: null,

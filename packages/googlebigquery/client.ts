@@ -92,6 +92,7 @@ export type GoogleBigqueryHost =
 	| 'bigquery'
 	| 'reservation'
 	| 'analyticsHub'
+	| 'analyticsHubBeta'
 	| 'connection'
 	| 'dataPolicy';
 
@@ -99,6 +100,7 @@ const GOOGLEBIGQUERY_API_BASES: Record<GoogleBigqueryHost, string> = {
 	bigquery: 'https://bigquery.googleapis.com/bigquery/v2',
 	reservation: 'https://bigqueryreservation.googleapis.com/v1',
 	analyticsHub: 'https://analyticshub.googleapis.com/v1',
+	analyticsHubBeta: 'https://analyticshub.googleapis.com/v1beta1',
 	connection: 'https://bigqueryconnection.googleapis.com/v1',
 	dataPolicy: 'https://bigquerydatapolicy.googleapis.com/v1',
 };
