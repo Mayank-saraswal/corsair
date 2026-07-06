@@ -3,11 +3,23 @@ import { base64ToBlob, makeHeygenRequest, makeHeygenUploadRequest } from '../cli
 import type { HeygenEndpoints } from '../index';
 import type { HeygenEndpointOutputs } from './types';
 
-export const list: HeygenEndpoints['avatarsList'] = async (ctx) => {
+// The avatar-details/group/photo-avatar/talking-photo operations below have no published v3
+// equivalent per developers.heygen.com/endpoint-version-comparison, so they stay on their
+// confirmed v1/v2 paths until HeyGen ships v3 replacements.
+
+// Migrated to HeyGen v3 API endpoint per developers.heygen.com
+export const list: HeygenEndpoints['avatarsList'] = async (ctx, input) => {
 	const result = await makeHeygenRequest<HeygenEndpointOutputs['avatarsList']>(
-		'/v1/avatar.list',
+		'/v3/avatars',
 		ctx.key,
-		{ method: 'GET' },
+		{
+			method: 'GET',
+			query: {
+				ownership: input.ownership,
+				limit: input.limit,
+				token: input.token,
+			},
+		},
 	);
 
 	await logEventFromContext(ctx, 'heygen.avatars.list', {}, 'completed');

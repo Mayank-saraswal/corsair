@@ -22,60 +22,32 @@ const DimensionSchema = z.object({
 	height: z.number(),
 });
 
-// HeyGen's `character` config varies by type (avatar / talking_photo / avatar_group); only
-// the common fields are modeled strictly, the rest is passed through.
-const VideoInputCharacterSchema = z
-	.object({
-		type: z.string(),
-		avatar_id: z.string().optional(),
-		talking_photo_id: z.string().optional(),
-		avatar_style: z.string().optional(),
-	})
-	.catchall(z.unknown());
-
-// `voice` config varies by type (text / audio / silence); only common fields are strict.
-const VideoInputVoiceSchema = z
-	.object({
-		type: z.string(),
-		voice_id: z.string().optional(),
-		input_text: z.string().optional(),
-		input_audio: z.string().optional(),
-		speed: z.number().optional(),
-		pitch: z.number().optional(),
-	})
-	.catchall(z.unknown());
-
-// Background config also varies by type (color / image / video); pass through the rest.
-const VideoInputBackgroundSchema = z
-	.object({
-		type: z.string().optional(),
-	})
-	.catchall(z.unknown());
-
-const VideoInputSchema = z.object({
-	character: VideoInputCharacterSchema,
-	voice: VideoInputVoiceSchema,
-	background: VideoInputBackgroundSchema.optional(),
-});
-
 // ---------------------------------------------------------------------------
 // Domain 1: Videos (generation, templates, translate, personalization) — 12 ops
 // ---------------------------------------------------------------------------
 
-const VideosGenerateInputSchema = z.object({
-	video_inputs: z.array(VideoInputSchema),
-	dimension: DimensionSchema.optional(),
-	aspect_ratio: z.string().nullable().optional(),
-	test: z.boolean().optional(),
-	caption: z.boolean().optional(),
-	title: z.string().optional(),
-	callback_id: z.string().nullable().optional(),
-	folder_id: z.string().optional(),
-});
+// Migrated to HeyGen v3 API endpoint per developers.heygen.com (POST /v3/videos). The v3
+// body is a discriminated union on `type`; only fields shared across the `avatar`, `image`,
+// and `cinematic_avatar` variants are modeled strictly below, the rest is passed through.
+const VideosGenerateInputSchema = z
+	.object({
+		type: z.enum(['avatar', 'image', 'cinematic_avatar']),
+		title: z.string().optional(),
+		resolution: z.string().optional(),
+		aspect_ratio: z.string().nullable().optional(),
+		callback_url: z.string().optional(),
+		callback_id: z.string().nullable().optional(),
+		folder_id: z.string().optional(),
+	})
+	.catchall(z.unknown());
 export type VideosGenerateInput = z.infer<typeof VideosGenerateInputSchema>;
 
 const VideosGenerateResponseSchema = wrapResponse(
-	z.object({ video_id: z.string() }),
+	z.object({
+		video_id: z.string(),
+		status: z.string().optional(),
+		output_format: z.enum(['mp4', 'webm']).optional(),
+	}),
 );
 export type VideosGenerateResponse = z.infer<typeof VideosGenerateResponseSchema>;
 
@@ -166,30 +138,53 @@ const VideosGetStatusInputSchema = z.object({
 });
 export type VideosGetStatusInput = z.infer<typeof VideosGetStatusInputSchema>;
 
+// Migrated to HeyGen v3 API endpoint per developers.heygen.com (GET /v3/videos/{video_id}).
 const VideosGetStatusResponseSchema = wrapResponse(
 	z.object({
-		id: z.string().optional(),
-		status: z.string(),
-		video_url: z.string().optional(),
-		thumbnail_url: z.string().optional(),
-		duration: z.number().optional(),
-		error: z.unknown().nullable().optional(),
+		id: z.string(),
+		title: z.string().nullable().optional(),
+		status: z.enum(['pending', 'processing', 'completed', 'failed']),
+		created_at: z.number().nullable().optional(),
+		completed_at: z.number().nullable().optional(),
+		video_url: z.string().nullable().optional(),
+		thumbnail_url: z.string().nullable().optional(),
+		gif_url: z.string().nullable().optional(),
+		captioned_video_url: z.string().nullable().optional(),
+		subtitle_url: z.string().nullable().optional(),
+		duration: z.number().nullable().optional(),
+		folder_id: z.string().nullable().optional(),
+		output_language: z.string().nullable().optional(),
+		failure_code: z.string().nullable().optional(),
+		failure_message: z.string().nullable().optional(),
+		video_page_url: z.string().nullable().optional(),
 	}),
 );
 export type VideosGetStatusResponse = z.infer<typeof VideosGetStatusResponseSchema>;
 
+// Migrated to HeyGen v3 API endpoint per developers.heygen.com (POST /v3/video-translations).
+const VideoTranslationSourceSchema = z.union([
+	z.object({ type: z.literal('url'), url: z.string() }),
+	z.object({ type: z.literal('asset_id'), asset_id: z.string() }),
+]);
+
 const VideosTranslateInputSchema = z.object({
-	video_url: z.string(),
-	output_language: z.string(),
+	video: VideoTranslationSourceSchema,
+	output_languages: z.array(z.string()).min(1),
 	title: z.string().optional(),
-	speaker_num: z.number().optional(),
+	audio: VideoTranslationSourceSchema.nullable().optional(),
+	input_language: z.string().nullable().optional(),
 	translate_audio_only: z.boolean().optional(),
+	speaker_num: z.number().nullable().optional(),
+	mode: z.enum(['speed', 'precision']).optional(),
+	callback_url: z.string().nullable().optional(),
 	callback_id: z.string().nullable().optional(),
+	enable_caption: z.boolean().optional(),
+	folder_id: z.string().nullable().optional(),
 });
 export type VideosTranslateInput = z.infer<typeof VideosTranslateInputSchema>;
 
 const VideosTranslateResponseSchema = wrapResponse(
-	z.object({ video_translate_id: z.string() }),
+	z.object({ video_translation_ids: z.array(z.string()) }),
 );
 export type VideosTranslateResponse = z.infer<typeof VideosTranslateResponseSchema>;
 
@@ -200,14 +195,24 @@ export type VideosTranslateStatusInput = z.infer<
 	typeof VideosTranslateStatusInputSchema
 >;
 
+// Migrated to HeyGen v3 API endpoint per developers.heygen.com (GET /v3/video-translations/{id}).
 const VideosTranslateStatusResponseSchema = wrapResponse(
-	z
-		.object({
-			video_translate_id: z.string().optional(),
-			status: z.string().optional(),
-			url: z.string().optional(),
-		})
-		.catchall(z.unknown()),
+	z.object({
+		id: z.string(),
+		status: z.enum(['pending', 'running', 'completed', 'failed']),
+		title: z.string().nullable().optional(),
+		output_language: z.string().nullable().optional(),
+		input_language: z.string().nullable().optional(),
+		duration: z.number().nullable().optional(),
+		translate_audio_only: z.boolean().nullable().optional(),
+		video_url: z.string().nullable().optional(),
+		audio_url: z.string().nullable().optional(),
+		srt_caption_url: z.string().nullable().optional(),
+		vtt_caption_url: z.string().nullable().optional(),
+		callback_id: z.string().nullable().optional(),
+		created_at: z.number().nullable().optional(),
+		failure_message: z.string().nullable().optional(),
+	}),
 );
 export type VideosTranslateStatusResponse = z.infer<
 	typeof VideosTranslateStatusResponseSchema
@@ -218,6 +223,7 @@ export type VideosTranslateTargetLanguagesInput = z.infer<
 	typeof VideosTranslateTargetLanguagesInputSchema
 >;
 
+// Migrated to HeyGen v3 API endpoint per developers.heygen.com (GET /v3/video-translations/languages).
 const VideosTranslateTargetLanguagesResponseSchema = wrapResponse(
 	z.object({ languages: z.array(z.string()) }),
 );
@@ -269,11 +275,20 @@ export type VideosListResponse = z.infer<typeof VideosListResponseSchema>;
 // Domain 2: Avatars, Looks & Talking Photos — 18 ops
 // ---------------------------------------------------------------------------
 
-const AvatarsListInputSchema = z.object({});
+// Migrated to HeyGen v3 API endpoint per developers.heygen.com (GET /v3/avatars).
+const AvatarsListInputSchema = z.object({
+	ownership: z.enum(['public', 'private']).optional(),
+	limit: z.number().optional(),
+	token: z.string().optional(),
+});
 export type AvatarsListInput = z.infer<typeof AvatarsListInputSchema>;
 
 const AvatarsListResponseSchema = wrapResponse(
-	z.object({ avatars: z.array(z.record(z.string(), z.unknown())) }),
+	z.object({
+		data: z.array(z.record(z.string(), z.unknown())),
+		has_more: z.boolean(),
+		next_token: z.string().nullable(),
+	}),
 );
 export type AvatarsListResponse = z.infer<typeof AvatarsListResponseSchema>;
 
@@ -891,8 +906,10 @@ export type AssetsGetTemplateResponse = z.infer<
 	typeof AssetsGetTemplateResponseSchema
 >;
 
-// [B] Path inferred as `/v3/templates/{id}`, matching HeyGen's ongoing v3 Studio Template
-// migration (v2 template detail stays at `/v2/template/{id}`, modeled separately above).
+// HeyGen's official v1/v2 -> v3 endpoint comparison (developers.heygen.com/
+// endpoint-version-comparison) lists templates as "Not yet available" in v3 — there is no
+// published `/v3/template` path, so this stays on the same confirmed v2 endpoint as
+// `getTemplate` above until HeyGen ships a v3 replacement.
 const AssetsGetTemplateDetailsV3InputSchema = z.object({
 	template_id: z.string(),
 });
@@ -1110,17 +1127,25 @@ export type WebhooksQuotaDeleteEndpointResponse = z.infer<
 	typeof WebhooksQuotaDeleteEndpointResponseSchema
 >;
 
-// [B] Path inferred as `/v2/user/me`, mirroring the confirmed `/v2/user/remaining_quota`
-// sibling below.
+// Migrated to HeyGen v3 API endpoint per developers.heygen.com (GET /v3/users/me).
 const WebhooksQuotaGetCurrentUserInputSchema = z.object({});
 export type WebhooksQuotaGetCurrentUserInput = z.infer<
 	typeof WebhooksQuotaGetCurrentUserInputSchema
 >;
 
 const WebhooksQuotaGetCurrentUserResponseSchema = wrapResponse(
-	z
-		.object({ email: z.string().optional(), username: z.string().optional() })
-		.catchall(z.unknown()),
+	z.object({
+		username: z.string(),
+		email: z.string().nullable(),
+		first_name: z.string().nullable(),
+		last_name: z.string().nullable(),
+		billing_type: z.enum(['wallet', 'subscription', 'usage_based']).nullable().optional(),
+		// Exactly one of these is populated depending on `billing_type`; shapes vary per tier
+		// so they're left permissive rather than fully modeled.
+		wallet: z.record(z.string(), z.unknown()).optional(),
+		subscription: z.record(z.string(), z.unknown()).optional(),
+		usage_based: z.record(z.string(), z.unknown()).optional(),
+	}),
 );
 export type WebhooksQuotaGetCurrentUserResponse = z.infer<
 	typeof WebhooksQuotaGetCurrentUserResponseSchema

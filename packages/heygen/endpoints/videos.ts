@@ -3,9 +3,15 @@ import { makeHeygenRequest } from '../client';
 import type { HeygenEndpoints } from '../index';
 import type { HeygenEndpointOutputs } from './types';
 
+// Template generation/listing, the WebM export, personalized-video, delete, and list
+// operations in this file have no published v3 equivalent per developers.heygen.com/
+// endpoint-version-comparison ("Not yet available"), so they stay on their confirmed v1/v2
+// paths until HeyGen ships v3 replacements.
+
+// Migrated to HeyGen v3 API endpoint per developers.heygen.com
 export const generate: HeygenEndpoints['videosGenerate'] = async (ctx, input) => {
 	const result = await makeHeygenRequest<HeygenEndpointOutputs['videosGenerate']>(
-		'/v2/video/generate',
+		'/v3/videos',
 		ctx.key,
 		{ method: 'POST', body: input },
 	);
@@ -13,7 +19,7 @@ export const generate: HeygenEndpoints['videosGenerate'] = async (ctx, input) =>
 	await logEventFromContext(
 		ctx,
 		'heygen.videos.generate',
-		{ itemCount: input.video_inputs.length },
+		{ type: input.type },
 		'completed',
 	);
 	return result;
@@ -94,16 +100,14 @@ export const personalizedProjectDetail: HeygenEndpoints['videosPersonalizedProje
 		return result;
 	};
 
+// Migrated to HeyGen v3 API endpoint per developers.heygen.com
 export const getStatus: HeygenEndpoints['videosGetStatus'] = async (
 	ctx,
 	input,
 ) => {
 	const result = await makeHeygenRequest<
 		HeygenEndpointOutputs['videosGetStatus']
-	>('/v1/video_status.get', ctx.key, {
-		method: 'GET',
-		query: { video_id: input.video_id },
-	});
+	>(`/v3/videos/${input.video_id}`, ctx.key, { method: 'GET' });
 
 	await logEventFromContext(
 		ctx,
@@ -114,30 +118,32 @@ export const getStatus: HeygenEndpoints['videosGetStatus'] = async (
 	return result;
 };
 
+// Migrated to HeyGen v3 API endpoint per developers.heygen.com
 export const translate: HeygenEndpoints['videosTranslate'] = async (
 	ctx,
 	input,
 ) => {
 	const result = await makeHeygenRequest<
 		HeygenEndpointOutputs['videosTranslate']
-	>('/v2/video_translate', ctx.key, { method: 'POST', body: input });
+	>('/v3/video-translations', ctx.key, { method: 'POST', body: input });
 
 	await logEventFromContext(
 		ctx,
 		'heygen.videos.translate',
-		{ outputLanguage: input.output_language },
+		{ outputLanguageCount: input.output_languages.length },
 		'completed',
 	);
 	return result;
 };
 
+// Migrated to HeyGen v3 API endpoint per developers.heygen.com
 export const translateStatus: HeygenEndpoints['videosTranslateStatus'] = async (
 	ctx,
 	input,
 ) => {
 	const result = await makeHeygenRequest<
 		HeygenEndpointOutputs['videosTranslateStatus']
-	>(`/v2/video_translate/${input.video_translate_id}`, ctx.key, {
+	>(`/v3/video-translations/${input.video_translate_id}`, ctx.key, {
 		method: 'GET',
 	});
 
@@ -150,11 +156,12 @@ export const translateStatus: HeygenEndpoints['videosTranslateStatus'] = async (
 	return result;
 };
 
+// Migrated to HeyGen v3 API endpoint per developers.heygen.com
 export const translateTargetLanguages: HeygenEndpoints['videosTranslateTargetLanguages'] =
 	async (ctx) => {
 		const result = await makeHeygenRequest<
 			HeygenEndpointOutputs['videosTranslateTargetLanguages']
-		>('/v2/video_translate/target_languages', ctx.key, { method: 'GET' });
+		>('/v3/video-translations/languages', ctx.key, { method: 'GET' });
 
 		await logEventFromContext(
 			ctx,

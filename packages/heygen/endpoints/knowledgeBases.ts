@@ -3,6 +3,9 @@ import { makeHeygenRequest } from '../client';
 import type { HeygenEndpoints } from '../index';
 import type { HeygenEndpointOutputs } from './types';
 
+// Knowledge base management has no published v3 equivalent per developers.heygen.com/
+// endpoint-version-comparison, so these operations stay on their confirmed v1 paths.
+
 // [B] Path inferred as `/v1/streaming/knowledge_base/create`; see endpoints/types.ts.
 export const create: HeygenEndpoints['knowledgeBasesCreate'] = async (
 	ctx,

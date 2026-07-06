@@ -3,6 +3,11 @@ import { makeHeygenRequest } from '../client';
 import type { HeygenEndpoints } from '../index';
 import type { HeygenEndpointOutputs } from './types';
 
+// HeyGen's v3 docs mention a `/v3/webhooks/endpoints/*` surface with full CRUD, secret
+// rotation, and an event log, but its request/response shapes aren't documented yet, so the
+// webhook endpoint CRUD and remaining-quota operations below stay on their confirmed v1/v2
+// paths per developers.heygen.com/endpoint-version-comparison.
+
 export const addEndpoint: HeygenEndpoints['webhooksQuotaAddEndpoint'] = async (
 	ctx,
 	input,
@@ -84,12 +89,12 @@ export const deleteEndpoint: HeygenEndpoints['webhooksQuotaDeleteEndpoint'] =
 		return result;
 	};
 
-// [B] Path inferred as `/v2/user/me`; see endpoints/types.ts for details.
+// Migrated to HeyGen v3 API endpoint per developers.heygen.com
 export const getCurrentUser: HeygenEndpoints['webhooksQuotaGetCurrentUser'] =
 	async (ctx) => {
 		const result = await makeHeygenRequest<
 			HeygenEndpointOutputs['webhooksQuotaGetCurrentUser']
-		>('/v2/user/me', ctx.key, { method: 'GET' });
+		>('/v3/users/me', ctx.key, { method: 'GET' });
 
 		await logEventFromContext(
 			ctx,

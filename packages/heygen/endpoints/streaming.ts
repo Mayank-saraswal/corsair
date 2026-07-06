@@ -3,6 +3,11 @@ import { makeHeygenRequest } from '../client';
 import type { HeygenEndpoints } from '../index';
 import type { HeygenEndpointOutputs } from './types';
 
+// HeyGen's v3 docs mention an "Avatar Realtime" endpoint (`POST /v3/avatar-realtime`) for
+// low-latency streaming, but it has no documented request/response shape yet and doesn't map
+// cleanly onto the operations below, so this file stays on its confirmed v1 paths per
+// developers.heygen.com/endpoint-version-comparison.
+
 // Full-config session bootstrap (avatar/voice/knowledge base). Hits the same confirmed
 // `/v1/streaming.new` endpoint as `new` below, but with a richer request scope — HeyGen's
 // issue tracker lists both as distinct operations.

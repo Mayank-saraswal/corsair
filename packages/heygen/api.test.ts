@@ -27,15 +27,13 @@ const FIXTURES: {
 } = {
 	videosGenerate: {
 		input: {
-			video_inputs: [
-				{
-					character: { type: 'avatar', avatar_id: 'avatar_123' },
-					voice: { type: 'text', voice_id: 'voice_123', input_text: 'Hello' },
-				},
-			],
+			type: 'avatar',
+			avatar_id: 'avatar_123',
+			script: 'Hello',
+			voice_id: 'voice_123',
 			title: 'My Title',
 		},
-		output: { error: null, data: { video_id: 'vid_123' } },
+		output: { error: null, data: { video_id: 'vid_123', status: 'waiting' } },
 	},
 	videosTemplateGenerate: {
 		input: { template_id: 'tmpl_123', variables: { first_name: { name: 'first_name' } } },
@@ -58,15 +56,21 @@ const FIXTURES: {
 	},
 	videosGetStatus: {
 		input: { video_id: 'vid_123' },
-		output: { error: null, data: { status: 'completed', video_url: 'https://x' } },
+		output: {
+			error: null,
+			data: { id: 'vid_123', status: 'completed', video_url: 'https://x' },
+		},
 	},
 	videosTranslate: {
-		input: { video_url: 'https://x/video.mp4', output_language: 'English' },
-		output: { error: null, data: { video_translate_id: 'trans_123' } },
+		input: {
+			video: { type: 'url', url: 'https://x/video.mp4' },
+			output_languages: ['English'],
+		},
+		output: { error: null, data: { video_translation_ids: ['trans_123'] } },
 	},
 	videosTranslateStatus: {
 		input: { video_translate_id: 'trans_123' },
-		output: { error: null, data: { status: 'processing' } },
+		output: { error: null, data: { id: 'trans_123', status: 'running' } },
 	},
 	videosTranslateTargetLanguages: {
 		input: {},
@@ -87,7 +91,10 @@ const FIXTURES: {
 
 	avatarsList: {
 		input: {},
-		output: { error: null, data: { avatars: [{ avatar_id: 'avatar_123' }] } },
+		output: {
+			error: null,
+			data: { data: [{ id: 'avatar_123' }], has_more: false, next_token: null },
+		},
 	},
 	avatarsGetDetails: {
 		input: { avatar_id: 'avatar_123' },
@@ -336,7 +343,15 @@ const FIXTURES: {
 	},
 	webhooksQuotaGetCurrentUser: {
 		input: {},
-		output: { error: null, data: { email: 'user@example.com' } },
+		output: {
+			error: null,
+			data: {
+				username: 'user123',
+				email: 'user@example.com',
+				first_name: null,
+				last_name: null,
+			},
+		},
 	},
 	webhooksQuotaRemainingQuota: {
 		input: {},

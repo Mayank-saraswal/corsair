@@ -3,6 +3,11 @@ import { makeHeygenRequest } from '../client';
 import type { HeygenEndpoints } from '../index';
 import type { HeygenEndpointOutputs } from './types';
 
+// HeyGen's v3 docs mention a Text-to-Speech (Starfish) surface, but no published v3
+// replacement for these specific voice-listing/generation operations exists yet per
+// developers.heygen.com/endpoint-version-comparison, so they stay on their confirmed v1/v2
+// paths.
+
 // [B] Path inferred as `/v1/voice/generate`; see endpoints/types.ts for details.
 export const generateSpeech: HeygenEndpoints['voicesGenerateSpeech'] = async (
 	ctx,

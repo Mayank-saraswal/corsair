@@ -3,6 +3,11 @@ import { base64ToBlob, makeHeygenRequest, makeHeygenUploadRequest } from '../cli
 import type { HeygenEndpoints } from '../index';
 import type { HeygenEndpointOutputs } from './types';
 
+// HeyGen's v3 docs mention a `POST /v3/assets` upload endpoint and templates are listed as
+// "Not yet available" in v3 (see the comment on `getTemplateDetailsV3` below); none of the
+// asset/folder operations in this file have a fully documented v3 replacement yet, so they
+// stay on their confirmed v1/v2 paths per developers.heygen.com/endpoint-version-comparison.
+
 export const listTemplates: HeygenEndpoints['assetsListTemplates'] = async (
 	ctx,
 ) => {
@@ -31,12 +36,14 @@ export const getTemplate: HeygenEndpoints['assetsGetTemplate'] = async (
 	return result;
 };
 
-// [B] Path inferred as `/v3/templates/{id}`; see endpoints/types.ts for details.
+// HeyGen's official version-comparison doc (developers.heygen.com/endpoint-version-comparison)
+// lists templates as "Not yet available" in v3 — there is no published `/v3/template` path,
+// so this stays on the same confirmed v2 endpoint as `getTemplate` above.
 export const getTemplateDetailsV3: HeygenEndpoints['assetsGetTemplateDetailsV3'] =
 	async (ctx, input) => {
 		const result = await makeHeygenRequest<
 			HeygenEndpointOutputs['assetsGetTemplateDetailsV3']
-		>(`/v3/templates/${input.template_id}`, ctx.key, { method: 'GET' });
+		>(`/v2/template/${input.template_id}`, ctx.key, { method: 'GET' });
 
 		await logEventFromContext(
 			ctx,
