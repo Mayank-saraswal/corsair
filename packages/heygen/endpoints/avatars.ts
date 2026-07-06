@@ -324,3 +324,160 @@ export const deleteTalkingPhoto: HeygenEndpoints['avatarsDeleteTalkingPhoto'] =
 		);
 		return result;
 	};
+
+// --- v3 additions: avatar groups/looks CRUD, per developers.heygen.com ---------
+
+// Migrated to HeyGen v3 API per developers.heygen.com
+export const create: HeygenEndpoints['avatarsCreate'] = async (ctx, input) => {
+	const result = await makeHeygenRequest<HeygenEndpointOutputs['avatarsCreate']>(
+		'/v3/avatars',
+		ctx.key,
+		{ method: 'POST', body: input },
+	);
+
+	await logEventFromContext(
+		ctx,
+		'heygen.avatars.create',
+		{ type: input.type },
+		'completed',
+	);
+	return result;
+};
+
+// Migrated to HeyGen v3 API per developers.heygen.com
+export const getGroup: HeygenEndpoints['avatarsGetGroup'] = async (
+	ctx,
+	input,
+) => {
+	const result = await makeHeygenRequest<HeygenEndpointOutputs['avatarsGetGroup']>(
+		`/v3/avatars/${input.group_id}`,
+		ctx.key,
+		{ method: 'GET' },
+	);
+
+	await logEventFromContext(
+		ctx,
+		'heygen.avatars.getGroup',
+		{ groupId: input.group_id },
+		'completed',
+	);
+	return result;
+};
+
+// Migrated to HeyGen v3 API per developers.heygen.com
+export const deleteGroup: HeygenEndpoints['avatarsDeleteGroup'] = async (
+	ctx,
+	input,
+) => {
+	const result = await makeHeygenRequest<
+		HeygenEndpointOutputs['avatarsDeleteGroup']
+	>(`/v3/avatars/${input.group_id}`, ctx.key, { method: 'DELETE' });
+
+	await logEventFromContext(
+		ctx,
+		'heygen.avatars.deleteGroup',
+		{ groupId: input.group_id },
+		'completed',
+	);
+	return result;
+};
+
+// Migrated to HeyGen v3 API per developers.heygen.com
+export const createConsent: HeygenEndpoints['avatarsCreateConsent'] = async (
+	ctx,
+	input,
+) => {
+	const { group_id, ...body } = input;
+	const result = await makeHeygenRequest<
+		HeygenEndpointOutputs['avatarsCreateConsent']
+	>(`/v3/avatars/${group_id}/consent`, ctx.key, { method: 'POST', body });
+
+	await logEventFromContext(
+		ctx,
+		'heygen.avatars.createConsent',
+		{ groupId: group_id },
+		'completed',
+	);
+	return result;
+};
+
+// Migrated to HeyGen v3 API per developers.heygen.com
+export const listLooks: HeygenEndpoints['avatarsListLooks'] = async (
+	ctx,
+	input,
+) => {
+	const result = await makeHeygenRequest<HeygenEndpointOutputs['avatarsListLooks']>(
+		'/v3/avatars/looks',
+		ctx.key,
+		{
+			method: 'GET',
+			query: {
+				group_id: input.group_id,
+				avatar_type: input.avatar_type,
+				ownership: input.ownership,
+				limit: input.limit,
+				token: input.token,
+			},
+		},
+	);
+
+	await logEventFromContext(ctx, 'heygen.avatars.listLooks', {}, 'completed');
+	return result;
+};
+
+// Migrated to HeyGen v3 API per developers.heygen.com
+export const getLook: HeygenEndpoints['avatarsGetLook'] = async (
+	ctx,
+	input,
+) => {
+	const result = await makeHeygenRequest<HeygenEndpointOutputs['avatarsGetLook']>(
+		`/v3/avatars/looks/${input.look_id}`,
+		ctx.key,
+		{ method: 'GET' },
+	);
+
+	await logEventFromContext(
+		ctx,
+		'heygen.avatars.getLook',
+		{ lookId: input.look_id },
+		'completed',
+	);
+	return result;
+};
+
+// Migrated to HeyGen v3 API per developers.heygen.com
+export const deleteLook: HeygenEndpoints['avatarsDeleteLook'] = async (
+	ctx,
+	input,
+) => {
+	const result = await makeHeygenRequest<
+		HeygenEndpointOutputs['avatarsDeleteLook']
+	>(`/v3/avatars/looks/${input.look_id}`, ctx.key, { method: 'DELETE' });
+
+	await logEventFromContext(
+		ctx,
+		'heygen.avatars.deleteLook',
+		{ lookId: input.look_id },
+		'completed',
+	);
+	return result;
+};
+
+// Migrated to HeyGen v3 API per developers.heygen.com
+export const updateLook: HeygenEndpoints['avatarsUpdateLook'] = async (
+	ctx,
+	input,
+) => {
+	const { look_id, ...body } = input;
+	const result = await makeHeygenRequest<
+		HeygenEndpointOutputs['avatarsUpdateLook']
+	>(`/v3/avatars/looks/${look_id}`, ctx.key, { method: 'PATCH', body });
+
+	await logEventFromContext(
+		ctx,
+		'heygen.avatars.updateLook',
+		{ lookId: look_id },
+		'completed',
+	);
+	return result;
+};

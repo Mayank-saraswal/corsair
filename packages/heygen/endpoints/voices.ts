@@ -105,3 +105,113 @@ export const listBrandVoices: HeygenEndpoints['voicesListBrandVoices'] = async (
 	);
 	return result;
 };
+
+// --- v3 additions, per developers.heygen.com. Named with a `V3` suffix (matching the
+// existing `assetsGetTemplateDetailsV3` convention) since they'd otherwise collide with the
+// legacy v1/v2 voice operations above. ---------
+
+// Migrated to HeyGen v3 API per developers.heygen.com
+export const generateSpeechV3: HeygenEndpoints['voicesGenerateSpeechV3'] = async (
+	ctx,
+	input,
+) => {
+	const result = await makeHeygenRequest<
+		HeygenEndpointOutputs['voicesGenerateSpeechV3']
+	>('/v3/voices/speech', ctx.key, { method: 'POST', body: input });
+
+	await logEventFromContext(
+		ctx,
+		'heygen.voices.generateSpeechV3',
+		{ voiceId: input.voice_id },
+		'completed',
+	);
+	return result;
+};
+
+// Migrated to HeyGen v3 API per developers.heygen.com
+export const listV3: HeygenEndpoints['voicesListV3'] = async (ctx, input) => {
+	const result = await makeHeygenRequest<HeygenEndpointOutputs['voicesListV3']>(
+		'/v3/voices',
+		ctx.key,
+		{
+			method: 'GET',
+			query: {
+				type: input.type,
+				engine: input.engine,
+				language: input.language,
+				gender: input.gender,
+				limit: input.limit,
+				token: input.token,
+			},
+		},
+	);
+
+	await logEventFromContext(ctx, 'heygen.voices.listV3', {}, 'completed');
+	return result;
+};
+
+// Migrated to HeyGen v3 API per developers.heygen.com
+export const design: HeygenEndpoints['voicesDesign'] = async (ctx, input) => {
+	const result = await makeHeygenRequest<HeygenEndpointOutputs['voicesDesign']>(
+		'/v3/voices',
+		ctx.key,
+		{ method: 'POST', body: input },
+	);
+
+	await logEventFromContext(ctx, 'heygen.voices.design', {}, 'completed');
+	return result;
+};
+
+// Migrated to HeyGen v3 API per developers.heygen.com
+export const clone: HeygenEndpoints['voicesClone'] = async (ctx, input) => {
+	const result = await makeHeygenRequest<HeygenEndpointOutputs['voicesClone']>(
+		'/v3/voices/clone',
+		ctx.key,
+		{ method: 'POST', body: input },
+	);
+
+	await logEventFromContext(
+		ctx,
+		'heygen.voices.clone',
+		{ voiceName: input.voice_name },
+		'completed',
+	);
+	return result;
+};
+
+// Migrated to HeyGen v3 API per developers.heygen.com
+export const getV3: HeygenEndpoints['voicesGetV3'] = async (ctx, input) => {
+	const result = await makeHeygenRequest<HeygenEndpointOutputs['voicesGetV3']>(
+		`/v3/voices/${input.voice_id}`,
+		ctx.key,
+		{ method: 'GET' },
+	);
+
+	await logEventFromContext(
+		ctx,
+		'heygen.voices.getV3',
+		{ voiceId: input.voice_id },
+		'completed',
+	);
+	return result;
+};
+
+// Migrated to HeyGen v3 API per developers.heygen.com
+export const deleteV3: HeygenEndpoints['voicesDeleteV3'] = async (
+	ctx,
+	input,
+) => {
+	const result = await makeHeygenRequest<HeygenEndpointOutputs['voicesDeleteV3']>(
+		`/v3/voices/${input.voice_id}`,
+		ctx.key,
+		{ method: 'DELETE' },
+	);
+
+	await logEventFromContext(
+		ctx,
+		'heygen.voices.deleteV3',
+		{ voiceId: input.voice_id },
+		'completed',
+	);
+	return result;
+};

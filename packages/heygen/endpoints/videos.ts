@@ -219,3 +219,46 @@ export const list: HeygenEndpoints['videosList'] = async (ctx, input) => {
 	await logEventFromContext(ctx, 'heygen.videos.list', {}, 'completed');
 	return result;
 };
+
+// --- v3 additions, per developers.heygen.com. Named with a `V3` suffix since they'd
+// otherwise collide with the legacy v1 `videos.list`/`videos.delete` operations above. ---
+
+// Migrated to HeyGen v3 API per developers.heygen.com
+export const listV3: HeygenEndpoints['videosListV3'] = async (ctx, input) => {
+	const result = await makeHeygenRequest<HeygenEndpointOutputs['videosListV3']>(
+		'/v3/videos',
+		ctx.key,
+		{
+			method: 'GET',
+			query: {
+				limit: input.limit,
+				token: input.token,
+				folder_id: input.folder_id,
+				title: input.title,
+			},
+		},
+	);
+
+	await logEventFromContext(ctx, 'heygen.videos.listV3', {}, 'completed');
+	return result;
+};
+
+// Migrated to HeyGen v3 API per developers.heygen.com
+export const deleteV3: HeygenEndpoints['videosDeleteV3'] = async (
+	ctx,
+	input,
+) => {
+	const result = await makeHeygenRequest<HeygenEndpointOutputs['videosDeleteV3']>(
+		`/v3/videos/${input.video_id}`,
+		ctx.key,
+		{ method: 'DELETE' },
+	);
+
+	await logEventFromContext(
+		ctx,
+		'heygen.videos.deleteV3',
+		{ videoId: input.video_id },
+		'completed',
+	);
+	return result;
+};

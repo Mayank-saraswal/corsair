@@ -1,12 +1,18 @@
 import { logEventFromContext } from 'corsair/core';
-import { base64ToBlob, makeHeygenRequest, makeHeygenUploadRequest } from '../client';
+import {
+	base64ToBlob,
+	makeHeygenMultipartRequest,
+	makeHeygenRequest,
+	makeHeygenUploadRequest,
+} from '../client';
 import type { HeygenEndpoints } from '../index';
 import type { HeygenEndpointOutputs } from './types';
 
-// HeyGen's v3 docs mention a `POST /v3/assets` upload endpoint and templates are listed as
-// "Not yet available" in v3 (see the comment on `getTemplateDetailsV3` below); none of the
-// asset/folder operations in this file have a fully documented v3 replacement yet, so they
-// stay on their confirmed v1/v2 paths per developers.heygen.com/endpoint-version-comparison.
+// Templates are listed as "Not yet available" in v3 (see the comment on
+// `getTemplateDetailsV3` below), so template/folder operations in this file stay on their
+// confirmed v1/v2 paths per developers.heygen.com/endpoint-version-comparison. Asset upload,
+// get, delete, and the presigned-upload-session flow do have v3 equivalents — see the `V3`
+// suffixed operations at the end of this file.
 
 export const listTemplates: HeygenEndpoints['assetsListTemplates'] = async (
 	ctx,
@@ -200,6 +206,99 @@ export const restoreFolder: HeygenEndpoints['assetsRestoreFolder'] = async (
 		ctx,
 		'heygen.assets.restoreFolder',
 		{ folderId: input.folder_id },
+		'completed',
+	);
+	return result;
+};
+
+// --- v3 additions, per developers.heygen.com. Named with a `V3` suffix (matching the
+// existing `assetsGetTemplateDetailsV3` convention) since `uploadAssetV3` collides with the
+// legacy v1 `assets.uploadAsset` operation above. ---------
+
+// Migrated to HeyGen v3 API per developers.heygen.com
+export const uploadAssetV3: HeygenEndpoints['assetsUploadAssetV3'] = async (
+	ctx,
+	input,
+) => {
+	const result = await makeHeygenMultipartRequest<
+		HeygenEndpointOutputs['assetsUploadAssetV3']
+	>('/v3/assets', ctx.key, {
+		method: 'POST',
+		file: base64ToBlob(input.fileBase64, input.contentType),
+	});
+
+	await logEventFromContext(ctx, 'heygen.assets.uploadAssetV3', {}, 'completed');
+	return result;
+};
+
+// Migrated to HeyGen v3 API per developers.heygen.com
+export const getAsset: HeygenEndpoints['assetsGetAsset'] = async (
+	ctx,
+	input,
+) => {
+	const result = await makeHeygenRequest<HeygenEndpointOutputs['assetsGetAsset']>(
+		`/v3/assets/${input.asset_id}`,
+		ctx.key,
+		{ method: 'GET' },
+	);
+
+	await logEventFromContext(
+		ctx,
+		'heygen.assets.getAsset',
+		{ assetId: input.asset_id },
+		'completed',
+	);
+	return result;
+};
+
+// Migrated to HeyGen v3 API per developers.heygen.com
+export const deleteAssetV3: HeygenEndpoints['assetsDeleteAssetV3'] = async (
+	ctx,
+	input,
+) => {
+	const result = await makeHeygenRequest<
+		HeygenEndpointOutputs['assetsDeleteAssetV3']
+	>(`/v3/assets/${input.asset_id}`, ctx.key, { method: 'DELETE' });
+
+	await logEventFromContext(
+		ctx,
+		'heygen.assets.deleteAssetV3',
+		{ assetId: input.asset_id },
+		'completed',
+	);
+	return result;
+};
+
+// Migrated to HeyGen v3 API per developers.heygen.com
+export const createUploadSession: HeygenEndpoints['assetsCreateUploadSession'] =
+	async (ctx, input) => {
+		const result = await makeHeygenRequest<
+			HeygenEndpointOutputs['assetsCreateUploadSession']
+		>('/v3/assets/direct-uploads', ctx.key, { method: 'POST', body: input });
+
+		await logEventFromContext(
+			ctx,
+			'heygen.assets.createUploadSession',
+			{},
+			'completed',
+		);
+		return result;
+	};
+
+// Migrated to HeyGen v3 API per developers.heygen.com
+export const completeUpload: HeygenEndpoints['assetsCompleteUpload'] = async (
+	ctx,
+	input,
+) => {
+	const { asset_id, ...body } = input;
+	const result = await makeHeygenRequest<
+		HeygenEndpointOutputs['assetsCompleteUpload']
+	>(`/v3/assets/${asset_id}/complete`, ctx.key, { method: 'POST', body });
+
+	await logEventFromContext(
+		ctx,
+		'heygen.assets.completeUpload',
+		{ assetId: asset_id },
 		'completed',
 	);
 	return result;

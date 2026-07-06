@@ -91,10 +91,7 @@ const FIXTURES: {
 
 	avatarsList: {
 		input: {},
-		output: {
-			error: null,
-			data: { data: [{ id: 'avatar_123' }], has_more: false, next_token: null },
-		},
+		output: { data: [{ id: 'avatar_123' }], has_more: false, next_token: null },
 	},
 	avatarsGetDetails: {
 		input: { avatar_id: 'avatar_123' },
@@ -356,6 +353,456 @@ const FIXTURES: {
 	webhooksQuotaRemainingQuota: {
 		input: {},
 		output: { error: null, data: { remaining_quota: 1000 } },
+	},
+
+	videoAgentsListSessions: {
+		input: {},
+		output: {
+			data: [{ session_id: 'sess_123', created_at: 1700000000 }],
+			has_more: false,
+			next_token: null,
+		},
+	},
+	videoAgentsCreateSession: {
+		input: { prompt: 'Create a product demo video' },
+		output: {
+			data: {
+				session_id: 'sess_123',
+				status: 'thinking',
+				video_id: null,
+				created_at: 1700000000,
+			},
+		},
+	},
+	videoAgentsListStyles: {
+		input: {},
+		output: {
+			data: [{ style_id: 'style_123', name: 'Cinematic' }],
+			has_more: false,
+			next_token: null,
+		},
+	},
+	videoAgentsGetSession: {
+		input: { session_id: 'sess_123' },
+		output: {
+			data: {
+				session_id: 'sess_123',
+				status: 'completed',
+				created_at: 1700000000,
+				messages: [],
+			},
+		},
+	},
+	videoAgentsSendMessage: {
+		input: { session_id: 'sess_123', message: 'Make the intro shorter' },
+		output: { data: { session_id: 'sess_123', run_id: 'run_123' } },
+	},
+	videoAgentsGetResource: {
+		input: { session_id: 'sess_123', resource_id: 'res_123' },
+		output: { data: { resource_id: 'res_123', resource_type: 'script' } },
+	},
+	videoAgentsListVideos: {
+		input: { session_id: 'sess_123' },
+		output: {
+			data: [{ id: 'vid_123', status: 'completed' }],
+			has_more: false,
+			next_token: null,
+		},
+	},
+	videoAgentsStopSession: {
+		input: { session_id: 'sess_123' },
+		output: { data: { session_id: 'sess_123' } },
+	},
+
+	brandListGlossaries: {
+		input: {},
+		output: {
+			data: [
+				{
+					brand_glossary_id: 'glossary_123',
+					name: 'Product Terms',
+					created_at: '2026-01-01T00:00:00Z',
+					updated_at: '2026-01-01T00:00:00Z',
+				},
+			],
+			has_more: false,
+			next_token: null,
+		},
+	},
+	brandListKits: {
+		input: {},
+		output: {
+			data: [{ brand_kit_id: 'kit_123', name: 'Acme Brand' }],
+			has_more: false,
+			next_token: null,
+		},
+	},
+
+	avatarsCreate: {
+		input: { type: 'prompt', name: 'My Avatar', prompt: 'A friendly presenter' },
+		output: { data: { avatar_item: null, avatar_group: null } },
+	},
+	avatarsGetGroup: {
+		input: { group_id: 'group_123' },
+		output: {
+			data: { id: 'group_123', name: 'My Group', created_at: 1700000000, looks_count: 1 },
+		},
+	},
+	avatarsDeleteGroup: {
+		input: { group_id: 'group_123' },
+		output: { data: { id: 'group_123' } },
+	},
+	avatarsCreateConsent: {
+		input: { group_id: 'group_123' },
+		output: {
+			data: {
+				avatar_group: {
+					id: 'group_123',
+					name: 'My Group',
+					created_at: 1700000000,
+					looks_count: 1,
+				},
+				url: 'https://app.heygen.com/consent/group_123',
+			},
+		},
+	},
+	avatarsListLooks: {
+		input: {},
+		output: {
+			data: [{ id: 'look_123', name: 'Outfit A', avatar_type: 'photo_avatar' }],
+			has_more: false,
+			next_token: null,
+		},
+	},
+	avatarsGetLook: {
+		input: { look_id: 'look_123' },
+		output: { data: { id: 'look_123', name: 'Outfit A', avatar_type: 'photo_avatar' } },
+	},
+	avatarsDeleteLook: {
+		input: { look_id: 'look_123' },
+		output: { data: { id: 'look_123' } },
+	},
+	avatarsUpdateLook: {
+		input: { look_id: 'look_123', name: 'Outfit B' },
+		output: { data: { id: 'look_123', name: 'Outfit B', avatar_type: 'photo_avatar' } },
+	},
+
+	avatarRealtimeCreateSession: {
+		input: {
+			type: 'tts',
+			avatar_id: 'avatar_123',
+			text: 'Hello there',
+			voice_id: 'voice_123',
+		},
+		output: { data: { stream_id: 'stream_123' } },
+	},
+	avatarRealtimeGetSession: {
+		input: { stream_id: 'stream_123' },
+		output: { data: { stream_id: 'stream_123', status: 'streaming' } },
+	},
+	avatarRealtimeAppendText: {
+		input: { stream_id: 'stream_123', delta: 'more text' },
+		output: { data: { buffered_bytes: 128 } },
+	},
+	avatarRealtimeCancelSession: {
+		input: { stream_id: 'stream_123' },
+		output: { data: { stream_id: 'stream_123', cancelled: true } },
+	},
+
+	audioSearch: {
+		input: { query: 'upbeat corporate' },
+		output: {
+			data: [{ id: 'sound_123', name: 'Upbeat Corporate' }],
+			has_more: false,
+			next_token: null,
+		},
+	},
+
+	voicesGenerateSpeechV3: {
+		input: { text: 'Hello world', voice_id: 'voice_123' },
+		output: { data: { audio_url: 'https://x/audio.mp3', duration: 2.5 } },
+	},
+	voicesListV3: {
+		input: {},
+		output: {
+			data: [{ voice_id: 'voice_123', name: 'Aria' }],
+			has_more: false,
+			next_token: null,
+		},
+	},
+	voicesDesign: {
+		input: { prompt: 'A warm, friendly female voice' },
+		output: { data: { voices: [{ voice_id: 'voice_123' }], seed: 0 } },
+	},
+	voicesClone: {
+		input: {
+			audio: { type: 'url', url: 'https://x/sample.mp3' },
+			voice_name: 'My Voice',
+		},
+		output: { data: { voice_clone_id: 'clone_123' } },
+	},
+	voicesGetV3: {
+		input: { voice_id: 'voice_123' },
+		output: { data: { voice_id: 'voice_123', status: 'complete' } },
+	},
+	voicesDeleteV3: {
+		input: { voice_id: 'voice_123' },
+		output: { data: { voice_id: 'voice_123' } },
+	},
+
+	videosListV3: {
+		input: {},
+		output: {
+			data: [{ id: 'vid_123', status: 'completed' }],
+			has_more: false,
+			next_token: null,
+		},
+	},
+	videosDeleteV3: {
+		input: { video_id: 'vid_123' },
+		output: { data: { id: 'vid_123', deleted: true } },
+	},
+
+	videoTranslationsList: {
+		input: {},
+		output: {
+			data: [{ id: 'trans_123', status: 'completed' }],
+			has_more: false,
+			next_token: null,
+		},
+	},
+	videoTranslationsDelete: {
+		input: { video_translation_id: 'trans_123' },
+		output: { data: { id: 'trans_123' } },
+	},
+	videoTranslationsUpdate: {
+		input: { video_translation_id: 'trans_123', title: 'New Title' },
+		output: { data: { id: 'trans_123', status: 'completed', title: 'New Title' } },
+	},
+
+	proofreadCreate: {
+		input: {
+			video: { type: 'url', url: 'https://x/video.mp4' },
+			output_languages: ['Spanish (Spain)'],
+			title: 'My Proofread',
+		},
+		output: { data: { proofread_ids: ['proof_123'], status: 'processing' } },
+	},
+	proofreadGet: {
+		input: { proofread_id: 'proof_123' },
+		output: { data: { id: 'proof_123', status: 'processing' } },
+	},
+	proofreadDownloadSrt: {
+		input: { proofread_id: 'proof_123' },
+		output: { data: { srt_url: 'https://x/edited.srt' } },
+	},
+	proofreadUploadSrt: {
+		input: {
+			proofread_id: 'proof_123',
+			srt: { type: 'url', url: 'https://x/edited.srt' },
+		},
+		output: { data: { id: 'proof_123', status: 'processing' } },
+	},
+	proofreadGenerateVideo: {
+		input: { proofread_id: 'proof_123' },
+		output: { data: { video_translation_id: 'trans_123', status: 'processing' } },
+	},
+
+	lipsyncList: {
+		input: {},
+		output: {
+			data: [{ id: 'lip_123', status: 'completed' }],
+			has_more: false,
+			next_token: null,
+		},
+	},
+	lipsyncCreate: {
+		input: {
+			video: { type: 'url', url: 'https://x/video.mp4' },
+			audio: { type: 'url', url: 'https://x/audio.mp3' },
+		},
+		output: { data: { lipsync_id: 'lip_123' } },
+	},
+	lipsyncGet: {
+		input: { lipsync_id: 'lip_123' },
+		output: { data: { id: 'lip_123', status: 'completed' } },
+	},
+	lipsyncDelete: {
+		input: { lipsync_id: 'lip_123' },
+		output: { data: { id: 'lip_123' } },
+	},
+	lipsyncUpdate: {
+		input: { lipsync_id: 'lip_123', title: 'New Title' },
+		output: { data: { id: 'lip_123', status: 'completed', title: 'New Title' } },
+	},
+
+	hyperframesList: {
+		input: {},
+		output: {
+			data: [{ render_id: 'render_123', status: 'completed', format: 'mp4' }],
+			has_more: false,
+			next_token: null,
+		},
+	},
+	hyperframesCreate: {
+		input: { project: { type: 'url', url: 'https://x/project.html' } },
+		output: { data: { render_id: 'render_123' } },
+	},
+	hyperframesGet: {
+		input: { render_id: 'render_123' },
+		output: { data: { render_id: 'render_123', status: 'completed', format: 'mp4' } },
+	},
+	hyperframesDelete: {
+		input: { render_id: 'render_123' },
+		output: { data: { render_id: 'render_123' } },
+	},
+
+	webhooksListEventTypesV3: {
+		input: {},
+		output: {
+			data: [{ event_type: 'avatar_video.success', description: 'Video completed' }],
+			has_more: false,
+			next_token: null,
+		},
+	},
+	webhooksListEndpointsV3: {
+		input: {},
+		output: {
+			data: [
+				{
+					endpoint_id: 'ep_123',
+					url: 'https://example.com/webhook',
+					status: 'enabled',
+					created_at: '2026-01-01T00:00:00Z',
+				},
+			],
+			has_more: false,
+			next_token: null,
+		},
+	},
+	webhooksAddEndpointV3: {
+		input: { url: 'https://example.com/webhook' },
+		output: {
+			data: {
+				endpoint_id: 'ep_123',
+				url: 'https://example.com/webhook',
+				status: 'enabled',
+				created_at: '2026-01-01T00:00:00Z',
+			},
+		},
+	},
+	webhooksDeleteEndpointV3: {
+		input: { endpoint_id: 'ep_123' },
+		output: { data: {} },
+	},
+	webhooksUpdateEndpointV3: {
+		input: { endpoint_id: 'ep_123', url: 'https://example.com/new-webhook' },
+		output: {
+			data: {
+				endpoint_id: 'ep_123',
+				url: 'https://example.com/new-webhook',
+				status: 'enabled',
+				created_at: '2026-01-01T00:00:00Z',
+			},
+		},
+	},
+	webhooksRotateSecret: {
+		input: { endpoint_id: 'ep_123' },
+		output: { data: { endpoint_id: 'ep_123', secret: 'whsec_123' } },
+	},
+	webhooksListEvents: {
+		input: {},
+		output: {
+			data: [
+				{
+					event_id: 'evt_123',
+					event_type: 'avatar_video.success',
+					event_data: { video_id: 'vid_123' },
+					created_at: '2026-01-01T00:00:00Z',
+				},
+			],
+			has_more: false,
+			next_token: null,
+		},
+	},
+
+	assetsUploadAssetV3: {
+		input: { fileBase64: 'aGVsbG8=', contentType: 'image/png' },
+		output: {
+			data: {
+				asset_id: 'asset_123',
+				url: 'https://x/asset.png',
+				mime_type: 'image/png',
+				size_bytes: 1024,
+			},
+		},
+	},
+	assetsGetAsset: {
+		input: { asset_id: 'asset_123' },
+		output: {
+			data: {
+				id: 'asset_123',
+				name: 'asset.png',
+				type: 'image',
+				owner: 'user123',
+				space_id: 'space_123',
+				uploaded_at: 1700000000,
+			},
+		},
+	},
+	assetsDeleteAssetV3: {
+		input: { asset_id: 'asset_123' },
+		output: { data: { id: 'asset_123' } },
+	},
+	assetsCreateUploadSession: {
+		input: {
+			filename: 'video.mp4',
+			content_type: 'video/mp4',
+			size_bytes: 1048576,
+		},
+		output: {
+			data: {
+				asset_id: 'asset_123',
+				upload_url: 'https://s3.example.com/upload',
+				upload_headers: {},
+				expires_in_seconds: 3600,
+				max_bytes: 1048576,
+				status: 'pending_upload',
+			},
+		},
+	},
+	assetsCompleteUpload: {
+		input: { asset_id: 'asset_123' },
+		output: {
+			data: {
+				asset_id: 'asset_123',
+				url: 'https://x/asset.mp4',
+				mime_type: 'video/mp4',
+				size_bytes: 1048576,
+				status: 'processing',
+			},
+		},
+	},
+
+	aiClippingGet: {
+		input: { job_id: 'clip_job_123' },
+		output: { data: { id: 'clip_job_123', status: 'completed' } },
+	},
+	aiClippingDelete: {
+		input: { job_id: 'clip_job_123' },
+		output: { data: {} },
+	},
+	aiClippingList: {
+		input: {},
+		output: {
+			data: [{ id: 'clip_job_123', status: 'completed' }],
+			has_more: false,
+			next_token: null,
+		},
+	},
+	aiClippingCreate: {
+		input: { video: { type: 'url', url: 'https://x/video.mp4' } },
+		output: { data: { ai_clipping_id: 'clip_job_123' } },
 	},
 };
 
