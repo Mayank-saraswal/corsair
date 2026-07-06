@@ -49,10 +49,10 @@ export async function makeInsightoaiRequest<T>(
 	const requestOptions: ApiRequestOptions = {
 		method,
 		url: endpoint,
-		body:
-			method === 'POST' || method === 'PUT' || method === 'PATCH'
-				? body
-				: undefined,
+		// DELETE requests can carry a JSON body here (e.g. deleteContactsInBulk,
+		// deleteBulkFormsByIds send their ID list in the DELETE body), so only GET — which
+		// never has a body — is excluded.
+		body: method === 'GET' ? undefined : body,
 		mediaType: 'application/json; charset=utf-8',
 		query: authType === 'api_key' ? { ...query, api_key: key } : query,
 	};

@@ -42,6 +42,7 @@ export type AddIntentToAssistantInput = z.infer<
 const CreateIntentInputSchema = z.object({
 	name: z.string(),
 	is_active: z.boolean().optional(),
+	// free-form attributes object where keys and value shapes vary dynamically per intent configuration
 	attributes: z.record(z.string(), z.unknown()).optional(),
 	description: z.string().optional(),
 	intent_type: z.string().optional(),
@@ -82,6 +83,7 @@ const CreateProviderInputSchema = z.object({
 	name: z.string(),
 	org_id: z.string().optional(),
 	status: z.boolean().optional(),
+	// free-form attributes object where keys and value shapes vary dynamically per provider configuration
 	attributes: z.record(z.string(), z.unknown()).optional(),
 	provider_key: z.string(),
 	provider_name: z
@@ -193,12 +195,16 @@ export type ReadContactSyncLogListInput = z.infer<
 
 const CreateFormInputSchema = z.object({
 	name: z.string(),
+	// each field's shape (label, type, validation, options) varies per field type and isn't
+	// documented at the individual-field level, so it's passed through as a free-form object
 	fields: z.array(z.record(z.string(), z.unknown())).optional(),
 	org_id: z.string().optional(),
 	form_type: z.enum(['natural', 'simple']),
+	// free-form attributes object where keys and value shapes vary dynamically per form configuration
 	attributes: z.record(z.string(), z.unknown()).optional(),
 	webhook_id: z.string().optional(),
 	trigger_tools: z.array(z.string()).optional(),
+	// maps form field names to contact fields; the mapping shape depends on the caller's form schema
 	contact_mapping: z.record(z.string(), z.unknown()).optional(),
 	trigger_instructions: z.string(),
 });
@@ -231,6 +237,7 @@ export type DeleteBulkFormsByIdsInput = z.infer<
 
 const CreateToolfunctionInputSchema = z.object({
 	name: z.string(),
+	// free-form details object whose shape depends on tool_function_type (sdk/curl/query_index)
 	details: z.record(z.string(), z.unknown()).optional(),
 	tool_id: z.string().optional(),
 	is_enabled: z.boolean().optional(),
@@ -244,6 +251,7 @@ export type CreateToolfunctionInput = z.infer<
 const UpdateToolfunctionByIdInputSchema = z.object({
 	toolfunction_id: z.string(),
 	name: z.string().optional(),
+	// free-form details object whose shape depends on tool_function_type (sdk/curl/query_index)
 	details: z.record(z.string(), z.unknown()).optional(),
 	tool_id: z.string().optional(),
 	is_enabled: z.boolean().optional(),
@@ -272,6 +280,7 @@ export type ReadToolToolfunctionListInput = z.infer<
 
 const UpdateToolByIdInputSchema = z.object({
 	tool_id: z.string(),
+	// free-form SDK configuration object whose shape depends on the tool provider's SDK
 	sdk: z.record(z.string(), z.unknown()).optional(),
 	name: z.string().optional(),
 	org_id: z.string().optional(),
@@ -280,9 +289,11 @@ const UpdateToolByIdInputSchema = z.object({
 	category: z.string().optional(),
 	logo_url: z.string().optional(),
 	tool_type: z.string().optional(),
+	// free-form attributes object where keys and value shapes vary dynamically per tool configuration
 	attributes: z.record(z.string(), z.unknown()).optional(),
 	description: z.string().optional(),
 	tool_provider: z.string().optional(),
+	// free-form authentication credentials object whose shape varies per tool_provider
 	authentication: z.record(z.string(), z.unknown()).optional(),
 });
 export type UpdateToolByIdInput = z.infer<typeof UpdateToolByIdInputSchema>;
@@ -315,7 +326,9 @@ const UpdateLinkToolUserInputSchema = z.object({
 	name: z.string().optional(),
 	org_id: z.string().optional(),
 	tool_id: z.string().optional(),
+	// free-form attributes object where keys and value shapes vary dynamically per link configuration
 	attributes: z.record(z.string(), z.unknown()).optional(),
+	// free-form credentials object whose shape varies per linked tool's auth requirements
 	credentials: z.record(z.string(), z.unknown()).optional(),
 });
 export type UpdateLinkToolUserInput = z.infer<
@@ -347,6 +360,7 @@ const WidgetTypeSchema = z.enum([
 const CreateWidgetInputSchema = z.object({
 	name: z.string().optional(),
 	org_id: z.string().optional(),
+	// free-form attributes object where keys and value shapes vary dynamically per widget configuration
 	attributes: z.record(z.string(), z.unknown()).optional(),
 	bubble_text: z.string().optional(),
 	description: z.string().optional(),
@@ -355,8 +369,11 @@ const CreateWidgetInputSchema = z.object({
 	bubble_color: z.string().optional(),
 	display_name: z.string().optional(),
 	header_color: z.string().optional(),
+	// free-form style overrides object whose keys vary per widget_type
 	style_params: z.record(z.string(), z.unknown()).optional(),
 	intro_message: z.string().optional(),
+	// each action button's shape (label, action type, target) varies and isn't documented at
+	// the individual-field level, so it's passed through as a free-form object
 	action_buttons: z.array(z.record(z.string(), z.unknown())),
 	bot_icon_color: z.string().optional(),
 	ice_break_color: z.string().optional(),
@@ -442,6 +459,7 @@ export type DeleteLinkedAssistantDatasourceInput = z.infer<
 
 const CreateTagInputSchema = z.object({
 	name: z.string(),
+	// free-form attributes object where keys and value shapes vary dynamically per tag configuration
 	attributes: z.record(z.string(), z.unknown()).optional(),
 	color_code: z.string(),
 	description: z.string(),
@@ -545,9 +563,13 @@ export type DeleteUserwhatsappByIdInput = z.infer<
 
 const CreateAgencyInputSchema = z.object({
 	org_id: z.string(),
+	// free-form domain configuration object (custom subdomain, DNS settings) whose shape isn't documented at the field level
 	domain: z.record(z.string(), z.unknown()).optional(),
+	// free-form branding object (logo, colors, social profiles) whose shape isn't documented at the field level
 	branding: z.record(z.string(), z.unknown()).optional(),
+	// free-form user auth configuration object whose shape varies per agency auth setup
 	user_auth: z.record(z.string(), z.unknown()).optional(),
+	// free-form billing plan object whose shape varies per plan type (wallet vs subscription)
 	billing_plan: z.record(z.string(), z.unknown()).optional(),
 });
 export type CreateAgencyInput = z.infer<typeof CreateAgencyInputSchema>;
