@@ -1,18 +1,22 @@
 import 'dotenv/config';
 import { makeOpenaiRequest } from './client';
-import { OpenaiEndpointOutputSchemas } from './endpoints/types';
+import {
+	OpenaiEndpointInputSchemas,
+	OpenaiEndpointOutputSchemas,
+} from './endpoints/types';
 import type { ChatCreateCompletionResponse } from './schema/chat';
 import type { EmbeddingsCreateResponse } from './schema/embeddings';
 import type { ModelsListResponse } from './schema/models';
 
-const TEST_API_KEY = process.env.OPENAI_API_KEY!;
+const TEST_API_KEY = process.env.OPENAI_API_KEY;
+const describeIfApiKey = TEST_API_KEY ? describe : describe.skip;
 
-describe('OpenAI API Type Tests', () => {
+describeIfApiKey('OpenAI API Type Tests', () => {
 	describe('models', () => {
 		it('list returns correct type', async () => {
 			const response = await makeOpenaiRequest<ModelsListResponse>(
 				'models',
-				TEST_API_KEY,
+				TEST_API_KEY!,
 				{ method: 'GET' },
 			);
 
@@ -25,7 +29,7 @@ describe('OpenAI API Type Tests', () => {
 		it('createCompletion returns correct type', async () => {
 			const response = await makeOpenaiRequest<ChatCreateCompletionResponse>(
 				'chat/completions',
-				TEST_API_KEY,
+				TEST_API_KEY!,
 				{
 					method: 'POST',
 					body: {
@@ -46,7 +50,7 @@ describe('OpenAI API Type Tests', () => {
 		it('create returns correct type', async () => {
 			const response = await makeOpenaiRequest<EmbeddingsCreateResponse>(
 				'embeddings',
-				TEST_API_KEY,
+				TEST_API_KEY!,
 				{
 					method: 'POST',
 					body: {
@@ -59,5 +63,40 @@ describe('OpenAI API Type Tests', () => {
 			OpenaiEndpointOutputSchemas.embeddingsCreate.parse(response);
 			expect(response.data.length).toBeGreaterThan(0);
 		});
+	});
+});
+
+describe('OpenAI offline schema smoke', () => {
+	it('chat input schema accepts a minimal completion request', () => {
+		const result = OpenaiEndpointInputSchemas.chatCreateCompletion.safeParse({
+			model: 'gpt-4o-mini',
+			messages: [{ role: 'user', content: 'hi' }],
+		});
+		expect(result.success).toBe(true);
+	});
+
+	it('embeddings input schema accepts a minimal request', () => {
+		const result = OpenaiEndpointInputSchemas.embeddingsCreate.safeParse({
+			model: 'text-embedding-3-small',
+			input: 'test',
+		});
+		expect(result.success).toBe(true);
+	});
+
+	it('models list input schema accepts empty object', () => {
+		const result = OpenaiEndpointInputSchemas.modelsList.safeParse({});
+		expect(result.success).toBe(true);
+	});
+
+	it('rejects invalid chat input', () => {
+		const result = OpenaiEndpointInputSchemas.chatCreateCompletion.safeParse(
+			{},
+		);
+		expect(result.success).toBe(false);
+	});
+
+	it('rejects invalid embeddings input', () => {
+		const result = OpenaiEndpointInputSchemas.embeddingsCreate.safeParse({});
+		expect(result.success).toBe(false);
 	});
 });
