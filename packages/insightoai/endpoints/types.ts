@@ -608,6 +608,8 @@ export type GetAgentListInput = z.infer<typeof GetAgentListInputSchema>;
 // user_id is required; the remaining ~26 fields cover profile/billing/Stripe details and are
 // all optional per Insighto.ai's Update User Profile operation, so they're grouped loosely
 // rather than enumerated field-by-field.
+// catchall(z.unknown()): open-ended profile patch body (name, email, billing flags, Stripe
+// fields, etc.) — stricter per-field typing would lag Insighto's large optional surface.
 const UpdateUserProfileInputSchema = z
 	.object({
 		user_id: z.string(),

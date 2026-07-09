@@ -411,9 +411,11 @@ describeIfApiKey('Insighto.ai API live smoke tests', () => {
 	});
 
 	it('lists channels', async () => {
+		// Path must match listChannels in endpoints/widgets.ts (`/api/v1/channel/list`),
+		// consistent with other Insighto list routes (e.g. /api/v1/tag/list, /api/v1/channel/twilio/list).
 		const response = await makeInsightoaiRequest<
 			InsightoaiEndpointOutputs['listChannels']
-		>('/api/v1/channel', TEST_API_KEY!, {
+		>('/api/v1/channel/list', TEST_API_KEY!, {
 			method: 'GET',
 			authType: 'api_key',
 		});
