@@ -218,6 +218,237 @@ afterAll(async () => {
 );
 
 describe('Google BigQuery offline schema smoke', () => {
+	const datasetRef = { projectId: 'p', datasetId: 'd' };
+	const tableRef = { projectId: 'p', datasetId: 'd', tableId: 't' };
+	const jobRef = { projectId: 'p', jobId: 'j' };
+	const routineRef = { projectId: 'p', datasetId: 'd', routineId: 'r' };
+	const minimalDataset = { datasetReference: datasetRef };
+	const minimalTable = { tableReference: tableRef };
+	const minimalJob = { jobReference: jobRef };
+	const minimalRoutine = {
+		routineReference: routineRef,
+		routineType: 'SCALAR_FUNCTION' as const,
+		definitionBody: 'SELECT 1',
+	};
+	const minimalPolicy = { bindings: [] };
+
+	// Minimal valid inputs for every endpoint (covers all 63 operations offline).
+	// output shape varies across fixtures and is verified via safeParse.success
+	const inputFixtures: Record<string, unknown> = {
+		queriesQuery: { projectId: 'p', query: 'SELECT 1' },
+		queriesGetQueryResults: { projectId: 'p', jobId: 'j' },
+		queriesInsertJob: {
+			projectId: 'p',
+			configuration: { query: { query: 'SELECT 1' } },
+		},
+		queriesInsertJobWithUpload: {
+			projectId: 'p',
+			configuration: { load: { destinationTable: tableRef } },
+			fileName: 'data.csv',
+			fileContent: 'a,b\n1,2',
+		},
+		queriesInsertAll: {
+			projectId: 'p',
+			datasetId: 'd',
+			tableId: 't',
+			rows: [{ json: { a: 1 } }],
+		},
+		queriesListJobs: { projectId: 'p' },
+		queriesGetJob: { projectId: 'p', jobId: 'j' },
+		queriesCancelJob: { projectId: 'p', jobId: 'j' },
+		queriesDeleteJobMetadata: { projectId: 'p', jobId: 'j' },
+		datasetsList: { projectId: 'p' },
+		datasetsGet: { projectId: 'p', datasetId: 'd' },
+		datasetsCreate: { projectId: 'p', datasetReference: datasetRef },
+		datasetsUpdate: { projectId: 'p', datasetId: 'd', dataset: minimalDataset },
+		datasetsPatch: { projectId: 'p', datasetId: 'd', dataset: {} },
+		datasetsDelete: { projectId: 'p', datasetId: 'd' },
+		datasetsUndelete: { projectId: 'p', datasetId: 'd' },
+		tablesList: { projectId: 'p', datasetId: 'd' },
+		tablesListTableData: { projectId: 'p', datasetId: 'd', tableId: 't' },
+		tablesGetSchema: { projectId: 'p', datasetId: 'd', tableId: 't' },
+		tablesCreate: { projectId: 'p', datasetId: 'd', tableReference: tableRef },
+		tablesUpdate: {
+			projectId: 'p',
+			datasetId: 'd',
+			tableId: 't',
+			table: minimalTable,
+		},
+		tablesPatch: {
+			projectId: 'p',
+			datasetId: 'd',
+			tableId: 't',
+			table: {},
+		},
+		tablesDelete: { projectId: 'p', datasetId: 'd', tableId: 't' },
+		routinesList: { projectId: 'p', datasetId: 'd' },
+		routinesGet: { projectId: 'p', datasetId: 'd', routineId: 'r' },
+		routinesCreate: {
+			projectId: 'p',
+			datasetId: 'd',
+			routineReference: routineRef,
+			routineType: 'SCALAR_FUNCTION',
+			definitionBody: 'SELECT 1',
+		},
+		routinesUpdate: {
+			projectId: 'p',
+			datasetId: 'd',
+			routineId: 'r',
+			routine: minimalRoutine,
+		},
+		routinesDelete: { projectId: 'p', datasetId: 'd', routineId: 'r' },
+		iamGetTableIamPolicy: { projectId: 'p', datasetId: 'd', tableId: 't' },
+		iamGetRoutineIamPolicy: {
+			projectId: 'p',
+			datasetId: 'd',
+			routineId: 'r',
+		},
+		iamSetRoutineIamPolicy: {
+			projectId: 'p',
+			datasetId: 'd',
+			routineId: 'r',
+			policy: minimalPolicy,
+		},
+		iamTestRoutineIamPermissions: {
+			projectId: 'p',
+			datasetId: 'd',
+			routineId: 'r',
+			permissions: ['bigquery.routines.get'],
+		},
+		iamGetConnectionIamPolicy: {
+			projectId: 'p',
+			location: 'US',
+			connectionId: 'c',
+		},
+		iamListRowAccessPolicies: {
+			projectId: 'p',
+			datasetId: 'd',
+			tableId: 't',
+		},
+		iamCreateLocationsDatapolicies: {
+			projectId: 'p',
+			location: 'US',
+			dataPolicyId: 'dp',
+		},
+		iamListLocationsDatapolicies: { projectId: 'p', location: 'US' },
+		iamGetServiceAccount: { projectId: 'p' },
+		connectionsListBigQueryConnections: { projectId: 'p' },
+		connectionsListLocationsConnections: {
+			projectId: 'p',
+			location: 'US',
+		},
+		connectionsCreate: {
+			projectId: 'p',
+			location: 'US',
+			connectionId: 'c',
+		},
+		connectionsUpdate: {
+			projectId: 'p',
+			location: 'US',
+			connectionId: 'c',
+			connection: { name: 'projects/p/locations/US/connections/c' },
+		},
+		reservationsList: { projectId: 'p', location: 'US' },
+		reservationsCreate: {
+			projectId: 'p',
+			location: 'US',
+			reservationId: 'res',
+		},
+		reservationsListGroups: { projectId: 'p', location: 'US' },
+		reservationsListAssignments: {
+			projectId: 'p',
+			location: 'US',
+			reservationId: 'res',
+		},
+		reservationsCreateAssignment: {
+			projectId: 'p',
+			location: 'US',
+			reservationId: 'res',
+			assignee: 'projects/p',
+			jobType: 'QUERY',
+		},
+		reservationsSearchAllAssignments: { projectId: 'p', location: 'US' },
+		reservationsListCapacityCommitments: {
+			projectId: 'p',
+			location: 'US',
+		},
+		reservationsCreateCapacityCommitment: {
+			projectId: 'p',
+			location: 'US',
+			slotCount: '100',
+			plan: 'FLEX',
+		},
+		analyticsHubListListings: {
+			projectId: 'p',
+			location: 'US',
+			dataExchangeId: 'ex',
+		},
+		analyticsHubListDataexchangesListings: {
+			projectId: 'p',
+			location: 'US',
+		},
+		analyticsHubCreateListing: {
+			projectId: 'p',
+			location: 'US',
+			dataExchangeId: 'ex',
+			listingId: 'listing',
+			displayName: 'My Listing',
+		},
+		analyticsHubCreateDataexchangesListings: {
+			projectId: 'p',
+			location: 'US',
+			dataExchangeId: 'ex',
+			listingId: 'listing',
+			displayName: 'My Listing',
+		},
+		analyticsHubCreateDataExchange: {
+			projectId: 'p',
+			location: 'US',
+			dataExchangeId: 'ex',
+			displayName: 'My Exchange',
+		},
+		analyticsHubListOrganizationDataExchanges: {
+			organizationId: 'org',
+			location: 'US',
+		},
+		analyticsHubListQueryTemplates: {
+			projectId: 'p',
+			location: 'US',
+			dataExchangeId: 'ex',
+		},
+		analyticsHubCreateQueryTemplate: {
+			projectId: 'p',
+			location: 'US',
+			dataExchangeId: 'ex',
+			displayName: 'template',
+			query: 'SELECT 1',
+		},
+		mlListModels: { projectId: 'p', datasetId: 'd' },
+		mlGetBigqueryModel: { projectId: 'p', datasetId: 'd', modelId: 'm' },
+		mlPatchModel: { projectId: 'p', datasetId: 'd', modelId: 'm' },
+		mlDeleteModel: { projectId: 'p', datasetId: 'd', modelId: 'm' },
+		mlListLocations: { projectId: 'p' },
+		mlListProjects: {},
+	};
+
+	it('covers every registered input schema key with a fixture', () => {
+		const schemaKeys = Object.keys(GoogleBigqueryEndpointInputSchemas).sort();
+		const fixtureKeys = Object.keys(inputFixtures).sort();
+		expect(fixtureKeys).toEqual(schemaKeys);
+	});
+
+	it.each(Object.keys(GoogleBigqueryEndpointInputSchemas))(
+		'input schema accepts minimal payload for %s',
+		(key) => {
+			const schema =
+				GoogleBigqueryEndpointInputSchemas[
+					key as keyof typeof GoogleBigqueryEndpointInputSchemas
+				];
+			const result = schema.safeParse(inputFixtures[key]);
+			expect(result.success).toBe(true);
+		},
+	);
+
 	it('queriesQuery output schema accepts a minimal job response', () => {
 		const result = GoogleBigqueryEndpointOutputSchemas.queriesQuery.safeParse({
 			kind: 'bigquery#queryResponse',
@@ -235,90 +466,27 @@ describe('Google BigQuery offline schema smoke', () => {
 		expect(result.success).toBe(true);
 	});
 
-	// Reservations domain (previously untested offline)
-	it('reservationsList input schema accepts project + location', () => {
-		const result =
-			GoogleBigqueryEndpointInputSchemas.reservationsList.safeParse({
-				projectId: 'p',
-				location: 'US',
-			});
-		expect(result.success).toBe(true);
-	});
-
-	it('reservationsListCapacityCommitments input schema accepts project + location', () => {
-		const result =
-			GoogleBigqueryEndpointInputSchemas.reservationsListCapacityCommitments.safeParse(
-				{ projectId: 'p', location: 'US' },
-			);
-		expect(result.success).toBe(true);
-	});
-
-	// Analytics Hub domain (previously untested offline)
-	it('analyticsHubCreateListing input schema accepts required fields', () => {
-		const result =
-			GoogleBigqueryEndpointInputSchemas.analyticsHubCreateListing.safeParse({
-				projectId: 'p',
-				location: 'US',
-				dataExchangeId: 'ex',
-				listingId: 'listing',
-				displayName: 'My Listing',
-			});
-		expect(result.success).toBe(true);
-	});
-
-	it('analyticsHubCreateDataexchangesListings input schema accepts required fields', () => {
-		const result =
-			GoogleBigqueryEndpointInputSchemas.analyticsHubCreateDataexchangesListings.safeParse(
-				{
-					projectId: 'p',
-					location: 'US',
-					dataExchangeId: 'ex',
-					listingId: 'listing',
-					displayName: 'My Listing',
-				},
-			);
-		expect(result.success).toBe(true);
-	});
-
-	it('analyticsHubCreateDataExchange input schema accepts required fields', () => {
-		const result =
-			GoogleBigqueryEndpointInputSchemas.analyticsHubCreateDataExchange.safeParse(
-				{
-					projectId: 'p',
-					location: 'US',
-					dataExchangeId: 'ex',
-					displayName: 'My Exchange',
-				},
-			);
-		expect(result.success).toBe(true);
-	});
-
-	it('analyticsHubListListings input schema accepts required fields', () => {
-		const result =
-			GoogleBigqueryEndpointInputSchemas.analyticsHubListListings.safeParse({
-				projectId: 'p',
-				location: 'US',
-				dataExchangeId: 'ex',
-			});
-		expect(result.success).toBe(true);
-	});
-
-	it('queriesInsertAll input schema accepts rows array', () => {
-		const result =
-			GoogleBigqueryEndpointInputSchemas.queriesInsertAll.safeParse({
-				projectId: 'p',
-				datasetId: 'd',
-				tableId: 't',
-				rows: [{ json: { a: 1 } }],
-			});
-		expect(result.success).toBe(true);
-	});
-
 	it('rejects reservationsList without location', () => {
 		const result =
 			GoogleBigqueryEndpointInputSchemas.reservationsList.safeParse({
 				projectId: 'p',
 			});
 		expect(result.success).toBe(false);
+	});
+
+	it('QueryParameterSchema accepts named parameter with open value types', () => {
+		const queryInput =
+			GoogleBigqueryEndpointInputSchemas.queriesQuery.safeParse({
+				projectId: 'p',
+				query: 'SELECT @id',
+				queryParameters: [
+					{
+						name: 'id',
+						parameterType: { type: 'INT64' },
+						parameterValue: { value: '42' },
+					},
+				],
+			});
+		expect(queryInput.success).toBe(true);
 	});
 });

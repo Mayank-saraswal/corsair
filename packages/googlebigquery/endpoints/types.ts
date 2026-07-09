@@ -70,12 +70,19 @@ export const QueryParameterSchema = z.object({
 	name: z.string().optional(),
 	parameterType: z.object({
 		type: z.string(),
+		// Nested array element type is recursive (ARRAY of STRUCT, etc.);
+		// BigQuery's REST shape is open-ended so we keep it unmodeled.
 		arrayType: z.unknown().optional(),
+		// Nested STRUCT field descriptors also recurse with open-ended types.
 		structTypes: z.array(z.unknown()).optional(),
 	}),
 	parameterValue: z.object({
+		// Scalar parameter values can be string | number | boolean | null
+		// depending on the SQL type — not a single TS literal union in practice.
 		value: z.unknown().optional(),
+		// Nested array element values mirror parameterValue recursively.
 		arrayValues: z.array(z.unknown()).optional(),
+		// Nested STRUCT field values are keyed by field name with open-ended values.
 		structValues: z.record(z.string(), z.unknown()).optional(),
 	}),
 });
