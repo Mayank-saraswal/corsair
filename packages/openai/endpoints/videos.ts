@@ -37,19 +37,26 @@ export const create: OpenaiEndpoints['videosCreate'] = async (ctx, input) => {
 				]
 			: [];
 
-	const result = await multipartOpenaiRequest<VideosCreateResponse>(
-		'videos',
-		ctx.key,
-		{
-			files,
-			fields: {
-				prompt: input.prompt,
-				model: input.model,
-				size: input.size,
-				seconds: input.seconds,
-			},
-		},
-	);
+	const result =
+		files.length > 0
+			? await multipartOpenaiRequest<VideosCreateResponse>('videos', ctx.key, {
+					files,
+					fields: {
+						prompt: input.prompt,
+						model: input.model,
+						size: input.size,
+						seconds: input.seconds,
+					},
+				})
+			: await makeOpenaiRequest<VideosCreateResponse>('videos', ctx.key, {
+					method: 'POST',
+					body: {
+						prompt: input.prompt,
+						model: input.model,
+						size: input.size,
+						seconds: input.seconds,
+					},
+				});
 
 	await logEventFromContext(
 		ctx,
