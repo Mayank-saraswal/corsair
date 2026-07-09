@@ -8,7 +8,10 @@ type VideoFileResult =
 	| { ok: true; videoFile: VideoFile }
 	| { ok: false; code?: number; message?: string };
 
-export const generateVideos: GeminiEndpoints['generateVideos'] = async (ctx, input) => {
+export const generateVideos: GeminiEndpoints['generateVideos'] = async (
+	ctx,
+	input,
+) => {
 	const response = await makeGeminiRequest<VideoOperation>(
 		`/${input.model}:predictLongRunning`,
 		ctx.key,
@@ -21,23 +24,41 @@ export const generateVideos: GeminiEndpoints['generateVideos'] = async (ctx, inp
 		},
 	);
 
-	await logEventFromContext(ctx, 'gemini.videos.generateVideos', { ...input }, 'completed');
+	await logEventFromContext(
+		ctx,
+		'gemini.videos.generateVideos',
+		{ ...input },
+		'completed',
+	);
 	return { operationName: response.name, done: response.done };
 };
 
-export const getVideosOperation: GeminiEndpoints['getVideosOperation'] = async (ctx, input) => {
+export const getVideosOperation: GeminiEndpoints['getVideosOperation'] = async (
+	ctx,
+	input,
+) => {
 	const response = await makeGeminiRequest<GetVideosOperationResponse>(
 		`/${input.operationName}`,
 		ctx.key,
 		{ method: 'GET' },
 	);
 
-	await logEventFromContext(ctx, 'gemini.videos.getVideosOperation', { ...input }, 'completed');
+	await logEventFromContext(
+		ctx,
+		'gemini.videos.getVideosOperation',
+		{ ...input },
+		'completed',
+	);
 	return response;
 };
 
-async function fetchVideoFile(uri: string, apiKey: string): Promise<VideoFileResult> {
-	const downloadUrl = uri.startsWith('http') ? uri : `${GEMINI_API_BASE}/${uri}`;
+async function fetchVideoFile(
+	uri: string,
+	apiKey: string,
+): Promise<VideoFileResult> {
+	const downloadUrl = uri.startsWith('http')
+		? uri
+		: `${GEMINI_API_BASE}/${uri}`;
 	const videoResponse = await fetch(downloadUrl, {
 		headers: { 'x-goog-api-key': apiKey },
 	});
@@ -61,11 +82,23 @@ async function logWaitForVideoResult(
 	input: Parameters<GeminiEndpoints['waitForVideo']>[1],
 	result: WaitForVideoResponse,
 ): Promise<void> {
-	const status = result.error ? 'failed' : result.done ? 'completed' : 'pending';
-	await logEventFromContext(ctx, 'gemini.videos.waitForVideo', { ...input }, status);
+	const status = result.error
+		? 'failed'
+		: result.done
+			? 'completed'
+			: 'pending';
+	await logEventFromContext(
+		ctx,
+		'gemini.videos.waitForVideo',
+		{ ...input },
+		status,
+	);
 }
 
-export const waitForVideo: GeminiEndpoints['waitForVideo'] = async (ctx, input) => {
+export const waitForVideo: GeminiEndpoints['waitForVideo'] = async (
+	ctx,
+	input,
+) => {
 	const deadline = Date.now() + input.timeoutMs;
 
 	let operation = await makeGeminiRequest<GetVideosOperationResponse>(
@@ -74,7 +107,11 @@ export const waitForVideo: GeminiEndpoints['waitForVideo'] = async (ctx, input) 
 		{ method: 'GET' },
 	);
 
-	while (!operation.done && !operation.error && Date.now() + input.pollIntervalMs <= deadline) {
+	while (
+		!operation.done &&
+		!operation.error &&
+		Date.now() + input.pollIntervalMs <= deadline
+	) {
 		await new Promise((resolve) => setTimeout(resolve, input.pollIntervalMs));
 		operation = await makeGeminiRequest<GetVideosOperationResponse>(
 			`/${input.operationName}`,
@@ -94,14 +131,22 @@ export const waitForVideo: GeminiEndpoints['waitForVideo'] = async (ctx, input) 
 	}
 
 	if (!operation.done) {
-		const result: WaitForVideoResponse = { operationName: input.operationName, done: false };
+		const result: WaitForVideoResponse = {
+			operationName: input.operationName,
+			done: false,
+		};
 		await logWaitForVideoResult(ctx, input, result);
 		return result;
 	}
 
-	const uri = operation.response?.generateVideoResponse?.generatedSamples?.[0]?.video?.uri;
+	const uri =
+		operation.response?.generateVideoResponse?.generatedSamples?.[0]?.video
+			?.uri;
 	if (!uri) {
-		const result: WaitForVideoResponse = { operationName: input.operationName, done: true };
+		const result: WaitForVideoResponse = {
+			operationName: input.operationName,
+			done: true,
+		};
 		await logWaitForVideoResult(ctx, input, result);
 		return result;
 	}
