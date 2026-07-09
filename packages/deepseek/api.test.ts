@@ -1,4 +1,5 @@
 import { makeDeepseekRequest } from './client';
+import { Anthropic, Balance, Chat, Models } from './endpoints';
 import type {
 	AnthropicCreateMessageResponse,
 	ChatCreateCompletionResponse,
@@ -9,6 +10,15 @@ import {
 	DeepseekEndpointInputSchemas,
 	DeepseekEndpointOutputSchemas,
 } from './endpoints/types';
+import type { DeepseekContext } from './index';
+
+/** Minimal plugin context for live endpoint-handler tests. */
+function testCtx(key: string): DeepseekContext {
+	return {
+		key,
+		// logEventFromContext only needs enough of ctx to no-op safely in tests
+	} as DeepseekContext;
+}
 
 declare const describe: {
 	(name: string, fn: () => void): void;
@@ -179,5 +189,52 @@ describeIfApiKey('Deepseek API type tests', () => {
 
 		const parsed = DeepseekEndpointOutputSchemas.modelsList.safeParse(response);
 		expect(parsed.success).toBe(true);
+	});
+});
+
+/**
+ * Live path through the real endpoint handlers (not only makeDeepseekRequest).
+ * Covers logEventFromContext wiring Greptile flagged as untested.
+ */
+describeIfApiKey('Deepseek endpoint handlers (live)', () => {
+	const ctx = testCtx(TEST_API_KEY!);
+
+	it('Chat.createCompletion handler works', async () => {
+		const response = await Chat.createCompletion(ctx, {
+			model: 'deepseek-chat',
+			messages: [{ role: 'user', content: 'Reply with the word ok only.' }],
+			maxTokens: 16,
+		});
+		const parsed =
+			DeepseekEndpointOutputSchemas.chatCreateCompletion.safeParse(response);
+		expect(parsed.success).toBe(true);
+		expect(response.choices.length).toBeGreaterThan(0);
+	});
+
+	it('Anthropic.createMessage handler works', async () => {
+		const response = await Anthropic.createMessage(ctx, {
+			model: 'deepseek-chat',
+			maxTokens: 32,
+			messages: [{ role: 'user', content: 'Reply with the word ok only.' }],
+		});
+		const parsed =
+			DeepseekEndpointOutputSchemas.anthropicCreateMessage.safeParse(response);
+		expect(parsed.success).toBe(true);
+		expect(response.content.length).toBeGreaterThan(0);
+	});
+
+	it('Balance.getBalance handler works', async () => {
+		const response = await Balance.getBalance(ctx, {});
+		const parsed =
+			DeepseekEndpointOutputSchemas.userGetBalance.safeParse(response);
+		expect(parsed.success).toBe(true);
+		expect(response.is_available).toBeDefined();
+	});
+
+	it('Models.list handler works', async () => {
+		const response = await Models.list(ctx, {});
+		const parsed = DeepseekEndpointOutputSchemas.modelsList.safeParse(response);
+		expect(parsed.success).toBe(true);
+		expect(response.data.length).toBeGreaterThan(0);
 	});
 });
