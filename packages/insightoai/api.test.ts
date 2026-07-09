@@ -1,12 +1,12 @@
 import 'dotenv/config';
 import { makeInsightoaiRequest } from './client';
-import {
-	InsightoaiEndpointInputSchemas,
-	InsightoaiEndpointOutputSchemas,
-} from './endpoints/types';
 import type {
 	InsightoaiEndpointInputs,
 	InsightoaiEndpointOutputs,
+} from './endpoints/types';
+import {
+	InsightoaiEndpointInputSchemas,
+	InsightoaiEndpointOutputSchemas,
 } from './endpoints/types';
 
 declare const describe: {
@@ -14,6 +14,17 @@ declare const describe: {
 	skip(name: string, fn: () => void): void;
 };
 declare const it: (name: string, fn: () => void | Promise<void>) => void;
+// Minimal Jest assertion surface used by this file (tsconfig types is node-only)
+declare const expect: {
+	(
+		actual: unknown,
+	): {
+		toBe(expected: unknown): void;
+		toBeDefined(): void;
+		toBeGreaterThan(expected: number): void;
+		toEqual(expected: unknown): void;
+	};
+};
 
 const TEST_API_KEY = process.env.INSIGHTOAI_API_KEY;
 const describeIfApiKey = TEST_API_KEY ? describe : describe.skip;
@@ -292,7 +303,10 @@ const FIXTURES: {
 		output: { id: 'twilio_auth_123', deleted: true },
 	},
 	updateUserwhatsappById: {
-		input: { userwhatsapp_id: 'userwhatsapp_123', phone_number_id: 'phone_123' },
+		input: {
+			userwhatsapp_id: 'userwhatsapp_123',
+			phone_number_id: 'phone_123',
+		},
 		output: { id: 'userwhatsapp_123' },
 	},
 	deleteUserwhatsappById: {
@@ -331,13 +345,40 @@ const FIXTURES: {
 };
 
 describe('Insighto.ai endpoint schemas', () => {
-	for (const key of Object.keys(FIXTURES) as (keyof InsightoaiEndpointInputs)[]) {
+	it('defines input and output schemas for every fixture endpoint', () => {
+		const keys = Object.keys(FIXTURES) as (keyof InsightoaiEndpointInputs)[];
+		expect(keys.length).toBeGreaterThan(0);
+		for (const key of keys) {
+			expect(InsightoaiEndpointInputSchemas[key]).toBeDefined();
+			expect(InsightoaiEndpointOutputSchemas[key]).toBeDefined();
+		}
+	});
+
+	for (const key of Object.keys(
+		FIXTURES,
+	) as (keyof InsightoaiEndpointInputs)[]) {
 		it(`parses ${key} input and output`, () => {
 			const fixture = FIXTURES[key];
-			InsightoaiEndpointInputSchemas[key].parse(fixture.input);
-			InsightoaiEndpointOutputSchemas[key].parse(fixture.output);
+			const parsedInput = InsightoaiEndpointInputSchemas[key].safeParse(
+				fixture.input,
+			);
+			const parsedOutput = InsightoaiEndpointOutputSchemas[key].safeParse(
+				fixture.output,
+			);
+			expect(parsedInput.success).toBe(true);
+			expect(parsedOutput.success).toBe(true);
+			if (parsedInput.success) {
+				expect(parsedInput.data).toEqual(fixture.input);
+			}
 		});
 	}
+
+	it('rejects invalid getAssistantById input', () => {
+		const result = InsightoaiEndpointInputSchemas.getAssistantById.safeParse(
+			{},
+		);
+		expect(result.success).toBe(false);
+	});
 });
 
 describeIfApiKey('Insighto.ai API live smoke tests', () => {
@@ -349,7 +390,11 @@ describeIfApiKey('Insighto.ai API live smoke tests', () => {
 			authType: 'api_key',
 		});
 
-		InsightoaiEndpointOutputSchemas.getListOfWidgetsLinkedToAssistantId.parse(response);
+		const parsed =
+			InsightoaiEndpointOutputSchemas.getListOfWidgetsLinkedToAssistantId.safeParse(
+				response,
+			);
+		expect(parsed.success).toBe(true);
 	});
 
 	it('lists contacts', async () => {
@@ -357,14 +402,21 @@ describeIfApiKey('Insighto.ai API live smoke tests', () => {
 			InsightoaiEndpointOutputs['getListOfContacts']
 		>('/api/v1/contact', TEST_API_KEY!, { method: 'GET', authType: 'api_key' });
 
-		InsightoaiEndpointOutputSchemas.getListOfContacts.parse(response);
+		const parsed =
+			InsightoaiEndpointOutputSchemas.getListOfContacts.safeParse(response);
+		expect(parsed.success).toBe(true);
 	});
 
 	it('lists tags', async () => {
 		const response = await makeInsightoaiRequest<
 			InsightoaiEndpointOutputs['readTagList']
-		>('/api/v1/tag/list', TEST_API_KEY!, { method: 'GET', authType: 'api_key' });
+		>('/api/v1/tag/list', TEST_API_KEY!, {
+			method: 'GET',
+			authType: 'api_key',
+		});
 
-		InsightoaiEndpointOutputSchemas.readTagList.parse(response);
+		const parsed =
+			InsightoaiEndpointOutputSchemas.readTagList.safeParse(response);
+		expect(parsed.success).toBe(true);
 	});
 });
