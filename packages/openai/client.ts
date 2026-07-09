@@ -1,10 +1,12 @@
 import type { ApiRequestOptions, OpenAPIConfig } from 'corsair/http';
-import { request } from 'corsair/http';
+import { ApiError, request } from 'corsair/http';
 
 export class OpenaiAPIError extends Error {
 	constructor(
 		message: string,
 		public readonly code?: string,
+		public readonly status?: number,
+		public readonly retryAfter?: number,
 	) {
 		super(message);
 		this.name = 'OpenaiAPIError';
@@ -13,11 +15,15 @@ export class OpenaiAPIError extends Error {
 
 const OPENAI_API_BASE = 'https://api.openai.com/v1';
 
+/** Form field values: scalars or repeated keys (e.g. timestamp_granularities[]). */
+export type OpenaiMultipartFieldValue = string | string[] | undefined;
+
 export async function makeOpenaiRequest<T>(
 	endpoint: string,
 	apiKey: string,
 	options: {
 		method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
+		// body shape varies per endpoint; validated by callers via typed Zod input schemas
 		body?: Record<string, unknown>;
 		query?: Record<string, string | number | boolean | undefined>;
 		headers?: Record<string, string>;
@@ -46,12 +52,17 @@ export async function makeOpenaiRequest<T>(
 				? body
 				: undefined,
 		mediaType: 'application/json; charset=utf-8',
+		// Forward query for all methods (some OpenAI POST endpoints accept query params)
 		query,
 	};
 
 	try {
 		return await request<T>(config, requestOptions);
 	} catch (error) {
+		// Preserve ApiError so error-handlers can read status / Retry-After
+		if (error instanceof ApiError) {
+			throw error;
+		}
 		if (error instanceof Error) {
 			throw new OpenaiAPIError(error.message);
 		}
@@ -101,9 +112,12 @@ export async function uploadOpenaiFile<T>(
 		const text = await response.text();
 		throw new OpenaiAPIError(
 			`Generic Error: status: ${response.status}; status text: ${response.statusText}; body: "${text}"`,
+			undefined,
+			response.status,
 		);
 	}
 
+	// fetch Response.json() is untyped; cast to the caller-supplied response shape T
 	return response.json() as Promise<T>;
 }
 
@@ -124,6 +138,8 @@ export async function downloadOpenaiFile(
 		const text = await response.text();
 		throw new OpenaiAPIError(
 			`Generic Error: status: ${response.status}; status text: ${response.statusText}; body: "${text}"`,
+			undefined,
+			response.status,
 		);
 	}
 
@@ -135,13 +151,16 @@ export async function downloadOpenaiFile(
  * (audio transcription/translation, image edits/variations, skill uploads,
  * container files). Bypasses corsair/http's shared formData builder for the
  * same filename reason as uploadOpenaiFile.
+ *
+ * String-array field values are appended once per entry (required for OpenAI
+ * form keys like `timestamp_granularities[]`).
  */
 export async function multipartOpenaiRequest<T>(
 	endpoint: string,
 	apiKey: string,
 	options: {
 		files: Array<{ field: string; file: Blob | string; fileName: string }>;
-		fields?: Record<string, string | undefined>;
+		fields?: Record<string, OpenaiMultipartFieldValue>;
 	},
 ): Promise<T> {
 	const { files, fields = {} } = options;
@@ -152,7 +171,14 @@ export async function multipartOpenaiRequest<T>(
 		formData.append(field, blob, fileName);
 	}
 	for (const [key, value] of Object.entries(fields)) {
-		if (value !== undefined) formData.append(key, value);
+		if (value === undefined) continue;
+		if (Array.isArray(value)) {
+			for (const item of value) {
+				formData.append(key, item);
+			}
+		} else {
+			formData.append(key, value);
+		}
 	}
 
 	const response = await fetch(buildUrl(endpoint), {
@@ -165,9 +191,12 @@ export async function multipartOpenaiRequest<T>(
 		const text = await response.text();
 		throw new OpenaiAPIError(
 			`Generic Error: status: ${response.status}; status text: ${response.statusText}; body: "${text}"`,
+			undefined,
+			response.status,
 		);
 	}
 
+	// fetch Response.json() is untyped; cast to the caller-supplied response shape T
 	return response.json() as Promise<T>;
 }
 

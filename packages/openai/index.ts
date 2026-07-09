@@ -1296,10 +1296,15 @@ export function openai<const T extends OpenaiPluginOptions>(
 		endpointSchemas: openaiEndpointSchemas,
 		// No webhooks — OpenAI's REST API is pull-based
 		pluginWebhookMatcher: undefined,
-		errorHandlers: {
-			...errorHandlers,
-			...options.errorHandlers,
-		},
+		// DEFAULT matches everything (`() => true`), so it must always evaluate last
+		errorHandlers: (() => {
+			const { DEFAULT: defaultHandler, ...specificDefaults } = errorHandlers;
+			return {
+				...specificDefaults,
+				...(options.errorHandlers || {}),
+				DEFAULT: options.errorHandlers?.DEFAULT || defaultHandler,
+			};
+		})(),
 		keyBuilder: async (ctx: OpenaiKeyBuilderContext, source) => {
 			if (source === 'endpoint' && options.key) {
 				return options.key;

@@ -55,11 +55,9 @@ export const createTranscription: OpenaiEndpoints['audioCreateTranscription'] =
 							input.temperature !== undefined
 								? String(input.temperature)
 								: undefined,
-						// Simplified: OpenAI expects repeated `timestamp_granularities[]`
-						// form fields, but multipartOpenaiRequest only supports one value
-						// per field name, so join multiple granularities with a comma.
-						'timestamp_granularities[]':
-							input.timestampGranularities?.join(','),
+						// OpenAI expects one FormData entry per granularity:
+						// timestamp_granularities[]=word&timestamp_granularities[]=segment
+						'timestamp_granularities[]': input.timestampGranularities,
 					},
 				},
 			);
