@@ -21,7 +21,8 @@ export const generateImage: GeminiEndpoints['generateImage'] = async (
 	const response = await makeGeminiRequest<{
 		candidates?: Candidate[];
 		usageMetadata?: GenerateImageResponse['usageMetadata'];
-	}>(`/${input.model}:generateContent`, ctx.key, {
+		// Generative Language API requires the /models/ segment for model-scoped methods
+	}>(`/models/${input.model}:generateContent`, ctx.key, {
 		method: 'POST',
 		body: {
 			contents: [{ role: 'user', parts }],

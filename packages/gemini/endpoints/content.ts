@@ -1,28 +1,22 @@
 import { logEventFromContext } from 'corsair/core';
 import type { GeminiEndpoints } from '..';
 import { makeGeminiRequest } from '../client';
+import { stripMarkdownFences } from './text-utils';
 import type {
 	CountTokensResponse,
 	EmbedContentResponse,
 	GenerateContentResponse,
 } from './types';
 
-/**
- * Strips a single leading/trailing markdown code fence (e.g. ```html ... ```)
- * and surrounding explanatory prose is left untouched — Gemini sometimes wraps
- * generated code/markup in a fenced block even when asked for raw output.
- */
-export function stripMarkdownFences(text: string): string {
-	const fenced = text.trim().match(/^```[^\n]*\n([\s\S]*?)\n```$/);
-	return fenced?.[1] !== undefined ? fenced[1].trim() : text;
-}
+export { stripMarkdownFences } from './text-utils';
 
 export const countTokens: GeminiEndpoints['countTokens'] = async (
 	ctx,
 	input,
 ) => {
 	const response = await makeGeminiRequest<CountTokensResponse>(
-		`/${input.model}:countTokens`,
+		// Generative Language API requires the /models/ segment for model-scoped methods
+		`/models/${input.model}:countTokens`,
 		ctx.key,
 		{
 			method: 'POST',
@@ -44,7 +38,8 @@ export const embedContent: GeminiEndpoints['embedContent'] = async (
 	input,
 ) => {
 	const response = await makeGeminiRequest<EmbedContentResponse>(
-		`/${input.model}:embedContent`,
+		// Generative Language API requires the /models/ segment for model-scoped methods
+		`/models/${input.model}:embedContent`,
 		ctx.key,
 		{
 			method: 'POST',
@@ -71,7 +66,8 @@ export const generateContent: GeminiEndpoints['generateContent'] = async (
 ) => {
 	const response = await makeGeminiRequest<
 		Omit<GenerateContentResponse, 'text'>
-	>(`/${input.model}:generateContent`, ctx.key, {
+		// Generative Language API requires the /models/ segment for model-scoped methods
+	>(`/models/${input.model}:generateContent`, ctx.key, {
 		method: 'POST',
 		body: {
 			contents: input.contents,

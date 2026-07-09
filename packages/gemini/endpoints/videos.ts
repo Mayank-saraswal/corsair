@@ -13,7 +13,8 @@ export const generateVideos: GeminiEndpoints['generateVideos'] = async (
 	input,
 ) => {
 	const response = await makeGeminiRequest<VideoOperation>(
-		`/${input.model}:predictLongRunning`,
+		// Generative Language API requires the /models/ segment for model-scoped methods
+		`/models/${input.model}:predictLongRunning`,
 		ctx.key,
 		{
 			method: 'POST',

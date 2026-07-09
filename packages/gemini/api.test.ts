@@ -1,25 +1,81 @@
 import 'dotenv/config';
 import { makeGeminiRequest } from './client';
+import { stripMarkdownFences } from './endpoints/text-utils';
 import type {
 	CountTokensResponse,
 	EmbedContentResponse,
 	GenerateContentResponse,
 	ListModelsResponse,
 } from './endpoints/types';
-import { GeminiEndpointOutputSchemas } from './endpoints/types';
+import {
+	GeminiEndpointInputSchemas,
+	GeminiEndpointOutputSchemas,
+} from './endpoints/types';
 import type { VideoOperation } from './schema/videos';
 
-const TEST_API_KEY = process.env.GEMINI_API_KEY!;
+const TEST_API_KEY = process.env.GEMINI_API_KEY;
+const describeIfApiKey = TEST_API_KEY ? describe : describe.skip;
 
-describe('Gemini API Type Tests', () => {
+describe('Gemini offline unit tests', () => {
+	it('stripMarkdownFences removes a single leading/trailing fence', () => {
+		const raw = '```html\n<div>hello</div>\n```';
+		expect(stripMarkdownFences(raw)).toBe('<div>hello</div>');
+	});
+
+	it('stripMarkdownFences leaves plain text unchanged', () => {
+		expect(stripMarkdownFences('hello world')).toBe('hello world');
+	});
+
+	it('countTokens input schema accepts a minimal payload', () => {
+		const result = GeminiEndpointInputSchemas.countTokens.safeParse({
+			model: 'gemini-2.5-flash',
+			contents: [{ role: 'user', parts: [{ text: 'hi' }] }],
+		});
+		expect(result.success).toBe(true);
+	});
+
+	it('generateContent input schema rejects missing contents', () => {
+		const result = GeminiEndpointInputSchemas.generateContent.safeParse({
+			model: 'gemini-2.5-flash',
+		});
+		expect(result.success).toBe(false);
+	});
+
+	it('listModels input schema accepts empty object', () => {
+		const result = GeminiEndpointInputSchemas.listModels.safeParse({});
+		expect(result.success).toBe(true);
+	});
+
+	it('generateImage input schema accepts prompt + model', () => {
+		const result = GeminiEndpointInputSchemas.generateImage.safeParse({
+			model: 'gemini-2.5-flash-image',
+			prompt: 'a cat',
+		});
+		expect(result.success).toBe(true);
+	});
+
+	it('getVideosOperation input schema accepts operationName', () => {
+		const result = GeminiEndpointInputSchemas.getVideosOperation.safeParse({
+			operationName: 'models/veo/operations/123',
+		});
+		expect(result.success).toBe(true);
+	});
+
+	it('waitForVideo input schema accepts operationName', () => {
+		const result = GeminiEndpointInputSchemas.waitForVideo.safeParse({
+			operationName: 'models/veo/operations/123',
+		});
+		expect(result.success).toBe(true);
+	});
+});
+
+describeIfApiKey('Gemini API Type Tests', () => {
 	describe('models.listModels', () => {
 		it('listModels returns correct type', async () => {
 			const response = await makeGeminiRequest<ListModelsResponse>(
 				'/models',
-				TEST_API_KEY,
-				{
-					method: 'GET',
-				},
+				TEST_API_KEY!,
+				{ method: 'GET' },
 			);
 
 			GeminiEndpointOutputSchemas.listModels.parse(response);
@@ -30,8 +86,9 @@ describe('Gemini API Type Tests', () => {
 	describe('content.countTokens', () => {
 		it('countTokens returns correct type', async () => {
 			const response = await makeGeminiRequest<CountTokensResponse>(
-				'/gemini-2.5-flash:countTokens',
-				TEST_API_KEY,
+				// Must include /models/ — matches production endpoint paths
+				'/models/gemini-2.5-flash:countTokens',
+				TEST_API_KEY!,
 				{
 					method: 'POST',
 					body: {
@@ -48,8 +105,8 @@ describe('Gemini API Type Tests', () => {
 	describe('content.embedContent', () => {
 		it('embedContent returns correct type', async () => {
 			const response = await makeGeminiRequest<EmbedContentResponse>(
-				'/gemini-embedding-001:embedContent',
-				TEST_API_KEY,
+				'/models/gemini-embedding-001:embedContent',
+				TEST_API_KEY!,
 				{
 					method: 'POST',
 					body: {
@@ -66,8 +123,8 @@ describe('Gemini API Type Tests', () => {
 	describe('content.generateContent', () => {
 		it('generateContent returns correct type', async () => {
 			const response = await makeGeminiRequest<GenerateContentResponse>(
-				'/gemini-2.5-flash:generateContent',
-				TEST_API_KEY,
+				'/models/gemini-2.5-flash:generateContent',
+				TEST_API_KEY!,
 				{
 					method: 'POST',
 					body: {
@@ -91,8 +148,8 @@ describe('Gemini API Type Tests', () => {
 	describe('videos.generateVideos', () => {
 		it('generateVideos kicks off an operation with correct type', async () => {
 			const response = await makeGeminiRequest<VideoOperation>(
-				'/veo-2.0-generate-001:predictLongRunning',
-				TEST_API_KEY,
+				'/models/veo-2.0-generate-001:predictLongRunning',
+				TEST_API_KEY!,
 				{
 					method: 'POST',
 					body: { instances: [{ prompt: 'A calm ocean at sunrise' }] },
