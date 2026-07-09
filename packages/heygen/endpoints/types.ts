@@ -1132,24 +1132,6 @@ export type AssetsGetTemplateResponse = z.infer<
 	typeof AssetsGetTemplateResponseSchema
 >;
 
-// HeyGen's official v1/v2 -> v3 endpoint comparison (developers.heygen.com/
-// endpoint-version-comparison) lists templates as "Not yet available" in v3 — there is no
-// published `/v3/template` path, so this stays on the same confirmed v2 endpoint as
-// `getTemplate` above until HeyGen ships a v3 replacement.
-const AssetsGetTemplateDetailsV3InputSchema = z.object({
-	template_id: z.string(),
-});
-export type AssetsGetTemplateDetailsV3Input = z.infer<
-	typeof AssetsGetTemplateDetailsV3InputSchema
->;
-
-const AssetsGetTemplateDetailsV3ResponseSchema = wrapResponse(
-	z.object({ template_id: z.string().optional() }).catchall(z.unknown()),
-);
-export type AssetsGetTemplateDetailsV3Response = z.infer<
-	typeof AssetsGetTemplateDetailsV3ResponseSchema
->;
-
 const AssetsUploadAssetInputSchema = z.object({
 	// Raw file bytes, base64-encoded for transport through the plugin boundary.
 	fileBase64: z.string(),
@@ -1754,9 +1736,8 @@ export type AudioSearchResponse = z.infer<typeof AudioSearchResponseSchema>;
 
 // ---------------------------------------------------------------------------
 // Domain 12: Starfish Voice & TTS — v3 additions (6 ops)
-// Migrated to HeyGen v3 API per developers.heygen.com. Named with a `V3` suffix (matching
-// the existing `assetsGetTemplateDetailsV3` convention in this codebase) since these are new
-// v3 operations that would otherwise collide with the legacy v1/v2 voice operations above.
+// Migrated to HeyGen v3 API per developers.heygen.com. Named with a `V3` suffix since these
+// are new v3 operations that would otherwise collide with the legacy v1/v2 voice operations above.
 // ---------------------------------------------------------------------------
 
 const AudioVoiceItemSchema = z.object({
@@ -2594,7 +2575,6 @@ export type HeygenEndpointInputs = {
 
 	assetsListTemplates: AssetsListTemplatesInput;
 	assetsGetTemplate: AssetsGetTemplateInput;
-	assetsGetTemplateDetailsV3: AssetsGetTemplateDetailsV3Input;
 	assetsUploadAsset: AssetsUploadAssetInput;
 	assetsListAssets: AssetsListAssetsInput;
 	assetsListAssets2: AssetsListAssets2Input;
@@ -2753,7 +2733,6 @@ export type HeygenEndpointOutputs = {
 
 	assetsListTemplates: AssetsListTemplatesResponse;
 	assetsGetTemplate: AssetsGetTemplateResponse;
-	assetsGetTemplateDetailsV3: AssetsGetTemplateDetailsV3Response;
 	assetsUploadAsset: AssetsUploadAssetResponse;
 	assetsListAssets: AssetsListAssetsResponse;
 	assetsListAssets2: AssetsListAssets2Response;
@@ -2912,7 +2891,6 @@ export const HeygenEndpointInputSchemas = {
 
 	assetsListTemplates: AssetsListTemplatesInputSchema,
 	assetsGetTemplate: AssetsGetTemplateInputSchema,
-	assetsGetTemplateDetailsV3: AssetsGetTemplateDetailsV3InputSchema,
 	assetsUploadAsset: AssetsUploadAssetInputSchema,
 	assetsListAssets: AssetsListAssetsInputSchema,
 	assetsListAssets2: AssetsListAssets2InputSchema,
@@ -3072,7 +3050,6 @@ export const HeygenEndpointOutputSchemas = {
 
 	assetsListTemplates: AssetsListTemplatesResponseSchema,
 	assetsGetTemplate: AssetsGetTemplateResponseSchema,
-	assetsGetTemplateDetailsV3: AssetsGetTemplateDetailsV3ResponseSchema,
 	assetsUploadAsset: AssetsUploadAssetResponseSchema,
 	assetsListAssets: AssetsListAssetsResponseSchema,
 	assetsListAssets2: AssetsListAssets2ResponseSchema,

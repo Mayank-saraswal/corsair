@@ -311,10 +311,6 @@ const FIXTURES: {
 		input: { template_id: 'tmpl_123' },
 		output: { error: null, data: { template_id: 'tmpl_123' } },
 	},
-	assetsGetTemplateDetailsV3: {
-		input: { template_id: 'tmpl_123' },
-		output: { error: null, data: { template_id: 'tmpl_123' } },
-	},
 	assetsUploadAsset: {
 		input: { fileBase64: 'aGVsbG8=', contentType: 'image/png' },
 		output: {

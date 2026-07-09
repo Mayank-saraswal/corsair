@@ -109,9 +109,8 @@ export const listBrandVoices: HeygenEndpoints['voicesListBrandVoices'] = async (
 	return result;
 };
 
-// --- v3 additions, per developers.heygen.com. Named with a `V3` suffix (matching the
-// existing `assetsGetTemplateDetailsV3` convention) since they'd otherwise collide with the
-// legacy v1/v2 voice operations above. ---------
+// --- v3 additions, per developers.heygen.com. Named with a `V3` suffix since they'd
+// otherwise collide with the legacy v1/v2 voice operations above. ---------
 
 // Migrated to HeyGen v3 API per developers.heygen.com
 export const generateSpeechV3: HeygenEndpoints['voicesGenerateSpeechV3'] =

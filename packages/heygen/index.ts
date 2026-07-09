@@ -126,7 +126,6 @@ export type HeygenEndpoints = {
 
 	assetsListTemplates: HeygenEndpoint<'assetsListTemplates'>;
 	assetsGetTemplate: HeygenEndpoint<'assetsGetTemplate'>;
-	assetsGetTemplateDetailsV3: HeygenEndpoint<'assetsGetTemplateDetailsV3'>;
 	assetsUploadAsset: HeygenEndpoint<'assetsUploadAsset'>;
 	assetsListAssets: HeygenEndpoint<'assetsListAssets'>;
 	assetsListAssets2: HeygenEndpoint<'assetsListAssets2'>;
@@ -307,7 +306,6 @@ const heygenEndpointsNested = {
 	assets: {
 		listTemplates: Assets.listTemplates,
 		getTemplate: Assets.getTemplate,
-		getTemplateDetailsV3: Assets.getTemplateDetailsV3,
 		uploadAsset: Assets.uploadAsset,
 		listAssets: Assets.listAssets,
 		listAssets2: Assets.listAssets2,
@@ -620,10 +618,6 @@ export const heygenEndpointSchemas = {
 	'assets.getTemplate': {
 		input: HeygenEndpointInputSchemas.assetsGetTemplate,
 		output: HeygenEndpointOutputSchemas.assetsGetTemplate,
-	},
-	'assets.getTemplateDetailsV3': {
-		input: HeygenEndpointInputSchemas.assetsGetTemplateDetailsV3,
-		output: HeygenEndpointOutputSchemas.assetsGetTemplateDetailsV3,
 	},
 	'assets.uploadAsset': {
 		input: HeygenEndpointInputSchemas.assetsUploadAsset,
@@ -1227,11 +1221,6 @@ const heygenEndpointMeta = {
 		riskLevel: 'read',
 		description:
 			'Retrieve structure, placeholders, and avatar settings of a specific template',
-	},
-	'assets.getTemplateDetailsV3': {
-		riskLevel: 'read',
-		description:
-			'Retrieve comprehensive details, variables, and scene mappings for AI Studio templates',
 	},
 	'assets.uploadAsset': {
 		riskLevel: 'write',

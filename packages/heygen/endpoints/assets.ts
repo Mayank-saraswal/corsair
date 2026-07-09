@@ -8,11 +8,10 @@ import {
 import type { HeygenEndpoints } from '../index';
 import type { HeygenEndpointOutputs } from './types';
 
-// Templates are listed as "Not yet available" in v3 (see the comment on
-// `getTemplateDetailsV3` below), so template/folder operations in this file stay on their
-// confirmed v1/v2 paths per developers.heygen.com/endpoint-version-comparison. Asset upload,
-// get, delete, and the presigned-upload-session flow do have v3 equivalents — see the `V3`
-// suffixed operations at the end of this file.
+// Templates are listed as "Not yet available" in v3, so template/folder operations in this
+// file stay on their confirmed v1/v2 paths per developers.heygen.com/endpoint-version-comparison.
+// Asset upload, get, delete, and the presigned-upload-session flow do have v3 equivalents —
+// see the `V3` suffixed operations at the end of this file.
 
 export const listTemplates: HeygenEndpoints['assetsListTemplates'] = async (
 	ctx,
@@ -46,24 +45,6 @@ export const getTemplate: HeygenEndpoints['assetsGetTemplate'] = async (
 	);
 	return result;
 };
-
-// HeyGen's official version-comparison doc (developers.heygen.com/endpoint-version-comparison)
-// lists templates as "Not yet available" in v3 — there is no published `/v3/template` path,
-// so this stays on the same confirmed v2 endpoint as `getTemplate` above.
-export const getTemplateDetailsV3: HeygenEndpoints['assetsGetTemplateDetailsV3'] =
-	async (ctx, input) => {
-		const result = await makeHeygenRequest<
-			HeygenEndpointOutputs['assetsGetTemplateDetailsV3']
-		>(`/v2/template/${input.template_id}`, ctx.key, { method: 'GET' });
-
-		await logEventFromContext(
-			ctx,
-			'heygen.assets.getTemplateDetailsV3',
-			{ templateId: input.template_id },
-			'completed',
-		);
-		return result;
-	};
 
 export const uploadAsset: HeygenEndpoints['assetsUploadAsset'] = async (
 	ctx,
@@ -216,9 +197,8 @@ export const restoreFolder: HeygenEndpoints['assetsRestoreFolder'] = async (
 	return result;
 };
 
-// --- v3 additions, per developers.heygen.com. Named with a `V3` suffix (matching the
-// existing `assetsGetTemplateDetailsV3` convention) since `uploadAssetV3` collides with the
-// legacy v1 `assets.uploadAsset` operation above. ---------
+// --- v3 additions, per developers.heygen.com. Named with a `V3` suffix since
+// `uploadAssetV3` collides with the legacy v1 `assets.uploadAsset` operation above. ---------
 
 // Migrated to HeyGen v3 API per developers.heygen.com
 export const uploadAssetV3: HeygenEndpoints['assetsUploadAssetV3'] = async (
