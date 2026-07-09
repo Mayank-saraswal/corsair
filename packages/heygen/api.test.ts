@@ -908,9 +908,10 @@ describe('HeyGen endpoint schemas', () => {
 
 describeIfApiKey('HeyGen API live smoke tests', () => {
 	it('lists avatars', async () => {
+		// Must match production path: avatarsList uses GET /v3/avatars (not legacy /v1/avatar.list)
 		const response = await makeHeygenRequest<
 			HeygenEndpointOutputs['avatarsList']
-		>('/v1/avatar.list', TEST_API_KEY!, { method: 'GET' });
+		>('/v3/avatars', TEST_API_KEY!, { method: 'GET' });
 
 		const parsed = HeygenEndpointOutputSchemas.avatarsList.safeParse(response);
 		expect(parsed.success).toBe(true);
