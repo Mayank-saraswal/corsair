@@ -30,11 +30,9 @@ export const create: HeygenEndpoints['hyperframesCreate'] = async (
 };
 
 export const get: HeygenEndpoints['hyperframesGet'] = async (ctx, input) => {
-	const result = await makeHeygenRequest<HeygenEndpointOutputs['hyperframesGet']>(
-		`/v3/hyperframes/renders/${input.render_id}`,
-		ctx.key,
-		{ method: 'GET' },
-	);
+	const result = await makeHeygenRequest<
+		HeygenEndpointOutputs['hyperframesGet']
+	>(`/v3/hyperframes/renders/${input.render_id}`, ctx.key, { method: 'GET' });
 
 	await logEventFromContext(
 		ctx,

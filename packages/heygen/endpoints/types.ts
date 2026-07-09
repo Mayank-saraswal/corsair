@@ -34,7 +34,11 @@ const AssetRefSchema = z.union([
 const AssetRefWithBase64Schema = z.union([
 	z.object({ type: z.literal('url'), url: z.string() }),
 	z.object({ type: z.literal('asset_id'), asset_id: z.string() }),
-	z.object({ type: z.literal('base64'), media_type: z.string(), data: z.string() }),
+	z.object({
+		type: z.literal('base64'),
+		media_type: z.string(),
+		data: z.string(),
+	}),
 ]);
 
 // v3 success responses are NOT wrapped in the v1/v2 `{error, data}` envelope — they're a flat
@@ -81,7 +85,9 @@ const VideosGenerateResponseSchema = v3Response(
 		output_format: z.enum(['mp4', 'webm']).optional(),
 	}),
 );
-export type VideosGenerateResponse = z.infer<typeof VideosGenerateResponseSchema>;
+export type VideosGenerateResponse = z.infer<
+	typeof VideosGenerateResponseSchema
+>;
 
 const VideosTemplateGenerateInputSchema = z.object({
 	template_id: z.string(),
@@ -129,9 +135,12 @@ export type VideosCreateWebmResponse = z.infer<
 const VideosPersonalizedAddContactInputSchema = z.object({
 	project_id: z.string(),
 	variables_list: z.array(
-		z.object({ email: z.string().optional(), first_name: z.string().optional() }).catchall(
-			z.unknown(),
-		),
+		z
+			.object({
+				email: z.string().optional(),
+				first_name: z.string().optional(),
+			})
+			.catchall(z.unknown()),
 	),
 });
 export type VideosPersonalizedAddContactInput = z.infer<
@@ -191,7 +200,9 @@ const VideosGetStatusResponseSchema = v3Response(
 		video_page_url: z.string().nullable().optional(),
 	}),
 );
-export type VideosGetStatusResponse = z.infer<typeof VideosGetStatusResponseSchema>;
+export type VideosGetStatusResponse = z.infer<
+	typeof VideosGetStatusResponseSchema
+>;
 
 // Migrated to HeyGen v3 API endpoint per developers.heygen.com (POST /v3/video-translations).
 const VideosTranslateInputSchema = z.object({
@@ -213,7 +224,9 @@ export type VideosTranslateInput = z.infer<typeof VideosTranslateInputSchema>;
 const VideosTranslateResponseSchema = v3Response(
 	z.object({ video_translation_ids: z.array(z.string()) }),
 );
-export type VideosTranslateResponse = z.infer<typeof VideosTranslateResponseSchema>;
+export type VideosTranslateResponse = z.infer<
+	typeof VideosTranslateResponseSchema
+>;
 
 const VideosTranslateStatusInputSchema = z.object({
 	video_translate_id: z.string(),
@@ -320,12 +333,12 @@ export type AvatarsListResponse = z.infer<typeof AvatarsListResponseSchema>;
 const AvatarsGetDetailsInputSchema = z.object({
 	avatar_id: z.string(),
 });
-export type AvatarsGetDetailsInput = z.infer<typeof AvatarsGetDetailsInputSchema>;
+export type AvatarsGetDetailsInput = z.infer<
+	typeof AvatarsGetDetailsInputSchema
+>;
 
 const AvatarsGetDetailsResponseSchema = wrapResponse(
-	z
-		.object({ avatar_id: z.string().optional() })
-		.catchall(z.unknown()),
+	z.object({ avatar_id: z.string().optional() }).catchall(z.unknown()),
 );
 export type AvatarsGetDetailsResponse = z.infer<
 	typeof AvatarsGetDetailsResponseSchema
@@ -333,7 +346,9 @@ export type AvatarsGetDetailsResponse = z.infer<
 
 // [B] Path inferred as `/v2/avatar_group/list`.
 const AvatarsListGroupsInputSchema = z.object({});
-export type AvatarsListGroupsInput = z.infer<typeof AvatarsListGroupsInputSchema>;
+export type AvatarsListGroupsInput = z.infer<
+	typeof AvatarsListGroupsInputSchema
+>;
 
 const AvatarsListGroupsResponseSchema = wrapResponse(
 	z.object({ avatar_group_list: z.array(z.record(z.string(), z.unknown())) }),
@@ -426,7 +441,9 @@ export type AvatarsAddLooksInput = z.infer<typeof AvatarsAddLooksInputSchema>;
 const AvatarsAddLooksResponseSchema = wrapResponse(
 	z.object({ generation_id: z.string().optional() }).catchall(z.unknown()),
 );
-export type AvatarsAddLooksResponse = z.infer<typeof AvatarsAddLooksResponseSchema>;
+export type AvatarsAddLooksResponse = z.infer<
+	typeof AvatarsAddLooksResponseSchema
+>;
 
 const AvatarsCheckLookStatusInputSchema = z.object({
 	generation_id: z.string(),
@@ -497,7 +514,9 @@ export type AvatarsDeletePhotoGroupResponse = z.infer<
 const AvatarsDeletePhotoInputSchema = z.object({
 	id: z.string(),
 });
-export type AvatarsDeletePhotoInput = z.infer<typeof AvatarsDeletePhotoInputSchema>;
+export type AvatarsDeletePhotoInput = z.infer<
+	typeof AvatarsDeletePhotoInputSchema
+>;
 
 const AvatarsDeletePhotoResponseSchema = wrapResponse(
 	z.record(z.string(), z.unknown()),
@@ -514,7 +533,9 @@ export type AvatarsAddMotionInput = z.infer<typeof AvatarsAddMotionInputSchema>;
 const AvatarsAddMotionResponseSchema = wrapResponse(
 	z.object({ id: z.string().optional() }).catchall(z.unknown()),
 );
-export type AvatarsAddMotionResponse = z.infer<typeof AvatarsAddMotionResponseSchema>;
+export type AvatarsAddMotionResponse = z.infer<
+	typeof AvatarsAddMotionResponseSchema
+>;
 
 // [B] Path inferred as `/v2/photo_avatar/upscale`.
 const AvatarsUpscaleInputSchema = z.object({
@@ -525,7 +546,9 @@ export type AvatarsUpscaleInput = z.infer<typeof AvatarsUpscaleInputSchema>;
 const AvatarsUpscaleResponseSchema = wrapResponse(
 	z.object({ id: z.string().optional() }).catchall(z.unknown()),
 );
-export type AvatarsUpscaleResponse = z.infer<typeof AvatarsUpscaleResponseSchema>;
+export type AvatarsUpscaleResponse = z.infer<
+	typeof AvatarsUpscaleResponseSchema
+>;
 
 const AvatarsListTalkingPhotosInputSchema = z.object({});
 export type AvatarsListTalkingPhotosInput = z.infer<
@@ -690,14 +713,17 @@ export type AvatarsCreateConsentResponse = z.infer<
 // Migrated to HeyGen v3 API endpoint per developers.heygen.com (GET /v3/avatars/looks).
 const AvatarsListLooksInputSchema = z.object({
 	group_id: z.string().optional(),
-	avatar_type: z.enum(['studio_avatar', 'digital_twin', 'photo_avatar']).optional(),
+	avatar_type: z
+		.enum(['studio_avatar', 'digital_twin', 'photo_avatar'])
+		.optional(),
 	ownership: z.enum(['public', 'private']).optional(),
 	limit: z.number().optional(),
 	token: z.string().optional(),
 });
 export type AvatarsListLooksInput = z.infer<typeof AvatarsListLooksInputSchema>;
 
-const AvatarsListLooksResponseSchema = v3PaginatedResponse(AvatarLookItemSchema);
+const AvatarsListLooksResponseSchema =
+	v3PaginatedResponse(AvatarLookItemSchema);
 export type AvatarsListLooksResponse = z.infer<
 	typeof AvatarsListLooksResponseSchema
 >;
@@ -707,13 +733,19 @@ const AvatarsGetLookInputSchema = z.object({ look_id: z.string() });
 export type AvatarsGetLookInput = z.infer<typeof AvatarsGetLookInputSchema>;
 
 const AvatarsGetLookResponseSchema = v3Response(AvatarLookItemSchema);
-export type AvatarsGetLookResponse = z.infer<typeof AvatarsGetLookResponseSchema>;
+export type AvatarsGetLookResponse = z.infer<
+	typeof AvatarsGetLookResponseSchema
+>;
 
 // Migrated to HeyGen v3 API endpoint per developers.heygen.com (DELETE /v3/avatars/looks/{look_id}).
 const AvatarsDeleteLookInputSchema = z.object({ look_id: z.string() });
-export type AvatarsDeleteLookInput = z.infer<typeof AvatarsDeleteLookInputSchema>;
+export type AvatarsDeleteLookInput = z.infer<
+	typeof AvatarsDeleteLookInputSchema
+>;
 
-const AvatarsDeleteLookResponseSchema = v3Response(z.object({ id: z.string() }));
+const AvatarsDeleteLookResponseSchema = v3Response(
+	z.object({ id: z.string() }),
+);
 export type AvatarsDeleteLookResponse = z.infer<
 	typeof AvatarsDeleteLookResponseSchema
 >;
@@ -723,7 +755,9 @@ const AvatarsUpdateLookInputSchema = z.object({
 	look_id: z.string(),
 	name: z.string().max(255).nullable().optional(),
 });
-export type AvatarsUpdateLookInput = z.infer<typeof AvatarsUpdateLookInputSchema>;
+export type AvatarsUpdateLookInput = z.infer<
+	typeof AvatarsUpdateLookInputSchema
+>;
 
 const AvatarsUpdateLookResponseSchema = v3Response(AvatarLookItemSchema);
 export type AvatarsUpdateLookResponse = z.infer<
@@ -749,7 +783,10 @@ export type VoicesGenerateSpeechInput = z.infer<
 
 const VoicesGenerateSpeechResponseSchema = wrapResponse(
 	z
-		.object({ audio_url: z.string().optional(), duration: z.number().optional() })
+		.object({
+			audio_url: z.string().optional(),
+			duration: z.number().optional(),
+		})
 		.catchall(z.unknown()),
 );
 export type VoicesGenerateSpeechResponse = z.infer<
@@ -786,7 +823,9 @@ export type VoicesListTtsResponse = z.infer<typeof VoicesListTtsResponseSchema>;
 
 // [B] Path inferred as `/v1/voice/locale.list`.
 const VoicesListLocalesInputSchema = z.object({});
-export type VoicesListLocalesInput = z.infer<typeof VoicesListLocalesInputSchema>;
+export type VoicesListLocalesInput = z.infer<
+	typeof VoicesListLocalesInputSchema
+>;
 
 const VoicesListLocalesResponseSchema = wrapResponse(
 	z.object({ locales: z.array(z.record(z.string(), z.unknown())) }),
@@ -876,7 +915,9 @@ export type StreamingStartInput = z.infer<typeof StreamingStartInputSchema>;
 const StreamingStartResponseSchema = wrapResponse(
 	z.object({ sdp: z.unknown().optional() }).catchall(z.unknown()),
 );
-export type StreamingStartResponse = z.infer<typeof StreamingStartResponseSchema>;
+export type StreamingStartResponse = z.infer<
+	typeof StreamingStartResponseSchema
+>;
 
 const StreamingStopInputSchema = z.object({
 	session_id: z.string(),
@@ -1080,7 +1121,9 @@ export type AssetsListTemplatesResponse = z.infer<
 const AssetsGetTemplateInputSchema = z.object({
 	template_id: z.string(),
 });
-export type AssetsGetTemplateInput = z.infer<typeof AssetsGetTemplateInputSchema>;
+export type AssetsGetTemplateInput = z.infer<
+	typeof AssetsGetTemplateInputSchema
+>;
 
 const AssetsGetTemplateResponseSchema = wrapResponse(
 	z.object({ template_id: z.string().optional() }).catchall(z.unknown()),
@@ -1112,7 +1155,9 @@ const AssetsUploadAssetInputSchema = z.object({
 	fileBase64: z.string(),
 	contentType: z.string(),
 });
-export type AssetsUploadAssetInput = z.infer<typeof AssetsUploadAssetInputSchema>;
+export type AssetsUploadAssetInput = z.infer<
+	typeof AssetsUploadAssetInputSchema
+>;
 
 const AssetsUploadAssetResponseSchema = wrapResponse(
 	z
@@ -1144,7 +1189,9 @@ const AssetsListAssets2InputSchema = z.object({
 	cursor: z.string().optional(),
 	limit: z.number().optional(),
 });
-export type AssetsListAssets2Input = z.infer<typeof AssetsListAssets2InputSchema>;
+export type AssetsListAssets2Input = z.infer<
+	typeof AssetsListAssets2InputSchema
+>;
 
 const AssetsListAssets2ResponseSchema = wrapResponse(
 	z.object({
@@ -1159,7 +1206,9 @@ export type AssetsListAssets2Response = z.infer<
 const AssetsDeleteAssetInputSchema = z.object({
 	asset_id: z.string(),
 });
-export type AssetsDeleteAssetInput = z.infer<typeof AssetsDeleteAssetInputSchema>;
+export type AssetsDeleteAssetInput = z.infer<
+	typeof AssetsDeleteAssetInputSchema
+>;
 
 const AssetsDeleteAssetResponseSchema = wrapResponse(
 	z.record(z.string(), z.unknown()),
@@ -1172,7 +1221,9 @@ const AssetsCreateFolderInputSchema = z.object({
 	name: z.string(),
 	parent_folder_id: z.string().optional(),
 });
-export type AssetsCreateFolderInput = z.infer<typeof AssetsCreateFolderInputSchema>;
+export type AssetsCreateFolderInput = z.infer<
+	typeof AssetsCreateFolderInputSchema
+>;
 
 const AssetsCreateFolderResponseSchema = wrapResponse(
 	z.object({ folder_id: z.string() }).catchall(z.unknown()),
@@ -1185,7 +1236,9 @@ const AssetsListFoldersInputSchema = z.object({
 	page: z.number().optional(),
 	limit: z.number().optional(),
 });
-export type AssetsListFoldersInput = z.infer<typeof AssetsListFoldersInputSchema>;
+export type AssetsListFoldersInput = z.infer<
+	typeof AssetsListFoldersInputSchema
+>;
 
 const AssetsListFoldersResponseSchema = wrapResponse(
 	z.object({ folders: z.array(z.record(z.string(), z.unknown())) }),
@@ -1199,7 +1252,9 @@ const AssetsUpdateFolderInputSchema = z.object({
 	folder_id: z.string(),
 	name: z.string(),
 });
-export type AssetsUpdateFolderInput = z.infer<typeof AssetsUpdateFolderInputSchema>;
+export type AssetsUpdateFolderInput = z.infer<
+	typeof AssetsUpdateFolderInputSchema
+>;
 
 const AssetsUpdateFolderResponseSchema = wrapResponse(
 	z.record(z.string(), z.unknown()),
@@ -1212,7 +1267,9 @@ export type AssetsUpdateFolderResponse = z.infer<
 const AssetsTrashFolderInputSchema = z.object({
 	folder_id: z.string(),
 });
-export type AssetsTrashFolderInput = z.infer<typeof AssetsTrashFolderInputSchema>;
+export type AssetsTrashFolderInput = z.infer<
+	typeof AssetsTrashFolderInputSchema
+>;
 
 const AssetsTrashFolderResponseSchema = wrapResponse(
 	z.record(z.string(), z.unknown()),
@@ -1322,7 +1379,10 @@ const WebhooksQuotaGetCurrentUserResponseSchema = v3Response(
 		email: z.string().nullable(),
 		first_name: z.string().nullable(),
 		last_name: z.string().nullable(),
-		billing_type: z.enum(['wallet', 'subscription', 'usage_based']).nullable().optional(),
+		billing_type: z
+			.enum(['wallet', 'subscription', 'usage_based'])
+			.nullable()
+			.optional(),
 		// Exactly one of these is populated depending on `billing_type`; shapes vary per tier
 		// so they're left permissive rather than fully modeled.
 		wallet: z.record(z.string(), z.unknown()).optional(),
@@ -1340,9 +1400,7 @@ export type WebhooksQuotaRemainingQuotaInput = z.infer<
 >;
 
 const WebhooksQuotaRemainingQuotaResponseSchema = wrapResponse(
-	z
-		.object({ remaining_quota: z.number().optional() })
-		.catchall(z.unknown()),
+	z.object({ remaining_quota: z.number().optional() }).catchall(z.unknown()),
 );
 export type WebhooksQuotaRemainingQuotaResponse = z.infer<
 	typeof WebhooksQuotaRemainingQuotaResponseSchema
@@ -1803,7 +1861,9 @@ export type VoicesDeleteV3Input = z.infer<typeof VoicesDeleteV3InputSchema>;
 const VoicesDeleteV3ResponseSchema = v3Response(
 	z.object({ voice_id: z.string() }),
 );
-export type VoicesDeleteV3Response = z.infer<typeof VoicesDeleteV3ResponseSchema>;
+export type VoicesDeleteV3Response = z.infer<
+	typeof VoicesDeleteV3ResponseSchema
+>;
 
 // ---------------------------------------------------------------------------
 // Domain 13: Videos — v3 additions (2 ops)
@@ -1835,7 +1895,9 @@ export type VideosDeleteV3Input = z.infer<typeof VideosDeleteV3InputSchema>;
 const VideosDeleteV3ResponseSchema = v3Response(
 	z.object({ id: z.string(), deleted: z.boolean().optional() }),
 );
-export type VideosDeleteV3Response = z.infer<typeof VideosDeleteV3ResponseSchema>;
+export type VideosDeleteV3Response = z.infer<
+	typeof VideosDeleteV3ResponseSchema
+>;
 
 // ---------------------------------------------------------------------------
 // Domain 14: Video Translations — v3 additions (3 ops)
@@ -2104,7 +2166,9 @@ const HyperframesListInputSchema = z.object({
 });
 export type HyperframesListInput = z.infer<typeof HyperframesListInputSchema>;
 
-const HyperframesListResponseSchema = v3PaginatedResponse(HyperframeDetailSchema);
+const HyperframesListResponseSchema = v3PaginatedResponse(
+	HyperframeDetailSchema,
+);
 export type HyperframesListResponse = z.infer<
 	typeof HyperframesListResponseSchema
 >;
@@ -2122,7 +2186,9 @@ const HyperframesCreateInputSchema = z.object({
 	callback_id: z.string().max(256).nullable().optional(),
 	callback_url: z.string().nullable().optional(),
 });
-export type HyperframesCreateInput = z.infer<typeof HyperframesCreateInputSchema>;
+export type HyperframesCreateInput = z.infer<
+	typeof HyperframesCreateInputSchema
+>;
 
 const HyperframesCreateResponseSchema = v3Response(
 	z.object({ render_id: z.string() }),
@@ -2135,10 +2201,14 @@ const HyperframesGetInputSchema = z.object({ render_id: z.string() });
 export type HyperframesGetInput = z.infer<typeof HyperframesGetInputSchema>;
 
 const HyperframesGetResponseSchema = v3Response(HyperframeDetailSchema);
-export type HyperframesGetResponse = z.infer<typeof HyperframesGetResponseSchema>;
+export type HyperframesGetResponse = z.infer<
+	typeof HyperframesGetResponseSchema
+>;
 
 const HyperframesDeleteInputSchema = z.object({ render_id: z.string() });
-export type HyperframesDeleteInput = z.infer<typeof HyperframesDeleteInputSchema>;
+export type HyperframesDeleteInput = z.infer<
+	typeof HyperframesDeleteInputSchema
+>;
 
 const HyperframesDeleteResponseSchema = v3Response(
 	z.object({ render_id: z.string() }),
@@ -2205,7 +2275,9 @@ export type WebhooksAddEndpointV3Response = z.infer<
 	typeof WebhooksAddEndpointV3ResponseSchema
 >;
 
-const WebhooksDeleteEndpointV3InputSchema = z.object({ endpoint_id: z.string() });
+const WebhooksDeleteEndpointV3InputSchema = z.object({
+	endpoint_id: z.string(),
+});
 export type WebhooksDeleteEndpointV3Input = z.infer<
 	typeof WebhooksDeleteEndpointV3InputSchema
 >;
@@ -2308,7 +2380,9 @@ const AssetsGetAssetResponseSchema = v3Response(
 		url: z.string().nullable().optional(),
 	}),
 );
-export type AssetsGetAssetResponse = z.infer<typeof AssetsGetAssetResponseSchema>;
+export type AssetsGetAssetResponse = z.infer<
+	typeof AssetsGetAssetResponseSchema
+>;
 
 const AssetsDeleteAssetV3InputSchema = z.object({ asset_id: z.string() });
 export type AssetsDeleteAssetV3Input = z.infer<
@@ -2376,7 +2450,10 @@ const ClipSchema = z.object({
 	id: z.string(),
 	status: z.enum(['pending', 'completed', 'failed']),
 	duration_seconds: z.number().nullable().optional(),
-	aspect_ratio: z.enum(['landscape', 'portrait', 'square']).nullable().optional(),
+	aspect_ratio: z
+		.enum(['landscape', 'portrait', 'square'])
+		.nullable()
+		.optional(),
 	title: z.string().nullable().optional(),
 	virality_score: z.number().nullable().optional(),
 	thumbnail_url: z.string().nullable().optional(),
@@ -2403,7 +2480,10 @@ const AiClippingCreateInputSchema = z.object({
 	input_language: z.string().optional(),
 	output_settings: z
 		.object({
-			duration_types: z.array(z.enum(['30', '60', '180', 'long'])).min(1).max(4),
+			duration_types: z
+				.array(z.enum(['30', '60', '180', 'long']))
+				.min(1)
+				.max(4),
 			aspect_ratio: z.enum(['landscape', 'portrait', 'square']).optional(),
 			captions: z.boolean().optional(),
 			caption_style: z.string().optional(),
@@ -2442,8 +2522,12 @@ const AiClippingListInputSchema = z.object({
 });
 export type AiClippingListInput = z.infer<typeof AiClippingListInputSchema>;
 
-const AiClippingListResponseSchema = v3PaginatedResponse(AiClippingDetailSchema);
-export type AiClippingListResponse = z.infer<typeof AiClippingListResponseSchema>;
+const AiClippingListResponseSchema = v3PaginatedResponse(
+	AiClippingDetailSchema,
+);
+export type AiClippingListResponse = z.infer<
+	typeof AiClippingListResponseSchema
+>;
 
 // ---------------------------------------------------------------------------
 // Aggregated maps
@@ -2931,7 +3015,8 @@ export const HeygenEndpointOutputSchemas = {
 	videosTemplateGenerate: VideosTemplateGenerateResponseSchema,
 	videosCreateWebm: VideosCreateWebmResponseSchema,
 	videosPersonalizedAddContact: VideosPersonalizedAddContactResponseSchema,
-	videosPersonalizedProjectDetail: VideosPersonalizedProjectDetailResponseSchema,
+	videosPersonalizedProjectDetail:
+		VideosPersonalizedProjectDetailResponseSchema,
 	videosGetStatus: VideosGetStatusResponseSchema,
 	videosTranslate: VideosTranslateResponseSchema,
 	videosTranslateStatus: VideosTranslateStatusResponseSchema,

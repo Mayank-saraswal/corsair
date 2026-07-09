@@ -6,11 +6,9 @@ import type { HeygenEndpointOutputs } from './types';
 // Migrated to HeyGen v3 API per developers.heygen.com. v3-only, no v1/v2 equivalent.
 
 export const get: HeygenEndpoints['aiClippingGet'] = async (ctx, input) => {
-	const result = await makeHeygenRequest<HeygenEndpointOutputs['aiClippingGet']>(
-		`/v3/ai-clipping/${input.job_id}`,
-		ctx.key,
-		{ method: 'GET' },
-	);
+	const result = await makeHeygenRequest<
+		HeygenEndpointOutputs['aiClippingGet']
+	>(`/v3/ai-clipping/${input.job_id}`, ctx.key, { method: 'GET' });
 
 	await logEventFromContext(
 		ctx,

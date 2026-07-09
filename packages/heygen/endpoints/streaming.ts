@@ -45,11 +45,9 @@ export const createToken: HeygenEndpoints['streamingCreateToken'] = async (
 };
 
 export const start: HeygenEndpoints['streamingStart'] = async (ctx, input) => {
-	const result = await makeHeygenRequest<HeygenEndpointOutputs['streamingStart']>(
-		'/v1/streaming.start',
-		ctx.key,
-		{ method: 'POST', body: input },
-	);
+	const result = await makeHeygenRequest<
+		HeygenEndpointOutputs['streamingStart']
+	>('/v1/streaming.start', ctx.key, { method: 'POST', body: input });
 
 	await logEventFromContext(
 		ctx,
@@ -61,11 +59,9 @@ export const start: HeygenEndpoints['streamingStart'] = async (ctx, input) => {
 };
 
 export const stop: HeygenEndpoints['streamingStop'] = async (ctx, input) => {
-	const result = await makeHeygenRequest<HeygenEndpointOutputs['streamingStop']>(
-		'/v1/streaming.stop',
-		ctx.key,
-		{ method: 'POST', body: input },
-	);
+	const result = await makeHeygenRequest<
+		HeygenEndpointOutputs['streamingStop']
+	>('/v1/streaming.stop', ctx.key, { method: 'POST', body: input });
 
 	await logEventFromContext(
 		ctx,
@@ -112,11 +108,9 @@ export const keepAlive: HeygenEndpoints['streamingKeepAlive'] = async (
 };
 
 export const task: HeygenEndpoints['streamingTask'] = async (ctx, input) => {
-	const result = await makeHeygenRequest<HeygenEndpointOutputs['streamingTask']>(
-		'/v1/streaming.task',
-		ctx.key,
-		{ method: 'POST', body: input },
-	);
+	const result = await makeHeygenRequest<
+		HeygenEndpointOutputs['streamingTask']
+	>('/v1/streaming.task', ctx.key, { method: 'POST', body: input });
 
 	// Never log `text` (the spoken content) — only the session identifier.
 	await logEventFromContext(
@@ -161,11 +155,9 @@ export const streamingNew: HeygenEndpoints['streamingNew'] = async (
 };
 
 export const list: HeygenEndpoints['streamingList'] = async (ctx) => {
-	const result = await makeHeygenRequest<HeygenEndpointOutputs['streamingList']>(
-		'/v1/streaming.list',
-		ctx.key,
-		{ method: 'GET' },
-	);
+	const result = await makeHeygenRequest<
+		HeygenEndpointOutputs['streamingList']
+	>('/v1/streaming.list', ctx.key, { method: 'GET' });
 
 	await logEventFromContext(ctx, 'heygen.streaming.list', {}, 'completed');
 	return result;

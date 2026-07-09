@@ -17,11 +17,9 @@ export const list: HeygenEndpoints['lipsyncList'] = async (ctx, input) => {
 };
 
 export const create: HeygenEndpoints['lipsyncCreate'] = async (ctx, input) => {
-	const result = await makeHeygenRequest<HeygenEndpointOutputs['lipsyncCreate']>(
-		'/v3/lipsyncs',
-		ctx.key,
-		{ method: 'POST', body: input },
-	);
+	const result = await makeHeygenRequest<
+		HeygenEndpointOutputs['lipsyncCreate']
+	>('/v3/lipsyncs', ctx.key, { method: 'POST', body: input });
 
 	await logEventFromContext(ctx, 'heygen.lipsync.create', {}, 'completed');
 	return result;
@@ -47,11 +45,9 @@ export const deleteLipsync: HeygenEndpoints['lipsyncDelete'] = async (
 	ctx,
 	input,
 ) => {
-	const result = await makeHeygenRequest<HeygenEndpointOutputs['lipsyncDelete']>(
-		`/v3/lipsyncs/${input.lipsync_id}`,
-		ctx.key,
-		{ method: 'DELETE' },
-	);
+	const result = await makeHeygenRequest<
+		HeygenEndpointOutputs['lipsyncDelete']
+	>(`/v3/lipsyncs/${input.lipsync_id}`, ctx.key, { method: 'DELETE' });
 
 	await logEventFromContext(
 		ctx,
@@ -64,11 +60,9 @@ export const deleteLipsync: HeygenEndpoints['lipsyncDelete'] = async (
 
 export const update: HeygenEndpoints['lipsyncUpdate'] = async (ctx, input) => {
 	const { lipsync_id, ...body } = input;
-	const result = await makeHeygenRequest<HeygenEndpointOutputs['lipsyncUpdate']>(
-		`/v3/lipsyncs/${lipsync_id}`,
-		ctx.key,
-		{ method: 'PATCH', body },
-	);
+	const result = await makeHeygenRequest<
+		HeygenEndpointOutputs['lipsyncUpdate']
+	>(`/v3/lipsyncs/${lipsync_id}`, ctx.key, { method: 'PATCH', body });
 
 	await logEventFromContext(
 		ctx,

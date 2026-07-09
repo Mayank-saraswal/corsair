@@ -9,12 +9,13 @@ import type { HeygenEndpointOutputs } from './types';
 // paths until HeyGen ships v3 replacements.
 
 // Migrated to HeyGen v3 API endpoint per developers.heygen.com
-export const generate: HeygenEndpoints['videosGenerate'] = async (ctx, input) => {
-	const result = await makeHeygenRequest<HeygenEndpointOutputs['videosGenerate']>(
-		'/v3/videos',
-		ctx.key,
-		{ method: 'POST', body: input },
-	);
+export const generate: HeygenEndpoints['videosGenerate'] = async (
+	ctx,
+	input,
+) => {
+	const result = await makeHeygenRequest<
+		HeygenEndpointOutputs['videosGenerate']
+	>('/v3/videos', ctx.key, { method: 'POST', body: input });
 
 	await logEventFromContext(
 		ctx,
@@ -25,23 +26,24 @@ export const generate: HeygenEndpoints['videosGenerate'] = async (ctx, input) =>
 	return result;
 };
 
-export const templateGenerate: HeygenEndpoints['videosTemplateGenerate'] = async (
-	ctx,
-	input,
-) => {
-	const { template_id, ...body } = input;
-	const result = await makeHeygenRequest<
-		HeygenEndpointOutputs['videosTemplateGenerate']
-	>(`/v2/template/${template_id}/generate`, ctx.key, { method: 'POST', body });
+export const templateGenerate: HeygenEndpoints['videosTemplateGenerate'] =
+	async (ctx, input) => {
+		const { template_id, ...body } = input;
+		const result = await makeHeygenRequest<
+			HeygenEndpointOutputs['videosTemplateGenerate']
+		>(`/v2/template/${template_id}/generate`, ctx.key, {
+			method: 'POST',
+			body,
+		});
 
-	await logEventFromContext(
-		ctx,
-		'heygen.videos.templateGenerate',
-		{ templateId: template_id },
-		'completed',
-	);
-	return result;
-};
+		await logEventFromContext(
+			ctx,
+			'heygen.videos.templateGenerate',
+			{ templateId: template_id },
+			'completed',
+		);
+		return result;
+	};
 
 // [B] Path inferred as `/v1/video.webm`; see endpoints/types.ts for details.
 export const createWebm: HeygenEndpoints['videosCreateWebm'] = async (
@@ -248,11 +250,9 @@ export const deleteV3: HeygenEndpoints['videosDeleteV3'] = async (
 	ctx,
 	input,
 ) => {
-	const result = await makeHeygenRequest<HeygenEndpointOutputs['videosDeleteV3']>(
-		`/v3/videos/${input.video_id}`,
-		ctx.key,
-		{ method: 'DELETE' },
-	);
+	const result = await makeHeygenRequest<
+		HeygenEndpointOutputs['videosDeleteV3']
+	>(`/v3/videos/${input.video_id}`, ctx.key, { method: 'DELETE' });
 
 	await logEventFromContext(
 		ctx,

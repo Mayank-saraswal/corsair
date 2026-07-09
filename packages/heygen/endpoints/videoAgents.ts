@@ -26,22 +26,20 @@ export const listSessions: HeygenEndpoints['videoAgentsListSessions'] = async (
 	return result;
 };
 
-export const createSession: HeygenEndpoints['videoAgentsCreateSession'] = async (
-	ctx,
-	input,
-) => {
-	const result = await makeHeygenRequest<
-		HeygenEndpointOutputs['videoAgentsCreateSession']
-	>('/v3/video-agents', ctx.key, { method: 'POST', body: input });
+export const createSession: HeygenEndpoints['videoAgentsCreateSession'] =
+	async (ctx, input) => {
+		const result = await makeHeygenRequest<
+			HeygenEndpointOutputs['videoAgentsCreateSession']
+		>('/v3/video-agents', ctx.key, { method: 'POST', body: input });
 
-	await logEventFromContext(
-		ctx,
-		'heygen.videoAgents.createSession',
-		{ mode: input.mode },
-		'completed',
-	);
-	return result;
-};
+		await logEventFromContext(
+			ctx,
+			'heygen.videoAgents.createSession',
+			{ mode: input.mode },
+			'completed',
+		);
+		return result;
+	};
 
 export const listStyles: HeygenEndpoints['videoAgentsListStyles'] = async (
 	ctx,

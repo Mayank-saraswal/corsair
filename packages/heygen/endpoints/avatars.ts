@@ -1,5 +1,9 @@
 import { logEventFromContext } from 'corsair/core';
-import { base64ToBlob, makeHeygenRequest, makeHeygenUploadRequest } from '../client';
+import {
+	base64ToBlob,
+	makeHeygenRequest,
+	makeHeygenUploadRequest,
+} from '../client';
 import type { HeygenEndpoints } from '../index';
 import type { HeygenEndpointOutputs } from './types';
 
@@ -54,22 +58,20 @@ export const listGroups: HeygenEndpoints['avatarsListGroups'] = async (ctx) => {
 	return result;
 };
 
-export const listGroupAvatars: HeygenEndpoints['avatarsListGroupAvatars'] = async (
-	ctx,
-	input,
-) => {
-	const result = await makeHeygenRequest<
-		HeygenEndpointOutputs['avatarsListGroupAvatars']
-	>(`/v2/avatar_group/${input.group_id}/avatars`, ctx.key, { method: 'GET' });
+export const listGroupAvatars: HeygenEndpoints['avatarsListGroupAvatars'] =
+	async (ctx, input) => {
+		const result = await makeHeygenRequest<
+			HeygenEndpointOutputs['avatarsListGroupAvatars']
+		>(`/v2/avatar_group/${input.group_id}/avatars`, ctx.key, { method: 'GET' });
 
-	await logEventFromContext(
-		ctx,
-		'heygen.avatars.listGroupAvatars',
-		{ groupId: input.group_id },
-		'completed',
-	);
-	return result;
-};
+		await logEventFromContext(
+			ctx,
+			'heygen.avatars.listGroupAvatars',
+			{ groupId: input.group_id },
+			'completed',
+		);
+		return result;
+	};
 
 // [B] Path inferred as `/v2/avatar_group/search_public`; see endpoints/types.ts.
 export const searchPublicGroups: HeygenEndpoints['avatarsSearchPublicGroups'] =
@@ -90,25 +92,23 @@ export const searchPublicGroups: HeygenEndpoints['avatarsSearchPublicGroups'] =
 		return result;
 	};
 
-export const createPhotoGroup: HeygenEndpoints['avatarsCreatePhotoGroup'] = async (
-	ctx,
-	input,
-) => {
-	const result = await makeHeygenRequest<
-		HeygenEndpointOutputs['avatarsCreatePhotoGroup']
-	>('/v2/photo_avatar/avatar_group/create', ctx.key, {
-		method: 'POST',
-		body: input,
-	});
+export const createPhotoGroup: HeygenEndpoints['avatarsCreatePhotoGroup'] =
+	async (ctx, input) => {
+		const result = await makeHeygenRequest<
+			HeygenEndpointOutputs['avatarsCreatePhotoGroup']
+		>('/v2/photo_avatar/avatar_group/create', ctx.key, {
+			method: 'POST',
+			body: input,
+		});
 
-	await logEventFromContext(
-		ctx,
-		'heygen.avatars.createPhotoGroup',
-		{},
-		'completed',
-	);
-	return result;
-};
+		await logEventFromContext(
+			ctx,
+			'heygen.avatars.createPhotoGroup',
+			{},
+			'completed',
+		);
+		return result;
+	};
 
 export const generatePhotos: HeygenEndpoints['avatarsGeneratePhotos'] = async (
 	ctx,
@@ -116,7 +116,10 @@ export const generatePhotos: HeygenEndpoints['avatarsGeneratePhotos'] = async (
 ) => {
 	const result = await makeHeygenRequest<
 		HeygenEndpointOutputs['avatarsGeneratePhotos']
-	>('/v2/photo_avatar/photo/generate', ctx.key, { method: 'POST', body: input });
+	>('/v2/photo_avatar/photo/generate', ctx.key, {
+		method: 'POST',
+		body: input,
+	});
 
 	await logEventFromContext(
 		ctx,
@@ -147,24 +150,22 @@ export const addLooks: HeygenEndpoints['avatarsAddLooks'] = async (
 	return result;
 };
 
-export const checkLookStatus: HeygenEndpoints['avatarsCheckLookStatus'] = async (
-	ctx,
-	input,
-) => {
-	const result = await makeHeygenRequest<
-		HeygenEndpointOutputs['avatarsCheckLookStatus']
-	>(`/v2/photo_avatar/generation/${input.generation_id}`, ctx.key, {
-		method: 'GET',
-	});
+export const checkLookStatus: HeygenEndpoints['avatarsCheckLookStatus'] =
+	async (ctx, input) => {
+		const result = await makeHeygenRequest<
+			HeygenEndpointOutputs['avatarsCheckLookStatus']
+		>(`/v2/photo_avatar/generation/${input.generation_id}`, ctx.key, {
+			method: 'GET',
+		});
 
-	await logEventFromContext(
-		ctx,
-		'heygen.avatars.checkLookStatus',
-		{ generationId: input.generation_id },
-		'completed',
-	);
-	return result;
-};
+		await logEventFromContext(
+			ctx,
+			'heygen.avatars.checkLookStatus',
+			{ generationId: input.generation_id },
+			'completed',
+		);
+		return result;
+	};
 
 // [B] Path inferred as `/v2/photo_avatar/train/status/{group_id}`; see endpoints/types.ts.
 export const getTrainingStatus: HeygenEndpoints['avatarsGetTrainingStatus'] =
@@ -185,42 +186,38 @@ export const getTrainingStatus: HeygenEndpoints['avatarsGetTrainingStatus'] =
 	};
 
 // [B] Path inferred as `/v2/photo_avatar/{id}`; see endpoints/types.ts.
-export const getPhotoDetails: HeygenEndpoints['avatarsGetPhotoDetails'] = async (
-	ctx,
-	input,
-) => {
-	const result = await makeHeygenRequest<
-		HeygenEndpointOutputs['avatarsGetPhotoDetails']
-	>(`/v2/photo_avatar/${input.id}`, ctx.key, { method: 'GET' });
+export const getPhotoDetails: HeygenEndpoints['avatarsGetPhotoDetails'] =
+	async (ctx, input) => {
+		const result = await makeHeygenRequest<
+			HeygenEndpointOutputs['avatarsGetPhotoDetails']
+		>(`/v2/photo_avatar/${input.id}`, ctx.key, { method: 'GET' });
 
-	await logEventFromContext(
-		ctx,
-		'heygen.avatars.getPhotoDetails',
-		{ avatarId: input.id },
-		'completed',
-	);
-	return result;
-};
+		await logEventFromContext(
+			ctx,
+			'heygen.avatars.getPhotoDetails',
+			{ avatarId: input.id },
+			'completed',
+		);
+		return result;
+	};
 
 // [B] Path inferred as `/v2/photo_avatar/avatar_group/{group_id}`; see endpoints/types.ts.
-export const deletePhotoGroup: HeygenEndpoints['avatarsDeletePhotoGroup'] = async (
-	ctx,
-	input,
-) => {
-	const result = await makeHeygenRequest<
-		HeygenEndpointOutputs['avatarsDeletePhotoGroup']
-	>(`/v2/photo_avatar/avatar_group/${input.group_id}`, ctx.key, {
-		method: 'DELETE',
-	});
+export const deletePhotoGroup: HeygenEndpoints['avatarsDeletePhotoGroup'] =
+	async (ctx, input) => {
+		const result = await makeHeygenRequest<
+			HeygenEndpointOutputs['avatarsDeletePhotoGroup']
+		>(`/v2/photo_avatar/avatar_group/${input.group_id}`, ctx.key, {
+			method: 'DELETE',
+		});
 
-	await logEventFromContext(
-		ctx,
-		'heygen.avatars.deletePhotoGroup',
-		{ groupId: input.group_id },
-		'completed',
-	);
-	return result;
-};
+		await logEventFromContext(
+			ctx,
+			'heygen.avatars.deletePhotoGroup',
+			{ groupId: input.group_id },
+			'completed',
+		);
+		return result;
+	};
 
 // [B] Path inferred as `/v2/photo_avatar/{id}`; see endpoints/types.ts.
 export const deletePhoto: HeygenEndpoints['avatarsDeletePhoto'] = async (
@@ -258,12 +255,13 @@ export const addMotion: HeygenEndpoints['avatarsAddMotion'] = async (
 };
 
 // [B] Path inferred as `/v2/photo_avatar/upscale`; see endpoints/types.ts.
-export const upscale: HeygenEndpoints['avatarsUpscale'] = async (ctx, input) => {
-	const result = await makeHeygenRequest<HeygenEndpointOutputs['avatarsUpscale']>(
-		'/v2/photo_avatar/upscale',
-		ctx.key,
-		{ method: 'POST', body: input },
-	);
+export const upscale: HeygenEndpoints['avatarsUpscale'] = async (
+	ctx,
+	input,
+) => {
+	const result = await makeHeygenRequest<
+		HeygenEndpointOutputs['avatarsUpscale']
+	>('/v2/photo_avatar/upscale', ctx.key, { method: 'POST', body: input });
 
 	await logEventFromContext(
 		ctx,
@@ -329,11 +327,9 @@ export const deleteTalkingPhoto: HeygenEndpoints['avatarsDeleteTalkingPhoto'] =
 
 // Migrated to HeyGen v3 API per developers.heygen.com
 export const create: HeygenEndpoints['avatarsCreate'] = async (ctx, input) => {
-	const result = await makeHeygenRequest<HeygenEndpointOutputs['avatarsCreate']>(
-		'/v3/avatars',
-		ctx.key,
-		{ method: 'POST', body: input },
-	);
+	const result = await makeHeygenRequest<
+		HeygenEndpointOutputs['avatarsCreate']
+	>('/v3/avatars', ctx.key, { method: 'POST', body: input });
 
 	await logEventFromContext(
 		ctx,
@@ -349,11 +345,9 @@ export const getGroup: HeygenEndpoints['avatarsGetGroup'] = async (
 	ctx,
 	input,
 ) => {
-	const result = await makeHeygenRequest<HeygenEndpointOutputs['avatarsGetGroup']>(
-		`/v3/avatars/${input.group_id}`,
-		ctx.key,
-		{ method: 'GET' },
-	);
+	const result = await makeHeygenRequest<
+		HeygenEndpointOutputs['avatarsGetGroup']
+	>(`/v3/avatars/${input.group_id}`, ctx.key, { method: 'GET' });
 
 	await logEventFromContext(
 		ctx,
@@ -406,20 +400,18 @@ export const listLooks: HeygenEndpoints['avatarsListLooks'] = async (
 	ctx,
 	input,
 ) => {
-	const result = await makeHeygenRequest<HeygenEndpointOutputs['avatarsListLooks']>(
-		'/v3/avatars/looks',
-		ctx.key,
-		{
-			method: 'GET',
-			query: {
-				group_id: input.group_id,
-				avatar_type: input.avatar_type,
-				ownership: input.ownership,
-				limit: input.limit,
-				token: input.token,
-			},
+	const result = await makeHeygenRequest<
+		HeygenEndpointOutputs['avatarsListLooks']
+	>('/v3/avatars/looks', ctx.key, {
+		method: 'GET',
+		query: {
+			group_id: input.group_id,
+			avatar_type: input.avatar_type,
+			ownership: input.ownership,
+			limit: input.limit,
+			token: input.token,
 		},
-	);
+	});
 
 	await logEventFromContext(ctx, 'heygen.avatars.listLooks', {}, 'completed');
 	return result;
@@ -430,11 +422,9 @@ export const getLook: HeygenEndpoints['avatarsGetLook'] = async (
 	ctx,
 	input,
 ) => {
-	const result = await makeHeygenRequest<HeygenEndpointOutputs['avatarsGetLook']>(
-		`/v3/avatars/looks/${input.look_id}`,
-		ctx.key,
-		{ method: 'GET' },
-	);
+	const result = await makeHeygenRequest<
+		HeygenEndpointOutputs['avatarsGetLook']
+	>(`/v3/avatars/looks/${input.look_id}`, ctx.key, { method: 'GET' });
 
 	await logEventFromContext(
 		ctx,

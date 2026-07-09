@@ -47,18 +47,21 @@ export const generatePreview: HeygenEndpoints['voicesGeneratePreview'] = async (
 
 // [B] Path inferred as `/v1/voice/list_tts`; see endpoints/types.ts for details.
 export const listTts: HeygenEndpoints['voicesListTts'] = async (ctx, input) => {
-	const result = await makeHeygenRequest<HeygenEndpointOutputs['voicesListTts']>(
-		'/v1/voice/list_tts',
-		ctx.key,
-		{ method: 'GET', query: { language: input.language, gender: input.gender } },
-	);
+	const result = await makeHeygenRequest<
+		HeygenEndpointOutputs['voicesListTts']
+	>('/v1/voice/list_tts', ctx.key, {
+		method: 'GET',
+		query: { language: input.language, gender: input.gender },
+	});
 
 	await logEventFromContext(ctx, 'heygen.voices.listTts', {}, 'completed');
 	return result;
 };
 
 // [B] Path inferred as `/v1/voice/locale.list`; see endpoints/types.ts for details.
-export const listLocales: HeygenEndpoints['voicesListLocales'] = async (ctx) => {
+export const listLocales: HeygenEndpoints['voicesListLocales'] = async (
+	ctx,
+) => {
 	const result = await makeHeygenRequest<
 		HeygenEndpointOutputs['voicesListLocales']
 	>('/v1/voice/locale.list', ctx.key, { method: 'GET' });
@@ -111,22 +114,20 @@ export const listBrandVoices: HeygenEndpoints['voicesListBrandVoices'] = async (
 // legacy v1/v2 voice operations above. ---------
 
 // Migrated to HeyGen v3 API per developers.heygen.com
-export const generateSpeechV3: HeygenEndpoints['voicesGenerateSpeechV3'] = async (
-	ctx,
-	input,
-) => {
-	const result = await makeHeygenRequest<
-		HeygenEndpointOutputs['voicesGenerateSpeechV3']
-	>('/v3/voices/speech', ctx.key, { method: 'POST', body: input });
+export const generateSpeechV3: HeygenEndpoints['voicesGenerateSpeechV3'] =
+	async (ctx, input) => {
+		const result = await makeHeygenRequest<
+			HeygenEndpointOutputs['voicesGenerateSpeechV3']
+		>('/v3/voices/speech', ctx.key, { method: 'POST', body: input });
 
-	await logEventFromContext(
-		ctx,
-		'heygen.voices.generateSpeechV3',
-		{ voiceId: input.voice_id },
-		'completed',
-	);
-	return result;
-};
+		await logEventFromContext(
+			ctx,
+			'heygen.voices.generateSpeechV3',
+			{ voiceId: input.voice_id },
+			'completed',
+		);
+		return result;
+	};
 
 // Migrated to HeyGen v3 API per developers.heygen.com
 export const listV3: HeygenEndpoints['voicesListV3'] = async (ctx, input) => {
@@ -201,11 +202,9 @@ export const deleteV3: HeygenEndpoints['voicesDeleteV3'] = async (
 	ctx,
 	input,
 ) => {
-	const result = await makeHeygenRequest<HeygenEndpointOutputs['voicesDeleteV3']>(
-		`/v3/voices/${input.voice_id}`,
-		ctx.key,
-		{ method: 'DELETE' },
-	);
+	const result = await makeHeygenRequest<
+		HeygenEndpointOutputs['voicesDeleteV3']
+	>(`/v3/voices/${input.voice_id}`, ctx.key, { method: 'DELETE' });
 
 	await logEventFromContext(
 		ctx,

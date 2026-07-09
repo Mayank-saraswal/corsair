@@ -7,22 +7,20 @@ import type { HeygenEndpointOutputs } from './types';
 // operation does not exist in HeyGen's v3 API (confirmed against the live docs) and was
 // dropped rather than invented.
 
-export const createSession: HeygenEndpoints['avatarRealtimeCreateSession'] = async (
-	ctx,
-	input,
-) => {
-	const result = await makeHeygenRequest<
-		HeygenEndpointOutputs['avatarRealtimeCreateSession']
-	>('/v3/avatar-realtime', ctx.key, { method: 'POST', body: input });
+export const createSession: HeygenEndpoints['avatarRealtimeCreateSession'] =
+	async (ctx, input) => {
+		const result = await makeHeygenRequest<
+			HeygenEndpointOutputs['avatarRealtimeCreateSession']
+		>('/v3/avatar-realtime', ctx.key, { method: 'POST', body: input });
 
-	await logEventFromContext(
-		ctx,
-		'heygen.avatarRealtime.createSession',
-		{ type: input.type },
-		'completed',
-	);
-	return result;
-};
+		await logEventFromContext(
+			ctx,
+			'heygen.avatarRealtime.createSession',
+			{ type: input.type },
+			'completed',
+		);
+		return result;
+	};
 
 export const getSession: HeygenEndpoints['avatarRealtimeGetSession'] = async (
 	ctx,
@@ -59,22 +57,20 @@ export const appendText: HeygenEndpoints['avatarRealtimeAppendText'] = async (
 	return result;
 };
 
-export const cancelSession: HeygenEndpoints['avatarRealtimeCancelSession'] = async (
-	ctx,
-	input,
-) => {
-	const result = await makeHeygenRequest<
-		HeygenEndpointOutputs['avatarRealtimeCancelSession']
-	>(`/v3/avatar-realtime/${input.stream_id}/cancel`, ctx.key, {
-		method: 'POST',
-		body: {},
-	});
+export const cancelSession: HeygenEndpoints['avatarRealtimeCancelSession'] =
+	async (ctx, input) => {
+		const result = await makeHeygenRequest<
+			HeygenEndpointOutputs['avatarRealtimeCancelSession']
+		>(`/v3/avatar-realtime/${input.stream_id}/cancel`, ctx.key, {
+			method: 'POST',
+			body: {},
+		});
 
-	await logEventFromContext(
-		ctx,
-		'heygen.avatarRealtime.cancelSession',
-		{ streamId: input.stream_id },
-		'completed',
-	);
-	return result;
-};
+		await logEventFromContext(
+			ctx,
+			'heygen.avatarRealtime.cancelSession',
+			{ streamId: input.stream_id },
+			'completed',
+		);
+		return result;
+	};

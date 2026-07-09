@@ -31,7 +31,10 @@ import {
 	Voices,
 	WebhooksQuota,
 } from './endpoints';
-import type { HeygenEndpointInputs, HeygenEndpointOutputs } from './endpoints/types';
+import type {
+	HeygenEndpointInputs,
+	HeygenEndpointOutputs,
+} from './endpoints/types';
 import {
 	HeygenEndpointInputSchemas,
 	HeygenEndpointOutputSchemas,
@@ -961,27 +964,33 @@ export const heygenEndpointSchemas = {
 const heygenEndpointMeta = {
 	'videos.generate': {
 		riskLevel: 'write',
-		description: 'Generate a customized avatar video with voices and character configs',
+		description:
+			'Generate a customized avatar video with voices and character configs',
 	},
 	'videos.templateGenerate': {
 		riskLevel: 'write',
-		description: 'Generate a customized video from a pre-existing template using variable definitions',
+		description:
+			'Generate a customized video from a pre-existing template using variable definitions',
 	},
 	'videos.createWebm': {
 		riskLevel: 'write',
-		description: 'Create a WebM format video with transparent background featuring studio avatars',
+		description:
+			'Create a WebM format video with transparent background featuring studio avatars',
 	},
 	'videos.personalizedAddContact': {
 		riskLevel: 'write',
-		description: 'Add recipient contacts (name/email) to a personalized video project',
+		description:
+			'Add recipient contacts (name/email) to a personalized video project',
 	},
 	'videos.personalizedProjectDetail': {
 		riskLevel: 'read',
-		description: 'Retrieve details, status, and metadata for a personalized video project',
+		description:
+			'Retrieve details, status, and metadata for a personalized video project',
 	},
 	'videos.getStatus': {
 		riskLevel: 'read',
-		description: 'Retrieve asynchronous video processing status and time-limited download URLs',
+		description:
+			'Retrieve asynchronous video processing status and time-limited download URLs',
 	},
 	'videos.translate': {
 		riskLevel: 'write',
@@ -993,11 +1002,13 @@ const heygenEndpointMeta = {
 	},
 	'videos.translateTargetLanguages': {
 		riskLevel: 'read',
-		description: 'Retrieve the list of all supported target languages for video translation',
+		description:
+			'Retrieve the list of all supported target languages for video translation',
 	},
 	'videos.getSharableUrl': {
 		riskLevel: 'write',
-		description: 'Generate a public, shareable URL for a video without authentication requirements',
+		description:
+			'Generate a public, shareable URL for a video without authentication requirements',
 	},
 	'videos.delete': {
 		riskLevel: 'destructive',
@@ -1006,16 +1017,19 @@ const heygenEndpointMeta = {
 	},
 	'videos.list': {
 		riskLevel: 'read',
-		description: 'Retrieve a paginated list of videos associated with the account',
+		description:
+			'Retrieve a paginated list of videos associated with the account',
 	},
 
 	'avatars.list': {
 		riskLevel: 'read',
-		description: 'Retrieve a list of available public and private avatars with pagination',
+		description:
+			'Retrieve a list of available public and private avatars with pagination',
 	},
 	'avatars.getDetails': {
 		riskLevel: 'read',
-		description: 'Retrieve comprehensive details, display properties, and preview media for an avatar',
+		description:
+			'Retrieve comprehensive details, display properties, and preview media for an avatar',
 	},
 	'avatars.listGroups': {
 		riskLevel: 'read',
@@ -1031,15 +1045,18 @@ const heygenEndpointMeta = {
 	},
 	'avatars.createPhotoGroup': {
 		riskLevel: 'write',
-		description: 'Create an avatar group for AI-generated and user-uploaded photos',
+		description:
+			'Create an avatar group for AI-generated and user-uploaded photos',
 	},
 	'avatars.generatePhotos': {
 		riskLevel: 'write',
-		description: 'Generate AI avatar photos based on text prompts and attributes',
+		description:
+			'Generate AI avatar photos based on text prompts and attributes',
 	},
 	'avatars.addLooks': {
 		riskLevel: 'write',
-		description: 'Add up to 4 image look variations to an existing photo avatar group',
+		description:
+			'Add up to 4 image look variations to an existing photo avatar group',
 	},
 	'avatars.checkLookStatus': {
 		riskLevel: 'read',
@@ -1051,7 +1068,8 @@ const heygenEndpointMeta = {
 	},
 	'avatars.getPhotoDetails': {
 		riskLevel: 'read',
-		description: 'Retrieve comprehensive metadata and configuration for a photo avatar/look',
+		description:
+			'Retrieve comprehensive metadata and configuration for a photo avatar/look',
 	},
 	'avatars.deletePhotoGroup': {
 		riskLevel: 'destructive',
@@ -1065,19 +1083,23 @@ const heygenEndpointMeta = {
 	},
 	'avatars.addMotion': {
 		riskLevel: 'write',
-		description: 'Animate a still photo avatar into a moving lifelike motion avatar',
+		description:
+			'Animate a still photo avatar into a moving lifelike motion avatar',
 	},
 	'avatars.upscale': {
 		riskLevel: 'write',
-		description: 'Enhance the resolution and quality of an existing motion avatar',
+		description:
+			'Enhance the resolution and quality of an existing motion avatar',
 	},
 	'avatars.listTalkingPhotos': {
 		riskLevel: 'read',
-		description: 'Retrieve a list of existing interactive talking photo projects',
+		description:
+			'Retrieve a list of existing interactive talking photo projects',
 	},
 	'avatars.uploadTalkingPhoto': {
 		riskLevel: 'write',
-		description: 'Create an interactive talking photo from an uploaded JPEG/PNG binary image',
+		description:
+			'Create an interactive talking photo from an uploaded JPEG/PNG binary image',
 	},
 	'avatars.deleteTalkingPhoto': {
 		riskLevel: 'destructive',
@@ -1087,7 +1109,8 @@ const heygenEndpointMeta = {
 
 	'voices.generateSpeech': {
 		riskLevel: 'write',
-		description: 'Generate a speech audio file from text input using the Starfish TTS model',
+		description:
+			'Generate a speech audio file from text input using the Starfish TTS model',
 	},
 	'voices.generatePreview': {
 		riskLevel: 'write',
@@ -1095,7 +1118,8 @@ const heygenEndpointMeta = {
 	},
 	'voices.listTts': {
 		riskLevel: 'read',
-		description: 'Retrieve public and custom voices compatible with the Starfish model',
+		description:
+			'Retrieve public and custom voices compatible with the Starfish model',
 	},
 	'voices.listLocales': {
 		riskLevel: 'read',
@@ -1103,7 +1127,8 @@ const heygenEndpointMeta = {
 	},
 	'voices.listV2': {
 		riskLevel: 'read',
-		description: 'Retrieve a comprehensive list of available voice models and characteristics',
+		description:
+			'Retrieve a comprehensive list of available voice models and characteristics',
 	},
 	'voices.listV1': {
 		riskLevel: 'read',
@@ -1111,40 +1136,49 @@ const heygenEndpointMeta = {
 	},
 	'voices.listBrandVoices': {
 		riskLevel: 'read',
-		description: 'Retrieve brand glossaries maintaining consistent terminology/pronunciation',
+		description:
+			'Retrieve brand glossaries maintaining consistent terminology/pronunciation',
 	},
 
 	'streaming.newSession': {
 		riskLevel: 'write',
-		description: 'Initiate a streaming session with an Interactive Avatar to get a WebSocket URL, session ID, and token',
+		description:
+			'Initiate a streaming session with an Interactive Avatar to get a WebSocket URL, session ID, and token',
 	},
 	'streaming.createToken': {
 		riskLevel: 'write',
-		description: 'Generate a time-limited authentication token for streaming sessions',
+		description:
+			'Generate a time-limited authentication token for streaming sessions',
 	},
 	'streaming.start': {
 		riskLevel: 'write',
-		description: 'Establish a WebRTC SDP offer connection for real-time video/audio streaming',
+		description:
+			'Establish a WebRTC SDP offer connection for real-time video/audio streaming',
 	},
 	'streaming.stop': {
 		riskLevel: 'write',
-		description: 'Terminate an active WebRTC streaming session and free resources',
+		description:
+			'Terminate an active WebRTC streaming session and free resources',
 	},
 	'streaming.interrupt': {
 		riskLevel: 'write',
-		description: "Abruptly interrupt an avatar's ongoing action/speech for instant control",
+		description:
+			"Abruptly interrupt an avatar's ongoing action/speech for instant control",
 	},
 	'streaming.keepAlive': {
 		riskLevel: 'write',
-		description: 'Reset the idle timeout counter for an active streaming session',
+		description:
+			'Reset the idle timeout counter for an active streaming session',
 	},
 	'streaming.task': {
 		riskLevel: 'write',
-		description: 'Send a real-time text speaking task to an active streaming avatar',
+		description:
+			'Send a real-time text speaking task to an active streaming avatar',
 	},
 	'streaming.ice': {
 		riskLevel: 'write',
-		description: 'Submit ICE candidate information for WebRTC peer-to-peer negotiation',
+		description:
+			'Submit ICE candidate information for WebRTC peer-to-peer negotiation',
 	},
 	'streaming.new': {
 		riskLevel: 'write',
@@ -1156,16 +1190,19 @@ const heygenEndpointMeta = {
 	},
 	'streaming.listAvatars': {
 		riskLevel: 'read',
-		description: 'Retrieve a list of public and custom interactive avatars available for streaming',
+		description:
+			'Retrieve a list of public and custom interactive avatars available for streaming',
 	},
 	'streaming.listSessionHistory': {
 		riskLevel: 'read',
-		description: 'Retrieve a paginated history and metadata of past streaming sessions',
+		description:
+			'Retrieve a paginated history and metadata of past streaming sessions',
 	},
 
 	'knowledgeBases.create': {
 		riskLevel: 'write',
-		description: 'Create a knowledge base with a custom name, opening line, and prompt for interactive sessions',
+		description:
+			'Create a knowledge base with a custom name, opening line, and prompt for interactive sessions',
 	},
 	'knowledgeBases.list': {
 		riskLevel: 'read',
@@ -1173,7 +1210,8 @@ const heygenEndpointMeta = {
 	},
 	'knowledgeBases.update': {
 		riskLevel: 'write',
-		description: 'Modify the opening line, prompt, or name of an existing knowledge base',
+		description:
+			'Modify the opening line, prompt, or name of an existing knowledge base',
 	},
 	'knowledgeBases.delete': {
 		riskLevel: 'destructive',
@@ -1187,11 +1225,13 @@ const heygenEndpointMeta = {
 	},
 	'assets.getTemplate': {
 		riskLevel: 'read',
-		description: 'Retrieve structure, placeholders, and avatar settings of a specific template',
+		description:
+			'Retrieve structure, placeholders, and avatar settings of a specific template',
 	},
 	'assets.getTemplateDetailsV3': {
 		riskLevel: 'read',
-		description: 'Retrieve comprehensive details, variables, and scene mappings for AI Studio templates',
+		description:
+			'Retrieve comprehensive details, variables, and scene mappings for AI Studio templates',
 	},
 	'assets.uploadAsset': {
 		riskLevel: 'write',
@@ -1199,11 +1239,13 @@ const heygenEndpointMeta = {
 	},
 	'assets.listAssets': {
 		riskLevel: 'read',
-		description: 'Retrieve a paginated list of assets with type/folder filtering',
+		description:
+			'Retrieve a paginated list of assets with type/folder filtering',
 	},
 	'assets.listAssets2': {
 		riskLevel: 'read',
-		description: 'Retrieve a list of uploaded assets with cursor/page pagination',
+		description:
+			'Retrieve a list of uploaded assets with cursor/page pagination',
 	},
 	'assets.deleteAsset': {
 		riskLevel: 'destructive',
@@ -1224,7 +1266,8 @@ const heygenEndpointMeta = {
 	},
 	'assets.trashFolder': {
 		riskLevel: 'write',
-		description: 'Soft-delete a folder by moving it to trash (recoverable via restoreFolder)',
+		description:
+			'Soft-delete a folder by moving it to trash (recoverable via restoreFolder)',
 	},
 	'assets.restoreFolder': {
 		riskLevel: 'write',
@@ -1233,7 +1276,8 @@ const heygenEndpointMeta = {
 
 	'webhooksQuota.addEndpoint': {
 		riskLevel: 'write',
-		description: 'Configure a new webhook URL to receive notifications for specified events',
+		description:
+			'Configure a new webhook URL to receive notifications for specified events',
 	},
 	'webhooksQuota.listEndpoints': {
 		riskLevel: 'read',
@@ -1245,7 +1289,8 @@ const heygenEndpointMeta = {
 	},
 	'webhooksQuota.updateEndpoint': {
 		riskLevel: 'write',
-		description: 'Modify the URL or subscribed events of an existing webhook endpoint',
+		description:
+			'Modify the URL or subscribed events of an existing webhook endpoint',
 	},
 	'webhooksQuota.deleteEndpoint': {
 		riskLevel: 'destructive',
@@ -1254,15 +1299,18 @@ const heygenEndpointMeta = {
 	},
 	'webhooksQuota.getCurrentUser': {
 		riskLevel: 'read',
-		description: 'Retrieve the authenticated user profile, quotas, and subscription details',
+		description:
+			'Retrieve the authenticated user profile, quotas, and subscription details',
 	},
 	'webhooksQuota.remainingQuota': {
 		riskLevel: 'read',
-		description: 'Retrieve the current remaining API credit quota and available resources',
+		description:
+			'Retrieve the current remaining API credit quota and available resources',
 	},
 	'webhooksQuota.listEventTypesV3': {
 		riskLevel: 'read',
-		description: 'Retrieve all available v3 webhook event types with descriptions',
+		description:
+			'Retrieve all available v3 webhook event types with descriptions',
 	},
 	'webhooksQuota.listEndpointsV3': {
 		riskLevel: 'read',
@@ -1270,7 +1318,8 @@ const heygenEndpointMeta = {
 	},
 	'webhooksQuota.addEndpointV3': {
 		riskLevel: 'write',
-		description: 'Register a new v3 webhook endpoint URL to receive event notifications',
+		description:
+			'Register a new v3 webhook endpoint URL to receive event notifications',
 	},
 	'webhooksQuota.deleteEndpointV3': {
 		riskLevel: 'destructive',
@@ -1279,7 +1328,8 @@ const heygenEndpointMeta = {
 	},
 	'webhooksQuota.updateEndpointV3': {
 		riskLevel: 'write',
-		description: 'Modify the URL or subscribed events of an existing v3 webhook endpoint',
+		description:
+			'Modify the URL or subscribed events of an existing v3 webhook endpoint',
 	},
 	'webhooksQuota.rotateSecret': {
 		riskLevel: 'write',
@@ -1297,12 +1347,14 @@ const heygenEndpointMeta = {
 	'videos.deleteV3': {
 		riskLevel: 'destructive',
 		irreversible: true,
-		description: 'Permanently delete a video and its associated files via the v3 API',
+		description:
+			'Permanently delete a video and its associated files via the v3 API',
 	},
 
 	'avatars.create': {
 		riskLevel: 'write',
-		description: 'Create a new avatar from a prompt, digital twin video, or photo',
+		description:
+			'Create a new avatar from a prompt, digital twin video, or photo',
 	},
 	'avatars.getGroup': {
 		riskLevel: 'read',
@@ -1315,11 +1367,13 @@ const heygenEndpointMeta = {
 	},
 	'avatars.createConsent': {
 		riskLevel: 'write',
-		description: 'Start the consent verification flow required for a custom avatar group',
+		description:
+			'Start the consent verification flow required for a custom avatar group',
 	},
 	'avatars.listLooks': {
 		riskLevel: 'read',
-		description: 'Retrieve a paginated list of avatar looks (outfits, poses, styles)',
+		description:
+			'Retrieve a paginated list of avatar looks (outfits, poses, styles)',
 	},
 	'avatars.getLook': {
 		riskLevel: 'read',
@@ -1337,7 +1391,8 @@ const heygenEndpointMeta = {
 
 	'voices.generateSpeechV3': {
 		riskLevel: 'write',
-		description: 'Generate a speech audio file from text via the v3 Starfish TTS engine',
+		description:
+			'Generate a speech audio file from text via the v3 Starfish TTS engine',
 	},
 	'voices.listV3': {
 		riskLevel: 'read',
@@ -1345,7 +1400,8 @@ const heygenEndpointMeta = {
 	},
 	'voices.design': {
 		riskLevel: 'write',
-		description: 'Generate up to 3 candidate synthetic voices from a text description',
+		description:
+			'Generate up to 3 candidate synthetic voices from a text description',
 	},
 	'voices.clone': {
 		riskLevel: 'write',
@@ -1380,7 +1436,8 @@ const heygenEndpointMeta = {
 	},
 	'assets.completeUpload': {
 		riskLevel: 'write',
-		description: 'Finalize a presigned direct-upload session into a usable asset',
+		description:
+			'Finalize a presigned direct-upload session into a usable asset',
 	},
 
 	'videoAgents.listSessions': {
@@ -1389,7 +1446,8 @@ const heygenEndpointMeta = {
 	},
 	'videoAgents.createSession': {
 		riskLevel: 'write',
-		description: 'Create a video agent session that generates a video from a text prompt',
+		description:
+			'Create a video agent session that generates a video from a text prompt',
 	},
 	'videoAgents.listStyles': {
 		riskLevel: 'read',
@@ -1397,15 +1455,18 @@ const heygenEndpointMeta = {
 	},
 	'videoAgents.getSession': {
 		riskLevel: 'read',
-		description: 'Retrieve the status, progress, and chat history of a video agent session',
+		description:
+			'Retrieve the status, progress, and chat history of a video agent session',
 	},
 	'videoAgents.sendMessage': {
 		riskLevel: 'write',
-		description: 'Send a chat message or revision request to an active video agent session',
+		description:
+			'Send a chat message or revision request to an active video agent session',
 	},
 	'videoAgents.getResource': {
 		riskLevel: 'read',
-		description: 'Retrieve a specific resource generated within a video agent session',
+		description:
+			'Retrieve a specific resource generated within a video agent session',
 	},
 	'videoAgents.listVideos': {
 		riskLevel: 'read',
@@ -1418,24 +1479,29 @@ const heygenEndpointMeta = {
 
 	'brand.listGlossaries': {
 		riskLevel: 'read',
-		description: 'Retrieve a paginated list of brand glossaries for custom term translation',
+		description:
+			'Retrieve a paginated list of brand glossaries for custom term translation',
 	},
 	'brand.listKits': {
 		riskLevel: 'read',
-		description: 'Retrieve a paginated list of brand kits (logos, colors, fonts)',
+		description:
+			'Retrieve a paginated list of brand kits (logos, colors, fonts)',
 	},
 
 	'avatarRealtime.createSession': {
 		riskLevel: 'write',
-		description: 'Create a low-latency HLS streaming session with an interactive avatar',
+		description:
+			'Create a low-latency HLS streaming session with an interactive avatar',
 	},
 	'avatarRealtime.getSession': {
 		riskLevel: 'read',
-		description: 'Retrieve the status and playback URL of an avatar realtime session',
+		description:
+			'Retrieve the status and playback URL of an avatar realtime session',
 	},
 	'avatarRealtime.appendText': {
 		riskLevel: 'write',
-		description: 'Append streamed text to an active text_stream avatar realtime session',
+		description:
+			'Append streamed text to an active text_stream avatar realtime session',
 	},
 	'avatarRealtime.cancelSession': {
 		riskLevel: 'write',
@@ -1444,7 +1510,8 @@ const heygenEndpointMeta = {
 
 	'audio.search': {
 		riskLevel: 'read',
-		description: 'Search HeyGen\'s library of background music and sound effects',
+		description:
+			"Search HeyGen's library of background music and sound effects",
 	},
 
 	'videoTranslations.list': {
@@ -1454,7 +1521,8 @@ const heygenEndpointMeta = {
 	'videoTranslations.delete': {
 		riskLevel: 'destructive',
 		irreversible: true,
-		description: 'Permanently delete a video translation and its associated files',
+		description:
+			'Permanently delete a video translation and its associated files',
 	},
 	'videoTranslations.update': {
 		riskLevel: 'write',
@@ -1463,7 +1531,8 @@ const heygenEndpointMeta = {
 
 	'proofread.create': {
 		riskLevel: 'write',
-		description: 'Create a proofread session for reviewing a video translation before rendering',
+		description:
+			'Create a proofread session for reviewing a video translation before rendering',
 	},
 	'proofread.get': {
 		riskLevel: 'read',
@@ -1471,15 +1540,18 @@ const heygenEndpointMeta = {
 	},
 	'proofread.downloadSrt': {
 		riskLevel: 'read',
-		description: 'Retrieve presigned download URLs for a proofread session\'s SRT files',
+		description:
+			"Retrieve presigned download URLs for a proofread session's SRT files",
 	},
 	'proofread.uploadSrt': {
 		riskLevel: 'write',
-		description: 'Replace a proofread session\'s subtitles with an edited SRT file',
+		description:
+			"Replace a proofread session's subtitles with an edited SRT file",
 	},
 	'proofread.generateVideo': {
 		riskLevel: 'write',
-		description: 'Render the final translated video from a completed proofread session',
+		description:
+			'Render the final translated video from a completed proofread session',
 	},
 
 	'lipsync.list': {
@@ -1488,7 +1560,8 @@ const heygenEndpointMeta = {
 	},
 	'lipsync.create': {
 		riskLevel: 'write',
-		description: 'Create a lipsync job that syncs a video to a separate audio track',
+		description:
+			'Create a lipsync job that syncs a video to a separate audio track',
 	},
 	'lipsync.get': {
 		riskLevel: 'read',
@@ -1510,7 +1583,8 @@ const heygenEndpointMeta = {
 	},
 	'hyperframes.create': {
 		riskLevel: 'write',
-		description: 'Create a HyperFrames cloud render from an HTML/motion-graphics project',
+		description:
+			'Create a HyperFrames cloud render from an HTML/motion-graphics project',
 	},
 	'hyperframes.get': {
 		riskLevel: 'read',
@@ -1524,7 +1598,8 @@ const heygenEndpointMeta = {
 
 	'aiClipping.get': {
 		riskLevel: 'read',
-		description: 'Retrieve the status and generated clips of an AI clipping job',
+		description:
+			'Retrieve the status and generated clips of an AI clipping job',
 	},
 	'aiClipping.delete': {
 		riskLevel: 'destructive',
@@ -1537,7 +1612,8 @@ const heygenEndpointMeta = {
 	},
 	'aiClipping.create': {
 		riskLevel: 'write',
-		description: 'Create an AI clipping job that turns a long video into short highlight clips',
+		description:
+			'Create an AI clipping job that turns a long video into short highlight clips',
 	},
 } satisfies RequiredPluginEndpointMeta<typeof heygenEndpointsNested>;
 
@@ -1616,4 +1692,7 @@ export function heygen<const T extends HeygenPluginOptions>(
 	} satisfies InternalHeygenPlugin;
 }
 
-export type { HeygenEndpointInputs, HeygenEndpointOutputs } from './endpoints/types';
+export type {
+	HeygenEndpointInputs,
+	HeygenEndpointOutputs,
+} from './endpoints/types';

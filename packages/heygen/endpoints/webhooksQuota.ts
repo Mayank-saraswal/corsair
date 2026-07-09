@@ -140,25 +140,23 @@ export const listEventTypesV3: HeygenEndpoints['webhooksListEventTypesV3'] =
 	};
 
 // Migrated to HeyGen v3 API per developers.heygen.com
-export const listEndpointsV3: HeygenEndpoints['webhooksListEndpointsV3'] = async (
-	ctx,
-	input,
-) => {
-	const result = await makeHeygenRequest<
-		HeygenEndpointOutputs['webhooksListEndpointsV3']
-	>('/v3/webhooks/endpoints', ctx.key, {
-		method: 'GET',
-		query: { limit: input.limit, token: input.token },
-	});
+export const listEndpointsV3: HeygenEndpoints['webhooksListEndpointsV3'] =
+	async (ctx, input) => {
+		const result = await makeHeygenRequest<
+			HeygenEndpointOutputs['webhooksListEndpointsV3']
+		>('/v3/webhooks/endpoints', ctx.key, {
+			method: 'GET',
+			query: { limit: input.limit, token: input.token },
+		});
 
-	await logEventFromContext(
-		ctx,
-		'heygen.webhooksQuota.listEndpointsV3',
-		{},
-		'completed',
-	);
-	return result;
-};
+		await logEventFromContext(
+			ctx,
+			'heygen.webhooksQuota.listEndpointsV3',
+			{},
+			'completed',
+		);
+		return result;
+	};
 
 // Migrated to HeyGen v3 API per developers.heygen.com
 export const addEndpointV3: HeygenEndpoints['webhooksAddEndpointV3'] = async (

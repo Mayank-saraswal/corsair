@@ -21,7 +21,12 @@ export const listTemplates: HeygenEndpoints['assetsListTemplates'] = async (
 		HeygenEndpointOutputs['assetsListTemplates']
 	>('/v2/templates', ctx.key, { method: 'GET' });
 
-	await logEventFromContext(ctx, 'heygen.assets.listTemplates', {}, 'completed');
+	await logEventFromContext(
+		ctx,
+		'heygen.assets.listTemplates',
+		{},
+		'completed',
+	);
 	return result;
 };
 
@@ -227,7 +232,12 @@ export const uploadAssetV3: HeygenEndpoints['assetsUploadAssetV3'] = async (
 		file: base64ToBlob(input.fileBase64, input.contentType),
 	});
 
-	await logEventFromContext(ctx, 'heygen.assets.uploadAssetV3', {}, 'completed');
+	await logEventFromContext(
+		ctx,
+		'heygen.assets.uploadAssetV3',
+		{},
+		'completed',
+	);
 	return result;
 };
 
@@ -236,11 +246,9 @@ export const getAsset: HeygenEndpoints['assetsGetAsset'] = async (
 	ctx,
 	input,
 ) => {
-	const result = await makeHeygenRequest<HeygenEndpointOutputs['assetsGetAsset']>(
-		`/v3/assets/${input.asset_id}`,
-		ctx.key,
-		{ method: 'GET' },
-	);
+	const result = await makeHeygenRequest<
+		HeygenEndpointOutputs['assetsGetAsset']
+	>(`/v3/assets/${input.asset_id}`, ctx.key, { method: 'GET' });
 
 	await logEventFromContext(
 		ctx,

@@ -60,22 +60,20 @@ export const update: HeygenEndpoints['knowledgeBasesUpdate'] = async (
 };
 
 // [B] Path inferred as `/v1/streaming/knowledge_base/delete`; see endpoints/types.ts.
-export const deleteKnowledgeBase: HeygenEndpoints['knowledgeBasesDelete'] = async (
-	ctx,
-	input,
-) => {
-	const result = await makeHeygenRequest<
-		HeygenEndpointOutputs['knowledgeBasesDelete']
-	>('/v1/streaming/knowledge_base/delete', ctx.key, {
-		method: 'DELETE',
-		query: { knowledge_base_id: input.knowledge_base_id },
-	});
+export const deleteKnowledgeBase: HeygenEndpoints['knowledgeBasesDelete'] =
+	async (ctx, input) => {
+		const result = await makeHeygenRequest<
+			HeygenEndpointOutputs['knowledgeBasesDelete']
+		>('/v1/streaming/knowledge_base/delete', ctx.key, {
+			method: 'DELETE',
+			query: { knowledge_base_id: input.knowledge_base_id },
+		});
 
-	await logEventFromContext(
-		ctx,
-		'heygen.knowledgeBases.delete',
-		{ knowledgeBaseId: input.knowledge_base_id },
-		'completed',
-	);
-	return result;
-};
+		await logEventFromContext(
+			ctx,
+			'heygen.knowledgeBases.delete',
+			{ knowledgeBaseId: input.knowledge_base_id },
+			'completed',
+		);
+		return result;
+	};

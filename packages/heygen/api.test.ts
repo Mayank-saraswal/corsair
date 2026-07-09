@@ -1,16 +1,29 @@
 import 'dotenv/config';
 import { makeHeygenRequest } from './client';
+import type {
+	HeygenEndpointInputs,
+	HeygenEndpointOutputs,
+} from './endpoints/types';
 import {
 	HeygenEndpointInputSchemas,
 	HeygenEndpointOutputSchemas,
 } from './endpoints/types';
-import type { HeygenEndpointInputs, HeygenEndpointOutputs } from './endpoints/types';
 
 declare const describe: {
 	(name: string, fn: () => void): void;
 	skip(name: string, fn: () => void): void;
 };
 declare const it: (name: string, fn: () => void | Promise<void>) => void;
+declare const expect: {
+	(
+		actual: unknown,
+	): {
+		toBe(expected: unknown): void;
+		toBeDefined(): void;
+		toBeGreaterThan(n: number): void;
+		toEqual(expected: unknown): void;
+	};
+};
 
 const TEST_API_KEY = process.env.HEYGEN_API_KEY;
 const describeIfApiKey = TEST_API_KEY ? describe : describe.skip;
@@ -36,7 +49,10 @@ const FIXTURES: {
 		output: { error: null, data: { video_id: 'vid_123', status: 'waiting' } },
 	},
 	videosTemplateGenerate: {
-		input: { template_id: 'tmpl_123', variables: { first_name: { name: 'first_name' } } },
+		input: {
+			template_id: 'tmpl_123',
+			variables: { first_name: { name: 'first_name' } },
+		},
 		output: { error: null, data: { video_id: 'vid_123' } },
 	},
 	videosCreateWebm: {
@@ -78,7 +94,10 @@ const FIXTURES: {
 	},
 	videosGetSharableUrl: {
 		input: { video_id: 'vid_123' },
-		output: { error: null, data: { share_url: 'https://app.heygen.com/share/vid_123' } },
+		output: {
+			error: null,
+			data: { share_url: 'https://app.heygen.com/share/vid_123' },
+		},
 	},
 	videosDelete: {
 		input: { video_id: 'vid_123' },
@@ -103,7 +122,10 @@ const FIXTURES: {
 	},
 	avatarsListGroupAvatars: {
 		input: { group_id: 'group_123' },
-		output: { error: null, data: { avatar_list: [{ avatar_id: 'avatar_123' }] } },
+		output: {
+			error: null,
+			data: { avatar_list: [{ avatar_id: 'avatar_123' }] },
+		},
 	},
 	avatarsSearchPublicGroups: {
 		input: { keyword: 'business' },
@@ -127,12 +149,18 @@ const FIXTURES: {
 		output: { error: null, data: { generation_id: 'gen_123' } },
 	},
 	avatarsAddLooks: {
-		input: { group_id: 'group_123', image_keys: ['image_key_1', 'image_key_2'] },
+		input: {
+			group_id: 'group_123',
+			image_keys: ['image_key_1', 'image_key_2'],
+		},
 		output: { error: null, data: { generation_id: 'gen_123' } },
 	},
 	avatarsCheckLookStatus: {
 		input: { generation_id: 'gen_123' },
-		output: { error: null, data: { generation_id: 'gen_123', status: 'success' } },
+		output: {
+			error: null,
+			data: { generation_id: 'gen_123', status: 'success' },
+		},
 	},
 	avatarsGetTrainingStatus: {
 		input: { group_id: 'group_123' },
@@ -241,7 +269,10 @@ const FIXTURES: {
 	},
 	streamingList: {
 		input: {},
-		output: { error: null, data: { sessions: [{ session_id: 'session_123' }] } },
+		output: {
+			error: null,
+			data: { sessions: [{ session_id: 'session_123' }] },
+		},
 	},
 	streamingListAvatars: {
 		input: {},
@@ -249,7 +280,10 @@ const FIXTURES: {
 	},
 	streamingListSessionHistory: {
 		input: { page: 1 },
-		output: { error: null, data: { sessions: [{ session_id: 'session_123' }] } },
+		output: {
+			error: null,
+			data: { sessions: [{ session_id: 'session_123' }] },
+		},
 	},
 
 	knowledgeBasesCreate: {
@@ -283,7 +317,10 @@ const FIXTURES: {
 	},
 	assetsUploadAsset: {
 		input: { fileBase64: 'aGVsbG8=', contentType: 'image/png' },
-		output: { error: null, data: { id: 'asset_123', url: 'https://x/asset.png' } },
+		output: {
+			error: null,
+			data: { id: 'asset_123', url: 'https://x/asset.png' },
+		},
 	},
 	assetsListAssets: {
 		input: { page: 1 },
@@ -319,7 +356,10 @@ const FIXTURES: {
 	},
 
 	webhooksQuotaAddEndpoint: {
-		input: { url: 'https://example.com/webhook', events: ['avatar_video.success'] },
+		input: {
+			url: 'https://example.com/webhook',
+			events: ['avatar_video.success'],
+		},
 		output: { error: null, data: { endpoint_id: 'endpoint_123' } },
 	},
 	webhooksQuotaListEndpoints: {
@@ -331,7 +371,10 @@ const FIXTURES: {
 		output: { error: null, data: [{ event: 'avatar_video.success' }] },
 	},
 	webhooksQuotaUpdateEndpoint: {
-		input: { endpoint_id: 'endpoint_123', url: 'https://example.com/new-webhook' },
+		input: {
+			endpoint_id: 'endpoint_123',
+			url: 'https://example.com/new-webhook',
+		},
 		output: { error: null, data: {} },
 	},
 	webhooksQuotaDeleteEndpoint: {
@@ -439,13 +482,22 @@ const FIXTURES: {
 	},
 
 	avatarsCreate: {
-		input: { type: 'prompt', name: 'My Avatar', prompt: 'A friendly presenter' },
+		input: {
+			type: 'prompt',
+			name: 'My Avatar',
+			prompt: 'A friendly presenter',
+		},
 		output: { data: { avatar_item: null, avatar_group: null } },
 	},
 	avatarsGetGroup: {
 		input: { group_id: 'group_123' },
 		output: {
-			data: { id: 'group_123', name: 'My Group', created_at: 1700000000, looks_count: 1 },
+			data: {
+				id: 'group_123',
+				name: 'My Group',
+				created_at: 1700000000,
+				looks_count: 1,
+			},
 		},
 	},
 	avatarsDeleteGroup: {
@@ -476,7 +528,9 @@ const FIXTURES: {
 	},
 	avatarsGetLook: {
 		input: { look_id: 'look_123' },
-		output: { data: { id: 'look_123', name: 'Outfit A', avatar_type: 'photo_avatar' } },
+		output: {
+			data: { id: 'look_123', name: 'Outfit A', avatar_type: 'photo_avatar' },
+		},
 	},
 	avatarsDeleteLook: {
 		input: { look_id: 'look_123' },
@@ -484,7 +538,9 @@ const FIXTURES: {
 	},
 	avatarsUpdateLook: {
 		input: { look_id: 'look_123', name: 'Outfit B' },
-		output: { data: { id: 'look_123', name: 'Outfit B', avatar_type: 'photo_avatar' } },
+		output: {
+			data: { id: 'look_123', name: 'Outfit B', avatar_type: 'photo_avatar' },
+		},
 	},
 
 	avatarRealtimeCreateSession: {
@@ -577,7 +633,9 @@ const FIXTURES: {
 	},
 	videoTranslationsUpdate: {
 		input: { video_translation_id: 'trans_123', title: 'New Title' },
-		output: { data: { id: 'trans_123', status: 'completed', title: 'New Title' } },
+		output: {
+			data: { id: 'trans_123', status: 'completed', title: 'New Title' },
+		},
 	},
 
 	proofreadCreate: {
@@ -605,7 +663,9 @@ const FIXTURES: {
 	},
 	proofreadGenerateVideo: {
 		input: { proofread_id: 'proof_123' },
-		output: { data: { video_translation_id: 'trans_123', status: 'processing' } },
+		output: {
+			data: { video_translation_id: 'trans_123', status: 'processing' },
+		},
 	},
 
 	lipsyncList: {
@@ -633,7 +693,9 @@ const FIXTURES: {
 	},
 	lipsyncUpdate: {
 		input: { lipsync_id: 'lip_123', title: 'New Title' },
-		output: { data: { id: 'lip_123', status: 'completed', title: 'New Title' } },
+		output: {
+			data: { id: 'lip_123', status: 'completed', title: 'New Title' },
+		},
 	},
 
 	hyperframesList: {
@@ -650,7 +712,9 @@ const FIXTURES: {
 	},
 	hyperframesGet: {
 		input: { render_id: 'render_123' },
-		output: { data: { render_id: 'render_123', status: 'completed', format: 'mp4' } },
+		output: {
+			data: { render_id: 'render_123', status: 'completed', format: 'mp4' },
+		},
 	},
 	hyperframesDelete: {
 		input: { render_id: 'render_123' },
@@ -660,7 +724,9 @@ const FIXTURES: {
 	webhooksListEventTypesV3: {
 		input: {},
 		output: {
-			data: [{ event_type: 'avatar_video.success', description: 'Video completed' }],
+			data: [
+				{ event_type: 'avatar_video.success', description: 'Video completed' },
+			],
 			has_more: false,
 			next_token: null,
 		},
@@ -810,29 +876,31 @@ describe('HeyGen endpoint schemas', () => {
 	for (const key of Object.keys(FIXTURES) as (keyof HeygenEndpointInputs)[]) {
 		it(`parses ${key} input and output`, () => {
 			const fixture = FIXTURES[key];
-			HeygenEndpointInputSchemas[key].parse(fixture.input);
-			HeygenEndpointOutputSchemas[key].parse(fixture.output);
+			const parsedInput = HeygenEndpointInputSchemas[key].safeParse(
+				fixture.input,
+			);
+			expect(parsedInput.success).toBe(true);
+			const parsedOutput = HeygenEndpointOutputSchemas[key].safeParse(
+				fixture.output,
+			);
+			expect(parsedOutput.success).toBe(true);
 		});
 	}
 });
 
 describeIfApiKey('HeyGen API live smoke tests', () => {
 	it('lists avatars', async () => {
-		const response = await makeHeygenRequest<HeygenEndpointOutputs['avatarsList']>(
-			'/v1/avatar.list',
-			TEST_API_KEY!,
-			{ method: 'GET' },
-		);
+		const response = await makeHeygenRequest<
+			HeygenEndpointOutputs['avatarsList']
+		>('/v1/avatar.list', TEST_API_KEY!, { method: 'GET' });
 
 		HeygenEndpointOutputSchemas.avatarsList.parse(response);
 	});
 
 	it('lists v2 voices', async () => {
-		const response = await makeHeygenRequest<HeygenEndpointOutputs['voicesListV2']>(
-			'/v2/voices',
-			TEST_API_KEY!,
-			{ method: 'GET' },
-		);
+		const response = await makeHeygenRequest<
+			HeygenEndpointOutputs['voicesListV2']
+		>('/v2/voices', TEST_API_KEY!, { method: 'GET' });
 
 		HeygenEndpointOutputSchemas.voicesListV2.parse(response);
 	});
