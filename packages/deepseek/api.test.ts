@@ -30,53 +30,59 @@ const TEST_API_KEY = process.env.DEEPSEEK_API_KEY;
 const describeIfApiKey = TEST_API_KEY ? describe : describe.skip;
 
 describe('Deepseek schemas', () => {
-	it('has expect assertions for gate', () => {
-		expect(true).toBe(true);
-	});
-
 	it('parses chat createCompletion input and response', () => {
-		DeepseekEndpointInputSchemas.chatCreateCompletion.parse({
+		const input = DeepseekEndpointInputSchemas.chatCreateCompletion.safeParse({
 			model: 'deepseek-chat',
 			messages: [{ role: 'user', content: 'Hello' }],
 		});
+		expect(input.success).toBe(true);
 
-		DeepseekEndpointOutputSchemas.chatCreateCompletion.parse({
-			id: 'chatcmpl-1',
-			object: 'chat.completion',
-			created: 1700000000,
-			model: 'deepseek-chat',
-			choices: [
-				{
-					index: 0,
-					message: { role: 'assistant', content: 'Hi there' },
-					finish_reason: 'stop',
-				},
-			],
-		});
+		const output = DeepseekEndpointOutputSchemas.chatCreateCompletion.safeParse(
+			{
+				id: 'chatcmpl-1',
+				object: 'chat.completion',
+				created: 1700000000,
+				model: 'deepseek-chat',
+				choices: [
+					{
+						index: 0,
+						message: { role: 'assistant', content: 'Hi there' },
+						finish_reason: 'stop',
+					},
+				],
+			},
+		);
+		expect(output.success).toBe(true);
 	});
 
 	it('parses anthropic createMessage input and response', () => {
-		DeepseekEndpointInputSchemas.anthropicCreateMessage.parse({
-			model: 'deepseek-chat',
-			maxTokens: 1024,
-			messages: [{ role: 'user', content: 'Hello' }],
-		});
+		const input = DeepseekEndpointInputSchemas.anthropicCreateMessage.safeParse(
+			{
+				model: 'deepseek-chat',
+				maxTokens: 1024,
+				messages: [{ role: 'user', content: 'Hello' }],
+			},
+		);
+		expect(input.success).toBe(true);
 
-		DeepseekEndpointOutputSchemas.anthropicCreateMessage.parse({
-			id: 'msg-1',
-			type: 'message',
-			role: 'assistant',
-			model: 'deepseek-chat',
-			content: [{ type: 'text', text: 'Hi there' }],
-			stop_reason: 'end_turn',
-			usage: { input_tokens: 10, output_tokens: 5 },
-		});
+		const output =
+			DeepseekEndpointOutputSchemas.anthropicCreateMessage.safeParse({
+				id: 'msg-1',
+				type: 'message',
+				role: 'assistant',
+				model: 'deepseek-chat',
+				content: [{ type: 'text', text: 'Hi there' }],
+				stop_reason: 'end_turn',
+				usage: { input_tokens: 10, output_tokens: 5 },
+			});
+		expect(output.success).toBe(true);
 	});
 
 	it('parses user getBalance input and response', () => {
-		DeepseekEndpointInputSchemas.userGetBalance.parse({});
+		const input = DeepseekEndpointInputSchemas.userGetBalance.safeParse({});
+		expect(input.success).toBe(true);
 
-		DeepseekEndpointOutputSchemas.userGetBalance.parse({
+		const output = DeepseekEndpointOutputSchemas.userGetBalance.safeParse({
 			is_available: true,
 			balance_infos: [
 				{
@@ -87,15 +93,28 @@ describe('Deepseek schemas', () => {
 				},
 			],
 		});
+		expect(output.success).toBe(true);
 	});
 
 	it('parses models list input and response', () => {
-		DeepseekEndpointInputSchemas.modelsList.parse({});
+		const input = DeepseekEndpointInputSchemas.modelsList.safeParse({});
+		expect(input.success).toBe(true);
 
-		DeepseekEndpointOutputSchemas.modelsList.parse({
+		const output = DeepseekEndpointOutputSchemas.modelsList.safeParse({
 			object: 'list',
 			data: [{ id: 'deepseek-chat', object: 'model', owned_by: 'deepseek' }],
 		});
+		expect(output.success).toBe(true);
+	});
+
+	it('rejects invalid chat createCompletion input', () => {
+		const invalid = DeepseekEndpointInputSchemas.chatCreateCompletion.safeParse(
+			{
+				model: 'deepseek-chat',
+				// messages required — empty object should fail
+			},
+		);
+		expect(invalid.success).toBe(false);
 	});
 });
 
