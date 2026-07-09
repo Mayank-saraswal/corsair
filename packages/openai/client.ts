@@ -174,6 +174,41 @@ export async function downloadOpenaiFile(
 }
 
 /**
+ * Parse a successful multipart/form POST body from OpenAI.
+ *
+ * Whisper transcription/translation can return plain text (`text`, `srt`, `vtt`)
+ * instead of JSON. Always calling `response.json()` throws SyntaxError on those
+ * formats. JSON content-types (and JSON-looking bodies) are parsed as JSON;
+ * everything else is wrapped as `{ text }` to match audio response schemas.
+ */
+export function parseOpenaiMultipartBody<T>(
+	contentType: string | null,
+	bodyText: string,
+): T {
+	const ct = (contentType ?? '').toLowerCase();
+	const contentTypeSaysJson =
+		ct.includes('application/json') || ct.includes('+json');
+
+	if (contentTypeSaysJson) {
+		return JSON.parse(bodyText) as T;
+	}
+
+	// Some gateways omit/mislabel content-type; still try JSON when body looks like it.
+	const trimmed = bodyText.trimStart();
+	if (trimmed.startsWith('{') || trimmed.startsWith('[')) {
+		try {
+			return JSON.parse(bodyText) as T;
+		} catch {
+			// fall through to plain-text handling
+		}
+	}
+
+	// text/plain, text/vtt, application/x-subrip, empty type with SRT/VTT body, etc.
+	// Matches audio response schemas that require a top-level `text` field.
+	return { text: bodyText } as T;
+}
+
+/**
  * Endpoints that accept one or more file parts alongside plain fields
  * (audio transcription/translation, image edits/variations, skill uploads,
  * container files). Bypasses corsair/http's shared formData builder for the
@@ -181,6 +216,9 @@ export async function downloadOpenaiFile(
  *
  * String-array field values are appended once per entry (required for OpenAI
  * form keys like `timestamp_granularities[]`).
+ *
+ * Response handling supports both JSON and plain-text Whisper formats
+ * (`text` / `srt` / `vtt`) via {@link parseOpenaiMultipartBody}.
  */
 export async function multipartOpenaiRequest<T>(
 	endpoint: string,
@@ -214,13 +252,18 @@ export async function multipartOpenaiRequest<T>(
 		body: formData,
 	});
 
+	// Always read as text first so non-JSON Whisper formats (text/srt/vtt)
+	// never hit response.json() and throw SyntaxError.
+	const bodyText = await response.text();
+
 	if (!response.ok) {
-		const text = await response.text();
-		throwFromFetchResponse(response, text);
+		throwFromFetchResponse(response, bodyText);
 	}
 
-	// fetch Response.json() is untyped; cast to the caller-supplied response shape T
-	return response.json() as Promise<T>;
+	return parseOpenaiMultipartBody<T>(
+		response.headers.get('content-type'),
+		bodyText,
+	);
 }
 
 /**

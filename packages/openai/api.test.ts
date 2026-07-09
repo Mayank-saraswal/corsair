@@ -1,5 +1,9 @@
 import 'dotenv/config';
-import { makeOpenaiRequest, parseRetryAfterMs } from './client';
+import {
+	makeOpenaiRequest,
+	parseOpenaiMultipartBody,
+	parseRetryAfterMs,
+} from './client';
 import {
 	OpenaiEndpointInputSchemas,
 	OpenaiEndpointOutputSchemas,
@@ -439,5 +443,42 @@ describe('OpenAI client helpers', () => {
 			headers: { 'Retry-After': 'not-a-number' },
 		});
 		expect(parseRetryAfterMs(response)).toBeUndefined();
+	});
+
+	it('parseOpenaiMultipartBody parses application/json bodies', () => {
+		const body = parseOpenaiMultipartBody<{ text: string }>(
+			'application/json',
+			JSON.stringify({ text: 'hello' }),
+		);
+		expect(body.text).toBe('hello');
+	});
+
+	it('parseOpenaiMultipartBody wraps plain text Whisper formats as { text }', () => {
+		// response_format=text | srt | vtt return non-JSON bodies
+		const plain = parseOpenaiMultipartBody<{ text: string }>(
+			'text/plain',
+			'hello world',
+		);
+		expect(plain.text).toBe('hello world');
+
+		const vtt = parseOpenaiMultipartBody<{ text: string }>(
+			'text/vtt',
+			'WEBVTT\n\n00:00.000 --> 00:01.000\nHi',
+		);
+		expect(vtt.text.startsWith('WEBVTT')).toBe(true);
+
+		const srt = parseOpenaiMultipartBody<{ text: string }>(
+			'application/x-subrip',
+			'1\n00:00:00,000 --> 00:00:01,000\nHi\n',
+		);
+		expect(srt.text.includes('-->')).toBe(true);
+	});
+
+	it('parseOpenaiMultipartBody still parses JSON when content-type is missing but body is JSON', () => {
+		const body = parseOpenaiMultipartBody<{ text: string }>(
+			null,
+			JSON.stringify({ text: 'from-json' }),
+		);
+		expect(body.text).toBe('from-json');
 	});
 });
