@@ -346,6 +346,7 @@ const FIXTURES: {
 
 describe('Insighto.ai endpoint schemas', () => {
 	it('defines input and output schemas for every fixture endpoint', () => {
+		// Cast needed: Object.keys returns string[], but FIXTURES is keyed by endpoint names
 		const keys = Object.keys(FIXTURES) as (keyof InsightoaiEndpointInputs)[];
 		expect(keys.length).toBeGreaterThan(0);
 		for (const key of keys) {
@@ -354,6 +355,7 @@ describe('Insighto.ai endpoint schemas', () => {
 		}
 	});
 
+	// Cast needed: Object.keys returns string[], but FIXTURES is keyed by endpoint names
 	for (const key of Object.keys(
 		FIXTURES,
 	) as (keyof InsightoaiEndpointInputs)[]) {
@@ -382,20 +384,8 @@ describe('Insighto.ai endpoint schemas', () => {
 });
 
 describeIfApiKey('Insighto.ai API live smoke tests', () => {
-	it('lists assistants-linked widgets', async () => {
-		const response = await makeInsightoaiRequest<
-			InsightoaiEndpointOutputs['getListOfWidgetsLinkedToAssistantId']
-		>('/api/v1/assistant/assistant_123/widgets', TEST_API_KEY!, {
-			method: 'GET',
-			authType: 'api_key',
-		});
-
-		const parsed =
-			InsightoaiEndpointOutputSchemas.getListOfWidgetsLinkedToAssistantId.safeParse(
-				response,
-			);
-		expect(parsed.success).toBe(true);
-	});
+	// Live tests only hit list endpoints that do not require a pre-existing entity ID
+	// (fixture IDs like assistant_123 would 404 against real accounts).
 
 	it('lists contacts', async () => {
 		const response = await makeInsightoaiRequest<
@@ -417,6 +407,19 @@ describeIfApiKey('Insighto.ai API live smoke tests', () => {
 
 		const parsed =
 			InsightoaiEndpointOutputSchemas.readTagList.safeParse(response);
+		expect(parsed.success).toBe(true);
+	});
+
+	it('lists channels', async () => {
+		const response = await makeInsightoaiRequest<
+			InsightoaiEndpointOutputs['listChannels']
+		>('/api/v1/channel', TEST_API_KEY!, {
+			method: 'GET',
+			authType: 'api_key',
+		});
+
+		const parsed =
+			InsightoaiEndpointOutputSchemas.listChannels.safeParse(response);
 		expect(parsed.success).toBe(true);
 	});
 });
