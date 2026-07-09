@@ -402,6 +402,21 @@ describe('OpenAI offline schema smoke', () => {
 			expect(result.data.include?.length).toBe(2);
 		}
 	});
+
+	it('messagesList accepts runId filter (mapped to run_id on the wire)', () => {
+		// listMessages must strip camelCase runId from the query spread and
+		// emit only snake_case run_id (Greptile: no dual runId/run_id leak).
+		const result = OpenaiEndpointInputSchemas.messagesList.safeParse({
+			threadId: 'thread_123',
+			runId: 'run_456',
+			limit: 10,
+		});
+		expect(result.success).toBe(true);
+		if (result.success) {
+			expect(result.data.runId).toBe('run_456');
+			expect(result.data.threadId).toBe('thread_123');
+		}
+	});
 });
 
 describe('OpenAI client helpers', () => {

@@ -333,14 +333,16 @@ export const listMessages: OpenaiEndpoints['messagesList'] = async (
 	ctx,
 	input,
 ) => {
-	const { threadId, ...query } = input;
+	// Pull path + camelCase filters out of the remainder so the query only
+	// contains OpenAI wire keys (run_id), not a duplicated runId.
+	const { threadId, runId, ...query } = input;
 	const result = await makeOpenaiRequest<MessagesListResponse>(
 		`threads/${threadId}/messages`,
 		ctx.key,
 		{
 			method: 'GET',
 			headers: ASSISTANTS_BETA_HEADERS,
-			query: { ...query, run_id: query.runId },
+			query: { ...query, run_id: runId },
 		},
 	);
 
