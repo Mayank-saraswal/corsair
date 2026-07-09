@@ -18,6 +18,28 @@ const OPENAI_API_BASE = 'https://api.openai.com/v1';
 /** Form field values: scalars or repeated keys (e.g. timestamp_granularities[]). */
 export type OpenaiMultipartFieldValue = string | string[] | undefined;
 
+/**
+ * Parse OpenAI's `Retry-After` header into milliseconds.
+ * Matches corsair/http rate-limit handling (seconds × 1000) so error-handlers can
+ * set `headersRetryAfterMs` correctly for fetch-based helpers.
+ */
+export function parseRetryAfterMs(response: Response): number | undefined {
+	const raw = response.headers.get('Retry-After');
+	if (!raw) return undefined;
+	const seconds = Number.parseInt(raw, 10);
+	if (!Number.isFinite(seconds) || seconds < 0) return undefined;
+	return seconds * 1000;
+}
+
+function throwFromFetchResponse(response: Response, bodyText: string): never {
+	throw new OpenaiAPIError(
+		`Generic Error: status: ${response.status}; status text: ${response.statusText}; body: "${bodyText}"`,
+		undefined,
+		response.status,
+		parseRetryAfterMs(response),
+	);
+}
+
 export async function makeOpenaiRequest<T>(
 	endpoint: string,
 	apiKey: string,
@@ -110,11 +132,7 @@ export async function uploadOpenaiFile<T>(
 
 	if (!response.ok) {
 		const text = await response.text();
-		throw new OpenaiAPIError(
-			`Generic Error: status: ${response.status}; status text: ${response.statusText}; body: "${text}"`,
-			undefined,
-			response.status,
-		);
+		throwFromFetchResponse(response, text);
 	}
 
 	// fetch Response.json() is untyped; cast to the caller-supplied response shape T
@@ -136,11 +154,7 @@ export async function downloadOpenaiFile(
 
 	if (!response.ok) {
 		const text = await response.text();
-		throw new OpenaiAPIError(
-			`Generic Error: status: ${response.status}; status text: ${response.statusText}; body: "${text}"`,
-			undefined,
-			response.status,
-		);
+		throwFromFetchResponse(response, text);
 	}
 
 	return response.arrayBuffer();
@@ -189,11 +203,7 @@ export async function multipartOpenaiRequest<T>(
 
 	if (!response.ok) {
 		const text = await response.text();
-		throw new OpenaiAPIError(
-			`Generic Error: status: ${response.status}; status text: ${response.statusText}; body: "${text}"`,
-			undefined,
-			response.status,
-		);
+		throwFromFetchResponse(response, text);
 	}
 
 	// fetch Response.json() is untyped; cast to the caller-supplied response shape T
@@ -220,9 +230,7 @@ export async function requestOpenaiBinary(
 
 	if (!response.ok) {
 		const text = await response.text();
-		throw new OpenaiAPIError(
-			`Generic Error: status: ${response.status}; status text: ${response.statusText}; body: "${text}"`,
-		);
+		throwFromFetchResponse(response, text);
 	}
 
 	return response.arrayBuffer();

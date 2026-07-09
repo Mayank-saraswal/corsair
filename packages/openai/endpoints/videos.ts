@@ -14,14 +14,22 @@ import type {
 } from '../schema/videos';
 
 export const create: OpenaiEndpoints['videosCreate'] = async (ctx, input) => {
+	const hasRef = input.inputReference !== undefined;
+	const hasName = input.inputReferenceFileName !== undefined;
+	// Defense in depth: Zod also enforces this pair; throw if only one is set.
+	if (hasRef !== hasName) {
+		throw new Error(
+			'inputReference and inputReferenceFileName must both be provided or both omitted',
+		);
+	}
+
 	const files =
-		input.inputReference !== undefined &&
-		input.inputReferenceFileName !== undefined
+		hasRef && hasName
 			? [
 					{
 						field: 'input_reference',
-						file: input.inputReference,
-						fileName: input.inputReferenceFileName,
+						file: input.inputReference as Blob | string,
+						fileName: input.inputReferenceFileName as string,
 					},
 				]
 			: [];

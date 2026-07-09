@@ -17,14 +17,29 @@ const VideoObjectSchema = z.object({
 });
 export type VideoObject = z.infer<typeof VideoObjectSchema>;
 
-export const VideosCreateInputSchema = z.object({
-	prompt: z.string(),
-	model: z.string().optional(),
-	size: z.string().optional(),
-	seconds: z.string().optional(),
-	inputReference: z.union([z.instanceof(Blob), z.string()]).optional(),
-	inputReferenceFileName: z.string().optional(),
-});
+export const VideosCreateInputSchema = z
+	.object({
+		prompt: z.string(),
+		model: z.string().optional(),
+		size: z.string().optional(),
+		seconds: z.string().optional(),
+		inputReference: z.union([z.instanceof(Blob), z.string()]).optional(),
+		inputReferenceFileName: z.string().optional(),
+	})
+	.superRefine((value, ctx) => {
+		// Both must be set together: the endpoint only attaches the multipart file when
+		// both are present, so a half-filled pair would silently drop the reference file.
+		const hasRef = value.inputReference !== undefined;
+		const hasName = value.inputReferenceFileName !== undefined;
+		if (hasRef !== hasName) {
+			ctx.addIssue({
+				code: z.ZodIssueCode.custom,
+				message:
+					'inputReference and inputReferenceFileName must both be provided or both omitted',
+				path: hasRef ? ['inputReferenceFileName'] : ['inputReference'],
+			});
+		}
+	});
 export type VideosCreateInput = z.infer<typeof VideosCreateInputSchema>;
 
 export const VideosCreateResponseSchema = VideoObjectSchema;

@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import { makeOpenaiRequest } from './client';
+import { makeOpenaiRequest, parseRetryAfterMs } from './client';
 import {
 	OpenaiEndpointInputSchemas,
 	OpenaiEndpointOutputSchemas,
@@ -67,61 +67,289 @@ describeIfApiKey('OpenAI API Type Tests', () => {
 });
 
 describe('OpenAI offline schema smoke', () => {
-	it('registers input and output schemas for every endpoint key', () => {
-		// Ensures all ~129 operations stay wired in types.ts (catches missing schema maps)
-		const inputKeys = Object.keys(OpenaiEndpointInputSchemas);
-		const outputKeys = Object.keys(OpenaiEndpointOutputSchemas);
-		expect(inputKeys.length).toBeGreaterThan(50);
-		expect(outputKeys.length).toBe(inputKeys.length);
-		for (const key of inputKeys) {
-			expect(
-				OpenaiEndpointInputSchemas[
-					key as keyof typeof OpenaiEndpointInputSchemas
-				],
-			).toBeDefined();
-			expect(
-				OpenaiEndpointOutputSchemas[
-					key as keyof typeof OpenaiEndpointOutputSchemas
-				],
-			).toBeDefined();
-		}
-	});
+	// Minimal valid inputs for every registered endpoint (offline coverage for all ops).
+	// output shape varies across fixtures and is checked via safeParse.success at runtime
+	const inputFixtures: Record<string, unknown> = {
+		modelsList: {},
+		modelsRetrieve: { model: 'gpt-4o-mini' },
+		enginesList: {},
+		enginesRetrieve: { engineId: 'davinci' },
 
-	it('chat input schema accepts a minimal completion request', () => {
-		const result = OpenaiEndpointInputSchemas.chatCreateCompletion.safeParse({
+		chatCreateCompletion: {
 			model: 'gpt-4o-mini',
 			messages: [{ role: 'user', content: 'hi' }],
-		});
-		expect(result.success).toBe(true);
+		},
+
+		embeddingsCreate: { model: 'text-embedding-3-small', input: 'test' },
+
+		filesUpload: {
+			file: 'hello',
+			fileName: 'hello.txt',
+			purpose: 'assistants',
+		},
+		filesList: {},
+		filesRetrieve: { fileId: 'file_123' },
+		filesDelete: { fileId: 'file_123' },
+		filesDownloadContent: { fileId: 'file_123' },
+
+		assistantsCreate: { model: 'gpt-4o-mini' },
+		assistantsList: {},
+		assistantsRetrieve: { assistantId: 'asst_123' },
+		assistantsModify: { assistantId: 'asst_123' },
+		assistantsDelete: { assistantId: 'asst_123' },
+
+		threadsCreate: {},
+		threadsRetrieve: { threadId: 'thread_123' },
+		threadsModify: { threadId: 'thread_123' },
+		threadsDelete: { threadId: 'thread_123' },
+		threadsCreateAndRun: { assistantId: 'asst_123' },
+
+		messagesCreate: {
+			threadId: 'thread_123',
+			role: 'user',
+			content: 'hello',
+		},
+		messagesList: { threadId: 'thread_123' },
+		messagesRetrieve: { threadId: 'thread_123', messageId: 'msg_123' },
+		messagesModify: { threadId: 'thread_123', messageId: 'msg_123' },
+		messagesDelete: { threadId: 'thread_123', messageId: 'msg_123' },
+
+		runsCreate: { threadId: 'thread_123', assistantId: 'asst_123' },
+		runsList: { threadId: 'thread_123' },
+		runsRetrieve: { threadId: 'thread_123', runId: 'run_123' },
+		runsModify: { threadId: 'thread_123', runId: 'run_123' },
+		runsCancel: { threadId: 'thread_123', runId: 'run_123' },
+		runsSubmitToolOutputs: {
+			threadId: 'thread_123',
+			runId: 'run_123',
+			toolOutputs: [{ toolCallId: 'call_1', output: 'ok' }],
+		},
+
+		runStepsList: { threadId: 'thread_123', runId: 'run_123' },
+		runStepsRetrieve: {
+			threadId: 'thread_123',
+			runId: 'run_123',
+			stepId: 'step_123',
+		},
+
+		vectorStoresCreate: {},
+		vectorStoresList: {},
+		vectorStoresRetrieve: { vectorStoreId: 'vs_123' },
+		vectorStoresModify: { vectorStoreId: 'vs_123' },
+		vectorStoresDelete: { vectorStoreId: 'vs_123' },
+		vectorStoresSearch: { vectorStoreId: 'vs_123', query: 'hello' },
+
+		vectorStoreFilesCreate: { vectorStoreId: 'vs_123', fileId: 'file_123' },
+		vectorStoreFilesList: { vectorStoreId: 'vs_123' },
+		vectorStoreFilesRetrieve: {
+			vectorStoreId: 'vs_123',
+			fileId: 'file_123',
+		},
+		vectorStoreFilesDelete: { vectorStoreId: 'vs_123', fileId: 'file_123' },
+		vectorStoreFilesUpdateAttributes: {
+			vectorStoreId: 'vs_123',
+			fileId: 'file_123',
+			attributes: { key: 'value' },
+		},
+		vectorStoreFilesRetrieveContent: {
+			vectorStoreId: 'vs_123',
+			fileId: 'file_123',
+		},
+
+		vectorStoreFileBatchesCreate: {
+			vectorStoreId: 'vs_123',
+			fileIds: ['file_123'],
+		},
+		vectorStoreFileBatchesRetrieve: {
+			vectorStoreId: 'vs_123',
+			batchId: 'batch_123',
+		},
+		vectorStoreFileBatchesListFiles: {
+			vectorStoreId: 'vs_123',
+			batchId: 'batch_123',
+		},
+
+		moderationCreate: { input: 'hello' },
+
+		audioCreateSpeech: {
+			model: 'tts-1',
+			input: 'hello',
+			voice: 'alloy',
+		},
+		audioCreateTranscription: {
+			file: 'audio-bytes',
+			fileName: 'a.mp3',
+			model: 'whisper-1',
+		},
+		audioCreateTranslation: {
+			file: 'audio-bytes',
+			fileName: 'a.mp3',
+			model: 'whisper-1',
+		},
+
+		imagesCreate: { prompt: 'a cat' },
+		imagesCreateEdit: {
+			image: 'img',
+			imageFileName: 'img.png',
+			prompt: 'make it blue',
+		},
+		imagesCreateVariation: { image: 'img', imageFileName: 'img.png' },
+
+		videosCreate: { prompt: 'a cat walking' },
+		videosList: {},
+		videosRetrieve: { videoId: 'video_123' },
+		videosDelete: { videoId: 'video_123' },
+		videosCreateRemix: { videoId: 'video_123', prompt: 'make it night' },
+		videosDownload: { videoId: 'video_123' },
+
+		realtimeCreateCall: { session: { type: 'realtime' } },
+		realtimeCreateClientSecret: {},
+		realtimeCreateSession: {},
+		realtimeCreateTranscriptionSession: {},
+
+		chatkitListThreads: {},
+		chatkitGetThread: { threadId: 'thread_123' },
+		chatkitListThreadItems: { threadId: 'thread_123' },
+
+		skillsCreate: { file: 'skill', fileName: 'SKILL.md' },
+		skillsList: {},
+		skillsDelete: { skillId: 'skill_123' },
+
+		containersCreate: {},
+		containersList: {},
+		containersRetrieve: { containerId: 'ctr_123' },
+		containersDelete: { containerId: 'ctr_123' },
+		containerFilesCreate: { containerId: 'ctr_123', fileId: 'file_123' },
+		containerFilesList: { containerId: 'ctr_123' },
+		containerFilesRetrieve: { containerId: 'ctr_123', fileId: 'file_123' },
+		containerFilesRetrieveContent: {
+			containerId: 'ctr_123',
+			fileId: 'file_123',
+		},
+		containerFilesDelete: { containerId: 'ctr_123', fileId: 'file_123' },
+
+		conversationsCreate: {},
+		conversationsUpdate: {
+			conversationId: 'conv_123',
+			metadata: { k: 'v' },
+		},
+		conversationsDelete: { conversationId: 'conv_123' },
+		conversationsCreateItems: {
+			conversationId: 'conv_123',
+			items: [{ type: 'message', role: 'user', content: 'hi' }],
+		},
+		conversationsListItems: { conversationId: 'conv_123' },
+		conversationsGetItem: {
+			conversationId: 'conv_123',
+			itemId: 'item_123',
+		},
+		conversationsDeleteItem: {
+			conversationId: 'conv_123',
+			itemId: 'item_123',
+		},
+
+		fineTuningCreateJob: {
+			model: 'gpt-4o-mini-2024-07-18',
+			trainingFile: 'file_123',
+		},
+		fineTuningListJobs: {},
+		fineTuningRetrieveJob: { jobId: 'ftjob_123' },
+		fineTuningListCheckpoints: { jobId: 'ftjob_123' },
+		fineTuningListEvents: { jobId: 'ftjob_123' },
+		fineTuningCancelJob: { jobId: 'ftjob_123' },
+
+		completionsCreate: { model: 'gpt-3.5-turbo-instruct', prompt: 'hi' },
+		responsesCreate: { model: 'gpt-4o-mini', input: 'hi' },
+		responsesRetrieve: { responseId: 'resp_123' },
+		responsesDelete: { responseId: 'resp_123' },
+		responsesCancel: { responseId: 'resp_123' },
+		responsesCompact: {
+			model: 'gpt-4o-mini',
+			input: [{ type: 'message', role: 'user', content: 'hi' }],
+		},
+		responsesListInputItems: { responseId: 'resp_123' },
+		chatCompletionsList: {},
+		chatCompletionsRetrieve: { completionId: 'chatcmpl_123' },
+		chatCompletionsUpdate: {
+			completionId: 'chatcmpl_123',
+			metadata: { k: 'v' },
+		},
+		chatCompletionsDelete: { completionId: 'chatcmpl_123' },
+		chatCompletionsListMessages: { completionId: 'chatcmpl_123' },
+		tokensCountInput: { model: 'gpt-4o-mini', input: 'hi' },
+
+		evalsCreate: {
+			dataSourceConfig: { type: 'custom' },
+			testingCriteria: [{ type: 'string_check' }],
+		},
+		evalsList: {},
+		evalsGet: { evalId: 'eval_123' },
+		evalsUpdate: { evalId: 'eval_123' },
+		evalsDelete: { evalId: 'eval_123' },
+		evalRunsCreate: {
+			evalId: 'eval_123',
+			dataSource: { type: 'completions' },
+		},
+		evalRunsGet: { evalId: 'eval_123', runId: 'run_123' },
+		evalRunsList: { evalId: 'eval_123' },
+		evalRunsCancel: { evalId: 'eval_123', runId: 'run_123' },
+		evalRunsDelete: { evalId: 'eval_123', runId: 'run_123' },
+		evalRunsGetOutputItem: {
+			evalId: 'eval_123',
+			runId: 'run_123',
+			outputItemId: 'out_123',
+		},
+		evalRunsListOutputItems: { evalId: 'eval_123', runId: 'run_123' },
+		gradersRun: {
+			grader: { type: 'string_check' },
+			modelSample: 'hello',
+		},
+		gradersValidate: { grader: { type: 'string_check' } },
+
+		batchesCreate: {
+			inputFileId: 'file_123',
+			endpoint: '/v1/chat/completions',
+			completionWindow: '24h',
+		},
+		batchesRetrieve: { batchId: 'batch_123' },
+		batchesCancel: { batchId: 'batch_123' },
+		batchesList: {},
+
+		uploadsCreate: {
+			filename: 'big.bin',
+			purpose: 'assistants',
+			bytes: 1024,
+			mimeType: 'application/octet-stream',
+		},
+		uploadsAddPart: {
+			uploadId: 'upload_123',
+			data: 'chunk',
+			fileName: 'part.bin',
+		},
+		uploadsComplete: { uploadId: 'upload_123', partIds: ['part_1'] },
+		uploadsCancel: { uploadId: 'upload_123' },
+	};
+
+	it('covers every registered input schema key with a fixture', () => {
+		const schemaKeys = Object.keys(OpenaiEndpointInputSchemas).sort();
+		const fixtureKeys = Object.keys(inputFixtures).sort();
+		expect(fixtureKeys).toEqual(schemaKeys);
+		expect(schemaKeys.length).toBe(
+			Object.keys(OpenaiEndpointOutputSchemas).length,
+		);
 	});
 
-	it('embeddings input schema accepts a minimal request', () => {
-		const result = OpenaiEndpointInputSchemas.embeddingsCreate.safeParse({
-			model: 'text-embedding-3-small',
-			input: 'test',
-		});
-		expect(result.success).toBe(true);
-	});
-
-	it('models list input schema accepts empty object', () => {
-		const result = OpenaiEndpointInputSchemas.modelsList.safeParse({});
-		expect(result.success).toBe(true);
-	});
-
-	it('files list input schema accepts empty object', () => {
-		const result = OpenaiEndpointInputSchemas.filesList.safeParse({});
-		expect(result.success).toBe(true);
-	});
-
-	it('vectorStores list input schema accepts empty object', () => {
-		const result = OpenaiEndpointInputSchemas.vectorStoresList.safeParse({});
-		expect(result.success).toBe(true);
-	});
-
-	it('batches list input schema accepts empty object', () => {
-		const result = OpenaiEndpointInputSchemas.batchesList.safeParse({});
-		expect(result.success).toBe(true);
-	});
+	it.each(Object.keys(OpenaiEndpointInputSchemas))(
+		'input schema accepts minimal payload for %s',
+		(key) => {
+			const schema =
+				OpenaiEndpointInputSchemas[
+					key as keyof typeof OpenaiEndpointInputSchemas
+				];
+			const result = schema.safeParse(inputFixtures[key]);
+			expect(result.success).toBe(true);
+		},
+	);
 
 	it('rejects invalid chat input', () => {
 		const result = OpenaiEndpointInputSchemas.chatCreateCompletion.safeParse(
@@ -133,5 +361,53 @@ describe('OpenAI offline schema smoke', () => {
 	it('rejects invalid embeddings input', () => {
 		const result = OpenaiEndpointInputSchemas.embeddingsCreate.safeParse({});
 		expect(result.success).toBe(false);
+	});
+
+	it('videosCreate rejects inputReference without fileName (paired fields)', () => {
+		const result = OpenaiEndpointInputSchemas.videosCreate.safeParse({
+			prompt: 'a cat',
+			inputReference: 'bytes',
+		});
+		expect(result.success).toBe(false);
+	});
+
+	it('videosCreate rejects fileName without inputReference (paired fields)', () => {
+		const result = OpenaiEndpointInputSchemas.videosCreate.safeParse({
+			prompt: 'a cat',
+			inputReferenceFileName: 'ref.png',
+		});
+		expect(result.success).toBe(false);
+	});
+
+	it('videosCreate accepts both inputReference fields together', () => {
+		const result = OpenaiEndpointInputSchemas.videosCreate.safeParse({
+			prompt: 'a cat',
+			inputReference: 'bytes',
+			inputReferenceFileName: 'ref.png',
+		});
+		expect(result.success).toBe(true);
+	});
+});
+
+describe('OpenAI client helpers', () => {
+	it('parseRetryAfterMs converts Retry-After seconds to milliseconds', () => {
+		const response = new Response(null, {
+			status: 429,
+			headers: { 'Retry-After': '2' },
+		});
+		expect(parseRetryAfterMs(response)).toBe(2000);
+	});
+
+	it('parseRetryAfterMs returns undefined when header is missing', () => {
+		const response = new Response(null, { status: 500 });
+		expect(parseRetryAfterMs(response)).toBeUndefined();
+	});
+
+	it('parseRetryAfterMs returns undefined for non-numeric Retry-After', () => {
+		const response = new Response(null, {
+			status: 429,
+			headers: { 'Retry-After': 'not-a-number' },
+		});
+		expect(parseRetryAfterMs(response)).toBeUndefined();
 	});
 });
