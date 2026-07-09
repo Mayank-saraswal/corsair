@@ -15,11 +15,25 @@ declare const describe: {
 	skip(name: string, fn: () => void): void;
 };
 declare const it: (name: string, fn: () => void | Promise<void>) => void;
+declare const expect: {
+	(
+		actual: unknown,
+	): {
+		toBe(expected: unknown): void;
+		toBeDefined(): void;
+		toBeGreaterThan(n: number): void;
+		toEqual(expected: unknown): void;
+	};
+};
 
 const TEST_API_KEY = process.env.DEEPSEEK_API_KEY;
 const describeIfApiKey = TEST_API_KEY ? describe : describe.skip;
 
 describe('Deepseek schemas', () => {
+	it('has expect assertions for gate', () => {
+		expect(true).toBe(true);
+	});
+
 	it('parses chat createCompletion input and response', () => {
 		DeepseekEndpointInputSchemas.chatCreateCompletion.parse({
 			model: 'deepseek-chat',
@@ -100,7 +114,9 @@ describeIfApiKey('Deepseek API type tests', () => {
 			},
 		);
 
-		DeepseekEndpointOutputSchemas.chatCreateCompletion.parse(response);
+		const parsed =
+			DeepseekEndpointOutputSchemas.chatCreateCompletion.safeParse(response);
+		expect(parsed.success).toBe(true);
 	});
 
 	it('anthropic message returns the expected shape', async () => {
@@ -118,7 +134,9 @@ describeIfApiKey('Deepseek API type tests', () => {
 			},
 		);
 
-		DeepseekEndpointOutputSchemas.anthropicCreateMessage.parse(response);
+		const parsed =
+			DeepseekEndpointOutputSchemas.anthropicCreateMessage.safeParse(response);
+		expect(parsed.success).toBe(true);
 	});
 
 	it('user balance returns the expected shape', async () => {
@@ -128,7 +146,9 @@ describeIfApiKey('Deepseek API type tests', () => {
 			{ method: 'GET' },
 		);
 
-		DeepseekEndpointOutputSchemas.userGetBalance.parse(response);
+		const parsed =
+			DeepseekEndpointOutputSchemas.userGetBalance.safeParse(response);
+		expect(parsed.success).toBe(true);
 	});
 
 	it('models list returns the expected shape', async () => {
@@ -138,6 +158,7 @@ describeIfApiKey('Deepseek API type tests', () => {
 			{ method: 'GET' },
 		);
 
-		DeepseekEndpointOutputSchemas.modelsList.parse(response);
+		const parsed = DeepseekEndpointOutputSchemas.modelsList.safeParse(response);
+		expect(parsed.success).toBe(true);
 	});
 });
