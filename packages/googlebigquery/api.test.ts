@@ -1,6 +1,9 @@
 import 'dotenv/config';
 import { makeGoogleBigqueryRequest } from './client';
-import { GoogleBigqueryEndpointOutputSchemas } from './endpoints/types';
+import {
+	GoogleBigqueryEndpointInputSchemas,
+	GoogleBigqueryEndpointOutputSchemas,
+} from './endpoints/types';
 
 const TEST_TOKEN = process.env.GOOGLE_ACCESS_TOKEN;
 const TEST_PROJECT_ID = process.env.GOOGLE_BIGQUERY_TEST_PROJECT_ID;
@@ -230,5 +233,92 @@ describe('Google BigQuery offline schema smoke', () => {
 			datasetReference: { projectId: 'project', datasetId: 'dataset' },
 		});
 		expect(result.success).toBe(true);
+	});
+
+	// Reservations domain (previously untested offline)
+	it('reservationsList input schema accepts project + location', () => {
+		const result =
+			GoogleBigqueryEndpointInputSchemas.reservationsList.safeParse({
+				projectId: 'p',
+				location: 'US',
+			});
+		expect(result.success).toBe(true);
+	});
+
+	it('reservationsListCapacityCommitments input schema accepts project + location', () => {
+		const result =
+			GoogleBigqueryEndpointInputSchemas.reservationsListCapacityCommitments.safeParse(
+				{ projectId: 'p', location: 'US' },
+			);
+		expect(result.success).toBe(true);
+	});
+
+	// Analytics Hub domain (previously untested offline)
+	it('analyticsHubCreateListing input schema accepts required fields', () => {
+		const result =
+			GoogleBigqueryEndpointInputSchemas.analyticsHubCreateListing.safeParse({
+				projectId: 'p',
+				location: 'US',
+				dataExchangeId: 'ex',
+				listingId: 'listing',
+				displayName: 'My Listing',
+			});
+		expect(result.success).toBe(true);
+	});
+
+	it('analyticsHubCreateDataexchangesListings input schema accepts required fields', () => {
+		const result =
+			GoogleBigqueryEndpointInputSchemas.analyticsHubCreateDataexchangesListings.safeParse(
+				{
+					projectId: 'p',
+					location: 'US',
+					dataExchangeId: 'ex',
+					listingId: 'listing',
+					displayName: 'My Listing',
+				},
+			);
+		expect(result.success).toBe(true);
+	});
+
+	it('analyticsHubCreateDataExchange input schema accepts required fields', () => {
+		const result =
+			GoogleBigqueryEndpointInputSchemas.analyticsHubCreateDataExchange.safeParse(
+				{
+					projectId: 'p',
+					location: 'US',
+					dataExchangeId: 'ex',
+					displayName: 'My Exchange',
+				},
+			);
+		expect(result.success).toBe(true);
+	});
+
+	it('analyticsHubListListings input schema accepts required fields', () => {
+		const result =
+			GoogleBigqueryEndpointInputSchemas.analyticsHubListListings.safeParse({
+				projectId: 'p',
+				location: 'US',
+				dataExchangeId: 'ex',
+			});
+		expect(result.success).toBe(true);
+	});
+
+	it('queriesInsertAll input schema accepts rows array', () => {
+		const result =
+			GoogleBigqueryEndpointInputSchemas.queriesInsertAll.safeParse({
+				projectId: 'p',
+				datasetId: 'd',
+				tableId: 't',
+				rows: [{ json: { a: 1 } }],
+			});
+		expect(result.success).toBe(true);
+	});
+
+	it('rejects reservationsList without location', () => {
+		const result =
+			GoogleBigqueryEndpointInputSchemas.reservationsList.safeParse({
+				projectId: 'p',
+			});
+		expect(result.success).toBe(false);
 	});
 });
