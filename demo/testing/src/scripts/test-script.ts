@@ -18,56 +18,11 @@ async function setInstagramCredentials() {
 	}
 }
 
-async function testOpenai() {
-	if (!process.env.OPENAI_API_KEY) {
-		console.warn('OPENAI_API_KEY not set — skipping openai plugin smoke test');
-		return;
-	}
-
-	const models = await corsair.openai.api.models.list({});
-	console.log('openai.models.list ->', models.data.length, 'models');
-
-	const completion = await corsair.openai.api.chat.createCompletion({
-		model: 'gpt-4o-mini',
-		messages: [{ role: 'user', content: 'Say "hi" and nothing else.' }],
-		maxCompletionTokens: 16,
-	});
-	console.log(
-		'openai.chat.createCompletion ->',
-		completion.choices[0]?.message.content,
-	);
-
-	const embedding = await corsair.openai.api.embeddings.create({
-		model: 'text-embedding-3-small',
-		input: 'corsair openai plugin test',
-	});
-	console.log('openai.embeddings.create ->', embedding.data.length, 'vectors');
-
-	const vectorStore = await corsair.openai.api.vectorStores.create({
-		name: 'corsair-openai-plugin-smoke-test',
-	});
-	console.log('openai.vectorStores.create ->', vectorStore.id);
-
-	const vectorStores = await corsair.openai.api.vectorStores.list({});
-	console.log(
-		'openai.vectorStores.list ->',
-		vectorStores.data.length,
-		'stores',
-	);
-
-	await corsair.openai.api.vectorStores.delete({
-		vectorStoreId: vectorStore.id,
-	});
-	console.log('openai.vectorStores.delete -> ok');
-}
-
 const main = async () => {
 	const res = await corsair.slack.api.messages.post({
 		channel: 'general',
 		text: 'hello',
 	});
-
-	await testOpenai();
 };
 
 main().catch((err) => {
