@@ -14,8 +14,10 @@ import type {
 } from '../schema/videos';
 
 export const create: OpenaiEndpoints['videosCreate'] = async (ctx, input) => {
-	const hasRef = input.inputReference !== undefined;
-	const hasName = input.inputReferenceFileName !== undefined;
+	const ref = input.inputReference;
+	const refName = input.inputReferenceFileName;
+	const hasRef = ref !== undefined;
+	const hasName = refName !== undefined;
 	// Defense in depth: Zod also enforces this pair; throw if only one is set.
 	if (hasRef !== hasName) {
 		throw new Error(
@@ -23,13 +25,14 @@ export const create: OpenaiEndpoints['videosCreate'] = async (ctx, input) => {
 		);
 	}
 
+	// Locals after the paired-field guard are defined together; no assertion needed.
 	const files =
-		hasRef && hasName
+		hasRef && hasName && ref !== undefined && refName !== undefined
 			? [
 					{
 						field: 'input_reference',
-						file: input.inputReference as Blob | string,
-						fileName: input.inputReferenceFileName as string,
+						file: ref,
+						fileName: refName,
 					},
 				]
 			: [];

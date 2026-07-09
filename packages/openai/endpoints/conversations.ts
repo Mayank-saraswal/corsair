@@ -114,11 +114,9 @@ export const listItems: OpenaiEndpoints['conversationsListItems'] = async (
 				limit: input.limit,
 				order: input.order,
 				after: input.after,
-				// Simplified: OpenAI expects repeated `include[]` query params, but
-				// makeOpenaiRequest's query type only supports scalar values, so join
-				// multiple include values with a comma (mirrors audio.ts's transcription
-				// timestamp_granularities handling).
-				include: input.include?.join(','),
+				// OpenAI expects repeated keys (`include=a&include=b`), not a
+				// comma-joined string. corsair/http serializes string[] that way.
+				include: input.include,
 			},
 		},
 	);

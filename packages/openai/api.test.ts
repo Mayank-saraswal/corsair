@@ -387,6 +387,21 @@ describe('OpenAI offline schema smoke', () => {
 		});
 		expect(result.success).toBe(true);
 	});
+
+	it('conversationsListItems accepts multi-value include array (repeated query keys)', () => {
+		// OpenAI list-items expects include as repeated query keys, not a
+		// comma-joined string — the endpoint passes string[] through so
+		// corsair/http can emit include=a&include=b.
+		const result = OpenaiEndpointInputSchemas.conversationsListItems.safeParse({
+			conversationId: 'conv_123',
+			include: ['message.input_image.image_url', 'file'],
+		});
+		expect(result.success).toBe(true);
+		if (result.success) {
+			expect(Array.isArray(result.data.include)).toBe(true);
+			expect(result.data.include?.length).toBe(2);
+		}
+	});
 });
 
 describe('OpenAI client helpers', () => {

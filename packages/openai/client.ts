@@ -40,6 +40,19 @@ function throwFromFetchResponse(response: Response, bodyText: string): never {
 	);
 }
 
+/**
+ * Query values for OpenAI requests.
+ * Arrays are emitted as repeated keys by corsair/http (`include=a&include=b`),
+ * which is required for multi-value params such as Conversations `include`.
+ */
+export type OpenaiQueryValue =
+	| string
+	| number
+	| boolean
+	| string[]
+	| number[]
+	| undefined;
+
 export async function makeOpenaiRequest<T>(
 	endpoint: string,
 	apiKey: string,
@@ -47,7 +60,7 @@ export async function makeOpenaiRequest<T>(
 		method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
 		// body shape varies per endpoint; validated by callers via typed Zod input schemas
 		body?: Record<string, unknown>;
-		query?: Record<string, string | number | boolean | undefined>;
+		query?: Record<string, OpenaiQueryValue>;
 		headers?: Record<string, string>;
 	} = {},
 ): Promise<T> {
