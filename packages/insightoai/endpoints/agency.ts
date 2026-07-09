@@ -1,6 +1,6 @@
 import { logEventFromContext } from 'corsair/core';
-import { makeInsightoaiRequest } from '../client';
 import type { InsightoaiEndpoints } from '..';
+import { makeInsightoaiRequest } from '../client';
 import type { InsightoaiEndpointOutputs } from './types';
 
 export const createAgency: InsightoaiEndpoints['createAgency'] = async (
@@ -70,7 +70,12 @@ export const getPricingForUser: InsightoaiEndpoints['getPricingForUser'] =
 			authType: ctx.options.authType,
 		});
 
-		await logEventFromContext(ctx, 'insightoai.agency.getPricingForUser', {}, 'completed');
+		await logEventFromContext(
+			ctx,
+			'insightoai.agency.getPricingForUser',
+			{},
+			'completed',
+		);
 		return result;
 	};
 
@@ -86,7 +91,12 @@ export const getAgentList: InsightoaiEndpoints['getAgentList'] = async (
 		authType: ctx.options.authType,
 	});
 
-	await logEventFromContext(ctx, 'insightoai.agency.getAgentList', {}, 'completed');
+	await logEventFromContext(
+		ctx,
+		'insightoai.agency.getAgentList',
+		{},
+		'completed',
+	);
 	return result;
 };
 

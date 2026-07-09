@@ -1,6 +1,6 @@
 import { logEventFromContext } from 'corsair/core';
-import { makeInsightoaiRequest } from '../client';
 import type { InsightoaiEndpoints } from '..';
+import { makeInsightoaiRequest } from '../client';
 import type { InsightoaiEndpointOutputs } from './types';
 
 export const createWidget: InsightoaiEndpoints['createWidget'] = async (
@@ -95,7 +95,12 @@ export const listChannels: InsightoaiEndpoints['listChannels'] = async (
 		authType: ctx.options.authType,
 	});
 
-	await logEventFromContext(ctx, 'insightoai.widgets.listChannels', {}, 'completed');
+	await logEventFromContext(
+		ctx,
+		'insightoai.widgets.listChannels',
+		{},
+		'completed',
+	);
 	return result;
 };
 

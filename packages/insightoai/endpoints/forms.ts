@@ -1,17 +1,19 @@
 import { logEventFromContext } from 'corsair/core';
-import { makeInsightoaiRequest } from '../client';
 import type { InsightoaiEndpoints } from '..';
+import { makeInsightoaiRequest } from '../client';
 import type { InsightoaiEndpointOutputs } from './types';
 
 export const createForm: InsightoaiEndpoints['createForm'] = async (
 	ctx,
 	input,
 ) => {
-	const result = await makeInsightoaiRequest<InsightoaiEndpointOutputs['createForm']>(
-		'/api/v1/form',
-		ctx.key,
-		{ method: 'POST', body: input, authType: ctx.options.authType },
-	);
+	const result = await makeInsightoaiRequest<
+		InsightoaiEndpointOutputs['createForm']
+	>('/api/v1/form', ctx.key, {
+		method: 'POST',
+		body: input,
+		authType: ctx.options.authType,
+	});
 
 	await logEventFromContext(
 		ctx,

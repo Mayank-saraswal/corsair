@@ -1,6 +1,6 @@
 import { logEventFromContext } from 'corsair/core';
-import { makeInsightoaiRequest } from '../client';
 import type { InsightoaiEndpoints } from '..';
+import { makeInsightoaiRequest } from '../client';
 import type { InsightoaiEndpointOutputs } from './types';
 
 export const getContactById: InsightoaiEndpoints['getContactById'] = async (

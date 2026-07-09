@@ -505,7 +505,9 @@ export type UpdateWebhookByIdInput = z.infer<
 const DeleteWebhookByIdInputSchema = z.object({
 	webhook_id: z.string(),
 });
-export type DeleteWebhookByIdInput = z.infer<typeof DeleteWebhookByIdInputSchema>;
+export type DeleteWebhookByIdInput = z.infer<
+	typeof DeleteWebhookByIdInputSchema
+>;
 
 const RetrieveWebhookLogInputSchema = z.object({
 	page: z.number().optional(),
@@ -611,7 +613,9 @@ const UpdateUserProfileInputSchema = z
 		user_id: z.string(),
 	})
 	.catchall(z.unknown());
-export type UpdateUserProfileInput = z.infer<typeof UpdateUserProfileInputSchema>;
+export type UpdateUserProfileInput = z.infer<
+	typeof UpdateUserProfileInputSchema
+>;
 
 const RetrieveUserMonthlyUsagesAggregationInputSchema = PaginationInputSchema;
 export type RetrieveUserMonthlyUsagesAggregationInput = z.infer<
@@ -722,7 +726,8 @@ export const InsightoaiEndpointInputSchemas = {
 
 	getContactById: GetContactByIdInputSchema,
 	getListOfContacts: GetListOfContactsInputSchema,
-	upsertContactByEmailOrPhoneNumber: UpsertContactByEmailOrPhoneNumberInputSchema,
+	upsertContactByEmailOrPhoneNumber:
+		UpsertContactByEmailOrPhoneNumberInputSchema,
 	deleteContactsInBulk: DeleteContactsInBulkInputSchema,
 	createContactCustomField: CreateContactCustomFieldInputSchema,
 	readContactCustomFieldList: ReadContactCustomFieldListInputSchema,
@@ -748,13 +753,15 @@ export const InsightoaiEndpointInputSchemas = {
 	createWidget: CreateWidgetInputSchema,
 	getWidgetById: GetWidgetByIdInputSchema,
 	deleteWidgetById: DeleteWidgetByIdInputSchema,
-	getListOfWidgetsLinkedToAssistantId: GetListOfWidgetsLinkedToAssistantIdInputSchema,
+	getListOfWidgetsLinkedToAssistantId:
+		GetListOfWidgetsLinkedToAssistantIdInputSchema,
 	listChannels: ListChannelsInputSchema,
 	getListOfConversations: GetListOfConversationsInputSchema,
 
 	getDatasourceById: GetDatasourceByIdInputSchema,
 	getListOfDatasources: GetListOfDatasourcesInputSchema,
-	getListOfDataSourcesLinkedToAssistantId: GetListOfDataSourcesLinkedToAssistantIdInputSchema,
+	getListOfDataSourcesLinkedToAssistantId:
+		GetListOfDataSourcesLinkedToAssistantIdInputSchema,
 	deleteLinkedAssistantDatasource: DeleteLinkedAssistantDatasourceInputSchema,
 	createTag: CreateTagInputSchema,
 	readTagList: ReadTagListInputSchema,
@@ -777,7 +784,8 @@ export const InsightoaiEndpointInputSchemas = {
 	getPricingForUser: GetPricingForUserInputSchema,
 	getAgentList: GetAgentListInputSchema,
 	updateUserProfile: UpdateUserProfileInputSchema,
-	retrieveUserMonthlyUsagesAggregation: RetrieveUserMonthlyUsagesAggregationInputSchema,
+	retrieveUserMonthlyUsagesAggregation:
+		RetrieveUserMonthlyUsagesAggregationInputSchema,
 } as const;
 
 export const InsightoaiEndpointOutputSchemas = {

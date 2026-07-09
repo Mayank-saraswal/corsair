@@ -21,8 +21,8 @@ import {
 	Forms,
 	Providers,
 	Tools,
-	Widgets,
 	WebhooksTelephony,
+	Widgets,
 } from './endpoints';
 import type {
 	InsightoaiEndpointInputs,
@@ -48,15 +48,19 @@ export type InsightoaiContext = CorsairPluginContext<
 	InsightoaiPluginOptions
 >;
 
-export type InsightoaiKeyBuilderContext = KeyBuilderContext<InsightoaiPluginOptions>;
+export type InsightoaiKeyBuilderContext =
+	KeyBuilderContext<InsightoaiPluginOptions>;
 
-export type InsightoaiBoundEndpoints = BindEndpoints<typeof insightoaiEndpointsNested>;
-
-type InsightoaiEndpoint<K extends keyof InsightoaiEndpointOutputs> = CorsairEndpoint<
-	InsightoaiContext,
-	InsightoaiEndpointInputs[K],
-	InsightoaiEndpointOutputs[K]
+export type InsightoaiBoundEndpoints = BindEndpoints<
+	typeof insightoaiEndpointsNested
 >;
+
+type InsightoaiEndpoint<K extends keyof InsightoaiEndpointOutputs> =
+	CorsairEndpoint<
+		InsightoaiContext,
+		InsightoaiEndpointInputs[K],
+		InsightoaiEndpointOutputs[K]
+	>;
 
 export type InsightoaiEndpoints = {
 	getAssistantById: InsightoaiEndpoint<'getAssistantById'>;
@@ -157,7 +161,8 @@ const insightoaiEndpointsNested = {
 	contacts: {
 		getContactById: Contacts.getContactById,
 		getListOfContacts: Contacts.getListOfContacts,
-		upsertContactByEmailOrPhoneNumber: Contacts.upsertContactByEmailOrPhoneNumber,
+		upsertContactByEmailOrPhoneNumber:
+			Contacts.upsertContactByEmailOrPhoneNumber,
 		deleteContactsInBulk: Contacts.deleteContactsInBulk,
 		createContactCustomField: Contacts.createContactCustomField,
 		readContactCustomFieldList: Contacts.readContactCustomFieldList,
@@ -186,7 +191,8 @@ const insightoaiEndpointsNested = {
 		createWidget: Widgets.createWidget,
 		getWidgetById: Widgets.getWidgetById,
 		deleteWidgetById: Widgets.deleteWidgetById,
-		getListOfWidgetsLinkedToAssistantId: Widgets.getListOfWidgetsLinkedToAssistantId,
+		getListOfWidgetsLinkedToAssistantId:
+			Widgets.getListOfWidgetsLinkedToAssistantId,
 		listChannels: Widgets.listChannels,
 		getListOfConversations: Widgets.getListOfConversations,
 	},
@@ -195,7 +201,8 @@ const insightoaiEndpointsNested = {
 		getListOfDatasources: Datasources.getListOfDatasources,
 		getListOfDataSourcesLinkedToAssistantId:
 			Datasources.getListOfDataSourcesLinkedToAssistantId,
-		deleteLinkedAssistantDatasource: Datasources.deleteLinkedAssistantDatasource,
+		deleteLinkedAssistantDatasource:
+			Datasources.deleteLinkedAssistantDatasource,
 		createTag: Datasources.createTag,
 		readTagList: Datasources.readTagList,
 		deleteTagById: Datasources.deleteTagById,
@@ -219,7 +226,8 @@ const insightoaiEndpointsNested = {
 		getPricingForUser: Agency.getPricingForUser,
 		getAgentList: Agency.getAgentList,
 		updateUserProfile: Agency.updateUserProfile,
-		retrieveUserMonthlyUsagesAggregation: Agency.retrieveUserMonthlyUsagesAggregation,
+		retrieveUserMonthlyUsagesAggregation:
+			Agency.retrieveUserMonthlyUsagesAggregation,
 	},
 } as const;
 
@@ -407,8 +415,10 @@ export const insightoaiEndpointSchemas = {
 		output: InsightoaiEndpointOutputSchemas.getListOfDatasources,
 	},
 	'datasources.getListOfDataSourcesLinkedToAssistantId': {
-		input: InsightoaiEndpointInputSchemas.getListOfDataSourcesLinkedToAssistantId,
-		output: InsightoaiEndpointOutputSchemas.getListOfDataSourcesLinkedToAssistantId,
+		input:
+			InsightoaiEndpointInputSchemas.getListOfDataSourcesLinkedToAssistantId,
+		output:
+			InsightoaiEndpointOutputSchemas.getListOfDataSourcesLinkedToAssistantId,
 	},
 	'datasources.deleteLinkedAssistantDatasource': {
 		input: InsightoaiEndpointInputSchemas.deleteLinkedAssistantDatasource,
@@ -494,16 +504,20 @@ export const insightoaiEndpointSchemas = {
 	},
 	'agency.retrieveUserMonthlyUsagesAggregation': {
 		input: InsightoaiEndpointInputSchemas.retrieveUserMonthlyUsagesAggregation,
-		output: InsightoaiEndpointOutputSchemas.retrieveUserMonthlyUsagesAggregation,
+		output:
+			InsightoaiEndpointOutputSchemas.retrieveUserMonthlyUsagesAggregation,
 	},
-} as const satisfies RequiredPluginEndpointSchemas<typeof insightoaiEndpointsNested>;
+} as const satisfies RequiredPluginEndpointSchemas<
+	typeof insightoaiEndpointsNested
+>;
 
 const defaultAuthType: AuthTypes = 'api_key' as const;
 
 const insightoaiEndpointMeta = {
 	'assistants.getAssistantById': {
 		riskLevel: 'read',
-		description: 'Retrieve comprehensive details and configuration of a specific assistant',
+		description:
+			'Retrieve comprehensive details and configuration of a specific assistant',
 	},
 	'assistants.deleteAssistantById': {
 		riskLevel: 'destructive',
@@ -528,7 +542,8 @@ const insightoaiEndpointMeta = {
 	},
 	'assistants.createPrompt': {
 		riskLevel: 'write',
-		description: 'Create a new customizable AI prompt template with variable support',
+		description:
+			'Create a new customizable AI prompt template with variable support',
 	},
 	'assistants.getPromptById': {
 		riskLevel: 'read',
@@ -542,7 +557,8 @@ const insightoaiEndpointMeta = {
 
 	'providers.createProvider': {
 		riskLevel: 'write',
-		description: 'Configure an AI provider (OpenAI, ElevenLabs, Azure Speech, Cartesia, PlayHT)',
+		description:
+			'Configure an AI provider (OpenAI, ElevenLabs, Azure Speech, Cartesia, PlayHT)',
 	},
 	'providers.getProviderById': {
 		riskLevel: 'read',
@@ -555,7 +571,8 @@ const insightoaiEndpointMeta = {
 	},
 	'providers.getSpeechtotextList': {
 		riskLevel: 'read',
-		description: 'Fetch a paginated list of available speech-to-text voice configurations',
+		description:
+			'Fetch a paginated list of available speech-to-text voice configurations',
 	},
 	'providers.retrieveListOfUserCustomVoice': {
 		riskLevel: 'read',
@@ -593,16 +610,19 @@ const insightoaiEndpointMeta = {
 	},
 	'contacts.sendMessagesToContacts': {
 		riskLevel: 'write',
-		description: 'Send bulk broadcast messages to contacts via connected WhatsApp or SMS',
+		description:
+			'Send bulk broadcast messages to contacts via connected WhatsApp or SMS',
 	},
 	'contacts.readContactSyncLogList': {
 		riskLevel: 'read',
-		description: 'Retrieve audit history and logs of contact synchronization operations',
+		description:
+			'Retrieve audit history and logs of contact synchronization operations',
 	},
 
 	'forms.createForm': {
 		riskLevel: 'write',
-		description: 'Create a conversational AI-driven or traditional data capture form',
+		description:
+			'Create a conversational AI-driven or traditional data capture form',
 	},
 	'forms.getCapturedFormByFormId': {
 		riskLevel: 'read',
@@ -621,11 +641,13 @@ const insightoaiEndpointMeta = {
 
 	'tools.createToolfunction': {
 		riskLevel: 'write',
-		description: 'Register a new tool function (SDK, CURL, or query index) for assistant workflows',
+		description:
+			'Register a new tool function (SDK, CURL, or query index) for assistant workflows',
 	},
 	'tools.updateToolfunctionById': {
 		riskLevel: 'write',
-		description: 'Modify the name, type, or enabled status of an existing tool function',
+		description:
+			'Modify the name, type, or enabled status of an existing tool function',
 	},
 	'tools.deleteToolfunctionById': {
 		riskLevel: 'destructive',
@@ -647,7 +669,8 @@ const insightoaiEndpointMeta = {
 	},
 	'tools.readToolFunctionInvokeLogList': {
 		riskLevel: 'read',
-		description: 'Inspect execution history and audit logs of tool function calls',
+		description:
+			'Inspect execution history and audit logs of tool function calls',
 	},
 	'tools.retrieveLinkedToolAndUser': {
 		riskLevel: 'read',
@@ -677,7 +700,8 @@ const insightoaiEndpointMeta = {
 	},
 	'widgets.listChannels': {
 		riskLevel: 'read',
-		description: 'Retrieve all available communication channels and configurations',
+		description:
+			'Retrieve all available communication channels and configurations',
 	},
 	'widgets.getListOfConversations': {
 		riskLevel: 'read',
@@ -686,11 +710,13 @@ const insightoaiEndpointMeta = {
 
 	'datasources.getDatasourceById': {
 		riskLevel: 'read',
-		description: 'Retrieve comprehensive details of a specific knowledge base data source',
+		description:
+			'Retrieve comprehensive details of a specific knowledge base data source',
 	},
 	'datasources.getListOfDatasources': {
 		riskLevel: 'read',
-		description: 'Discover all available knowledge base data sources (text, URLs, files)',
+		description:
+			'Discover all available knowledge base data sources (text, URLs, files)',
 	},
 	'datasources.getListOfDataSourcesLinkedToAssistantId': {
 		riskLevel: 'read',
@@ -699,11 +725,13 @@ const insightoaiEndpointMeta = {
 	'datasources.deleteLinkedAssistantDatasource': {
 		riskLevel: 'destructive',
 		irreversible: true,
-		description: "Unlink and remove a data source from an assistant's knowledge base",
+		description:
+			"Unlink and remove a data source from an assistant's knowledge base",
 	},
 	'datasources.createTag': {
 		riskLevel: 'write',
-		description: 'Create a custom tag for categorizing contacts and conversations',
+		description:
+			'Create a custom tag for categorizing contacts and conversations',
 	},
 	'datasources.readTagList': {
 		riskLevel: 'read',
@@ -726,7 +754,8 @@ const insightoaiEndpointMeta = {
 	},
 	'webhooksTelephony.updateWebhookById': {
 		riskLevel: 'write',
-		description: 'Modify the endpoint URL, name, or enabled status of an outbound webhook',
+		description:
+			'Modify the endpoint URL, name, or enabled status of an outbound webhook',
 	},
 	'webhooksTelephony.deleteWebhookById': {
 		riskLevel: 'destructive',
@@ -735,7 +764,8 @@ const insightoaiEndpointMeta = {
 	},
 	'webhooksTelephony.retrieveWebhookLog': {
 		riskLevel: 'read',
-		description: 'Inspect delivery status and debug logs for a specific webhook',
+		description:
+			'Inspect delivery status and debug logs for a specific webhook',
 	},
 	'webhooksTelephony.readTwilioAuthList': {
 		riskLevel: 'read',
@@ -762,7 +792,8 @@ const insightoaiEndpointMeta = {
 
 	'agency.createAgency': {
 		riskLevel: 'write',
-		description: 'Create a new agency with organization-specific branding and config',
+		description:
+			'Create a new agency with organization-specific branding and config',
 	},
 	'agency.getAgencyBrandingById': {
 		riskLevel: 'read',
@@ -770,11 +801,13 @@ const insightoaiEndpointMeta = {
 	},
 	'agency.getAgencyBillingPlan': {
 		riskLevel: 'read',
-		description: 'View an agency billing plan limits for bots, queries, words, and voice seconds',
+		description:
+			'View an agency billing plan limits for bots, queries, words, and voice seconds',
 	},
 	'agency.getPricingForUser': {
 		riskLevel: 'read',
-		description: 'Retrieve pricing tier information for LLM, voice, or transcription services',
+		description:
+			'Retrieve pricing tier information for LLM, voice, or transcription services',
 	},
 	'agency.getAgentList': {
 		riskLevel: 'read',
@@ -782,13 +815,16 @@ const insightoaiEndpointMeta = {
 	},
 	'agency.updateUserProfile': {
 		riskLevel: 'write',
-		description: 'Modify user account details, contact information, or billing settings',
+		description:
+			'Modify user account details, contact information, or billing settings',
 	},
 	'agency.retrieveUserMonthlyUsagesAggregation': {
 		riskLevel: 'read',
 		description: 'Retrieve monthly aggregated usage analytics',
 	},
-} as const satisfies RequiredPluginEndpointMeta<typeof insightoaiEndpointsNested>;
+} as const satisfies RequiredPluginEndpointMeta<
+	typeof insightoaiEndpointsNested
+>;
 
 export const insightoaiAuthConfig = {
 	api_key: {
@@ -799,17 +835,19 @@ export const insightoaiAuthConfig = {
 	},
 } as const satisfies PluginAuthConfig;
 
-export type BaseInsightoaiPlugin<T extends InsightoaiPluginOptions> = CorsairPlugin<
-	'insightoai',
-	typeof InsightoaiSchema,
-	typeof insightoaiEndpointsNested,
-	{},
-	T,
-	typeof defaultAuthType,
-	typeof insightoaiAuthConfig
->;
+export type BaseInsightoaiPlugin<T extends InsightoaiPluginOptions> =
+	CorsairPlugin<
+		'insightoai',
+		typeof InsightoaiSchema,
+		typeof insightoaiEndpointsNested,
+		{},
+		T,
+		typeof defaultAuthType,
+		typeof insightoaiAuthConfig
+	>;
 
-export type InternalInsightoaiPlugin = BaseInsightoaiPlugin<InsightoaiPluginOptions>;
+export type InternalInsightoaiPlugin =
+	BaseInsightoaiPlugin<InsightoaiPluginOptions>;
 
 export type ExternalInsightoaiPlugin<T extends InsightoaiPluginOptions> =
 	BaseInsightoaiPlugin<T>;
@@ -818,7 +856,8 @@ export type ExternalInsightoaiPlugin<T extends InsightoaiPluginOptions> =
 // optional), so an empty object satisfies the constraint at runtime even though
 // TypeScript cannot verify it without the assertion.
 export function insightoai<const T extends InsightoaiPluginOptions>(
-	incomingOptions: InsightoaiPluginOptions & T = {} as InsightoaiPluginOptions & T,
+	incomingOptions: InsightoaiPluginOptions & T = {} as InsightoaiPluginOptions &
+		T,
 ): ExternalInsightoaiPlugin<T> {
 	const options = {
 		...incomingOptions,

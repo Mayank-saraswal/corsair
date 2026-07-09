@@ -1,6 +1,6 @@
 import { logEventFromContext } from 'corsair/core';
-import { makeInsightoaiRequest } from '../client';
 import type { InsightoaiEndpoints } from '..';
+import { makeInsightoaiRequest } from '../client';
 import type { InsightoaiEndpointOutputs } from './types';
 
 export const getAssistantById: InsightoaiEndpoints['getAssistantById'] = async (
@@ -73,7 +73,12 @@ export const createIntent: InsightoaiEndpoints['createIntent'] = async (
 		authType: ctx.options.authType,
 	});
 
-	await logEventFromContext(ctx, 'insightoai.assistants.createIntent', {}, 'completed');
+	await logEventFromContext(
+		ctx,
+		'insightoai.assistants.createIntent',
+		{},
+		'completed',
+	);
 	return result;
 };
 
@@ -109,7 +114,12 @@ export const readIntentsList: InsightoaiEndpoints['readIntentsList'] = async (
 		authType: ctx.options.authType,
 	});
 
-	await logEventFromContext(ctx, 'insightoai.assistants.readIntentsList', {}, 'completed');
+	await logEventFromContext(
+		ctx,
+		'insightoai.assistants.readIntentsList',
+		{},
+		'completed',
+	);
 	return result;
 };
 
@@ -125,7 +135,12 @@ export const createPrompt: InsightoaiEndpoints['createPrompt'] = async (
 		authType: ctx.options.authType,
 	});
 
-	await logEventFromContext(ctx, 'insightoai.assistants.createPrompt', {}, 'completed');
+	await logEventFromContext(
+		ctx,
+		'insightoai.assistants.createPrompt',
+		{},
+		'completed',
+	);
 	return result;
 };
 

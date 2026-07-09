@@ -1,6 +1,6 @@
 import { logEventFromContext } from 'corsair/core';
-import { makeInsightoaiRequest } from '../client';
 import type { InsightoaiEndpoints } from '..';
+import { makeInsightoaiRequest } from '../client';
 import type { InsightoaiEndpointOutputs } from './types';
 
 export const getDatasourceById: InsightoaiEndpoints['getDatasourceById'] =
@@ -82,13 +82,20 @@ export const createTag: InsightoaiEndpoints['createTag'] = async (
 	ctx,
 	input,
 ) => {
-	const result = await makeInsightoaiRequest<InsightoaiEndpointOutputs['createTag']>(
-		'/api/v1/tag',
-		ctx.key,
-		{ method: 'POST', body: input, authType: ctx.options.authType },
-	);
+	const result = await makeInsightoaiRequest<
+		InsightoaiEndpointOutputs['createTag']
+	>('/api/v1/tag', ctx.key, {
+		method: 'POST',
+		body: input,
+		authType: ctx.options.authType,
+	});
 
-	await logEventFromContext(ctx, 'insightoai.datasources.createTag', {}, 'completed');
+	await logEventFromContext(
+		ctx,
+		'insightoai.datasources.createTag',
+		{},
+		'completed',
+	);
 	return result;
 };
 
@@ -104,7 +111,12 @@ export const readTagList: InsightoaiEndpoints['readTagList'] = async (
 		authType: ctx.options.authType,
 	});
 
-	await logEventFromContext(ctx, 'insightoai.datasources.readTagList', {}, 'completed');
+	await logEventFromContext(
+		ctx,
+		'insightoai.datasources.readTagList',
+		{},
+		'completed',
+	);
 	return result;
 };
 
