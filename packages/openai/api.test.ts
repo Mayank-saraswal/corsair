@@ -67,6 +67,26 @@ describeIfApiKey('OpenAI API Type Tests', () => {
 });
 
 describe('OpenAI offline schema smoke', () => {
+	it('registers input and output schemas for every endpoint key', () => {
+		// Ensures all ~129 operations stay wired in types.ts (catches missing schema maps)
+		const inputKeys = Object.keys(OpenaiEndpointInputSchemas);
+		const outputKeys = Object.keys(OpenaiEndpointOutputSchemas);
+		expect(inputKeys.length).toBeGreaterThan(50);
+		expect(outputKeys.length).toBe(inputKeys.length);
+		for (const key of inputKeys) {
+			expect(
+				OpenaiEndpointInputSchemas[
+					key as keyof typeof OpenaiEndpointInputSchemas
+				],
+			).toBeDefined();
+			expect(
+				OpenaiEndpointOutputSchemas[
+					key as keyof typeof OpenaiEndpointOutputSchemas
+				],
+			).toBeDefined();
+		}
+	});
+
 	it('chat input schema accepts a minimal completion request', () => {
 		const result = OpenaiEndpointInputSchemas.chatCreateCompletion.safeParse({
 			model: 'gpt-4o-mini',
@@ -85,6 +105,21 @@ describe('OpenAI offline schema smoke', () => {
 
 	it('models list input schema accepts empty object', () => {
 		const result = OpenaiEndpointInputSchemas.modelsList.safeParse({});
+		expect(result.success).toBe(true);
+	});
+
+	it('files list input schema accepts empty object', () => {
+		const result = OpenaiEndpointInputSchemas.filesList.safeParse({});
+		expect(result.success).toBe(true);
+	});
+
+	it('vectorStores list input schema accepts empty object', () => {
+		const result = OpenaiEndpointInputSchemas.vectorStoresList.safeParse({});
+		expect(result.success).toBe(true);
+	});
+
+	it('batches list input schema accepts empty object', () => {
+		const result = OpenaiEndpointInputSchemas.batchesList.safeParse({});
 		expect(result.success).toBe(true);
 	});
 
