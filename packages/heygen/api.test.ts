@@ -873,6 +873,15 @@ const FIXTURES: {
 };
 
 describe('HeyGen endpoint schemas', () => {
+	it('defines input and output schemas for every fixture endpoint', () => {
+		const keys = Object.keys(FIXTURES) as (keyof HeygenEndpointInputs)[];
+		expect(keys.length).toBeGreaterThan(0);
+		for (const key of keys) {
+			expect(HeygenEndpointInputSchemas[key]).toBeDefined();
+			expect(HeygenEndpointOutputSchemas[key]).toBeDefined();
+		}
+	});
+
 	for (const key of Object.keys(FIXTURES) as (keyof HeygenEndpointInputs)[]) {
 		it(`parses ${key} input and output`, () => {
 			const fixture = FIXTURES[key];
@@ -884,8 +893,17 @@ describe('HeyGen endpoint schemas', () => {
 				fixture.output,
 			);
 			expect(parsedOutput.success).toBe(true);
+			if (parsedInput.success) {
+				expect(parsedInput.data).toEqual(fixture.input);
+			}
 		});
 	}
+
+	it('rejects invalid avatarsList input when required fields are missing', () => {
+		// avatarsList input is typically empty/object; force a known-invalid value type
+		const result = HeygenEndpointInputSchemas.avatarsList.safeParse(null);
+		expect(result.success).toBe(false);
+	});
 });
 
 describeIfApiKey('HeyGen API live smoke tests', () => {
@@ -894,7 +912,8 @@ describeIfApiKey('HeyGen API live smoke tests', () => {
 			HeygenEndpointOutputs['avatarsList']
 		>('/v1/avatar.list', TEST_API_KEY!, { method: 'GET' });
 
-		HeygenEndpointOutputSchemas.avatarsList.parse(response);
+		const parsed = HeygenEndpointOutputSchemas.avatarsList.safeParse(response);
+		expect(parsed.success).toBe(true);
 	});
 
 	it('lists v2 voices', async () => {
@@ -902,7 +921,8 @@ describeIfApiKey('HeyGen API live smoke tests', () => {
 			HeygenEndpointOutputs['voicesListV2']
 		>('/v2/voices', TEST_API_KEY!, { method: 'GET' });
 
-		HeygenEndpointOutputSchemas.voicesListV2.parse(response);
+		const parsed = HeygenEndpointOutputSchemas.voicesListV2.safeParse(response);
+		expect(parsed.success).toBe(true);
 	});
 
 	it('retrieves remaining quota', async () => {
@@ -910,6 +930,10 @@ describeIfApiKey('HeyGen API live smoke tests', () => {
 			HeygenEndpointOutputs['webhooksQuotaRemainingQuota']
 		>('/v2/user/remaining_quota', TEST_API_KEY!, { method: 'GET' });
 
-		HeygenEndpointOutputSchemas.webhooksQuotaRemainingQuota.parse(response);
+		const parsed =
+			HeygenEndpointOutputSchemas.webhooksQuotaRemainingQuota.safeParse(
+				response,
+			);
+		expect(parsed.success).toBe(true);
 	});
 });
