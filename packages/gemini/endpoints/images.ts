@@ -2,7 +2,16 @@ import { logEventFromContext } from 'corsair/core';
 import type { GeminiEndpoints } from '..';
 import { makeGeminiRequest } from '../client';
 import type { Candidate } from '../schema/content';
+import {
+	buildImageGenerationConfig,
+	extractImagesFromCandidates,
+} from './image-utils';
 import type { GenerateImageResponse } from './types';
+
+export {
+	buildImageGenerationConfig,
+	extractImagesFromCandidates,
+} from './image-utils';
 
 export const generateImage: GeminiEndpoints['generateImage'] = async (
 	ctx,
@@ -26,24 +35,11 @@ export const generateImage: GeminiEndpoints['generateImage'] = async (
 		method: 'POST',
 		body: {
 			contents: [{ role: 'user', parts }],
-			generationConfig: {
-				responseModalities: ['IMAGE'],
-				...input.generationConfig,
-			},
+			generationConfig: buildImageGenerationConfig(input.generationConfig),
 		},
 	});
 
-	const images = (response.candidates ?? []).flatMap((candidate) =>
-		(candidate.content?.parts ?? [])
-			.filter(
-				(part): part is { inlineData: { mimeType: string; data: string } } =>
-					part.inlineData !== undefined,
-			)
-			.map((part) => ({
-				mimeType: part.inlineData.mimeType,
-				contentBase64: part.inlineData.data,
-			})),
-	);
+	const images = extractImagesFromCandidates(response.candidates);
 
 	await logEventFromContext(
 		ctx,

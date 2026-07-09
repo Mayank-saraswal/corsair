@@ -1,5 +1,9 @@
 import 'dotenv/config';
 import { makeGeminiRequest } from './client';
+import {
+	buildImageGenerationConfig,
+	extractImagesFromCandidates,
+} from './endpoints/image-utils';
 import { stripMarkdownFences } from './endpoints/text-utils';
 import type {
 	CountTokensResponse,
@@ -24,6 +28,36 @@ describe('Gemini offline unit tests', () => {
 
 	it('stripMarkdownFences leaves plain text unchanged', () => {
 		expect(stripMarkdownFences('hello world')).toBe('hello world');
+	});
+
+	it('buildImageGenerationConfig always forces responseModalities IMAGE', () => {
+		const config = buildImageGenerationConfig({
+			temperature: 0.5,
+			// Attempt to override IMAGE with TEXT — must not win
+			responseModalities: ['TEXT'],
+		});
+		expect(config.responseModalities).toEqual(['IMAGE']);
+		expect(config.temperature).toBe(0.5);
+	});
+
+	it('extractImagesFromCandidates maps inlineData parts to images', () => {
+		const images = extractImagesFromCandidates([
+			{
+				content: {
+					parts: [
+						{ text: 'ignore me' },
+						{ inlineData: { mimeType: 'image/png', data: 'abc123' } },
+					],
+				},
+			},
+		]);
+		expect(images).toEqual([
+			{ mimeType: 'image/png', contentBase64: 'abc123' },
+		]);
+	});
+
+	it('extractImagesFromCandidates returns empty array when no candidates', () => {
+		expect(extractImagesFromCandidates(undefined)).toEqual([]);
 	});
 
 	it('countTokens input schema accepts a minimal payload', () => {

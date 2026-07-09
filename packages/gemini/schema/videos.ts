@@ -33,6 +33,8 @@ export const GeneratedVideoSampleSchema = z
 			})
 			.optional(),
 	})
+	// Forward-compat: Veo sample objects gain extra fields (e.g. raiMediaFilteredReasons)
+	// that vary by model version and are not worth fully modeling here.
 	.catchall(z.unknown());
 
 export const VideoOperationResponseSchema = z
