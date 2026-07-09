@@ -213,3 +213,22 @@ afterAll(async () => {
 		});
 	},
 );
+
+describe('Google BigQuery offline schema smoke', () => {
+	it('queriesQuery output schema accepts a minimal job response', () => {
+		const result = GoogleBigqueryEndpointOutputSchemas.queriesQuery.safeParse({
+			kind: 'bigquery#queryResponse',
+			jobComplete: true,
+		});
+		expect(result.success).toBe(true);
+	});
+
+	it('datasetsGet output schema accepts a minimal dataset', () => {
+		const result = GoogleBigqueryEndpointOutputSchemas.datasetsGet.safeParse({
+			kind: 'bigquery#dataset',
+			id: 'project:dataset',
+			datasetReference: { projectId: 'project', datasetId: 'dataset' },
+		});
+		expect(result.success).toBe(true);
+	});
+});
