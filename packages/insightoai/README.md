@@ -45,13 +45,40 @@ Base URL: `https://api.insighto.ai`
 - **DELETE with JSON body**: bulk deletes (`deleteContactsInBulk`, `deleteBulkFormsByIds`) send a JSON body on `DELETE`. The client allows bodies on all non-GET methods.
 - **Permissive response schemas**: Insighto’s public OpenAPI panel does not always expose full response field schemas; outputs are validated with intentionally flexible Zod shapes and explanatory comments.
 
+## Error handling
+
+- `RATE_LIMIT_ERROR` — HTTP 429 / rate-limit message; retries with `Retry-After` when present
+- `AUTH_ERROR` — HTTP 401 / invalid auth; no retry
+- `DEFAULT` — always last after caller overrides (custom keys cannot be shadowed)
+
 ## Tests
 
 ```bash
+# Offline schema fixtures (no API key) — required for CI
+pnpm --filter @corsair-dev/insightoai test
+
+# Live smoke tests (optional; list endpoints only — no fixture entity IDs)
+$env:INSIGHTOAI_API_KEY = "in-..."   # PowerShell
 pnpm --filter @corsair-dev/insightoai test
 ```
 
-Schema fixtures cover every operation. Live smoke tests run only when `INSIGHTOAI_API_KEY` is set.
+Schema fixtures cover every operation. Live smoke tests run only when `INSIGHTOAI_API_KEY` is set and only hit list routes (`/api/v1/contact`, `/api/v1/tag/list`, `/api/v1/channel/list`) so placeholder IDs never 404 a real account.
+
+## Live demo (R4 Loom recording)
+
+```bash
+# PowerShell
+$env:INSIGHTOAI_API_KEY = "in-..."
+pnpm --filter @corsair-dev/insightoai demo
+
+# bash
+export INSIGHTOAI_API_KEY=in-...
+pnpm --filter @corsair-dev/insightoai demo
+```
+
+Or: `node packages/insightoai/scripts/demo.mjs`
+
+Record the successful run, then put `https://www.loom.com/share/...` under **Screenshots / Demos** on the PR. Do not paste the API key into Loom or GitHub.
 
 ## Links
 

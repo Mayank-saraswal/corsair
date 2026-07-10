@@ -140,6 +140,10 @@ export const deleteTwilioAuthById: InsightoaiEndpoints['deleteTwilioAuthById'] =
 	};
 
 // WhatsApp access tokens/secrets are credentials — never logged, only the record id.
+// Path is PUT/DELETE /api/v1/user/{userwhatsapp_id}/user_whats_app per Insighto's
+// published op surface: `userwhatsapp_id` is the WhatsApp-connection resource id
+// that lives under the /user/{id}/… nesting (same id the API returns for the link),
+// not a separate "account id" field.
 export const updateUserwhatsappById: InsightoaiEndpoints['updateUserwhatsappById'] =
 	async (ctx, input) => {
 		const { userwhatsapp_id, ...body } = input;
