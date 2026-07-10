@@ -99,7 +99,6 @@ export type GoogleBigqueryEndpoints = {
 	analyticsHubListListings: GoogleBigqueryEndpoint<'analyticsHubListListings'>;
 	analyticsHubListDataexchangesListings: GoogleBigqueryEndpoint<'analyticsHubListDataexchangesListings'>;
 	analyticsHubCreateListing: GoogleBigqueryEndpoint<'analyticsHubCreateListing'>;
-	analyticsHubCreateDataexchangesListings: GoogleBigqueryEndpoint<'analyticsHubCreateDataexchangesListings'>;
 	analyticsHubCreateDataExchange: GoogleBigqueryEndpoint<'analyticsHubCreateDataExchange'>;
 	analyticsHubListOrganizationDataExchanges: GoogleBigqueryEndpoint<'analyticsHubListOrganizationDataExchanges'>;
 	analyticsHubListQueryTemplates: GoogleBigqueryEndpoint<'analyticsHubListQueryTemplates'>;
@@ -184,8 +183,6 @@ const googleBigqueryEndpointsNested = {
 		listListings: AnalyticsHubEndpoints.listListings,
 		listDataexchangesListings: AnalyticsHubEndpoints.listDataexchangesListings,
 		createListing: AnalyticsHubEndpoints.createListing,
-		createDataexchangesListings:
-			AnalyticsHubEndpoints.createDataexchangesListings,
 		createDataExchange: AnalyticsHubEndpoints.createDataExchange,
 		listOrganizationDataExchanges:
 			AnalyticsHubEndpoints.listOrganizationDataExchanges,
@@ -421,12 +418,6 @@ export const googleBigqueryEndpointSchemas = {
 	'analyticsHub.createListing': {
 		input: GoogleBigqueryEndpointInputSchemas.analyticsHubCreateListing,
 		output: GoogleBigqueryEndpointOutputSchemas.analyticsHubCreateListing,
-	},
-	'analyticsHub.createDataexchangesListings': {
-		input:
-			GoogleBigqueryEndpointInputSchemas.analyticsHubCreateDataexchangesListings,
-		output:
-			GoogleBigqueryEndpointOutputSchemas.analyticsHubCreateDataexchangesListings,
 	},
 	'analyticsHub.createDataExchange': {
 		input: GoogleBigqueryEndpointInputSchemas.analyticsHubCreateDataExchange,
@@ -705,10 +696,6 @@ const googleBigqueryEndpointMeta = {
 	'analyticsHub.createListing': {
 		riskLevel: 'write',
 		description: 'Create a new listing (shareable dataset) in a data exchange',
-	},
-	'analyticsHub.createDataexchangesListings': {
-		riskLevel: 'write',
-		description: 'Create a new listing under a data exchange',
 	},
 	'analyticsHub.createDataExchange': {
 		riskLevel: 'write',

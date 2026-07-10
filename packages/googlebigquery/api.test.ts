@@ -394,13 +394,6 @@ describe('Google BigQuery offline schema smoke', () => {
 			listingId: 'listing',
 			displayName: 'My Listing',
 		},
-		analyticsHubCreateDataexchangesListings: {
-			projectId: 'p',
-			location: 'US',
-			dataExchangeId: 'ex',
-			listingId: 'listing',
-			displayName: 'My Listing',
-		},
 		analyticsHubCreateDataExchange: {
 			projectId: 'p',
 			location: 'US',

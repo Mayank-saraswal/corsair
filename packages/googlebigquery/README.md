@@ -40,14 +40,14 @@ Enable BigQuery API: https://console.cloud.google.com/apis/library/bigquery.goog
 5. IAM / row access / data policies  
 6. Connections  
 7. Reservations  
-8. Analytics Hub (v1 + v1beta1 hosts)  
+8. Analytics Hub  
 9. ML models / locations / projects  
 
 ## Quirks & caveats
 
 - **OAuth only** — no API-key auth path.
-- **Multi-host routing** — BigQuery core, BigQuery Connection, Reservation, Analytics Hub v1, and Analytics Hub v1beta1 use different API bases.
-- **`createListing` vs `createDataexchangesListings`** — same resource path, different hosts (`analyticsHub` vs `analyticsHubBeta`) for v1 vs v1beta1.
+- **Multi-host routing** — BigQuery core, BigQuery Connection, Reservation, and Analytics Hub use different API bases.
+- **Single create-listing op** — `analyticsHub.createListing` is the only create-listing surface (duplicate path aliases removed).
 - **DB cache keys** use BigQuery resource ids (`project:dataset`, `project:dataset.table`, `project:jobId`).
 
 ## Tests

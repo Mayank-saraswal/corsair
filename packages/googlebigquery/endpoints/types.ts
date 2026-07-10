@@ -1299,11 +1299,6 @@ const CreateListingInputSchema = z.object({
 });
 export type CreateListingInput = z.infer<typeof CreateListingInputSchema>;
 
-const CreateDataexchangesListingsInputSchema = CreateListingInputSchema;
-export type CreateDataexchangesListingsInput = z.infer<
-	typeof CreateDataexchangesListingsInputSchema
->;
-
 const CreateDataExchangeInputSchema = z.object({
 	projectId: z.string(),
 	location: z.string(),
@@ -1538,7 +1533,6 @@ export type GoogleBigqueryEndpointInputs = {
 	analyticsHubListListings: ListAnalyticsHubListingsInput;
 	analyticsHubListDataexchangesListings: ListDataexchangesListingsInput;
 	analyticsHubCreateListing: CreateListingInput;
-	analyticsHubCreateDataexchangesListings: CreateDataexchangesListingsInput;
 	analyticsHubCreateDataExchange: CreateDataExchangeInput;
 	analyticsHubListOrganizationDataExchanges: ListOrganizationDataExchangesInput;
 	analyticsHubListQueryTemplates: ListQueryTemplatesInput;
@@ -1604,7 +1598,6 @@ export type GoogleBigqueryEndpointOutputs = {
 	analyticsHubListListings: ListListingsResponse;
 	analyticsHubListDataexchangesListings: ListDataExchangesResponse;
 	analyticsHubCreateListing: Listing;
-	analyticsHubCreateDataexchangesListings: Listing;
 	analyticsHubCreateDataExchange: DataExchange;
 	analyticsHubListOrganizationDataExchanges: ListDataExchangesResponse;
 	analyticsHubListQueryTemplates: ListQueryTemplatesResponse;
@@ -1670,8 +1663,6 @@ export const GoogleBigqueryEndpointInputSchemas = {
 	analyticsHubListListings: ListAnalyticsHubListingsInputSchema,
 	analyticsHubListDataexchangesListings: ListDataexchangesListingsInputSchema,
 	analyticsHubCreateListing: CreateListingInputSchema,
-	analyticsHubCreateDataexchangesListings:
-		CreateDataexchangesListingsInputSchema,
 	analyticsHubCreateDataExchange: CreateDataExchangeInputSchema,
 	analyticsHubListOrganizationDataExchanges:
 		ListOrganizationDataExchangesInputSchema,
@@ -1738,7 +1729,6 @@ export const GoogleBigqueryEndpointOutputSchemas = {
 	analyticsHubListListings: ListListingsResponseSchema,
 	analyticsHubListDataexchangesListings: ListDataExchangesResponseSchema,
 	analyticsHubCreateListing: ListingSchema,
-	analyticsHubCreateDataexchangesListings: ListingSchema,
 	analyticsHubCreateDataExchange: DataExchangeSchema,
 	analyticsHubListOrganizationDataExchanges: ListDataExchangesResponseSchema,
 	analyticsHubListQueryTemplates: ListQueryTemplatesResponseSchema,

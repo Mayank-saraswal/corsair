@@ -44,7 +44,8 @@ export const listDataexchangesListings: GoogleBigqueryEndpoints['analyticsHubLis
 	};
 
 // Analytics Hub v1 (`analyticsHub` host: analyticshub.googleapis.com/v1).
-// Intentionally separate from createDataexchangesListings (v1beta1 host below).
+// Single create-listing operation — do not reintroduce a second op on the same
+// path under a different host alias (review bot: duplicate endpoint).
 export const createListing: GoogleBigqueryEndpoints['analyticsHubCreateListing'] =
 	async (ctx, input) => {
 		const { projectId, location, dataExchangeId, listingId, ...body } = input;
@@ -59,33 +60,6 @@ export const createListing: GoogleBigqueryEndpoints['analyticsHubCreateListing']
 		await logEventFromContext(
 			ctx,
 			'googlebigquery.analyticsHub.createListing',
-			{ ...input },
-			'completed',
-		);
-		return result;
-	};
-
-// Targets the Analytics Hub v1beta1 API (`analyticsHubBeta` host), distinct from
-// createListing's v1 endpoint above.
-export const createDataexchangesListings: GoogleBigqueryEndpoints['analyticsHubCreateDataexchangesListings'] =
-	async (ctx, input) => {
-		const { projectId, location, dataExchangeId, listingId, ...body } = input;
-		const result = await makeAuthenticatedGoogleBigqueryRequest<
-			GoogleBigqueryEndpointOutputs['analyticsHubCreateDataexchangesListings']
-		>(
-			`/projects/${projectId}/locations/${location}/dataExchanges/${dataExchangeId}/listings`,
-			ctx,
-			{
-				method: 'POST',
-				host: 'analyticsHubBeta',
-				query: { listingId },
-				body,
-			},
-		);
-
-		await logEventFromContext(
-			ctx,
-			'googlebigquery.analyticsHub.createDataexchangesListings',
 			{ ...input },
 			'completed',
 		);
