@@ -224,6 +224,7 @@ const FIXTURES: {
 		input: { widget_id: 'widget_123' },
 		output: { id: 'widget_123', deleted: true },
 	},
+	// Offline schema fixture only — never used by live smoke tests below.
 	getListOfWidgetsLinkedToAssistantId: {
 		input: { assistant_id: 'assistant_123', page: 1, size: 50 },
 		output: { items: [{ id: 'widget_123' }], total: 1 },
@@ -383,45 +384,51 @@ describe('Insighto.ai endpoint schemas', () => {
 	});
 });
 
-describeIfApiKey('Insighto.ai API live smoke tests', () => {
-	// Live tests only hit list endpoints that do not require a pre-existing entity ID
-	// (fixture IDs like assistant_123 would 404 against real accounts).
+// LIVE SMOKE TESTS (gated on INSIGHTOAI_API_KEY)
+// Intentionally list-only — never call entity-scoped paths with fixture IDs
+// (e.g. do NOT call GET /api/v1/assistant/assistant_123/widgets).
+// Fixed: replaced the old widgets-by-assistant smoke with listChannels.
+describeIfApiKey(
+	'Insighto.ai API live smoke tests (list endpoints only)',
+	() => {
+		it('lists contacts (GET /api/v1/contact)', async () => {
+			const response = await makeInsightoaiRequest<
+				InsightoaiEndpointOutputs['getListOfContacts']
+			>('/api/v1/contact', TEST_API_KEY!, {
+				method: 'GET',
+				authType: 'api_key',
+			});
 
-	it('lists contacts', async () => {
-		const response = await makeInsightoaiRequest<
-			InsightoaiEndpointOutputs['getListOfContacts']
-		>('/api/v1/contact', TEST_API_KEY!, { method: 'GET', authType: 'api_key' });
-
-		const parsed =
-			InsightoaiEndpointOutputSchemas.getListOfContacts.safeParse(response);
-		expect(parsed.success).toBe(true);
-	});
-
-	it('lists tags', async () => {
-		const response = await makeInsightoaiRequest<
-			InsightoaiEndpointOutputs['readTagList']
-		>('/api/v1/tag/list', TEST_API_KEY!, {
-			method: 'GET',
-			authType: 'api_key',
+			const parsed =
+				InsightoaiEndpointOutputSchemas.getListOfContacts.safeParse(response);
+			expect(parsed.success).toBe(true);
 		});
 
-		const parsed =
-			InsightoaiEndpointOutputSchemas.readTagList.safeParse(response);
-		expect(parsed.success).toBe(true);
-	});
+		it('lists tags (GET /api/v1/tag/list)', async () => {
+			const response = await makeInsightoaiRequest<
+				InsightoaiEndpointOutputs['readTagList']
+			>('/api/v1/tag/list', TEST_API_KEY!, {
+				method: 'GET',
+				authType: 'api_key',
+			});
 
-	it('lists channels', async () => {
-		// Path must match listChannels in endpoints/widgets.ts (`/api/v1/channel/list`),
-		// consistent with other Insighto list routes (e.g. /api/v1/tag/list, /api/v1/channel/twilio/list).
-		const response = await makeInsightoaiRequest<
-			InsightoaiEndpointOutputs['listChannels']
-		>('/api/v1/channel/list', TEST_API_KEY!, {
-			method: 'GET',
-			authType: 'api_key',
+			const parsed =
+				InsightoaiEndpointOutputSchemas.readTagList.safeParse(response);
+			expect(parsed.success).toBe(true);
 		});
 
-		const parsed =
-			InsightoaiEndpointOutputSchemas.listChannels.safeParse(response);
-		expect(parsed.success).toBe(true);
-	});
-});
+		it('lists channels (GET /api/v1/channel/list)', async () => {
+			// Matches listChannels in endpoints/widgets.ts — not widgets-by-assistant.
+			const response = await makeInsightoaiRequest<
+				InsightoaiEndpointOutputs['listChannels']
+			>('/api/v1/channel/list', TEST_API_KEY!, {
+				method: 'GET',
+				authType: 'api_key',
+			});
+
+			const parsed =
+				InsightoaiEndpointOutputSchemas.listChannels.safeParse(response);
+			expect(parsed.success).toBe(true);
+		});
+	},
+);
