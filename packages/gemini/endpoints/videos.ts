@@ -44,11 +44,12 @@ export const getVideosOperation: GeminiEndpoints['getVideosOperation'] = async (
 		{ method: 'GET' },
 	);
 
+	// Log failed when the LRO payload carries an error (HTTP can still be 200).
 	await logEventFromContext(
 		ctx,
 		'gemini.videos.getVideosOperation',
 		{ ...input },
-		'completed',
+		response.error ? 'failed' : 'completed',
 	);
 	return response;
 };

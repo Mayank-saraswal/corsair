@@ -208,10 +208,15 @@ export function gemini<const T extends GeminiPluginOptions>(
 		endpointMeta: geminiEndpointMeta,
 		endpointSchemas: geminiEndpointSchemas,
 		pluginWebhookMatcher: undefined,
-		errorHandlers: {
-			...errorHandlers,
-			...options.errorHandlers,
-		},
+		errorHandlers: (() => {
+			// DEFAULT matches everything (`() => true`), so it must always be last.
+			const { DEFAULT: defaultHandler, ...specificDefaults } = errorHandlers;
+			return {
+				...specificDefaults,
+				...(options.errorHandlers || {}),
+				DEFAULT: options.errorHandlers?.DEFAULT || defaultHandler,
+			};
+		})(),
 		keyBuilder: async (ctx: GeminiKeyBuilderContext, source) => {
 			if (source === 'endpoint' && options.key) {
 				return options.key;
@@ -219,7 +224,10 @@ export function gemini<const T extends GeminiPluginOptions>(
 
 			if (source === 'endpoint' && ctx.authType === 'api_key') {
 				const res = await ctx.keys.get_api_key();
-				if (res) return res;
+				if (!res) {
+					throw new AuthMissingError('gemini', 'api_key');
+				}
+				return res;
 			}
 
 			throw new AuthMissingError('gemini', 'api_key');

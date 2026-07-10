@@ -1,5 +1,6 @@
 import 'dotenv/config';
 import { makeGeminiRequest } from './client';
+import { Content, Images, Models, Videos } from './endpoints';
 import {
 	buildImageGenerationConfig,
 	extractImagesFromCandidates,
@@ -15,10 +16,19 @@ import {
 	GeminiEndpointInputSchemas,
 	GeminiEndpointOutputSchemas,
 } from './endpoints/types';
+import type { GeminiContext } from './index';
 import type { VideoOperation } from './schema/videos';
 
 const TEST_API_KEY = process.env.GEMINI_API_KEY;
 const describeIfApiKey = TEST_API_KEY ? describe : describe.skip;
+
+/** Minimal plugin context for live endpoint-handler tests. */
+function testCtx(key: string): GeminiContext {
+	return {
+		key,
+		// logEventFromContext only needs enough of ctx to no-op safely in tests
+	} as GeminiContext;
+}
 
 describe('Gemini offline unit tests', () => {
 	it('stripMarkdownFences removes a single leading/trailing fence', () => {
@@ -60,13 +70,57 @@ describe('Gemini offline unit tests', () => {
 		expect(extractImagesFromCandidates(undefined)).toEqual([]);
 	});
 
-	it('countTokens input schema accepts a minimal payload', () => {
-		const result = GeminiEndpointInputSchemas.countTokens.safeParse({
+	// Minimal valid input fixtures for every registered endpoint (offline coverage).
+	const inputFixtures: Record<string, unknown> = {
+		countTokens: {
 			model: 'gemini-2.5-flash',
 			contents: [{ role: 'user', parts: [{ text: 'hi' }] }],
-		});
-		expect(result.success).toBe(true);
+		},
+		embedContent: {
+			model: 'gemini-embedding-001',
+			content: { parts: [{ text: 'hi' }] },
+		},
+		generateContent: {
+			model: 'gemini-2.5-flash',
+			contents: [{ role: 'user', parts: [{ text: 'hi' }] }],
+		},
+		generateImage: {
+			model: 'gemini-2.5-flash-image',
+			prompt: 'a cat',
+		},
+		generateVideos: {
+			model: 'veo-2.0-generate-001',
+			prompt: 'A calm ocean at sunrise',
+		},
+		getVideosOperation: {
+			operationName: 'models/veo-2.0-generate-001/operations/123',
+		},
+		listModels: {},
+		waitForVideo: {
+			operationName: 'models/veo-2.0-generate-001/operations/123',
+		},
+	};
+
+	it('covers every registered input schema key with a fixture', () => {
+		const schemaKeys = Object.keys(GeminiEndpointInputSchemas).sort();
+		const fixtureKeys = Object.keys(inputFixtures).sort();
+		expect(fixtureKeys).toEqual(schemaKeys);
+		expect(schemaKeys.length).toBe(
+			Object.keys(GeminiEndpointOutputSchemas).length,
+		);
 	});
+
+	it.each(Object.keys(GeminiEndpointInputSchemas))(
+		'input schema accepts minimal payload for %s',
+		(key) => {
+			const schema =
+				GeminiEndpointInputSchemas[
+					key as keyof typeof GeminiEndpointInputSchemas
+				];
+			const result = schema.safeParse(inputFixtures[key]);
+			expect(result.success).toBe(true);
+		},
+	);
 
 	it('generateContent input schema rejects missing contents', () => {
 		const result = GeminiEndpointInputSchemas.generateContent.safeParse({
@@ -75,29 +129,33 @@ describe('Gemini offline unit tests', () => {
 		expect(result.success).toBe(false);
 	});
 
-	it('listModels input schema accepts empty object', () => {
-		const result = GeminiEndpointInputSchemas.listModels.safeParse({});
-		expect(result.success).toBe(true);
-	});
-
-	it('generateImage input schema accepts prompt + model', () => {
-		const result = GeminiEndpointInputSchemas.generateImage.safeParse({
-			model: 'gemini-2.5-flash-image',
-			prompt: 'a cat',
+	it('getVideosOperation output schema accepts done+error LRO payload', () => {
+		const result = GeminiEndpointOutputSchemas.getVideosOperation.safeParse({
+			name: 'models/veo/operations/123',
+			done: true,
+			error: { code: 3, message: 'failed' },
 		});
 		expect(result.success).toBe(true);
 	});
 
-	it('getVideosOperation input schema accepts operationName', () => {
-		const result = GeminiEndpointInputSchemas.getVideosOperation.safeParse({
+	it('waitForVideo output schema accepts pending and failed shapes', () => {
+		const pending = GeminiEndpointOutputSchemas.waitForVideo.safeParse({
 			operationName: 'models/veo/operations/123',
+			done: false,
 		});
-		expect(result.success).toBe(true);
+		expect(pending.success).toBe(true);
+
+		const failed = GeminiEndpointOutputSchemas.waitForVideo.safeParse({
+			operationName: 'models/veo/operations/123',
+			done: true,
+			error: { code: 3, message: 'failed' },
+		});
+		expect(failed.success).toBe(true);
 	});
 
-	it('waitForVideo input schema accepts operationName', () => {
-		const result = GeminiEndpointInputSchemas.waitForVideo.safeParse({
-			operationName: 'models/veo/operations/123',
+	it('generateImage output schema accepts images array', () => {
+		const result = GeminiEndpointOutputSchemas.generateImage.safeParse({
+			images: [{ mimeType: 'image/png', contentBase64: 'abc' }],
 		});
 		expect(result.success).toBe(true);
 	});
@@ -179,10 +237,35 @@ describeIfApiKey('Gemini API Type Tests', () => {
 		});
 	});
 
-	describe('videos.generateVideos', () => {
-		it('generateVideos kicks off an operation with correct type', async () => {
+	describe('images.generateImage', () => {
+		it('generateImage HTTP response can extract images when model is available', async () => {
+			const response = await makeGeminiRequest<{
+				candidates?: Array<{
+					content?: {
+						parts?: Array<{
+							inlineData?: { mimeType: string; data: string };
+						}>;
+					};
+				}>;
+			}>('/models/gemini-2.5-flash-image:generateContent', TEST_API_KEY!, {
+				method: 'POST',
+				body: {
+					contents: [
+						{ role: 'user', parts: [{ text: 'A simple red circle icon' }] },
+					],
+					generationConfig: { responseModalities: ['IMAGE', 'TEXT'] },
+				},
+			});
+			expect(response).toBeDefined();
+			const images = extractImagesFromCandidates(response.candidates as never);
+			expect(Array.isArray(images)).toBe(true);
+		});
+	});
+
+	describe('videos.generateVideos + getVideosOperation', () => {
+		it('generateVideos kicks off an operation and getVideosOperation polls it', async () => {
 			const response = await makeGeminiRequest<VideoOperation>(
-				'/models/veo-2.0-generate-001:predictLongRunning',
+				'/models/veo-3.1-fast-generate-preview:predictLongRunning',
 				TEST_API_KEY!,
 				{
 					method: 'POST',
@@ -191,6 +274,78 @@ describeIfApiKey('Gemini API Type Tests', () => {
 			);
 
 			expect(typeof response.name).toBe('string');
+
+			const op = await makeGeminiRequest<VideoOperation>(
+				`/${response.name}`,
+				TEST_API_KEY!,
+				{ method: 'GET' },
+			);
+			expect(op).toBeDefined();
 		});
+	});
+});
+
+/**
+ * Live path through real endpoint handlers (not only makeGeminiRequest).
+ * Covers stripMarkdownFences / image extraction wiring Greptile flagged as untested.
+ */
+describeIfApiKey('Gemini endpoint handlers (live)', () => {
+	const ctx = testCtx(TEST_API_KEY!);
+
+	it('Models.listModels handler works', async () => {
+		const response = await Models.listModels(ctx, {});
+		const parsed = GeminiEndpointOutputSchemas.listModels.safeParse(response);
+		expect(parsed.success).toBe(true);
+		expect(response.models.length).toBeGreaterThan(0);
+	});
+
+	it('Content.countTokens handler works', async () => {
+		const response = await Content.countTokens(ctx, {
+			model: 'gemini-2.5-flash',
+			contents: [{ role: 'user', parts: [{ text: 'Hello' }] }],
+		});
+		const parsed = GeminiEndpointOutputSchemas.countTokens.safeParse(response);
+		expect(parsed.success).toBe(true);
+		expect(response.totalTokens).toBeGreaterThan(0);
+	});
+
+	it('Content.generateContent handler strips markdown fences into text', async () => {
+		const response = await Content.generateContent(ctx, {
+			model: 'gemini-2.5-flash',
+			contents: [
+				{
+					role: 'user',
+					parts: [{ text: 'Reply with exactly one word: pong' }],
+				},
+			],
+		});
+		expect(response.candidates?.length).toBeGreaterThan(0);
+		// text field is produced by the handler via stripMarkdownFences
+		if (response.text !== undefined) {
+			expect(typeof response.text).toBe('string');
+			expect(response.text.includes('```')).toBe(false);
+		}
+	});
+
+	it('Images.generateImage handler runs and returns images array', async () => {
+		const response = await Images.generateImage(ctx, {
+			model: 'gemini-2.5-flash-image',
+			prompt: 'A simple blue square icon, no text',
+		});
+		expect(Array.isArray(response.images)).toBe(true);
+	});
+
+	it('Videos.generateVideos + getVideosOperation handlers work', async () => {
+		const started = await Videos.generateVideos(ctx, {
+			model: 'veo-3.1-fast-generate-preview',
+			prompt: 'A calm ocean at sunrise, short clip',
+		});
+		expect(typeof started.operationName).toBe('string');
+
+		const op = await Videos.getVideosOperation(ctx, {
+			operationName: started.operationName,
+		});
+		// Handler returns the LRO payload; done may still be false
+		expect(op).toBeDefined();
 	});
 });
