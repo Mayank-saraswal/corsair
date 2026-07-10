@@ -78,7 +78,7 @@ pnpm --filter @corsair-dev/insightoai demo
 
 Or: `node packages/insightoai/scripts/demo.mjs`
 
-Record the successful run, then put `https://www.loom.com/share/...` under **Screenshots / Demos** on the PR. Do not paste the API key into Loom or GitHub.
+Working proof recording (R4): https://www.loom.com/share/2b0c54067e7a413bbf985be1572a425c
 
 ## Links
 
