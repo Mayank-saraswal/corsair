@@ -162,10 +162,15 @@ export function deepseek<const T extends DeepseekPluginOptions>(
 		endpointSchemas: deepseekEndpointSchemas,
 		authConfig: deepseekAuthConfig,
 		pluginWebhookMatcher: () => false,
-		errorHandlers: {
-			...errorHandlers,
-			...options.errorHandlers,
-		},
+		errorHandlers: (() => {
+			// DEFAULT matches everything (`() => true`), so it must always be last.
+			const { DEFAULT: defaultHandler, ...specificDefaults } = errorHandlers;
+			return {
+				...specificDefaults,
+				...(options.errorHandlers || {}),
+				DEFAULT: options.errorHandlers?.DEFAULT || defaultHandler,
+			};
+		})(),
 		keyBuilder: async (ctx: DeepseekKeyBuilderContext, source) => {
 			if (source === 'endpoint' && options.key) {
 				return options.key;

@@ -20,22 +20,6 @@ function testCtx(key: string): DeepseekContext {
 	} as DeepseekContext;
 }
 
-declare const describe: {
-	(name: string, fn: () => void): void;
-	skip(name: string, fn: () => void): void;
-};
-declare const it: (name: string, fn: () => void | Promise<void>) => void;
-declare const expect: {
-	(
-		actual: unknown,
-	): {
-		toBe(expected: unknown): void;
-		toBeDefined(): void;
-		toBeGreaterThan(n: number): void;
-		toEqual(expected: unknown): void;
-	};
-};
-
 const TEST_API_KEY = process.env.DEEPSEEK_API_KEY;
 const describeIfApiKey = TEST_API_KEY ? describe : describe.skip;
 
