@@ -33,7 +33,7 @@ Missing credentials throw `AuthMissingError` (never an empty string).
 - **Image generation forces `responseModalities: ['IMAGE']`** after merging caller `generationConfig`, so callers cannot accidentally drop the IMAGE modality.
 - **`generateContent` convenience field `text`** is the first candidate text with markdown fences stripped.
 - **Veo is long-running.** `generateVideos` returns an operation name; use `getVideosOperation` or `waitForVideo` to poll. Video models may require special access / billing.
-- **Image model IDs change** over time; use a model your project can access for image generation.
+- **Image / Veo free-tier quotas** are strict; text ops (listModels, countTokens, generateContent) are the most reliable smoke path. Image/Veo may return HTTP 429 under free tier.
 
 ## Tests
 
@@ -41,7 +41,9 @@ Missing credentials throw `AuthMissingError` (never an empty string).
 pnpm --filter @corsair-dev/gemini test
 ```
 
-Offline unit tests always run. Live API tests run only when `GEMINI_API_KEY` is set.
+- Offline unit tests always run (no API key).
+- Live API tests run only when `GEMINI_API_KEY` is set.
+- Image/Veo live tests soft-skip on 429/404 so free-tier quota does not fail CI.
 
 ## Live demo (R4 Loom recording)
 
@@ -57,4 +59,4 @@ pnpm --filter @corsair-dev/gemini demo
 
 Or: `node packages/gemini/scripts/demo.mjs`
 
-Record the successful run with [Loom](https://www.loom.com/), paste the `https://www.loom.com/share/...` URL into the PR under **Screenshots / Demos**, then revoke the key used for the recording.
+Working proof recording (R4): https://www.loom.com/share/63d553fc757f4d44aa9fda4b2a19fb74
