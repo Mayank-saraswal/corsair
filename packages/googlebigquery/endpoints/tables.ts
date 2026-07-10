@@ -205,7 +205,10 @@ export const deleteTable: GoogleBigqueryEndpoints['tablesDelete'] = async (
 
 	if (ctx.db.tables) {
 		try {
-			await ctx.db.tables.deleteByEntityId(tableId);
+			// Matches BigQuery table resource id used on upsert: "projectId:datasetId.tableId"
+			await ctx.db.tables.deleteByEntityId(
+				`${projectId}:${datasetId}.${tableId}`,
+			);
 		} catch (error) {
 			console.warn('Failed to delete table from database:', error);
 		}

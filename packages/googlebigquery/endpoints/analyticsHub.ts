@@ -43,7 +43,8 @@ export const listDataexchangesListings: GoogleBigqueryEndpoints['analyticsHubLis
 		return result;
 	};
 
-// Targets the Analytics Hub v1 API (`analyticsHub` host).
+// Analytics Hub v1 (`analyticsHub` host: analyticshub.googleapis.com/v1).
+// Intentionally separate from createDataexchangesListings (v1beta1 host below).
 export const createListing: GoogleBigqueryEndpoints['analyticsHubCreateListing'] =
 	async (ctx, input) => {
 		const { projectId, location, dataExchangeId, listingId, ...body } = input;

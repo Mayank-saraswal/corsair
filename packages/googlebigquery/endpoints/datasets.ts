@@ -163,7 +163,8 @@ export const deleteDataset: GoogleBigqueryEndpoints['datasetsDelete'] = async (
 
 	if (ctx.db.datasets) {
 		try {
-			await ctx.db.datasets.deleteByEntityId(datasetId);
+			// Matches BigQuery dataset resource id used on upsert: "projectId:datasetId"
+			await ctx.db.datasets.deleteByEntityId(`${projectId}:${datasetId}`);
 		} catch (error) {
 			console.warn('Failed to delete dataset from database:', error);
 		}

@@ -264,7 +264,8 @@ export const deleteJobMetadata: GoogleBigqueryEndpoints['queriesDeleteJobMetadat
 
 		if (ctx.db.jobs) {
 			try {
-				await ctx.db.jobs.deleteByEntityId(jobId);
+				// Matches BigQuery job resource id used on upsert: "projectId:jobId"
+				await ctx.db.jobs.deleteByEntityId(`${projectId}:${jobId}`);
 			} catch (error) {
 				console.warn('Failed to delete job from database:', error);
 			}
