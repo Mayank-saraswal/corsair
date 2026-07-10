@@ -66,13 +66,18 @@ $env:HEYGEN_API_KEY = "..."   # PowerShell
 pnpm --filter @corsair-dev/heygen test
 ```
 
-## R4 Loom demo
+## Live demo (R4 Loom recording)
 
 ```bash
-# PowerShell (monorepo root)
-$env:HEYGEN_API_KEY = "YOUR_TOKEN"
-node packages/heygen/scripts/demo.mjs
-# or: pnpm --filter @corsair-dev/heygen demo
+# PowerShell
+$env:HEYGEN_API_KEY = "..."
+pnpm --filter @corsair-dev/heygen demo
+
+# bash
+export HEYGEN_API_KEY=...
+pnpm --filter @corsair-dev/heygen demo
 ```
 
-Record the successful run, then put `https://www.loom.com/share/...` under **Screenshots / Demos** on the PR. Do not paste the API key into Loom or GitHub.
+Or: `node packages/heygen/scripts/demo.mjs`
+
+Working proof recording (R4): https://www.loom.com/share/044e3124b94c419faff2fc838177421e
