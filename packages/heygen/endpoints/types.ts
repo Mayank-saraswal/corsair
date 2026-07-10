@@ -870,6 +870,8 @@ export type VoicesListBrandVoicesResponse = z.infer<
 const StreamingNewSessionInputSchema = z.object({
 	quality: z.string().optional(),
 	avatar_id: z.string().optional(),
+	// HeyGen accepts a free-form voice config object (voice_id, rate, emotion, etc.);
+	// the exact key set varies by avatar/version and is not a fixed public schema.
 	voice: z.record(z.string(), z.unknown()).optional(),
 	knowledge_base_id: z.string().optional(),
 	version: z.string().optional(),
