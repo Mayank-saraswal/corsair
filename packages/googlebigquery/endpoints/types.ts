@@ -1299,16 +1299,7 @@ const CreateListingInputSchema = z.object({
 });
 export type CreateListingInput = z.infer<typeof CreateListingInputSchema>;
 
-const CreateDataexchangesListingsInputSchema = z.object({
-	projectId: z.string(),
-	location: z.string(),
-	dataExchangeId: z.string(),
-	listingId: z.string(),
-	displayName: z.string(),
-	description: z.string().optional(),
-	primaryContact: z.string().optional(),
-	bigqueryDataset: BigQueryDatasetSourceSchema.optional(),
-});
+const CreateDataexchangesListingsInputSchema = CreateListingInputSchema;
 export type CreateDataexchangesListingsInput = z.infer<
 	typeof CreateDataexchangesListingsInputSchema
 >;
