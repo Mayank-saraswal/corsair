@@ -3,14 +3,25 @@ import { makeAuthenticatedGoogleBigqueryRequest } from '../client';
 import type { GoogleBigqueryEndpoints } from '../index';
 import type { GoogleBigqueryEndpointOutputs } from './types';
 
-function routineEntityId(routineReference?: {
-	projectId?: string;
-	datasetId?: string;
-	routineId?: string;
-}): string | undefined {
+/**
+ * Cache key for a routine. Prefer projectId from the API reference; fall back to
+ * the request projectId when BigQuery omits it (common on insert/list responses)
+ * so upsert and delete use the same key.
+ */
+function routineEntityId(
+	routineReference?: {
+		projectId?: string;
+		datasetId?: string;
+		routineId?: string;
+	},
+	fallbackProjectId?: string,
+): string | undefined {
 	if (!routineReference?.datasetId || !routineReference.routineId)
 		return undefined;
-	return `${routineReference.projectId ?? ''}.${routineReference.datasetId}.${routineReference.routineId}`;
+	const projectId =
+		routineReference.projectId || fallbackProjectId || undefined;
+	if (!projectId) return undefined;
+	return `${projectId}.${routineReference.datasetId}.${routineReference.routineId}`;
 }
 
 export const list: GoogleBigqueryEndpoints['routinesList'] = async (
@@ -28,7 +39,7 @@ export const list: GoogleBigqueryEndpoints['routinesList'] = async (
 	if (result.routines && ctx.db.routines) {
 		try {
 			for (const routine of result.routines) {
-				const id = routineEntityId(routine.routineReference);
+				const id = routineEntityId(routine.routineReference, projectId);
 				if (id) {
 					await ctx.db.routines.upsertByEntityId(id, {
 						...routine,
@@ -63,7 +74,7 @@ export const get: GoogleBigqueryEndpoints['routinesGet'] = async (
 		query,
 	});
 
-	const id = routineEntityId(result.routineReference);
+	const id = routineEntityId(result.routineReference, projectId);
 	if (id && ctx.db.routines) {
 		try {
 			await ctx.db.routines.upsertByEntityId(id, {
@@ -97,7 +108,7 @@ export const create: GoogleBigqueryEndpoints['routinesCreate'] = async (
 		body,
 	});
 
-	const id = routineEntityId(result.routineReference);
+	const id = routineEntityId(result.routineReference, projectId);
 	if (id && ctx.db.routines) {
 		try {
 			await ctx.db.routines.upsertByEntityId(id, {
@@ -131,7 +142,7 @@ export const update: GoogleBigqueryEndpoints['routinesUpdate'] = async (
 		body: routine,
 	});
 
-	const id = routineEntityId(result.routineReference);
+	const id = routineEntityId(result.routineReference, projectId);
 	if (id && ctx.db.routines) {
 		try {
 			await ctx.db.routines.upsertByEntityId(id, {

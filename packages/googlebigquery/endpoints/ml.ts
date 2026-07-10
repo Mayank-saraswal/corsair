@@ -3,13 +3,22 @@ import { makeAuthenticatedGoogleBigqueryRequest } from '../client';
 import type { GoogleBigqueryEndpoints } from '../index';
 import type { GoogleBigqueryEndpointOutputs } from './types';
 
-function modelEntityId(modelReference?: {
-	projectId?: string;
-	datasetId?: string;
-	modelId?: string;
-}): string | undefined {
+/**
+ * Cache key for a model. Prefer projectId from the API reference; fall back to
+ * the request projectId when BigQuery omits it so upsert and delete match.
+ */
+function modelEntityId(
+	modelReference?: {
+		projectId?: string;
+		datasetId?: string;
+		modelId?: string;
+	},
+	fallbackProjectId?: string,
+): string | undefined {
 	if (!modelReference?.datasetId || !modelReference.modelId) return undefined;
-	return `${modelReference.projectId ?? ''}.${modelReference.datasetId}.${modelReference.modelId}`;
+	const projectId = modelReference.projectId || fallbackProjectId || undefined;
+	if (!projectId) return undefined;
+	return `${projectId}.${modelReference.datasetId}.${modelReference.modelId}`;
 }
 
 export const listModels: GoogleBigqueryEndpoints['mlListModels'] = async (
@@ -27,7 +36,7 @@ export const listModels: GoogleBigqueryEndpoints['mlListModels'] = async (
 	if (result.models && ctx.db.models) {
 		try {
 			for (const model of result.models) {
-				const id = modelEntityId(model.modelReference);
+				const id = modelEntityId(model.modelReference, projectId);
 				if (id) {
 					await ctx.db.models.upsertByEntityId(id, {
 						...model,
@@ -61,7 +70,7 @@ export const getModel: GoogleBigqueryEndpoints['mlGetBigqueryModel'] = async (
 		method: 'GET',
 	});
 
-	const id = modelEntityId(result.modelReference);
+	const id = modelEntityId(result.modelReference, projectId);
 	if (id && ctx.db.models) {
 		try {
 			await ctx.db.models.upsertByEntityId(id, {
@@ -95,7 +104,7 @@ export const patchModel: GoogleBigqueryEndpoints['mlPatchModel'] = async (
 		body,
 	});
 
-	const id = modelEntityId(result.modelReference);
+	const id = modelEntityId(result.modelReference, projectId);
 	if (id && ctx.db.models) {
 		try {
 			await ctx.db.models.upsertByEntityId(id, {
