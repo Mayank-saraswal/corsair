@@ -11,6 +11,7 @@ import {
 import type { ChatCreateCompletionResponse } from './schema/chat';
 import { ContainerFilesCreateInputSchema } from './schema/containers';
 import type { EmbeddingsCreateResponse } from './schema/embeddings';
+import { ImagesCreateEditInputSchema } from './schema/images';
 import type { ModelsListResponse } from './schema/models';
 
 const TEST_API_KEY = process.env.OPENAI_API_KEY;
@@ -453,6 +454,48 @@ describe('OpenAI container files schema', () => {
 		const result = ContainerFilesCreateInputSchema.safeParse({
 			containerId: 'ctr_1',
 			file: 'blob-data',
+		});
+		expect(result.success).toBe(false);
+	});
+});
+
+describe('OpenAI images edit schema', () => {
+	it('accepts a payload with no mask', () => {
+		const result = ImagesCreateEditInputSchema.safeParse({
+			image: 'img',
+			imageFileName: 'img.png',
+			prompt: 'make it blue',
+		});
+		expect(result.success).toBe(true);
+	});
+
+	it('accepts a payload with mask and maskFileName together', () => {
+		const result = ImagesCreateEditInputSchema.safeParse({
+			image: 'img',
+			imageFileName: 'img.png',
+			mask: 'mask-blob',
+			maskFileName: 'mask.png',
+			prompt: 'make it blue',
+		});
+		expect(result.success).toBe(true);
+	});
+
+	it('rejects mask without maskFileName', () => {
+		const result = ImagesCreateEditInputSchema.safeParse({
+			image: 'img',
+			imageFileName: 'img.png',
+			mask: 'mask-blob',
+			prompt: 'make it blue',
+		});
+		expect(result.success).toBe(false);
+	});
+
+	it('rejects maskFileName without mask', () => {
+		const result = ImagesCreateEditInputSchema.safeParse({
+			image: 'img',
+			imageFileName: 'img.png',
+			maskFileName: 'mask.png',
+			prompt: 'make it blue',
 		});
 		expect(result.success).toBe(false);
 	});
