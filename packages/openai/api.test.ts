@@ -9,6 +9,7 @@ import {
 	OpenaiEndpointOutputSchemas,
 } from './endpoints/types';
 import type { ChatCreateCompletionResponse } from './schema/chat';
+import { ContainerFilesCreateInputSchema } from './schema/containers';
 import type { EmbeddingsCreateResponse } from './schema/embeddings';
 import type { ModelsListResponse } from './schema/models';
 
@@ -420,6 +421,40 @@ describe('OpenAI offline schema smoke', () => {
 			expect(result.data.runId).toBe('run_456');
 			expect(result.data.threadId).toBe('thread_123');
 		}
+	});
+});
+
+describe('OpenAI container files schema', () => {
+	it('accepts a fileId-only payload', () => {
+		const result = ContainerFilesCreateInputSchema.safeParse({
+			containerId: 'ctr_1',
+			fileId: 'file_1',
+		});
+		expect(result.success).toBe(true);
+	});
+
+	it('accepts a file + fileName upload payload', () => {
+		const result = ContainerFilesCreateInputSchema.safeParse({
+			containerId: 'ctr_1',
+			file: 'blob-data',
+			fileName: 'doc.txt',
+		});
+		expect(result.success).toBe(true);
+	});
+
+	it('rejects an empty payload with no file information', () => {
+		const result = ContainerFilesCreateInputSchema.safeParse({
+			containerId: 'ctr_1',
+		});
+		expect(result.success).toBe(false);
+	});
+
+	it('rejects a half-filled upload (file without fileName)', () => {
+		const result = ContainerFilesCreateInputSchema.safeParse({
+			containerId: 'ctr_1',
+			file: 'blob-data',
+		});
+		expect(result.success).toBe(false);
 	});
 });
 
