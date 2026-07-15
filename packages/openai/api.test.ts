@@ -4,6 +4,7 @@ import {
 	parseOpenaiMultipartBody,
 	parseRetryAfterMs,
 } from './client';
+import { flattenMetadataQuery } from './endpoints/fine-tuning';
 import {
 	OpenaiEndpointInputSchemas,
 	OpenaiEndpointOutputSchemas,
@@ -558,5 +559,26 @@ describe('OpenAI client helpers', () => {
 			JSON.stringify({ text: 'from-json' }),
 		);
 		expect(body.text).toBe('from-json');
+	});
+});
+
+describe('OpenAI fine-tuning listJobs metadata filter', () => {
+	it('flattens metadata into metadata[key]=value query entries', () => {
+		const query = flattenMetadataQuery({ model: 'gpt-4o', env: 'prod' });
+		expect(query).toEqual({
+			'metadata[model]': 'gpt-4o',
+			'metadata[env]': 'prod',
+		});
+	});
+
+	it('returns an empty object when no metadata is supplied', () => {
+		expect(flattenMetadataQuery(undefined)).toEqual({});
+		expect(flattenMetadataQuery({})).toEqual({});
+	});
+
+	it('handles a single key-value pair', () => {
+		expect(flattenMetadataQuery({ team: 'ml' })).toEqual({
+			'metadata[team]': 'ml',
+		});
 	});
 });
