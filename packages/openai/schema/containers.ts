@@ -82,12 +82,38 @@ export type ContainersDeleteResponse = z.infer<
 
 // --- Container Files ---
 
-export const ContainerFilesCreateInputSchema = z.object({
-	containerId: z.string(),
-	file: z.union([z.instanceof(Blob), z.string()]).optional(),
-	fileName: z.string().optional(),
-	fileId: z.string().optional(),
-});
+export const ContainerFilesCreateInputSchema = z
+	.object({
+		containerId: z.string(),
+		file: z.union([z.instanceof(Blob), z.string()]).optional(),
+		fileName: z.string().optional(),
+		fileId: z.string().optional(),
+	})
+	.superRefine((value, ctx) => {
+		// The OpenAI Containers API requires either a reference to an existing
+		// file (fileId) or a new upload (file + fileName together). An empty
+		// payload would pass Zod but the API rejects it, so enforce it here.
+		const hasFileId = value.fileId !== undefined;
+		const hasUpload = value.file !== undefined && value.fileName !== undefined;
+		if (!hasFileId && !hasUpload) {
+			ctx.addIssue({
+				code: z.ZodIssueCode.custom,
+				message: 'Provide either fileId, or both file and fileName',
+				path: ['file'],
+			});
+		}
+		// file + fileName must be set together; a half pair would silently drop the upload.
+		if (
+			(value.file !== undefined || value.fileName !== undefined) &&
+			!(value.file !== undefined && value.fileName !== undefined)
+		) {
+			ctx.addIssue({
+				code: z.ZodIssueCode.custom,
+				message: 'file and fileName must both be provided together',
+				path: value.file !== undefined ? ['fileName'] : ['file'],
+			});
+		}
+	});
 export type ContainerFilesCreateInput = z.infer<
 	typeof ContainerFilesCreateInputSchema
 >;
