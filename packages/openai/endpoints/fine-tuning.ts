@@ -42,6 +42,22 @@ export const createJob: OpenaiEndpoints['fineTuningCreateJob'] = async (
 	return result;
 };
 
+/**
+ * OpenAI filters fine-tuning jobs by metadata via `metadata[key]=value` query
+ * entries. Flatten the record into those keys so callers' filters actually
+ * reach the API instead of being silently dropped.
+ */
+export function flattenMetadataQuery(
+	metadata: Record<string, string> | undefined,
+): Record<string, string> {
+	if (!metadata) return {};
+	const out: Record<string, string> = {};
+	for (const [key, value] of Object.entries(metadata)) {
+		out[`metadata[${key}]`] = value;
+	}
+	return out;
+}
+
 export const listJobs: OpenaiEndpoints['fineTuningListJobs'] = async (
 	ctx,
 	input,
@@ -51,7 +67,11 @@ export const listJobs: OpenaiEndpoints['fineTuningListJobs'] = async (
 		ctx.key,
 		{
 			method: 'GET',
-			query: { after: input.after, limit: input.limit },
+			query: {
+				after: input.after,
+				limit: input.limit,
+				...flattenMetadataQuery(input.metadata),
+			},
 		},
 	);
 
