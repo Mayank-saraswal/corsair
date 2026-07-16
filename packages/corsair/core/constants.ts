@@ -25,6 +25,7 @@ export const BaseProviders = [
 	'calendly',
 	'cloudflare',
 	'cursor',
+	'deepseek',
 	'discord',
 	'dodopayments',
 	'dropbox',
@@ -37,6 +38,7 @@ export const BaseProviders = [
 	'gmail',
 	'googlebigquery',
 	'googlecalendar',
+	'googledocs',
 	'googledrive',
 	'googlemeet',
 	'googlesheets',
@@ -47,13 +49,17 @@ export const BaseProviders = [
 	'intercom',
 	'jira',
 	'linear',
+	'linkedin',
 	'monday',
+	'neon',
 	'notion',
 	'onedrive',
+	'openai',
 	'openweathermap',
 	'oura',
 	'outlook',
 	'pagerduty',
+	'perplexityai',
 	'posthog',
 	'razorpay',
 	'reddit',
@@ -96,6 +102,7 @@ export const ProviderDisplayNames = {
 	calendly: 'Calendly',
 	cloudflare: 'Cloudflare',
 	cursor: 'Cursor',
+	deepseek: 'DeepSeek',
 	discord: 'Discord',
 	dodopayments: 'Dodo Payments',
 	dropbox: 'Dropbox',
@@ -108,6 +115,7 @@ export const ProviderDisplayNames = {
 	gmail: 'Gmail',
 	googlebigquery: 'Google BigQuery',
 	googlecalendar: 'Google Calendar',
+	googledocs: 'Google Docs',
 	googledrive: 'Google Drive',
 	googlemeet: 'Google Meet',
 	googlesheets: 'Google Sheets',
@@ -118,9 +126,12 @@ export const ProviderDisplayNames = {
 	intercom: 'Intercom',
 	jira: 'Jira',
 	linear: 'Linear',
+	linkedin: 'LinkedIn',
 	monday: 'Monday',
+	neon: 'Neon',
 	notion: 'Notion',
 	onedrive: 'OneDrive',
+	openai: 'OpenAI',
 	openweathermap: 'OpenWeatherMap',
 	oura: 'Oura',
 	outlook: 'Outlook',
@@ -152,6 +163,7 @@ export const ProviderDisplayNames = {
 	zendesk: 'Zendesk',
 	zohomail: 'Zoho Mail',
 	zoom: 'Zoom',
+	perplexityai: 'Perplexity AI',
 } as const satisfies Record<(typeof BaseProviders)[number], string>;
 
 export function formatProviderDisplayName(plugin: string): string {
@@ -174,6 +186,7 @@ export type AllProviders =
 	| 'calendly'
 	| 'cloudflare'
 	| 'cursor'
+	| 'deepseek'
 	| 'discord'
 	| 'dodopayments'
 	| 'dropbox'
@@ -186,6 +199,7 @@ export type AllProviders =
 	| 'gmail'
 	| 'googlebigquery'
 	| 'googlecalendar'
+	| 'googledocs'
 	| 'googledrive'
 	| 'googlemeet'
 	| 'googlesheets'
@@ -196,13 +210,17 @@ export type AllProviders =
 	| 'intercom'
 	| 'jira'
 	| 'linear'
+	| 'linkedin'
 	| 'monday'
+	| 'neon'
 	| 'notion'
 	| 'onedrive'
+	| 'openai'
 	| 'openweathermap'
 	| 'oura'
 	| 'outlook'
 	| 'pagerduty'
+	| 'perplexityai'
 	| 'posthog'
 	| 'razorpay'
 	| 'reddit'
