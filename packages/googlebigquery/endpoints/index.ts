@@ -1,4 +1,4 @@
-export * as AnalyticsHubEndpoints from './analyticsHub';
+export * as AnalyticsHubEndpoints from './analytics-hub';
 export * as ConnectionsEndpoints from './connections';
 export * as DatasetsEndpoints from './datasets';
 export * as IamEndpoints from './iam';

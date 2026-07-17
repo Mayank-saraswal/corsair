@@ -11,7 +11,7 @@ import type {
 } from 'corsair/core';
 import { AuthMissingError } from 'corsair/core';
 import { getValidAccessToken } from './client';
-import * as AnalyticsHubEndpoints from './endpoints/analyticsHub';
+import * as AnalyticsHubEndpoints from './endpoints/analytics-hub';
 import * as ConnectionsEndpoints from './endpoints/connections';
 import * as DatasetsEndpoints from './endpoints/datasets';
 import * as IamEndpoints from './endpoints/iam';
