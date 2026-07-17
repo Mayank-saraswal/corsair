@@ -46,6 +46,7 @@ export const BaseProviders = [
 	'hackernews',
 	'heygen',
 	'hubspot',
+	'insightoai',
 	'instagram',
 	'intercom',
 	'jira',
@@ -124,6 +125,7 @@ export const ProviderDisplayNames = {
 	hackernews: 'Hacker News',
 	heygen: 'HeyGen',
 	hubspot: 'HubSpot',
+	insightoai: 'Insighto.ai',
 	instagram: 'Instagram',
 	intercom: 'Intercom',
 	jira: 'Jira',
@@ -209,6 +211,7 @@ export type AllProviders =
 	| 'hackernews'
 	| 'heygen'
 	| 'hubspot'
+	| 'insightoai'
 	| 'instagram'
 	| 'intercom'
 	| 'jira'
