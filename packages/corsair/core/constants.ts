@@ -29,6 +29,7 @@ export const BaseProviders = [
 	'discord',
 	'dodopayments',
 	'dropbox',
+	'epicgames',
 	'exa',
 	'figma',
 	'firecrawl',
@@ -107,6 +108,7 @@ export const ProviderDisplayNames = {
 	discord: 'Discord',
 	dodopayments: 'Dodo Payments',
 	dropbox: 'Dropbox',
+	epicgames: 'Epic Games',
 	exa: 'Exa',
 	figma: 'Figma',
 	firecrawl: 'Firecrawl',
@@ -138,6 +140,7 @@ export const ProviderDisplayNames = {
 	oura: 'Oura',
 	outlook: 'Outlook',
 	pagerduty: 'PagerDuty',
+	perplexityai: 'Perplexity AI',
 	posthog: 'PostHog',
 	razorpay: 'Razorpay',
 	reddit: 'Reddit',
@@ -165,7 +168,6 @@ export const ProviderDisplayNames = {
 	zendesk: 'Zendesk',
 	zohomail: 'Zoho Mail',
 	zoom: 'Zoom',
-	perplexityai: 'Perplexity AI',
 } as const satisfies Record<(typeof BaseProviders)[number], string>;
 
 export function formatProviderDisplayName(plugin: string): string {
@@ -192,6 +194,7 @@ export type AllProviders =
 	| 'discord'
 	| 'dodopayments'
 	| 'dropbox'
+	| 'epicgames'
 	| 'exa'
 	| 'figma'
 	| 'firecrawl'
