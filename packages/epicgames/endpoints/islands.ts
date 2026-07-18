@@ -71,16 +71,26 @@ export const getMetricsByInterval: EpicGamesEndpoints['islandsGetMetricsByInterv
 
 		const metricsParam = Array.isArray(metrics) ? metrics.join(',') : metrics;
 
+		// Input schema uses .catchall(z.unknown()); query only accepts primitives.
+		const query: Record<string, string | number | boolean | undefined> = {
+			...metricRangeQuery({ from, to }),
+			metrics: metricsParam,
+		};
+		for (const [key, value] of Object.entries(rest)) {
+			if (
+				typeof value === 'string' ||
+				typeof value === 'number' ||
+				typeof value === 'boolean'
+			) {
+				query[key] = value;
+			}
+		}
+
 		const result = await makeEpicGamesRequest<
 			EpicGamesEndpointOutputs['islandsGetMetricsByInterval']
 		>(path, ctx.key, {
 			method: 'GET',
-			query: {
-				...metricRangeQuery({ from, to }),
-				metrics: metricsParam,
-				// remaining free-form filters (provider may ignore unknown keys)
-				...(rest as Record<string, string | number | boolean | undefined>),
-			},
+			query,
 			bearer: true,
 		});
 
@@ -93,6 +103,7 @@ export const getMetricsByInterval: EpicGamesEndpoints['islandsGetMetricsByInterv
 		return result;
 	};
 
+/** Shared GET for /islands/{code}/metrics/{interval}/{metric} (all metrics share output shape). */
 async function islandMetric(
 	ctx: Parameters<EpicGamesEndpoints['islandsGetPlays']>[0],
 	input: {
@@ -103,9 +114,11 @@ async function islandMetric(
 	},
 	metric: string,
 	event: string,
-) {
+): Promise<EpicGamesEndpointOutputs['islandsGetPlays']> {
 	const interval = metricInterval(input);
-	const result = await makeEpicGamesRequest(
+	const result = await makeEpicGamesRequest<
+		EpicGamesEndpointOutputs['islandsGetPlays']
+	>(
 		`/islands/${encodeURIComponent(input.code)}/metrics/${encodeURIComponent(interval)}/${metric}`,
 		ctx.key,
 		{
@@ -121,10 +134,7 @@ async function islandMetric(
 export const getPlays: EpicGamesEndpoints['islandsGetPlays'] = async (
 	ctx,
 	input,
-) =>
-	islandMetric(ctx, input, 'plays', 'epicgames.islands.getPlays') as Promise<
-		EpicGamesEndpointOutputs['islandsGetPlays']
-	>;
+) => islandMetric(ctx, input, 'plays', 'epicgames.islands.getPlays');
 
 export const getUniquePlayers: EpicGamesEndpoints['islandsGetUniquePlayers'] =
 	async (ctx, input) =>
@@ -133,7 +143,7 @@ export const getUniquePlayers: EpicGamesEndpoints['islandsGetUniquePlayers'] =
 			input,
 			'unique-players',
 			'epicgames.islands.getUniquePlayers',
-		) as Promise<EpicGamesEndpointOutputs['islandsGetUniquePlayers']>;
+		);
 
 export const getMinutesPlayed: EpicGamesEndpoints['islandsGetMinutesPlayed'] =
 	async (ctx, input) =>
@@ -142,7 +152,7 @@ export const getMinutesPlayed: EpicGamesEndpoints['islandsGetMinutesPlayed'] =
 			input,
 			'minutes-played',
 			'epicgames.islands.getMinutesPlayed',
-		) as Promise<EpicGamesEndpointOutputs['islandsGetMinutesPlayed']>;
+		);
 
 export const getAvgMinutesPerPlayer: EpicGamesEndpoints['islandsGetAvgMinutesPerPlayer'] =
 	async (ctx, input) =>
@@ -152,29 +162,17 @@ export const getAvgMinutesPerPlayer: EpicGamesEndpoints['islandsGetAvgMinutesPer
 			// OpenAPI path segment is average-minutes-per-player (not avg-*)
 			'average-minutes-per-player',
 			'epicgames.islands.getAvgMinutesPerPlayer',
-		) as Promise<EpicGamesEndpointOutputs['islandsGetAvgMinutesPerPlayer']>;
+		);
 
 export const getPeakCcu: EpicGamesEndpoints['islandsGetPeakCcu'] = async (
 	ctx,
 	input,
-) =>
-	islandMetric(
-		ctx,
-		input,
-		'peak-ccu',
-		'epicgames.islands.getPeakCcu',
-	) as Promise<EpicGamesEndpointOutputs['islandsGetPeakCcu']>;
+) => islandMetric(ctx, input, 'peak-ccu', 'epicgames.islands.getPeakCcu');
 
 export const getFavorites: EpicGamesEndpoints['islandsGetFavorites'] = async (
 	ctx,
 	input,
-) =>
-	islandMetric(
-		ctx,
-		input,
-		'favorites',
-		'epicgames.islands.getFavorites',
-	) as Promise<EpicGamesEndpointOutputs['islandsGetFavorites']>;
+) => islandMetric(ctx, input, 'favorites', 'epicgames.islands.getFavorites');
 
 export const getRecommendations: EpicGamesEndpoints['islandsGetRecommendations'] =
 	async (ctx, input) =>
@@ -183,15 +181,9 @@ export const getRecommendations: EpicGamesEndpoints['islandsGetRecommendations']
 			input,
 			'recommendations',
 			'epicgames.islands.getRecommendations',
-		) as Promise<EpicGamesEndpointOutputs['islandsGetRecommendations']>;
+		);
 
 export const getRetention: EpicGamesEndpoints['islandsGetRetention'] = async (
 	ctx,
 	input,
-) =>
-	islandMetric(
-		ctx,
-		input,
-		'retention',
-		'epicgames.islands.getRetention',
-	) as Promise<EpicGamesEndpointOutputs['islandsGetRetention']>;
+) => islandMetric(ctx, input, 'retention', 'epicgames.islands.getRetention');

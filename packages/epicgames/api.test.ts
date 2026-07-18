@@ -166,7 +166,11 @@ const FIXTURES: {
 	},
 	remoteListBlueprintCallableFunctions: {
 		input: { objectPath: '/Game/Map.Map:PersistentLevel.Actor' },
-		output: { Functions: [] },
+		output: {
+			objectPath: '/Game/Map.Map:PersistentLevel.Actor',
+			functions: [],
+			count: 0,
+		},
 	},
 	remoteWaitForObjectEvent: {
 		input: {

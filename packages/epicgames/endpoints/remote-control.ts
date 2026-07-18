@@ -188,6 +188,16 @@ export const getPresetProperty: EpicGamesEndpoints['remoteGetPresetProperty'] =
 
 export const updatePresetProperty: EpicGamesEndpoints['remoteUpdatePresetProperty'] =
 	async (ctx, input) => {
+		// PropertyValue is free-form UE JSON; client body type is Record | array.
+		// Wrap primitives so the HTTP helper always receives a Record body.
+		// cast: after typeof object guard, TS still types value as unknown from Zod
+		const propertyValue: Record<string, unknown> =
+			input.value !== null &&
+			typeof input.value === 'object' &&
+			!Array.isArray(input.value)
+				? (input.value as Record<string, unknown>)
+				: { value: input.value };
+
 		const result = await makeEpicGamesRequest<
 			EpicGamesEndpointOutputs['remoteUpdatePresetProperty']
 		>(
@@ -195,9 +205,8 @@ export const updatePresetProperty: EpicGamesEndpoints['remoteUpdatePresetPropert
 			ctx.key,
 			{
 				method: 'PUT',
-				// value is free-form property payload from the preset
 				body: {
-					PropertyValue: input.value as Record<string, unknown>,
+					PropertyValue: propertyValue,
 				},
 				...remoteOpts(ctx),
 			},
@@ -319,22 +328,65 @@ export const getObjectThumbnail: EpicGamesEndpoints['remoteGetObjectThumbnail'] 
 
 export const listBlueprintCallableFunctions: EpicGamesEndpoints['remoteListBlueprintCallableFunctions'] =
 	async (ctx, input) => {
-		// Derived from object describe; list is extracted when present.
-		const described = await makeEpicGamesRequest<
-			EpicGamesEndpointOutputs['remoteListBlueprintCallableFunctions']
-		>('/remote/object/describe', ctx.key, {
-			method: 'PUT',
-			body: { objectPath: input.objectPath },
-			...remoteOpts(ctx),
-		});
+		// UE Remote Control has no dedicated "list functions" HTTP route; Blueprint-
+		// callable functions are exposed on PUT /remote/object/describe. We call
+		// describe then return only the functions list (not the full describe payload),
+		// so this op is distinct from remote.describeObject.
+		const described = await makeEpicGamesRequest<Record<string, unknown>>(
+			'/remote/object/describe',
+			ctx.key,
+			{
+				method: 'PUT',
+				body: { objectPath: input.objectPath },
+				...remoteOpts(ctx),
+			},
+		);
+
+		const functions = extractBlueprintCallableFunctions(described);
+		const result: EpicGamesEndpointOutputs['remoteListBlueprintCallableFunctions'] =
+			{
+				objectPath: input.objectPath,
+				functions,
+				count: functions.length,
+			};
+
 		await logEventFromContext(
 			ctx,
 			'epicgames.remote.listBlueprintCallableFunctions',
-			{},
+			{ count: functions.length },
 			'completed',
 		);
-		return described;
+		return result;
 	};
+
+/**
+ * Pull Blueprint-callable function descriptors out of a /remote/object/describe
+ * payload. UE versions use different keys (Functions, functions, etc.).
+ */
+function extractBlueprintCallableFunctions(
+	described: Record<string, unknown>,
+): unknown[] {
+	const candidates = [
+		described.Functions,
+		described.functions,
+		described.CallableFunctions,
+		described.BlueprintCallableFunctions,
+	];
+	for (const candidate of candidates) {
+		if (Array.isArray(candidate)) return candidate;
+	}
+	// Nested under Class / Object metadata in some UE builds
+	const nested = described.Class ?? described.Object ?? described.Description;
+	if (nested && typeof nested === 'object' && !Array.isArray(nested)) {
+		// cast: typeof object guard narrows from unknown but not to Record
+		const obj = nested as Record<string, unknown>;
+		for (const key of ['Functions', 'functions', 'CallableFunctions']) {
+			// cast: Array.isArray narrows to any[]; values remain free-form UE JSON
+			if (Array.isArray(obj[key])) return obj[key] as unknown[];
+		}
+	}
+	return [];
+}
 
 export const waitForObjectEvent: EpicGamesEndpoints['remoteWaitForObjectEvent'] =
 	async (ctx, input) => {
