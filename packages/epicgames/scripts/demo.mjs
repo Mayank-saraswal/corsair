@@ -1,7 +1,10 @@
 /**
  * Live demo for Corsair OSS R4 (Loom / screen recording).
  *
- * OAuth access token (Fortnite ecosystem):
+ * No Epic OAuth key required for Fortnite island list/metrics — the Fortnite
+ * Data API is public (OpenAPI: https://api.fortnite.com/ecosystem/v1/docs).
+ *
+ * Optional OAuth (client-credentials) if you have one later:
  *   $env:EPIC_GAMES_ACCESS_TOKEN = "..."
  *
  * Optional Unreal Remote Control base (defaults to http://127.0.0.1:30010):
@@ -10,6 +13,13 @@
  * Usage (from monorepo root):
  *   node packages/epicgames/scripts/demo.mjs
  *   pnpm --filter @corsair-dev/epicgames demo
+ *
+ * Offline schema tests (no network, no token):
+ *   pnpm --filter @corsair-dev/epicgames test
+ *
+ * Live public network tests:
+ *   $env:EPIC_GAMES_LIVE = "1"
+ *   pnpm --filter @corsair-dev/epicgames test
  *
  * Never paste tokens into Loom titles or GitHub.
  */
@@ -21,20 +31,6 @@ const TOKEN =
 const ISLANDS_BASE = 'https://api.fortnite.com/ecosystem/v1';
 const REMOTE_BASE =
 	process.env.EPIC_REMOTE_CONTROL_BASE || 'http://127.0.0.1:30010';
-
-if (!TOKEN) {
-	console.error(`
-❌  EPIC_GAMES_ACCESS_TOKEN is not set.
-
-Offline tests (no token):
-  pnpm --filter @corsair-dev/epicgames test
-
-For Loom / live island list:
-  $env:EPIC_GAMES_ACCESS_TOKEN = "..."
-  node packages/epicgames/scripts/demo.mjs
-`);
-	process.exit(1);
-}
 
 function section(title) {
 	console.log(`\n${'═'.repeat(60)}`);
@@ -60,12 +56,14 @@ async function islandsGet(path, query) {
 			if (v !== undefined && v !== null) url.searchParams.set(k, String(v));
 		}
 	}
-	const res = await fetch(url, {
-		headers: {
-			Authorization: `Bearer ${TOKEN}`,
-			Accept: 'application/json',
-		},
-	});
+	const headers = {
+		Accept: 'application/json',
+	};
+	// Fortnite Data API GETs work without auth; send Bearer only if you have a token.
+	if (TOKEN) {
+		headers.Authorization = `Bearer ${TOKEN}`;
+	}
+	const res = await fetch(url, { headers });
 	const text = await res.text();
 	if (!res.ok) {
 		throw new Error(`${path} → ${res.status}: ${text.slice(0, 300)}`);
@@ -81,9 +79,14 @@ async function main() {
 	console.log('Corsair × Epic Games plugin — live demo');
 	console.log('Issue: https://github.com/corsairdev/corsair/issues/472');
 	console.log('Package: @corsair-dev/epicgames');
+	console.log(
+		TOKEN
+			? 'Auth: Bearer token present (optional for public island GETs)'
+			: 'Auth: none — using public Fortnite Data API (no key required)',
+	);
 
 	await tryStep('islands.list', async () => {
-		section('1/3  islands.list  GET /islands?size=5');
+		section('1/4  islands.list  GET /islands?size=5');
 		const data = await islandsGet('/islands', { size: 5 });
 		const rows = Array.isArray(data)
 			? data
@@ -98,9 +101,27 @@ async function main() {
 				? Object.keys(data).slice(0, 8).join(', ')
 				: typeof data,
 		);
+		if (Array.isArray(rows) && rows[0]) {
+			console.log(
+				'first island:',
+				rows[0].code,
+				'|',
+				String(rows[0].title || '').slice(0, 60),
+			);
+		}
+
 		if (Array.isArray(rows) && rows[0]?.code) {
 			const code = rows[0].code;
-			section('2/3  islands.getPlays  GET /islands/{code}/metrics/day/plays');
+
+			section('2/4  islands.get  GET /islands/{code}');
+			const meta = await islandsGet(`/islands/${encodeURIComponent(code)}`);
+			console.log('code:', meta?.code, 'title:', meta?.title);
+			console.log(
+				'tags:',
+				Array.isArray(meta?.tags) ? meta.tags.join(', ') : meta?.tags,
+			);
+
+			section('3/4  islands.getPlays  GET /islands/{code}/metrics/day/plays');
 			const plays = await islandsGet(
 				`/islands/${encodeURIComponent(code)}/metrics/day/plays`,
 			);
@@ -110,19 +131,23 @@ async function main() {
 				'plays intervals:',
 				Array.isArray(plays?.intervals) ? plays.intervals.length : typeof plays,
 			);
+			if (Array.isArray(plays?.intervals) && plays.intervals[0]) {
+				console.log('sample interval:', JSON.stringify(plays.intervals[0]));
+			}
 		}
 	});
 
 	await tryStep('remote OPTIONS (optional local UE)', async () => {
-		section('3/3  remote.corsPreflight  OPTIONS /remote');
+		section('4/4  remote.corsPreflight  OPTIONS /remote (optional)');
 		const res = await fetch(`${REMOTE_BASE}/remote`, { method: 'OPTIONS' });
 		console.log('status:', res.status, 'allow:', res.headers.get('allow'));
 	});
 
 	section('✅  Epic Games demo finished');
 	console.log(
-		'Record this run in Loom, then open the PR with Screenshots / Demos + Closes #472',
+		'Record this terminal in Loom (islands.list + get + plays is enough for R4).',
 	);
+	console.log('Then open the PR with Screenshots / Demos + Closes #472');
 }
 
 main().catch((err) => {

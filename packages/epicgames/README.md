@@ -63,18 +63,27 @@ Missing tokens throw `AuthMissingError('epicgames', 'oauth_2')`.
 ## Tests
 
 ```bash
-# Offline schema fixtures (no credentials) — always run
+# Offline schema fixtures — NO key required
+pnpm --filter @corsair-dev/epicgames test
+
+# Optional live public API tests (still no key — Fortnite Data API is public)
+$env:EPIC_GAMES_LIVE = "1"
 pnpm --filter @corsair-dev/epicgames test
 ```
 
-Live island list smoke runs only when `EPIC_GAMES_ACCESS_TOKEN` (or `EPICGAMES_ACCESS_TOKEN`) is set.
+OAuth token env vars are optional for island GETs. Set `EPIC_GAMES_ACCESS_TOKEN` only if you have client-credentials later.
 
-## Live demo (R4 Loom)
+## Live demo (R4 Loom) — no key required
+
+The Fortnite Data API public endpoints power the demo:
 
 ```bash
-$env:EPIC_GAMES_ACCESS_TOKEN = "..."
+# From monorepo root — no EPIC_GAMES_ACCESS_TOKEN needed
 pnpm --filter @corsair-dev/epicgames demo
 ```
+
+Record the terminal showing `islands.list` + `islands.get` + `metrics/.../plays`.  
+Remote Control step soft-skips if Unreal Editor is not running locally (that is fine for R4).
 
 ## Links
 
