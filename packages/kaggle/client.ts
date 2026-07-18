@@ -150,6 +150,21 @@ export async function makeKaggleBinaryRequest(
 
 	if (!res.ok) {
 		const text = await res.text();
+		// Forward rate-limit headers so error-handlers RATE_LIMIT_ERROR can back off.
+		const retryAfterHeader = res.headers.get('retry-after');
+		let retryAfterMs: number | undefined;
+		if (retryAfterHeader) {
+			const asNum = Number(retryAfterHeader);
+			retryAfterMs = Number.isFinite(asNum)
+				? asNum * 1000
+				: Date.parse(retryAfterHeader) - Date.now();
+			if (retryAfterMs !== undefined && retryAfterMs < 0) {
+				retryAfterMs = undefined;
+			}
+		}
+		const rateLimitReset = res.headers.get('x-ratelimit-reset');
+		const rateLimitRemaining = res.headers.get('x-ratelimit-remaining');
+		const rateLimitLimit = res.headers.get('x-ratelimit-limit');
 		throw new ApiError(
 			{ method, url: endpoint },
 			{
@@ -160,6 +175,14 @@ export async function makeKaggleBinaryRequest(
 				body: text,
 			},
 			`Kaggle download failed: ${res.status} ${res.statusText}`,
+			{
+				retryAfter: retryAfterMs,
+				rateLimitReset: rateLimitReset ? Number(rateLimitReset) : undefined,
+				rateLimitRemaining: rateLimitRemaining
+					? Number(rateLimitRemaining)
+					: undefined,
+				rateLimitLimit: rateLimitLimit ? Number(rateLimitLimit) : undefined,
+			},
 		);
 	}
 

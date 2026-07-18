@@ -1,6 +1,9 @@
 /**
  * Live demo for Corsair OSS R4 (Loom / screen recording).
  *
+ * Working proof (R4) already on PR #471 Screenshots / Demos:
+ *   https://www.loom.com/share/b0d541fa2dd14e3a9340f4a94b3ff4ea
+ *
  * Credentials (pick one):
  *   - Legacy: KAGGLE_USERNAME + KAGGLE_KEY
  *   - Combined: KAGGLE_API_KEY = "username:key"
