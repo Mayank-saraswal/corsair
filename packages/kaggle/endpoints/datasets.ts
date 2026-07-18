@@ -68,9 +68,10 @@ export const getMetadata: KaggleEndpoints['datasetsGetMetadata'] = async (
 	ctx,
 	input,
 ) => {
+	// Kaggle v1: GET /datasets/{ownerSlug}/{datasetSlug} (no /view infix)
 	const result = await makeKaggleRequest<
 		KaggleEndpointOutputs['datasetsGetMetadata']
-	>(`/datasets/view/${input.ownerSlug}/${input.datasetSlug}`, ctx.key, {
+	>(`/datasets/${input.ownerSlug}/${input.datasetSlug}`, ctx.key, {
 		method: 'GET',
 		username: ctx.options.username,
 	});
@@ -108,9 +109,11 @@ export const listFiles: KaggleEndpoints['datasetsListFiles'] = async (
 	ctx,
 	input,
 ) => {
+	// Kaggle v1: GET /datasets/{ownerSlug}/{datasetSlug}/files
+	// (not /datasets/list/{owner}/{slug}, which collides with the bulk list route)
 	const result = await makeKaggleRequest<
 		KaggleEndpointOutputs['datasetsListFiles']
-	>(`/datasets/list/${input.ownerSlug}/${input.datasetSlug}`, ctx.key, {
+	>(`/datasets/${input.ownerSlug}/${input.datasetSlug}/files`, ctx.key, {
 		method: 'GET',
 		query: {
 			datasetVersionNumber: input.datasetVersionNumber,
