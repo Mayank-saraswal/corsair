@@ -372,7 +372,9 @@ export type InternalKagglePlugin = BaseKagglePlugin<KagglePluginOptions>;
 export type ExternalKagglePlugin<T extends KagglePluginOptions> =
 	BaseKagglePlugin<T>;
 
-// Empty options object is valid: all KagglePluginOptions fields are optional.
+// Type assertion required: all KagglePluginOptions fields are optional, so `{}`
+// is a valid runtime default, but TypeScript cannot prove `{}` satisfies an
+// arbitrary caller-supplied `T extends KagglePluginOptions` without the cast.
 export function kaggle<const T extends KagglePluginOptions>(
 	incomingOptions: KagglePluginOptions & T = {} as KagglePluginOptions & T,
 ): ExternalKagglePlugin<T> {

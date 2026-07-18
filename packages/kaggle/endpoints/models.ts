@@ -25,8 +25,9 @@ export const list: KaggleEndpoints['modelsList'] = async (ctx, input) => {
 };
 
 export const get: KaggleEndpoints['modelsGet'] = async (ctx, input) => {
+	// Kaggle v1: GET /models/{ownerSlug}/{modelSlug} (no /get prefix)
 	const result = await makeKaggleRequest<KaggleEndpointOutputs['modelsGet']>(
-		`/models/get/${input.ownerSlug}/${input.modelSlug}`,
+		`/models/${input.ownerSlug}/${input.modelSlug}`,
 		ctx.key,
 		{ method: 'GET', username: ctx.options.username },
 	);
@@ -44,10 +45,11 @@ export const getInstance: KaggleEndpoints['modelsGetInstance'] = async (
 	ctx,
 	input,
 ) => {
+	// Kaggle v1: GET /models/{owner}/{model}/{framework}/{instance} (no trailing /get)
 	const result = await makeKaggleRequest<
 		KaggleEndpointOutputs['modelsGetInstance']
 	>(
-		`/models/${input.ownerSlug}/${input.modelSlug}/${input.framework}/${input.instanceSlug}/get`,
+		`/models/${input.ownerSlug}/${input.modelSlug}/${input.framework}/${input.instanceSlug}`,
 		ctx.key,
 		{ method: 'GET', username: ctx.options.username },
 	);
