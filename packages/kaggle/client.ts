@@ -1,0 +1,179 @@
+import type { ApiRequestOptions, OpenAPIConfig } from 'corsair/http';
+import { ApiError, request } from 'corsair/http';
+
+export class KaggleAPIError extends Error {
+	constructor(
+		message: string,
+		public readonly code?: string,
+	) {
+		super(message);
+		this.name = 'KaggleAPIError';
+	}
+}
+
+/** Official Kaggle REST base used by the public API / CLI. */
+const KAGGLE_API_BASE = 'https://www.kaggle.com/api/v1';
+
+/**
+ * Parse credentials for HTTP Basic auth.
+ * Accepts `username:key` or a bare API token (Bearer) when no colon is present
+ * and no username override is supplied.
+ */
+export function parseKaggleCredentials(
+	credential: string,
+	usernameOverride?: string,
+):
+	| { kind: 'basic'; username: string; key: string }
+	| { kind: 'bearer'; token: string } {
+	if (usernameOverride) {
+		return { kind: 'basic', username: usernameOverride, key: credential };
+	}
+	const colon = credential.indexOf(':');
+	if (colon > 0) {
+		return {
+			kind: 'basic',
+			username: credential.slice(0, colon),
+			key: credential.slice(colon + 1),
+		};
+	}
+	// Newer Kaggle tokens (KAGGLE_API_TOKEN) are used as Bearer secrets.
+	return { kind: 'bearer', token: credential };
+}
+
+function authHeaders(
+	credential: string,
+	usernameOverride?: string,
+): Record<string, string> {
+	const parsed = parseKaggleCredentials(credential, usernameOverride);
+	if (parsed.kind === 'basic') {
+		const token = Buffer.from(
+			`${parsed.username}:${parsed.key}`,
+			'utf8',
+		).toString('base64');
+		return { Authorization: `Basic ${token}` };
+	}
+	return { Authorization: `Bearer ${parsed.token}` };
+}
+
+export type KaggleQueryValue = string | number | boolean | undefined;
+
+/**
+ * JSON request against the Kaggle API.
+ * Auth: HTTP Basic (`username:key`) or Bearer for newer API tokens.
+ */
+export async function makeKaggleRequest<T>(
+	endpoint: string,
+	credential: string,
+	options: {
+		method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
+		// body shape varies per endpoint and is validated by callers via typed Zod input schemas
+		body?: Record<string, unknown>;
+		query?: Record<string, KaggleQueryValue>;
+		username?: string;
+	} = {},
+): Promise<T> {
+	const { method = 'GET', body, query, username } = options;
+
+	const config: OpenAPIConfig = {
+		BASE: KAGGLE_API_BASE,
+		VERSION: '1.0.0',
+		WITH_CREDENTIALS: false,
+		CREDENTIALS: 'omit',
+		HEADERS: {
+			'Content-Type': 'application/json',
+			...authHeaders(credential, username),
+		},
+	};
+
+	const requestOptions: ApiRequestOptions = {
+		method,
+		url: endpoint,
+		body:
+			method === 'POST' || method === 'PUT' || method === 'PATCH'
+				? body
+				: undefined,
+		mediaType: 'application/json; charset=utf-8',
+		query,
+	};
+
+	try {
+		return await request<T>(config, requestOptions);
+	} catch (error) {
+		// Preserve ApiError so error-handlers can read status / Retry-After.
+		if (error instanceof ApiError) {
+			throw error;
+		}
+		if (error instanceof Error) {
+			throw new KaggleAPIError(error.message);
+		}
+		throw new KaggleAPIError('Unknown Kaggle API error');
+	}
+}
+
+/**
+ * Binary/download request (zip/csv/file bytes). Returns base64 so agents do not
+ * depend on host filesystem paths.
+ */
+export async function makeKaggleBinaryRequest(
+	endpoint: string,
+	credential: string,
+	options: {
+		method?: 'GET' | 'POST';
+		query?: Record<string, KaggleQueryValue>;
+		username?: string;
+	} = {},
+): Promise<{
+	contentType: string;
+	size: number;
+	dataBase64: string;
+	fileName?: string;
+}> {
+	const { method = 'GET', query, username } = options;
+	const url = new URL(
+		endpoint.startsWith('http')
+			? endpoint
+			: `${KAGGLE_API_BASE}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`,
+	);
+	if (query) {
+		for (const [k, v] of Object.entries(query)) {
+			if (v !== undefined && v !== null) url.searchParams.set(k, String(v));
+		}
+	}
+
+	const res = await fetch(url, {
+		method,
+		headers: {
+			...authHeaders(credential, username),
+			Accept: '*/*',
+		},
+	});
+
+	if (!res.ok) {
+		const text = await res.text();
+		throw new ApiError(
+			{ method, url: endpoint },
+			{
+				url: url.toString(),
+				ok: false,
+				status: res.status,
+				statusText: res.statusText,
+				body: text,
+			},
+			`Kaggle download failed: ${res.status} ${res.statusText}`,
+		);
+	}
+
+	const buf = Buffer.from(await res.arrayBuffer());
+	const contentType =
+		res.headers.get('content-type') ?? 'application/octet-stream';
+	const disposition = res.headers.get('content-disposition') ?? '';
+	const match = /filename\*?=(?:UTF-8''|")?([^\";]+)/i.exec(disposition);
+	const fileName = match?.[1]?.replace(/"/g, '');
+
+	return {
+		contentType,
+		size: buf.length,
+		dataBase64: buf.toString('base64'),
+		fileName,
+	};
+}

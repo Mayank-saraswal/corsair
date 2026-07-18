@@ -49,6 +49,7 @@ export const BaseProviders = [
 	'instagram',
 	'intercom',
 	'jira',
+	'kaggle',
 	'linear',
 	'linkedin',
 	'monday',
@@ -127,6 +128,7 @@ export const ProviderDisplayNames = {
 	instagram: 'Instagram',
 	intercom: 'Intercom',
 	jira: 'Jira',
+	kaggle: 'Kaggle',
 	linear: 'Linear',
 	linkedin: 'LinkedIn',
 	monday: 'Monday',
@@ -138,6 +140,7 @@ export const ProviderDisplayNames = {
 	oura: 'Oura',
 	outlook: 'Outlook',
 	pagerduty: 'PagerDuty',
+	perplexityai: 'Perplexity AI',
 	posthog: 'PostHog',
 	razorpay: 'Razorpay',
 	reddit: 'Reddit',
@@ -165,7 +168,6 @@ export const ProviderDisplayNames = {
 	zendesk: 'Zendesk',
 	zohomail: 'Zoho Mail',
 	zoom: 'Zoom',
-	perplexityai: 'Perplexity AI',
 } as const satisfies Record<(typeof BaseProviders)[number], string>;
 
 export function formatProviderDisplayName(plugin: string): string {
@@ -212,6 +214,7 @@ export type AllProviders =
 	| 'instagram'
 	| 'intercom'
 	| 'jira'
+	| 'kaggle'
 	| 'linear'
 	| 'linkedin'
 	| 'monday'
