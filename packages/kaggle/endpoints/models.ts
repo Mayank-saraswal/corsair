@@ -4,8 +4,9 @@ import type { KaggleEndpoints } from '../index';
 import type { KaggleEndpointOutputs } from './types';
 
 export const list: KaggleEndpoints['modelsList'] = async (ctx, input) => {
+	// Kaggle v1: GET /models (no /list suffix — /models/list 404s)
 	const result = await makeKaggleRequest<KaggleEndpointOutputs['modelsList']>(
-		'/models/list',
+		'/models',
 		ctx.key,
 		{
 			method: 'GET',

@@ -230,4 +230,15 @@ describeIfCreds('Kaggle API live smoke tests (list endpoints only)', () => {
 		const parsed = KaggleEndpointOutputSchemas.kernelsList.safeParse(response);
 		expect(parsed.success).toBe(true);
 	});
+
+	it('lists models (GET /models)', async () => {
+		const response = await makeKaggleRequest<
+			KaggleEndpointOutputs['modelsList']
+		>('/models', TEST_CREDENTIAL!, {
+			method: 'GET',
+			query: { pageSize: 5 },
+		});
+		const parsed = KaggleEndpointOutputSchemas.modelsList.safeParse(response);
+		expect(parsed.success).toBe(true);
+	});
 });
