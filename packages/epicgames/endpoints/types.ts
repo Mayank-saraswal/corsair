@@ -309,6 +309,7 @@ export const EpicGamesEndpointOutputSchemas = {
 	remoteCallObjectFunction: LooseObjectSchema,
 	remotePutObjectProperty: LooseObjectSchema,
 	remoteGetObjectThumbnail: LooseObjectSchema,
-	remoteListBlueprintCallableFunctions: LooseListSchema,
+	// Filtered list op returns { objectPath, functions, count } — not a raw array
+	remoteListBlueprintCallableFunctions: LooseObjectSchema,
 	remoteWaitForObjectEvent: LooseObjectSchema,
 } as const;

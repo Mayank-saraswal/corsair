@@ -100,6 +100,8 @@ export async function makeEpicGamesRequest<T>(
 				`Epic Games OPTIONS failed: ${res.status}`,
 			);
 		}
+		// cast: OPTIONS body is unknown (JSON or synthetic status object); caller
+		// generic T is validated by endpoint Zod output schemas when used.
 		return json as T;
 	}
 
@@ -108,7 +110,8 @@ export async function makeEpicGamesRequest<T>(
 		url: endpoint,
 		body:
 			method === 'POST' || method === 'PUT' || method === 'PATCH'
-				? (body as Record<string, unknown>)
+				? // cast: RequestOptions.body is Record | array; ApiRequestOptions.body is Record
+					(body as Record<string, unknown>)
 				: undefined,
 		mediaType: 'application/json; charset=utf-8',
 		query,

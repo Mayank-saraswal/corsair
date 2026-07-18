@@ -326,23 +326,32 @@ export const getObjectThumbnail: EpicGamesEndpoints['remoteGetObjectThumbnail'] 
 		return result;
 	};
 
+/**
+ * List Blueprint-callable functions on a UObject.
+ *
+ * Distinct from `describeObject`: that op returns the full describe payload.
+ * This op only returns `{ objectPath, functions, count }` after filtering the
+ * describe response. UE has no dedicated list-functions HTTP route.
+ */
 export const listBlueprintCallableFunctions: EpicGamesEndpoints['remoteListBlueprintCallableFunctions'] =
 	async (ctx, input) => {
-		// UE Remote Control has no dedicated "list functions" HTTP route; Blueprint-
-		// callable functions are exposed on PUT /remote/object/describe. We call
-		// describe then return only the functions list (not the full describe payload),
-		// so this op is distinct from remote.describeObject.
 		const described = await makeEpicGamesRequest<Record<string, unknown>>(
 			'/remote/object/describe',
 			ctx.key,
 			{
 				method: 'PUT',
-				body: { objectPath: input.objectPath },
+				// same transport as describeObject, different return shape (filtered)
+				body: {
+					objectPath: input.objectPath,
+					// request function metadata when the UE build supports it
+					access: 'READ_ACCESS',
+				},
 				...remoteOpts(ctx),
 			},
 		);
 
 		const functions = extractBlueprintCallableFunctions(described);
+		// Never return the raw describe payload — callers get a functions list only.
 		const result: EpicGamesEndpointOutputs['remoteListBlueprintCallableFunctions'] =
 			{
 				objectPath: input.objectPath,

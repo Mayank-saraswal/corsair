@@ -350,7 +350,13 @@ describe('Epic Games remote-control handlers (mocked HTTP)', () => {
 		expect(mockRequest).toHaveBeenCalledWith(
 			'/remote/object/describe',
 			'test-token',
-			expect.objectContaining({ method: 'PUT' }),
+			expect.objectContaining({
+				method: 'PUT',
+				body: expect.objectContaining({
+					objectPath: '/Game/A',
+					access: 'READ_ACCESS',
+				}),
+			}),
 		);
 		// Distinct from describeObject: returns filtered functions list only
 		expect(result).toEqual({
@@ -359,6 +365,7 @@ describe('Epic Games remote-control handlers (mocked HTTP)', () => {
 			count: 2,
 		});
 		expect(result).not.toHaveProperty('Properties');
+		expect(result).not.toHaveProperty('Name');
 	});
 
 	it('listBlueprintCallableFunctions returns empty when no Functions key', async () => {
