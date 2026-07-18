@@ -310,11 +310,14 @@ describe('Epic Games remote-control handlers (mocked HTTP)', () => {
 		await RemoteControl.putObjectProperty(mockCtx(), {
 			objectPath: '/Game/A',
 			access: 'WRITE_ACCESS',
-			propertyValues: { bHidden: true },
+			// colliding key must not override the real objectPath
+			propertyValues: { bHidden: true, objectPath: 'spoofed' },
 		});
-		expect(mockRequest).toHaveBeenCalledWith(
-			'/remote/object/property',
-			'test-token',
+		const call = mockRequest.mock.calls.find(
+			(c) => c[0] === '/remote/object/property',
+		);
+		expect(call).toBeDefined();
+		expect(call?.[2]).toEqual(
 			expect.objectContaining({
 				method: 'PUT',
 				body: expect.objectContaining({
@@ -324,6 +327,10 @@ describe('Epic Games remote-control handlers (mocked HTTP)', () => {
 				}),
 			}),
 		);
+		// reserved keys win over propertyValues
+		expect(
+			(call?.[2] as { body: { objectPath: string } }).body.objectPath,
+		).toBe('/Game/A');
 	});
 
 	it('getObjectThumbnail → PUT /remote/object/thumbnail', async () => {

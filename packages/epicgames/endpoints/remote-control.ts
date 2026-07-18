@@ -286,16 +286,17 @@ export const callObjectFunction: EpicGamesEndpoints['remoteCallObjectFunction'] 
 export const putObjectProperty: EpicGamesEndpoints['remotePutObjectProperty'] =
 	async (ctx, input) => {
 		const { objectPath, access, propertyValues, ...rest } = input;
+		// Spread free-form property bag first, then pin required keys last so a
+		// property named "objectPath" / "access" cannot overwrite the path/access.
 		const result = await makeEpicGamesRequest<
 			EpicGamesEndpointOutputs['remotePutObjectProperty']
 		>('/remote/object/property', ctx.key, {
 			method: 'PUT',
 			body: {
-				objectPath,
-				access: access ?? 'READ_ACCESS',
-				// free-form property bag from UE Remote Control
 				...(propertyValues ?? {}),
 				...rest,
+				objectPath,
+				access: access ?? 'READ_ACCESS',
 			},
 			...remoteOpts(ctx),
 		});
