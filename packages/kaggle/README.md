@@ -74,6 +74,8 @@ pnpm --filter @corsair-dev/kaggle demo
 
 Or: `node packages/kaggle/scripts/demo.mjs`
 
+Working proof recording (R4): https://www.loom.com/share/b0d541fa2dd14e3a9340f4a94b3ff4ea
+
 ## Links
 
 - Docs: https://www.kaggle.com/docs/api
