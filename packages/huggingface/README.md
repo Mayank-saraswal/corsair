@@ -87,6 +87,10 @@ $env:HUGGING_FACE_API_KEY = "hf_..."
 pnpm --filter @corsair-dev/huggingface demo
 ```
 
+### R4 demo video
+
+[Loom — tests + live Hub demo](https://www.loom.com/share/e4151c6e3f31453880653d0b910e4eff)
+
 ## Issue
 
 Implements [corsairdev/corsair#476](https://github.com/corsairdev/corsair/issues/476).
