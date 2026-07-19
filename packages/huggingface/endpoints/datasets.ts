@@ -1,20 +1,7 @@
 import { logEventFromContext } from 'corsair/core';
-import type { HuggingFaceRequestOptions } from '../client';
-import {
-	encodePath,
-	HF_DATASETS_SERVER_BASE,
-	makeHuggingFaceRequest,
-	splitRepoId,
-} from '../client';
+import { encodePath, HF_DATASETS_SERVER_BASE, splitRepoId } from '../client';
 import type { HuggingFaceEndpoints } from '../index';
-
-async function req<T>(
-	ctx: { key: string },
-	endpoint: string,
-	options: HuggingFaceRequestOptions = {},
-): Promise<T> {
-	return makeHuggingFaceRequest<T>(endpoint, ctx.key || undefined, options);
-}
+import { req, summarize } from './helpers';
 
 export const list: HuggingFaceEndpoints['datasetsList'] = async (
 	ctx,
@@ -777,22 +764,3 @@ export const updateSqlConsoleEmbed: HuggingFaceEndpoints['datasetsUpdateSqlConso
 		);
 		return response;
 	};
-
-function summarize(input: unknown): Record<string, unknown> {
-	if (!input || typeof input !== 'object') return {};
-	const out: Record<string, unknown> = {};
-	for (const [k, v] of Object.entries(input as Record<string, unknown>)) {
-		if (
-			k === 'value' ||
-			k === 'secret' ||
-			k === 'messages' ||
-			k === 'operations' ||
-			k === 'files'
-		) {
-			out[k] = '[redacted]';
-		} else {
-			out[k] = v;
-		}
-	}
-	return out;
-}

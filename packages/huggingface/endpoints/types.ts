@@ -1,14 +1,19 @@
 import { z } from 'zod';
 
-// Hugging Face Hub responses are open-ended; validate structure lightly.
-// Callers should treat unknown fields as optional extension data.
-const OpenResponseSchema = z.unknown();
+/**
+ * Hugging Face Hub / Datasets Server / Inference responses are open JSON.
+ * HF does not publish stable TypeScript contracts for every route, so each
+ * Response type alias is intentionally open (HfOpenResponse = unknown).
+ * Runtime validation uses OpenResponseSchema (z.unknown()).
+ */
+type HfOpenResponse = unknown; // open HF JSON — no stable per-route schema
 
+const OpenResponseSchema = z.unknown(); // open HF JSON body
 const GetWhoamiInputSchema = z.object({});
 
 export type GetWhoamiInput = z.infer<typeof GetWhoamiInputSchema>;
 
-export type GetWhoamiResponse = unknown;
+export type GetWhoamiResponse = HfOpenResponse; // open HF JSON
 
 const ListNotificationsInputSchema = z.object({
 	read: z.boolean().optional(),
@@ -20,7 +25,7 @@ export type ListNotificationsInput = z.infer<
 	typeof ListNotificationsInputSchema
 >;
 
-export type ListNotificationsResponse = unknown;
+export type ListNotificationsResponse = HfOpenResponse; // open HF JSON
 
 const DeleteNotificationsInputSchema = z.object({
 	discussionIds: z.array(z.string()).optional(),
@@ -32,7 +37,7 @@ export type DeleteNotificationsInput = z.infer<
 	typeof DeleteNotificationsInputSchema
 >;
 
-export type DeleteNotificationsResponse = unknown;
+export type DeleteNotificationsResponse = HfOpenResponse; // open HF JSON
 
 const UpdateNotificationSettingsInputSchema = z.object({
 	settings: z.record(z.string(), z.unknown()),
@@ -42,7 +47,7 @@ export type UpdateNotificationSettingsInput = z.infer<
 	typeof UpdateNotificationSettingsInputSchema
 >;
 
-export type UpdateNotificationSettingsResponse = unknown;
+export type UpdateNotificationSettingsResponse = HfOpenResponse; // open HF JSON
 
 const UpdateWatchSettingsInputSchema = z.object({
 	add: z.array(z.record(z.string(), z.unknown())).optional(),
@@ -53,13 +58,13 @@ export type UpdateWatchSettingsInput = z.infer<
 	typeof UpdateWatchSettingsInputSchema
 >;
 
-export type UpdateWatchSettingsResponse = unknown;
+export type UpdateWatchSettingsResponse = HfOpenResponse; // open HF JSON
 
 const GetMcpSettingsInputSchema = z.object({});
 
 export type GetMcpSettingsInput = z.infer<typeof GetMcpSettingsInputSchema>;
 
-export type GetMcpSettingsResponse = unknown;
+export type GetMcpSettingsResponse = HfOpenResponse; // open HF JSON
 
 const GetBillingUsageV2InputSchema = z.object({
 	from: z.number().int().optional(),
@@ -70,13 +75,13 @@ export type GetBillingUsageV2Input = z.infer<
 	typeof GetBillingUsageV2InputSchema
 >;
 
-export type GetBillingUsageV2Response = unknown;
+export type GetBillingUsageV2Response = HfOpenResponse; // open HF JSON
 
 const GetJobsUsageInputSchema = z.object({});
 
 export type GetJobsUsageInput = z.infer<typeof GetJobsUsageInputSchema>;
 
-export type GetJobsUsageResponse = unknown;
+export type GetJobsUsageResponse = HfOpenResponse; // open HF JSON
 
 const GetLiveBillingUsageInputSchema = z.object({});
 
@@ -84,19 +89,19 @@ export type GetLiveBillingUsageInput = z.infer<
 	typeof GetLiveBillingUsageInputSchema
 >;
 
-export type GetLiveBillingUsageResponse = unknown;
+export type GetLiveBillingUsageResponse = HfOpenResponse; // open HF JSON
 
 const ListWebhooksInputSchema = z.object({});
 
 export type ListWebhooksInput = z.infer<typeof ListWebhooksInputSchema>;
 
-export type ListWebhooksResponse = unknown;
+export type ListWebhooksResponse = HfOpenResponse; // open HF JSON
 
 const GetWebhookInputSchema = z.object({ webhookId: z.string() });
 
 export type GetWebhookInput = z.infer<typeof GetWebhookInputSchema>;
 
-export type GetWebhookResponse = unknown;
+export type GetWebhookResponse = HfOpenResponse; // open HF JSON
 
 const CreateWebhookInputSchema = z.object({
 	url: z.string().url(),
@@ -108,7 +113,7 @@ const CreateWebhookInputSchema = z.object({
 
 export type CreateWebhookInput = z.infer<typeof CreateWebhookInputSchema>;
 
-export type CreateWebhookResponse = unknown;
+export type CreateWebhookResponse = HfOpenResponse; // open HF JSON
 
 const UpdateWebhookInputSchema = z.object({
 	webhookId: z.string(),
@@ -120,13 +125,13 @@ const UpdateWebhookInputSchema = z.object({
 
 export type UpdateWebhookInput = z.infer<typeof UpdateWebhookInputSchema>;
 
-export type UpdateWebhookResponse = unknown;
+export type UpdateWebhookResponse = HfOpenResponse; // open HF JSON
 
 const DeleteWebhookInputSchema = z.object({ webhookId: z.string() });
 
 export type DeleteWebhookInput = z.infer<typeof DeleteWebhookInputSchema>;
 
-export type DeleteWebhookResponse = unknown;
+export type DeleteWebhookResponse = HfOpenResponse; // open HF JSON
 
 const UpdateWebhookStatusInputSchema = z.object({
 	webhookId: z.string(),
@@ -137,7 +142,7 @@ export type UpdateWebhookStatusInput = z.infer<
 	typeof UpdateWebhookStatusInputSchema
 >;
 
-export type UpdateWebhookStatusResponse = unknown;
+export type UpdateWebhookStatusResponse = HfOpenResponse; // open HF JSON
 
 const ModelsListInputSchema = z.object({
 	search: z.string().optional(),
@@ -152,7 +157,7 @@ const ModelsListInputSchema = z.object({
 
 export type ModelsListInput = z.infer<typeof ModelsListInputSchema>;
 
-export type ModelsListResponse = unknown;
+export type ModelsListResponse = HfOpenResponse; // open HF JSON
 
 const ModelsGetInputSchema = z.object({
 	repoId: z.string(),
@@ -162,7 +167,7 @@ const ModelsGetInputSchema = z.object({
 
 export type ModelsGetInput = z.infer<typeof ModelsGetInputSchema>;
 
-export type ModelsGetResponse = unknown;
+export type ModelsGetResponse = HfOpenResponse; // open HF JSON
 
 const ModelsGetScanInputSchema = z.object({
 	repoId: z.string().describe('namespace/repo'),
@@ -170,7 +175,7 @@ const ModelsGetScanInputSchema = z.object({
 
 export type ModelsGetScanInput = z.infer<typeof ModelsGetScanInputSchema>;
 
-export type ModelsGetScanResponse = unknown;
+export type ModelsGetScanResponse = HfOpenResponse; // open HF JSON
 
 const ModelsGetCompareInputSchema = z.object({
 	repoId: z.string(),
@@ -179,7 +184,7 @@ const ModelsGetCompareInputSchema = z.object({
 
 export type ModelsGetCompareInput = z.infer<typeof ModelsGetCompareInputSchema>;
 
-export type ModelsGetCompareResponse = unknown;
+export type ModelsGetCompareResponse = HfOpenResponse; // open HF JSON
 
 const ModelsListCommitsInputSchema = z.object({
 	repoId: z.string(),
@@ -192,7 +197,7 @@ export type ModelsListCommitsInput = z.infer<
 	typeof ModelsListCommitsInputSchema
 >;
 
-export type ModelsListCommitsResponse = unknown;
+export type ModelsListCommitsResponse = HfOpenResponse; // open HF JSON
 
 const ModelsListRefsInputSchema = z.object({
 	repoId: z.string(),
@@ -201,7 +206,7 @@ const ModelsListRefsInputSchema = z.object({
 
 export type ModelsListRefsInput = z.infer<typeof ModelsListRefsInputSchema>;
 
-export type ModelsListRefsResponse = unknown;
+export type ModelsListRefsResponse = HfOpenResponse; // open HF JSON
 
 const ModelsListPathsInfoInputSchema = z.object({
 	repoId: z.string(),
@@ -214,7 +219,7 @@ export type ModelsListPathsInfoInput = z.infer<
 	typeof ModelsListPathsInfoInputSchema
 >;
 
-export type ModelsListPathsInfoResponse = unknown;
+export type ModelsListPathsInfoResponse = HfOpenResponse; // open HF JSON
 
 const ModelsGetTreeSizeInputSchema = z.object({
 	repoId: z.string(),
@@ -226,7 +231,7 @@ export type ModelsGetTreeSizeInput = z.infer<
 	typeof ModelsGetTreeSizeInputSchema
 >;
 
-export type ModelsGetTreeSizeResponse = unknown;
+export type ModelsGetTreeSizeResponse = HfOpenResponse; // open HF JSON
 
 const ModelsGetJwtInputSchema = z.object({
 	repoId: z.string(),
@@ -236,7 +241,7 @@ const ModelsGetJwtInputSchema = z.object({
 
 export type ModelsGetJwtInput = z.infer<typeof ModelsGetJwtInputSchema>;
 
-export type ModelsGetJwtResponse = unknown;
+export type ModelsGetJwtResponse = HfOpenResponse; // open HF JSON
 
 const ModelsGetXetReadTokenInputSchema = z.object({
 	repoId: z.string(),
@@ -247,7 +252,7 @@ export type ModelsGetXetReadTokenInput = z.infer<
 	typeof ModelsGetXetReadTokenInputSchema
 >;
 
-export type ModelsGetXetReadTokenResponse = unknown;
+export type ModelsGetXetReadTokenResponse = HfOpenResponse; // open HF JSON
 
 const ModelsGetNotebookInputSchema = z.object({
 	repoId: z.string(),
@@ -259,7 +264,7 @@ export type ModelsGetNotebookInput = z.infer<
 	typeof ModelsGetNotebookInputSchema
 >;
 
-export type ModelsGetNotebookResponse = unknown;
+export type ModelsGetNotebookResponse = HfOpenResponse; // open HF JSON
 
 const ModelsGetResolveInputSchema = z.object({
 	repoId: z.string(),
@@ -270,7 +275,7 @@ const ModelsGetResolveInputSchema = z.object({
 
 export type ModelsGetResolveInput = z.infer<typeof ModelsGetResolveInputSchema>;
 
-export type ModelsGetResolveResponse = unknown;
+export type ModelsGetResolveResponse = HfOpenResponse; // open HF JSON
 
 const ModelsGetResolveCacheInputSchema = z.object({
 	repoId: z.string(),
@@ -283,7 +288,7 @@ export type ModelsGetResolveCacheInput = z.infer<
 	typeof ModelsGetResolveCacheInputSchema
 >;
 
-export type ModelsGetResolveCacheResponse = unknown;
+export type ModelsGetResolveCacheResponse = HfOpenResponse; // open HF JSON
 
 const ModelsCreateBranchInputSchema = z.object({
 	repoId: z.string(),
@@ -296,7 +301,7 @@ export type ModelsCreateBranchInput = z.infer<
 	typeof ModelsCreateBranchInputSchema
 >;
 
-export type ModelsCreateBranchResponse = unknown;
+export type ModelsCreateBranchResponse = HfOpenResponse; // open HF JSON
 
 const ModelsDeleteBranchInputSchema = z.object({
 	repoId: z.string(),
@@ -307,7 +312,7 @@ export type ModelsDeleteBranchInput = z.infer<
 	typeof ModelsDeleteBranchInputSchema
 >;
 
-export type ModelsDeleteBranchResponse = unknown;
+export type ModelsDeleteBranchResponse = HfOpenResponse; // open HF JSON
 
 const ModelsCreateCommitInputSchema = z.object({
 	repoId: z.string(),
@@ -323,7 +328,7 @@ export type ModelsCreateCommitInput = z.infer<
 	typeof ModelsCreateCommitInputSchema
 >;
 
-export type ModelsCreateCommitResponse = unknown;
+export type ModelsCreateCommitResponse = HfOpenResponse; // open HF JSON
 
 const ModelsCreateTagInputSchema = z.object({
 	repoId: z.string(),
@@ -334,7 +339,7 @@ const ModelsCreateTagInputSchema = z.object({
 
 export type ModelsCreateTagInput = z.infer<typeof ModelsCreateTagInputSchema>;
 
-export type ModelsCreateTagResponse = unknown;
+export type ModelsCreateTagResponse = HfOpenResponse; // open HF JSON
 
 const ModelsDeleteTagInputSchema = z.object({
 	repoId: z.string(),
@@ -343,7 +348,7 @@ const ModelsDeleteTagInputSchema = z.object({
 
 export type ModelsDeleteTagInput = z.infer<typeof ModelsDeleteTagInputSchema>;
 
-export type ModelsDeleteTagResponse = unknown;
+export type ModelsDeleteTagResponse = HfOpenResponse; // open HF JSON
 
 const ModelsCheckUploadMethodInputSchema = z.object({
 	repoId: z.string(),
@@ -355,7 +360,7 @@ export type ModelsCheckUploadMethodInput = z.infer<
 	typeof ModelsCheckUploadMethodInputSchema
 >;
 
-export type ModelsCheckUploadMethodResponse = unknown;
+export type ModelsCheckUploadMethodResponse = HfOpenResponse; // open HF JSON
 
 const ModelsUpdateSettingsInputSchema = z.object({
 	repoId: z.string(),
@@ -369,7 +374,7 @@ export type ModelsUpdateSettingsInput = z.infer<
 	typeof ModelsUpdateSettingsInputSchema
 >;
 
-export type ModelsUpdateSettingsResponse = unknown;
+export type ModelsUpdateSettingsResponse = HfOpenResponse; // open HF JSON
 
 const DatasetsListInputSchema = z.object({
 	search: z.string().optional(),
@@ -384,7 +389,7 @@ const DatasetsListInputSchema = z.object({
 
 export type DatasetsListInput = z.infer<typeof DatasetsListInputSchema>;
 
-export type DatasetsListResponse = unknown;
+export type DatasetsListResponse = HfOpenResponse; // open HF JSON
 
 const DatasetsGetInputSchema = z.object({
 	repoId: z.string(),
@@ -394,7 +399,7 @@ const DatasetsGetInputSchema = z.object({
 
 export type DatasetsGetInput = z.infer<typeof DatasetsGetInputSchema>;
 
-export type DatasetsGetResponse = unknown;
+export type DatasetsGetResponse = HfOpenResponse; // open HF JSON
 
 const DatasetsGetScanInputSchema = z.object({
 	repoId: z.string().describe('namespace/repo'),
@@ -402,7 +407,7 @@ const DatasetsGetScanInputSchema = z.object({
 
 export type DatasetsGetScanInput = z.infer<typeof DatasetsGetScanInputSchema>;
 
-export type DatasetsGetScanResponse = unknown;
+export type DatasetsGetScanResponse = HfOpenResponse; // open HF JSON
 
 const DatasetsGetCompareInputSchema = z.object({
 	repoId: z.string(),
@@ -413,7 +418,7 @@ export type DatasetsGetCompareInput = z.infer<
 	typeof DatasetsGetCompareInputSchema
 >;
 
-export type DatasetsGetCompareResponse = unknown;
+export type DatasetsGetCompareResponse = HfOpenResponse; // open HF JSON
 
 const DatasetsListCommitsInputSchema = z.object({
 	repoId: z.string(),
@@ -426,7 +431,7 @@ export type DatasetsListCommitsInput = z.infer<
 	typeof DatasetsListCommitsInputSchema
 >;
 
-export type DatasetsListCommitsResponse = unknown;
+export type DatasetsListCommitsResponse = HfOpenResponse; // open HF JSON
 
 const DatasetsListRefsInputSchema = z.object({
 	repoId: z.string(),
@@ -435,7 +440,7 @@ const DatasetsListRefsInputSchema = z.object({
 
 export type DatasetsListRefsInput = z.infer<typeof DatasetsListRefsInputSchema>;
 
-export type DatasetsListRefsResponse = unknown;
+export type DatasetsListRefsResponse = HfOpenResponse; // open HF JSON
 
 const DatasetsListPathsInfoInputSchema = z.object({
 	repoId: z.string(),
@@ -448,7 +453,7 @@ export type DatasetsListPathsInfoInput = z.infer<
 	typeof DatasetsListPathsInfoInputSchema
 >;
 
-export type DatasetsListPathsInfoResponse = unknown;
+export type DatasetsListPathsInfoResponse = HfOpenResponse; // open HF JSON
 
 const DatasetsGetTreeSizeInputSchema = z.object({
 	repoId: z.string(),
@@ -460,7 +465,7 @@ export type DatasetsGetTreeSizeInput = z.infer<
 	typeof DatasetsGetTreeSizeInputSchema
 >;
 
-export type DatasetsGetTreeSizeResponse = unknown;
+export type DatasetsGetTreeSizeResponse = HfOpenResponse; // open HF JSON
 
 const DatasetsGetJwtInputSchema = z.object({
 	repoId: z.string(),
@@ -470,7 +475,7 @@ const DatasetsGetJwtInputSchema = z.object({
 
 export type DatasetsGetJwtInput = z.infer<typeof DatasetsGetJwtInputSchema>;
 
-export type DatasetsGetJwtResponse = unknown;
+export type DatasetsGetJwtResponse = HfOpenResponse; // open HF JSON
 
 const DatasetsGetXetReadTokenInputSchema = z.object({
 	repoId: z.string(),
@@ -481,7 +486,7 @@ export type DatasetsGetXetReadTokenInput = z.infer<
 	typeof DatasetsGetXetReadTokenInputSchema
 >;
 
-export type DatasetsGetXetReadTokenResponse = unknown;
+export type DatasetsGetXetReadTokenResponse = HfOpenResponse; // open HF JSON
 
 const DatasetsGetNotebookInputSchema = z.object({
 	repoId: z.string(),
@@ -493,7 +498,7 @@ export type DatasetsGetNotebookInput = z.infer<
 	typeof DatasetsGetNotebookInputSchema
 >;
 
-export type DatasetsGetNotebookResponse = unknown;
+export type DatasetsGetNotebookResponse = HfOpenResponse; // open HF JSON
 
 const DatasetsGetResolveInputSchema = z.object({
 	repoId: z.string(),
@@ -506,7 +511,7 @@ export type DatasetsGetResolveInput = z.infer<
 	typeof DatasetsGetResolveInputSchema
 >;
 
-export type DatasetsGetResolveResponse = unknown;
+export type DatasetsGetResolveResponse = HfOpenResponse; // open HF JSON
 
 const DatasetsGetResolveCacheInputSchema = z.object({
 	repoId: z.string(),
@@ -519,7 +524,7 @@ export type DatasetsGetResolveCacheInput = z.infer<
 	typeof DatasetsGetResolveCacheInputSchema
 >;
 
-export type DatasetsGetResolveCacheResponse = unknown;
+export type DatasetsGetResolveCacheResponse = HfOpenResponse; // open HF JSON
 
 const DatasetsCreateBranchInputSchema = z.object({
 	repoId: z.string(),
@@ -532,7 +537,7 @@ export type DatasetsCreateBranchInput = z.infer<
 	typeof DatasetsCreateBranchInputSchema
 >;
 
-export type DatasetsCreateBranchResponse = unknown;
+export type DatasetsCreateBranchResponse = HfOpenResponse; // open HF JSON
 
 const DatasetsDeleteBranchInputSchema = z.object({
 	repoId: z.string(),
@@ -543,7 +548,7 @@ export type DatasetsDeleteBranchInput = z.infer<
 	typeof DatasetsDeleteBranchInputSchema
 >;
 
-export type DatasetsDeleteBranchResponse = unknown;
+export type DatasetsDeleteBranchResponse = HfOpenResponse; // open HF JSON
 
 const DatasetsCreateCommitInputSchema = z.object({
 	repoId: z.string(),
@@ -559,7 +564,7 @@ export type DatasetsCreateCommitInput = z.infer<
 	typeof DatasetsCreateCommitInputSchema
 >;
 
-export type DatasetsCreateCommitResponse = unknown;
+export type DatasetsCreateCommitResponse = HfOpenResponse; // open HF JSON
 
 const DatasetsCreateTagInputSchema = z.object({
 	repoId: z.string(),
@@ -572,7 +577,7 @@ export type DatasetsCreateTagInput = z.infer<
 	typeof DatasetsCreateTagInputSchema
 >;
 
-export type DatasetsCreateTagResponse = unknown;
+export type DatasetsCreateTagResponse = HfOpenResponse; // open HF JSON
 
 const DatasetsDeleteTagInputSchema = z.object({
 	repoId: z.string(),
@@ -583,7 +588,7 @@ export type DatasetsDeleteTagInput = z.infer<
 	typeof DatasetsDeleteTagInputSchema
 >;
 
-export type DatasetsDeleteTagResponse = unknown;
+export type DatasetsDeleteTagResponse = HfOpenResponse; // open HF JSON
 
 const DatasetsCheckUploadMethodInputSchema = z.object({
 	repoId: z.string(),
@@ -595,7 +600,7 @@ export type DatasetsCheckUploadMethodInput = z.infer<
 	typeof DatasetsCheckUploadMethodInputSchema
 >;
 
-export type DatasetsCheckUploadMethodResponse = unknown;
+export type DatasetsCheckUploadMethodResponse = HfOpenResponse; // open HF JSON
 
 const DatasetsUpdateSettingsInputSchema = z.object({
 	repoId: z.string(),
@@ -609,7 +614,7 @@ export type DatasetsUpdateSettingsInput = z.infer<
 	typeof DatasetsUpdateSettingsInputSchema
 >;
 
-export type DatasetsUpdateSettingsResponse = unknown;
+export type DatasetsUpdateSettingsResponse = HfOpenResponse; // open HF JSON
 
 const SpacesListInputSchema = z.object({
 	search: z.string().optional(),
@@ -624,7 +629,7 @@ const SpacesListInputSchema = z.object({
 
 export type SpacesListInput = z.infer<typeof SpacesListInputSchema>;
 
-export type SpacesListResponse = unknown;
+export type SpacesListResponse = HfOpenResponse; // open HF JSON
 
 const SpacesGetInputSchema = z.object({
 	repoId: z.string(),
@@ -634,7 +639,7 @@ const SpacesGetInputSchema = z.object({
 
 export type SpacesGetInput = z.infer<typeof SpacesGetInputSchema>;
 
-export type SpacesGetResponse = unknown;
+export type SpacesGetResponse = HfOpenResponse; // open HF JSON
 
 const SpacesGetScanInputSchema = z.object({
 	repoId: z.string().describe('namespace/repo'),
@@ -642,7 +647,7 @@ const SpacesGetScanInputSchema = z.object({
 
 export type SpacesGetScanInput = z.infer<typeof SpacesGetScanInputSchema>;
 
-export type SpacesGetScanResponse = unknown;
+export type SpacesGetScanResponse = HfOpenResponse; // open HF JSON
 
 const SpacesGetCompareInputSchema = z.object({
 	repoId: z.string(),
@@ -651,7 +656,7 @@ const SpacesGetCompareInputSchema = z.object({
 
 export type SpacesGetCompareInput = z.infer<typeof SpacesGetCompareInputSchema>;
 
-export type SpacesGetCompareResponse = unknown;
+export type SpacesGetCompareResponse = HfOpenResponse; // open HF JSON
 
 const SpacesListCommitsInputSchema = z.object({
 	repoId: z.string(),
@@ -664,7 +669,7 @@ export type SpacesListCommitsInput = z.infer<
 	typeof SpacesListCommitsInputSchema
 >;
 
-export type SpacesListCommitsResponse = unknown;
+export type SpacesListCommitsResponse = HfOpenResponse; // open HF JSON
 
 const SpacesListRefsInputSchema = z.object({
 	repoId: z.string(),
@@ -673,7 +678,7 @@ const SpacesListRefsInputSchema = z.object({
 
 export type SpacesListRefsInput = z.infer<typeof SpacesListRefsInputSchema>;
 
-export type SpacesListRefsResponse = unknown;
+export type SpacesListRefsResponse = HfOpenResponse; // open HF JSON
 
 const SpacesListPathsInfoInputSchema = z.object({
 	repoId: z.string(),
@@ -686,7 +691,7 @@ export type SpacesListPathsInfoInput = z.infer<
 	typeof SpacesListPathsInfoInputSchema
 >;
 
-export type SpacesListPathsInfoResponse = unknown;
+export type SpacesListPathsInfoResponse = HfOpenResponse; // open HF JSON
 
 const SpacesGetTreeSizeInputSchema = z.object({
 	repoId: z.string(),
@@ -698,7 +703,7 @@ export type SpacesGetTreeSizeInput = z.infer<
 	typeof SpacesGetTreeSizeInputSchema
 >;
 
-export type SpacesGetTreeSizeResponse = unknown;
+export type SpacesGetTreeSizeResponse = HfOpenResponse; // open HF JSON
 
 const SpacesGetJwtInputSchema = z.object({
 	repoId: z.string(),
@@ -708,7 +713,7 @@ const SpacesGetJwtInputSchema = z.object({
 
 export type SpacesGetJwtInput = z.infer<typeof SpacesGetJwtInputSchema>;
 
-export type SpacesGetJwtResponse = unknown;
+export type SpacesGetJwtResponse = HfOpenResponse; // open HF JSON
 
 const SpacesGetXetReadTokenInputSchema = z.object({
 	repoId: z.string(),
@@ -719,7 +724,7 @@ export type SpacesGetXetReadTokenInput = z.infer<
 	typeof SpacesGetXetReadTokenInputSchema
 >;
 
-export type SpacesGetXetReadTokenResponse = unknown;
+export type SpacesGetXetReadTokenResponse = HfOpenResponse; // open HF JSON
 
 const SpacesGetNotebookInputSchema = z.object({
 	repoId: z.string(),
@@ -731,7 +736,7 @@ export type SpacesGetNotebookInput = z.infer<
 	typeof SpacesGetNotebookInputSchema
 >;
 
-export type SpacesGetNotebookResponse = unknown;
+export type SpacesGetNotebookResponse = HfOpenResponse; // open HF JSON
 
 const SpacesGetResolveInputSchema = z.object({
 	repoId: z.string(),
@@ -742,7 +747,7 @@ const SpacesGetResolveInputSchema = z.object({
 
 export type SpacesGetResolveInput = z.infer<typeof SpacesGetResolveInputSchema>;
 
-export type SpacesGetResolveResponse = unknown;
+export type SpacesGetResolveResponse = HfOpenResponse; // open HF JSON
 
 const SpacesGetResolveCacheInputSchema = z.object({
 	repoId: z.string(),
@@ -755,7 +760,7 @@ export type SpacesGetResolveCacheInput = z.infer<
 	typeof SpacesGetResolveCacheInputSchema
 >;
 
-export type SpacesGetResolveCacheResponse = unknown;
+export type SpacesGetResolveCacheResponse = HfOpenResponse; // open HF JSON
 
 const SpacesCreateBranchInputSchema = z.object({
 	repoId: z.string(),
@@ -768,7 +773,7 @@ export type SpacesCreateBranchInput = z.infer<
 	typeof SpacesCreateBranchInputSchema
 >;
 
-export type SpacesCreateBranchResponse = unknown;
+export type SpacesCreateBranchResponse = HfOpenResponse; // open HF JSON
 
 const SpacesDeleteBranchInputSchema = z.object({
 	repoId: z.string(),
@@ -779,7 +784,7 @@ export type SpacesDeleteBranchInput = z.infer<
 	typeof SpacesDeleteBranchInputSchema
 >;
 
-export type SpacesDeleteBranchResponse = unknown;
+export type SpacesDeleteBranchResponse = HfOpenResponse; // open HF JSON
 
 const SpacesCreateCommitInputSchema = z.object({
 	repoId: z.string(),
@@ -795,7 +800,7 @@ export type SpacesCreateCommitInput = z.infer<
 	typeof SpacesCreateCommitInputSchema
 >;
 
-export type SpacesCreateCommitResponse = unknown;
+export type SpacesCreateCommitResponse = HfOpenResponse; // open HF JSON
 
 const SpacesCreateTagInputSchema = z.object({
 	repoId: z.string(),
@@ -806,7 +811,7 @@ const SpacesCreateTagInputSchema = z.object({
 
 export type SpacesCreateTagInput = z.infer<typeof SpacesCreateTagInputSchema>;
 
-export type SpacesCreateTagResponse = unknown;
+export type SpacesCreateTagResponse = HfOpenResponse; // open HF JSON
 
 const SpacesDeleteTagInputSchema = z.object({
 	repoId: z.string(),
@@ -815,7 +820,7 @@ const SpacesDeleteTagInputSchema = z.object({
 
 export type SpacesDeleteTagInput = z.infer<typeof SpacesDeleteTagInputSchema>;
 
-export type SpacesDeleteTagResponse = unknown;
+export type SpacesDeleteTagResponse = HfOpenResponse; // open HF JSON
 
 const SpacesCheckUploadMethodInputSchema = z.object({
 	repoId: z.string(),
@@ -827,7 +832,7 @@ export type SpacesCheckUploadMethodInput = z.infer<
 	typeof SpacesCheckUploadMethodInputSchema
 >;
 
-export type SpacesCheckUploadMethodResponse = unknown;
+export type SpacesCheckUploadMethodResponse = HfOpenResponse; // open HF JSON
 
 const SpacesUpdateSettingsInputSchema = z.object({
 	repoId: z.string(),
@@ -841,7 +846,7 @@ export type SpacesUpdateSettingsInput = z.infer<
 	typeof SpacesUpdateSettingsInputSchema
 >;
 
-export type SpacesUpdateSettingsResponse = unknown;
+export type SpacesUpdateSettingsResponse = HfOpenResponse; // open HF JSON
 
 const ModelsGetTagsByTypeInputSchema = z.object({
 	type: z.string().optional(),
@@ -851,7 +856,7 @@ export type ModelsGetTagsByTypeInput = z.infer<
 	typeof ModelsGetTagsByTypeInputSchema
 >;
 
-export type ModelsGetTagsByTypeResponse = unknown;
+export type ModelsGetTagsByTypeResponse = HfOpenResponse; // open HF JSON
 
 const DatasetsGetTagsByTypeInputSchema = z.object({
 	type: z.string().optional(),
@@ -861,7 +866,7 @@ export type DatasetsGetTagsByTypeInput = z.infer<
 	typeof DatasetsGetTagsByTypeInputSchema
 >;
 
-export type DatasetsGetTagsByTypeResponse = unknown;
+export type DatasetsGetTagsByTypeResponse = HfOpenResponse; // open HF JSON
 
 const DatasetsGetLeaderboardInputSchema = z.object({
 	repoId: z.string().describe('namespace/repo'),
@@ -871,7 +876,7 @@ export type DatasetsGetLeaderboardInput = z.infer<
 	typeof DatasetsGetLeaderboardInputSchema
 >;
 
-export type DatasetsGetLeaderboardResponse = unknown;
+export type DatasetsGetLeaderboardResponse = HfOpenResponse; // open HF JSON
 
 const DatasetsSquashCommitsInputSchema = z.object({
 	repoId: z.string(),
@@ -883,7 +888,7 @@ export type DatasetsSquashCommitsInput = z.infer<
 	typeof DatasetsSquashCommitsInputSchema
 >;
 
-export type DatasetsSquashCommitsResponse = unknown;
+export type DatasetsSquashCommitsResponse = HfOpenResponse; // open HF JSON
 
 const DatasetsListAccessRequestsInputSchema = z.object({
 	repoId: z.string(),
@@ -894,7 +899,7 @@ export type DatasetsListAccessRequestsInput = z.infer<
 	typeof DatasetsListAccessRequestsInputSchema
 >;
 
-export type DatasetsListAccessRequestsResponse = unknown;
+export type DatasetsListAccessRequestsResponse = HfOpenResponse; // open HF JSON
 
 const DatasetsHandleAccessRequestInputSchema = z.object({
 	repoId: z.string(),
@@ -907,7 +912,7 @@ export type DatasetsHandleAccessRequestInput = z.infer<
 	typeof DatasetsHandleAccessRequestInputSchema
 >;
 
-export type DatasetsHandleAccessRequestResponse = unknown;
+export type DatasetsHandleAccessRequestResponse = HfOpenResponse; // open HF JSON
 
 const DatasetsCheckValidityInputSchema = z.object({
 	dataset: z.string(),
@@ -919,7 +924,7 @@ export type DatasetsCheckValidityInput = z.infer<
 	typeof DatasetsCheckValidityInputSchema
 >;
 
-export type DatasetsCheckValidityResponse = unknown;
+export type DatasetsCheckValidityResponse = HfOpenResponse; // open HF JSON
 
 const DatasetsGetCroissantInputSchema = z.object({
 	dataset: z.string(),
@@ -931,7 +936,7 @@ export type DatasetsGetCroissantInput = z.infer<
 	typeof DatasetsGetCroissantInputSchema
 >;
 
-export type DatasetsGetCroissantResponse = unknown;
+export type DatasetsGetCroissantResponse = HfOpenResponse; // open HF JSON
 
 const DatasetsGetInfoInputSchema = z.object({
 	dataset: z.string(),
@@ -941,7 +946,7 @@ const DatasetsGetInfoInputSchema = z.object({
 
 export type DatasetsGetInfoInput = z.infer<typeof DatasetsGetInfoInputSchema>;
 
-export type DatasetsGetInfoResponse = unknown;
+export type DatasetsGetInfoResponse = HfOpenResponse; // open HF JSON
 
 const DatasetsGetSizeInputSchema = z.object({
 	dataset: z.string(),
@@ -951,7 +956,7 @@ const DatasetsGetSizeInputSchema = z.object({
 
 export type DatasetsGetSizeInput = z.infer<typeof DatasetsGetSizeInputSchema>;
 
-export type DatasetsGetSizeResponse = unknown;
+export type DatasetsGetSizeResponse = HfOpenResponse; // open HF JSON
 
 const DatasetsListSplitsInputSchema = z.object({
 	dataset: z.string(),
@@ -963,7 +968,7 @@ export type DatasetsListSplitsInput = z.infer<
 	typeof DatasetsListSplitsInputSchema
 >;
 
-export type DatasetsListSplitsResponse = unknown;
+export type DatasetsListSplitsResponse = HfOpenResponse; // open HF JSON
 
 const DatasetsListParquetFilesInputSchema = z.object({
 	dataset: z.string(),
@@ -975,7 +980,7 @@ export type DatasetsListParquetFilesInput = z.infer<
 	typeof DatasetsListParquetFilesInputSchema
 >;
 
-export type DatasetsListParquetFilesResponse = unknown;
+export type DatasetsListParquetFilesResponse = HfOpenResponse; // open HF JSON
 
 const DatasetsGetFirstRowsInputSchema = z.object({
 	dataset: z.string(),
@@ -987,7 +992,7 @@ export type DatasetsGetFirstRowsInput = z.infer<
 	typeof DatasetsGetFirstRowsInputSchema
 >;
 
-export type DatasetsGetFirstRowsResponse = unknown;
+export type DatasetsGetFirstRowsResponse = HfOpenResponse; // open HF JSON
 
 const DatasetsGetRowsInputSchema = z.object({
 	dataset: z.string(),
@@ -999,7 +1004,7 @@ const DatasetsGetRowsInputSchema = z.object({
 
 export type DatasetsGetRowsInput = z.infer<typeof DatasetsGetRowsInputSchema>;
 
-export type DatasetsGetRowsResponse = unknown;
+export type DatasetsGetRowsResponse = HfOpenResponse; // open HF JSON
 
 const DatasetsGetStatisticsInputSchema = z.object({
 	dataset: z.string(),
@@ -1011,7 +1016,7 @@ export type DatasetsGetStatisticsInput = z.infer<
 	typeof DatasetsGetStatisticsInputSchema
 >;
 
-export type DatasetsGetStatisticsResponse = unknown;
+export type DatasetsGetStatisticsResponse = HfOpenResponse; // open HF JSON
 
 const DatasetsFilterRowsInputSchema = z.object({
 	dataset: z.string(),
@@ -1027,7 +1032,7 @@ export type DatasetsFilterRowsInput = z.infer<
 	typeof DatasetsFilterRowsInputSchema
 >;
 
-export type DatasetsFilterRowsResponse = unknown;
+export type DatasetsFilterRowsResponse = HfOpenResponse; // open HF JSON
 
 const DatasetsSearchInputSchema = z.object({
 	dataset: z.string(),
@@ -1040,7 +1045,7 @@ const DatasetsSearchInputSchema = z.object({
 
 export type DatasetsSearchInput = z.infer<typeof DatasetsSearchInputSchema>;
 
-export type DatasetsSearchResponse = unknown;
+export type DatasetsSearchResponse = HfOpenResponse; // open HF JSON
 
 const DatasetsCreateSqlConsoleEmbedInputSchema = z.object({
 	repoId: z.string(),
@@ -1054,7 +1059,7 @@ export type DatasetsCreateSqlConsoleEmbedInput = z.infer<
 	typeof DatasetsCreateSqlConsoleEmbedInputSchema
 >;
 
-export type DatasetsCreateSqlConsoleEmbedResponse = unknown;
+export type DatasetsCreateSqlConsoleEmbedResponse = HfOpenResponse; // open HF JSON
 
 const DatasetsUpdateSqlConsoleEmbedInputSchema = z.object({
 	repoId: z.string(),
@@ -1069,7 +1074,7 @@ export type DatasetsUpdateSqlConsoleEmbedInput = z.infer<
 	typeof DatasetsUpdateSqlConsoleEmbedInputSchema
 >;
 
-export type DatasetsUpdateSqlConsoleEmbedResponse = unknown;
+export type DatasetsUpdateSqlConsoleEmbedResponse = HfOpenResponse; // open HF JSON
 
 const SpacesListHardwareInputSchema = z.object({});
 
@@ -1077,7 +1082,7 @@ export type SpacesListHardwareInput = z.infer<
 	typeof SpacesListHardwareInputSchema
 >;
 
-export type SpacesListHardwareResponse = unknown;
+export type SpacesListHardwareResponse = HfOpenResponse; // open HF JSON
 
 const SpacesGetMetricsInputSchema = z.object({
 	repoId: z.string().describe('namespace/repo'),
@@ -1085,7 +1090,7 @@ const SpacesGetMetricsInputSchema = z.object({
 
 export type SpacesGetMetricsInput = z.infer<typeof SpacesGetMetricsInputSchema>;
 
-export type SpacesGetMetricsResponse = unknown;
+export type SpacesGetMetricsResponse = HfOpenResponse; // open HF JSON
 
 const SpacesGetEventsInputSchema = z.object({
 	repoId: z.string().describe('namespace/repo'),
@@ -1093,7 +1098,7 @@ const SpacesGetEventsInputSchema = z.object({
 
 export type SpacesGetEventsInput = z.infer<typeof SpacesGetEventsInputSchema>;
 
-export type SpacesGetEventsResponse = unknown;
+export type SpacesGetEventsResponse = HfOpenResponse; // open HF JSON
 
 const SpacesListLfsFilesInputSchema = z.object({
 	repoId: z.string(),
@@ -1105,7 +1110,7 @@ export type SpacesListLfsFilesInput = z.infer<
 	typeof SpacesListLfsFilesInputSchema
 >;
 
-export type SpacesListLfsFilesResponse = unknown;
+export type SpacesListLfsFilesResponse = HfOpenResponse; // open HF JSON
 
 const SpacesGetXetWriteTokenInputSchema = z.object({
 	repoId: z.string(),
@@ -1116,7 +1121,7 @@ export type SpacesGetXetWriteTokenInput = z.infer<
 	typeof SpacesGetXetWriteTokenInputSchema
 >;
 
-export type SpacesGetXetWriteTokenResponse = unknown;
+export type SpacesGetXetWriteTokenResponse = HfOpenResponse; // open HF JSON
 
 const SpacesSquashCommitsInputSchema = z.object({
 	repoId: z.string(),
@@ -1128,7 +1133,7 @@ export type SpacesSquashCommitsInput = z.infer<
 	typeof SpacesSquashCommitsInputSchema
 >;
 
-export type SpacesSquashCommitsResponse = unknown;
+export type SpacesSquashCommitsResponse = HfOpenResponse; // open HF JSON
 
 const SpacesCreateSecretInputSchema = z.object({
 	repoId: z.string(),
@@ -1141,7 +1146,7 @@ export type SpacesCreateSecretInput = z.infer<
 	typeof SpacesCreateSecretInputSchema
 >;
 
-export type SpacesCreateSecretResponse = unknown;
+export type SpacesCreateSecretResponse = HfOpenResponse; // open HF JSON
 
 const SpacesDeleteSecretInputSchema = z.object({
 	repoId: z.string(),
@@ -1152,7 +1157,7 @@ export type SpacesDeleteSecretInput = z.infer<
 	typeof SpacesDeleteSecretInputSchema
 >;
 
-export type SpacesDeleteSecretResponse = unknown;
+export type SpacesDeleteSecretResponse = HfOpenResponse; // open HF JSON
 
 const SpacesCreateVariableInputSchema = z.object({
 	repoId: z.string(),
@@ -1165,7 +1170,7 @@ export type SpacesCreateVariableInput = z.infer<
 	typeof SpacesCreateVariableInputSchema
 >;
 
-export type SpacesCreateVariableResponse = unknown;
+export type SpacesCreateVariableResponse = HfOpenResponse; // open HF JSON
 
 const SpacesDeleteVariableInputSchema = z.object({
 	repoId: z.string(),
@@ -1176,7 +1181,7 @@ export type SpacesDeleteVariableInput = z.infer<
 	typeof SpacesDeleteVariableInputSchema
 >;
 
-export type SpacesDeleteVariableResponse = unknown;
+export type SpacesDeleteVariableResponse = HfOpenResponse; // open HF JSON
 
 const CollectionsCreateInputSchema = z.object({
 	title: z.string(),
@@ -1189,7 +1194,7 @@ export type CollectionsCreateInput = z.infer<
 	typeof CollectionsCreateInputSchema
 >;
 
-export type CollectionsCreateResponse = unknown;
+export type CollectionsCreateResponse = HfOpenResponse; // open HF JSON
 
 const CollectionsListInputSchema = z.object({
 	owner: z.string().optional(),
@@ -1201,7 +1206,7 @@ const CollectionsListInputSchema = z.object({
 
 export type CollectionsListInput = z.infer<typeof CollectionsListInputSchema>;
 
-export type CollectionsListResponse = unknown;
+export type CollectionsListResponse = HfOpenResponse; // open HF JSON
 
 const DiscussionsListInputSchema = z.object({
 	repoType: z.enum(['model', 'dataset', 'space']),
@@ -1213,7 +1218,7 @@ const DiscussionsListInputSchema = z.object({
 
 export type DiscussionsListInput = z.infer<typeof DiscussionsListInputSchema>;
 
-export type DiscussionsListResponse = unknown;
+export type DiscussionsListResponse = HfOpenResponse; // open HF JSON
 
 const DiscussionsGetInputSchema = z.object({
 	repoType: z.enum(['model', 'dataset', 'space']),
@@ -1223,7 +1228,7 @@ const DiscussionsGetInputSchema = z.object({
 
 export type DiscussionsGetInput = z.infer<typeof DiscussionsGetInputSchema>;
 
-export type DiscussionsGetResponse = unknown;
+export type DiscussionsGetResponse = HfOpenResponse; // open HF JSON
 
 const DiscussionsCreateInputSchema = z.object({
 	repoType: z.enum(['model', 'dataset', 'space']),
@@ -1237,7 +1242,7 @@ export type DiscussionsCreateInput = z.infer<
 	typeof DiscussionsCreateInputSchema
 >;
 
-export type DiscussionsCreateResponse = unknown;
+export type DiscussionsCreateResponse = HfOpenResponse; // open HF JSON
 
 const DiscussionsCreateCommentInputSchema = z.object({
 	repoType: z.enum(['model', 'dataset', 'space']),
@@ -1250,7 +1255,7 @@ export type DiscussionsCreateCommentInput = z.infer<
 	typeof DiscussionsCreateCommentInputSchema
 >;
 
-export type DiscussionsCreateCommentResponse = unknown;
+export type DiscussionsCreateCommentResponse = HfOpenResponse; // open HF JSON
 
 const DiscussionsChangeStatusInputSchema = z.object({
 	repoType: z.enum(['model', 'dataset', 'space']),
@@ -1263,7 +1268,7 @@ export type DiscussionsChangeStatusInput = z.infer<
 	typeof DiscussionsChangeStatusInputSchema
 >;
 
-export type DiscussionsChangeStatusResponse = unknown;
+export type DiscussionsChangeStatusResponse = HfOpenResponse; // open HF JSON
 
 const DiscussionsUpdateTitleInputSchema = z.object({
 	repoType: z.enum(['model', 'dataset', 'space']),
@@ -1276,7 +1281,7 @@ export type DiscussionsUpdateTitleInput = z.infer<
 	typeof DiscussionsUpdateTitleInputSchema
 >;
 
-export type DiscussionsUpdateTitleResponse = unknown;
+export type DiscussionsUpdateTitleResponse = HfOpenResponse; // open HF JSON
 
 const DiscussionsPinInputSchema = z.object({
 	repoType: z.enum(['model', 'dataset', 'space']),
@@ -1287,7 +1292,7 @@ const DiscussionsPinInputSchema = z.object({
 
 export type DiscussionsPinInput = z.infer<typeof DiscussionsPinInputSchema>;
 
-export type DiscussionsPinResponse = unknown;
+export type DiscussionsPinResponse = HfOpenResponse; // open HF JSON
 
 const DiscussionsDeleteInputSchema = z.object({
 	repoType: z.enum(['model', 'dataset', 'space']),
@@ -1299,13 +1304,13 @@ export type DiscussionsDeleteInput = z.infer<
 	typeof DiscussionsDeleteInputSchema
 >;
 
-export type DiscussionsDeleteResponse = unknown;
+export type DiscussionsDeleteResponse = HfOpenResponse; // open HF JSON
 
 const PapersGetDailyInputSchema = z.object({ date: z.string().optional() });
 
 export type PapersGetDailyInput = z.infer<typeof PapersGetDailyInputSchema>;
 
-export type PapersGetDailyResponse = unknown;
+export type PapersGetDailyResponse = HfOpenResponse; // open HF JSON
 
 const PapersSearchInputSchema = z.object({
 	q: z.string(),
@@ -1314,7 +1319,7 @@ const PapersSearchInputSchema = z.object({
 
 export type PapersSearchInput = z.infer<typeof PapersSearchInputSchema>;
 
-export type PapersSearchResponse = unknown;
+export type PapersSearchResponse = HfOpenResponse; // open HF JSON
 
 const PapersCreateIndexInputSchema = z.object({ paperId: z.string() });
 
@@ -1322,7 +1327,7 @@ export type PapersCreateIndexInput = z.infer<
 	typeof PapersCreateIndexInputSchema
 >;
 
-export type PapersCreateIndexResponse = unknown;
+export type PapersCreateIndexResponse = HfOpenResponse; // open HF JSON
 
 const PapersClaimAuthorshipInputSchema = z.object({
 	paperId: z.string(),
@@ -1333,7 +1338,7 @@ export type PapersClaimAuthorshipInput = z.infer<
 	typeof PapersClaimAuthorshipInputSchema
 >;
 
-export type PapersClaimAuthorshipResponse = unknown;
+export type PapersClaimAuthorshipResponse = HfOpenResponse; // open HF JSON
 
 const PapersCreateCommentInputSchema = z.object({
 	paperId: z.string(),
@@ -1344,7 +1349,7 @@ export type PapersCreateCommentInput = z.infer<
 	typeof PapersCreateCommentInputSchema
 >;
 
-export type PapersCreateCommentResponse = unknown;
+export type PapersCreateCommentResponse = HfOpenResponse; // open HF JSON
 
 const PapersCreateCommentReplyInputSchema = z.object({
 	paperId: z.string(),
@@ -1356,13 +1361,13 @@ export type PapersCreateCommentReplyInput = z.infer<
 	typeof PapersCreateCommentReplyInputSchema
 >;
 
-export type PapersCreateCommentReplyResponse = unknown;
+export type PapersCreateCommentReplyResponse = HfOpenResponse; // open HF JSON
 
 const DocsListInputSchema = z.object({});
 
 export type DocsListInput = z.infer<typeof DocsListInputSchema>;
 
-export type DocsListResponse = unknown;
+export type DocsListResponse = HfOpenResponse; // open HF JSON
 
 const DocsSearchInputSchema = z.object({
 	q: z.string(),
@@ -1371,7 +1376,7 @@ const DocsSearchInputSchema = z.object({
 
 export type DocsSearchInput = z.infer<typeof DocsSearchInputSchema>;
 
-export type DocsSearchResponse = unknown;
+export type DocsSearchResponse = HfOpenResponse; // open HF JSON
 
 const ReposCreateInputSchema = z.object({
 	name: z.string(),
@@ -1385,7 +1390,7 @@ const ReposCreateInputSchema = z.object({
 
 export type ReposCreateInput = z.infer<typeof ReposCreateInputSchema>;
 
-export type ReposCreateResponse = unknown;
+export type ReposCreateResponse = HfOpenResponse; // open HF JSON
 
 const ReposListFilesInputSchema = z.object({
 	repoType: z.enum(['model', 'dataset', 'space']),
@@ -1400,7 +1405,7 @@ const ReposListFilesInputSchema = z.object({
 
 export type ReposListFilesInput = z.infer<typeof ReposListFilesInputSchema>;
 
-export type ReposListFilesResponse = unknown;
+export type ReposListFilesResponse = HfOpenResponse; // open HF JSON
 
 const ReposGetResolveInputSchema = z.object({
 	repoType: z.enum(['model', 'dataset', 'space']),
@@ -1412,7 +1417,7 @@ const ReposGetResolveInputSchema = z.object({
 
 export type ReposGetResolveInput = z.infer<typeof ReposGetResolveInputSchema>;
 
-export type ReposGetResolveResponse = unknown;
+export type ReposGetResolveResponse = HfOpenResponse; // open HF JSON
 
 const ReposRequestAccessInputSchema = z.object({
 	repoType: z.enum(['model', 'dataset', 'space']),
@@ -1424,25 +1429,25 @@ export type ReposRequestAccessInput = z.infer<
 	typeof ReposRequestAccessInputSchema
 >;
 
-export type ReposRequestAccessResponse = unknown;
+export type ReposRequestAccessResponse = HfOpenResponse; // open HF JSON
 
 const UsersGetAvatarInputSchema = z.object({ username: z.string() });
 
 export type UsersGetAvatarInput = z.infer<typeof UsersGetAvatarInputSchema>;
 
-export type UsersGetAvatarResponse = unknown;
+export type UsersGetAvatarResponse = HfOpenResponse; // open HF JSON
 
 const UsersGetOverviewInputSchema = z.object({ username: z.string() });
 
 export type UsersGetOverviewInput = z.infer<typeof UsersGetOverviewInputSchema>;
 
-export type UsersGetOverviewResponse = unknown;
+export type UsersGetOverviewResponse = HfOpenResponse; // open HF JSON
 
 const UsersGetSocialsInputSchema = z.object({ username: z.string() });
 
 export type UsersGetSocialsInput = z.infer<typeof UsersGetSocialsInputSchema>;
 
-export type UsersGetSocialsResponse = unknown;
+export type UsersGetSocialsResponse = HfOpenResponse; // open HF JSON
 
 const OrganizationsGetAvatarInputSchema = z.object({ name: z.string() });
 
@@ -1450,7 +1455,7 @@ export type OrganizationsGetAvatarInput = z.infer<
 	typeof OrganizationsGetAvatarInputSchema
 >;
 
-export type OrganizationsGetAvatarResponse = unknown;
+export type OrganizationsGetAvatarResponse = HfOpenResponse; // open HF JSON
 
 const OrganizationsGetMembersInputSchema = z.object({
 	name: z.string(),
@@ -1463,7 +1468,7 @@ export type OrganizationsGetMembersInput = z.infer<
 	typeof OrganizationsGetMembersInputSchema
 >;
 
-export type OrganizationsGetMembersResponse = unknown;
+export type OrganizationsGetMembersResponse = HfOpenResponse; // open HF JSON
 
 const OrganizationsGetSocialsInputSchema = z.object({ name: z.string() });
 
@@ -1471,7 +1476,7 @@ export type OrganizationsGetSocialsInput = z.infer<
 	typeof OrganizationsGetSocialsInputSchema
 >;
 
-export type OrganizationsGetSocialsResponse = unknown;
+export type OrganizationsGetSocialsResponse = HfOpenResponse; // open HF JSON
 
 const TrendingGetInputSchema = z.object({
 	type: z.enum(['model', 'dataset', 'space']).optional(),
@@ -1480,7 +1485,7 @@ const TrendingGetInputSchema = z.object({
 
 export type TrendingGetInput = z.infer<typeof TrendingGetInputSchema>;
 
-export type TrendingGetResponse = unknown;
+export type TrendingGetResponse = HfOpenResponse; // open HF JSON
 
 const InferenceChatCompletionInputSchema = z.object({
 	model: z.string(),
@@ -1495,7 +1500,7 @@ export type InferenceChatCompletionInput = z.infer<
 	typeof InferenceChatCompletionInputSchema
 >;
 
-export type InferenceChatCompletionResponse = unknown;
+export type InferenceChatCompletionResponse = HfOpenResponse; // open HF JSON
 
 const InferenceEmbeddingsInputSchema = z.object({
 	model: z.string(),
@@ -1507,13 +1512,13 @@ export type InferenceEmbeddingsInput = z.infer<
 	typeof InferenceEmbeddingsInputSchema
 >;
 
-export type InferenceEmbeddingsResponse = unknown;
+export type InferenceEmbeddingsResponse = HfOpenResponse; // open HF JSON
 
 const JobsGetHardwareInputSchema = z.object({});
 
 export type JobsGetHardwareInput = z.infer<typeof JobsGetHardwareInputSchema>;
 
-export type JobsGetHardwareResponse = unknown;
+export type JobsGetHardwareResponse = HfOpenResponse; // open HF JSON
 
 const EndpointsListInputSchema = z.object({
 	namespace: z.string(),
@@ -1522,7 +1527,7 @@ const EndpointsListInputSchema = z.object({
 
 export type EndpointsListInput = z.infer<typeof EndpointsListInputSchema>;
 
-export type EndpointsListResponse = unknown;
+export type EndpointsListResponse = HfOpenResponse; // open HF JSON
 
 const EndpointsListVendorsInputSchema = z.object({});
 
@@ -1530,7 +1535,7 @@ export type EndpointsListVendorsInput = z.infer<
 	typeof EndpointsListVendorsInputSchema
 >;
 
-export type EndpointsListVendorsResponse = unknown;
+export type EndpointsListVendorsResponse = HfOpenResponse; // open HF JSON
 
 const EndpointsDeleteNetworkCidrInputSchema = z.object({
 	namespace: z.string(),
@@ -1541,7 +1546,7 @@ export type EndpointsDeleteNetworkCidrInput = z.infer<
 	typeof EndpointsDeleteNetworkCidrInputSchema
 >;
 
-export type EndpointsDeleteNetworkCidrResponse = unknown;
+export type EndpointsDeleteNetworkCidrResponse = HfOpenResponse; // open HF JSON
 
 export type HuggingFaceEndpointInputs = {
 	getWhoami: GetWhoamiInput;

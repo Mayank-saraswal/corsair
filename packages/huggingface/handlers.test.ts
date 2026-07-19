@@ -13,9 +13,14 @@ import {
 
 const mockReq = jest.spyOn(Client, 'makeHuggingFaceRequest');
 // Unit tests only assert HTTP path construction — skip real event logging.
-jest.spyOn(CorsairCore, 'logEventFromContext').mockResolvedValue(null as never);
+// cast: mockResolvedValue expects Promise<string|null>; null is a valid stub return
+jest.spyOn(CorsairCore, 'logEventFromContext').mockResolvedValue(
+	// cast: jest mock return is null; production returns event id string | null
+	null as never,
+);
 
 function ctx(key = 'hf_test') {
+	// cast: partial stub satisfies HuggingFaceContext for path-only unit tests
 	return {
 		key,
 		db: {},
