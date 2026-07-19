@@ -155,10 +155,9 @@ async function rawFetch<T>(
 	const res = await fetch(url, {
 		method,
 		headers,
+		// HF DELETE secrets/variables/notifications may send a JSON body
 		body:
-			body !== undefined && method !== 'GET' && method !== 'DELETE'
-				? JSON.stringify(body)
-				: undefined,
+			body !== undefined && method !== 'GET' ? JSON.stringify(body) : undefined,
 		redirect: 'manual',
 	});
 	const text = await res.text();
