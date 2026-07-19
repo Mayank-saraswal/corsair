@@ -45,6 +45,7 @@ export const BaseProviders = [
 	'grafana',
 	'hackernews',
 	'hubspot',
+	'huggingface',
 	'insightoai',
 	'instagram',
 	'intercom',
@@ -123,6 +124,7 @@ export const ProviderDisplayNames = {
 	grafana: 'Grafana',
 	hackernews: 'Hacker News',
 	hubspot: 'HubSpot',
+	huggingface: 'Hugging Face',
 	insightoai: 'Insighto.ai',
 	instagram: 'Instagram',
 	intercom: 'Intercom',
@@ -138,6 +140,7 @@ export const ProviderDisplayNames = {
 	oura: 'Oura',
 	outlook: 'Outlook',
 	pagerduty: 'PagerDuty',
+	perplexityai: 'Perplexity AI',
 	posthog: 'PostHog',
 	razorpay: 'Razorpay',
 	reddit: 'Reddit',
@@ -165,7 +168,6 @@ export const ProviderDisplayNames = {
 	zendesk: 'Zendesk',
 	zohomail: 'Zoho Mail',
 	zoom: 'Zoom',
-	perplexityai: 'Perplexity AI',
 } as const satisfies Record<(typeof BaseProviders)[number], string>;
 
 export function formatProviderDisplayName(plugin: string): string {
@@ -208,6 +210,7 @@ export type AllProviders =
 	| 'grafana'
 	| 'hackernews'
 	| 'hubspot'
+	| 'huggingface'
 	| 'insightoai'
 	| 'instagram'
 	| 'intercom'
