@@ -210,13 +210,13 @@ export const getResolve: HuggingFaceEndpoints['modelsGetResolve'] = async (
 	input,
 ) => {
 	const { namespace, repo } = splitRepoId(input.repoId);
-	const prefix = '';
 	const headers = input.xetFileInfo
 		? { Accept: 'application/vnd.xet-fileinfo+json' }
 		: undefined;
+	// Model resolve is at /{namespace}/{repo}/resolve/... (no models/ prefix)
 	const response = await req(
 		ctx,
-		`/${prefix}${namespace}/${repo}/resolve/${encodeURIComponent(input.revision)}/${encodePath(input.path)}`,
+		`/${namespace}/${repo}/resolve/${encodeURIComponent(input.revision)}/${encodePath(input.path)}`,
 		{
 			method: 'GET',
 			headers,

@@ -1492,7 +1492,7 @@ const InferenceChatCompletionInputSchema = z.object({
 	messages: z.array(z.record(z.string(), z.unknown())),
 	temperature: z.number().optional(),
 	maxTokens: z.number().int().optional(),
-	stream: z.boolean().optional(),
+	// Streaming SSE is not supported by the JSON HTTP client; always non-stream.
 	extra: z.record(z.string(), z.unknown()).optional(),
 });
 
