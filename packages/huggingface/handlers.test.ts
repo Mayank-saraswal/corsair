@@ -10,18 +10,18 @@ import {
 	ReposEndpoints,
 	TrendingEndpoints,
 } from './endpoints';
+import type { HuggingFaceEndpoints } from './index';
 
 const mockReq = jest.spyOn(Client, 'makeHuggingFaceRequest');
-// Unit tests only assert HTTP path construction — skip real event logging.
-// cast: mockResolvedValue expects Promise<string|null>; null is a valid stub return
-jest.spyOn(CorsairCore, 'logEventFromContext').mockResolvedValue(
-	// cast: jest mock return is null; production returns event id string | null
-	null as never,
-);
 
-function ctx(key = 'hf_test') {
-	// cast: partial stub satisfies HuggingFaceContext for path-only unit tests
-	return {
+// Unit tests only assert HTTP path construction — skip real event logging.
+const logSpy = jest.spyOn(CorsairCore, 'logEventFromContext');
+logSpy.mockImplementation(async () => null);
+
+type HandlerCtx = Parameters<HuggingFaceEndpoints['getWhoami']>[0];
+
+function ctx(key = 'hf_test'): HandlerCtx {
+	const partial = {
 		key,
 		db: {},
 		authType: 'api_key' as const,
@@ -29,7 +29,10 @@ function ctx(key = 'hf_test') {
 			get_api_key: async () => key,
 			get_access_token: async () => key,
 		},
-	} as never;
+	};
+	// Handler unit tests only need key + keys; cast through unknown to avoid
+	// constructing a full CorsairPluginContext (database, hooks, etc.).
+	return partial as unknown as HandlerCtx;
 }
 
 function lastCall() {
@@ -41,6 +44,8 @@ function lastCall() {
 beforeEach(() => {
 	mockReq.mockReset();
 	mockReq.mockResolvedValue({ ok: true });
+	logSpy.mockClear();
+	logSpy.mockImplementation(async () => null);
 });
 
 describe('handler path construction', () => {
