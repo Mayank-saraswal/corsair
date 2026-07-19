@@ -1,3 +1,4 @@
+import * as CorsairCore from 'corsair/core';
 import * as Client from './client';
 import {
 	AccountEndpoints,
@@ -11,6 +12,8 @@ import {
 } from './endpoints';
 
 const mockReq = jest.spyOn(Client, 'makeHuggingFaceRequest');
+// Unit tests only assert HTTP path construction — skip real event logging.
+jest.spyOn(CorsairCore, 'logEventFromContext').mockResolvedValue(null as never);
 
 function ctx(key = 'hf_test') {
 	return {
