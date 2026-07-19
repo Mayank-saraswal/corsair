@@ -1,7 +1,7 @@
 import { logEventFromContext } from 'corsair/core';
 import { encodePath, HF_DATASETS_SERVER_BASE, splitRepoId } from '../client';
 import type { HuggingFaceEndpoints } from '../index';
-import { req, summarize } from './helpers';
+import { hubRepoTypeSegment, req, summarize } from './helpers';
 
 export const list: HuggingFaceEndpoints['datasetsList'] = async (
 	ctx,
@@ -730,7 +730,7 @@ export const createSqlConsoleEmbed: HuggingFaceEndpoints['datasetsCreateSqlConso
 		const { namespace, repo } = splitRepoId(input.repoId);
 		const response = await req(
 			ctx,
-			`/api/${input.repoType}/${namespace}/${repo}/sql-console/embed`,
+			`/api/${hubRepoTypeSegment(input.repoType)}/${namespace}/${repo}/sql-console/embed`,
 			{
 				method: 'POST',
 				body: { title: input.title, sql: input.sql, private: input.private },
@@ -750,7 +750,7 @@ export const updateSqlConsoleEmbed: HuggingFaceEndpoints['datasetsUpdateSqlConso
 		const { namespace, repo } = splitRepoId(input.repoId);
 		const response = await req(
 			ctx,
-			`/api/${input.repoType}/${namespace}/${repo}/sql-console/embed/${encodeURIComponent(input.embedId)}`,
+			`/api/${hubRepoTypeSegment(input.repoType)}/${namespace}/${repo}/sql-console/embed/${encodeURIComponent(input.embedId)}`,
 			{
 				method: 'PATCH',
 				body: { title: input.title, sql: input.sql, private: input.private },

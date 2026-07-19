@@ -13,6 +13,20 @@ export async function req<T>(
 }
 
 /**
+ * Hub REST paths use plural repo-type segments: models | datasets | spaces.
+ * Callers pass singular enum values (model | dataset | space).
+ */
+export function hubRepoTypeSegment(
+	repoType: 'model' | 'dataset' | 'space' | string,
+): string {
+	if (repoType === 'model' || repoType === 'dataset' || repoType === 'space') {
+		return `${repoType}s`;
+	}
+	// already plural or custom — pass through
+	return repoType;
+}
+
+/**
  * Redact sensitive fields before logEventFromContext (secrets, chat, commit ops).
  * `input` is unknown because handlers receive Zod-inferred objects of many shapes.
  */

@@ -1,7 +1,7 @@
 import { logEventFromContext } from 'corsair/core';
 import { splitRepoId } from '../client';
 import type { HuggingFaceEndpoints } from '../index';
-import { req, summarize } from './helpers';
+import { hubRepoTypeSegment, req, summarize } from './helpers';
 
 export const list: HuggingFaceEndpoints['discussionsList'] = async (
 	ctx,
@@ -10,7 +10,7 @@ export const list: HuggingFaceEndpoints['discussionsList'] = async (
 	const { namespace, repo } = splitRepoId(input.repoId);
 	const response = await req(
 		ctx,
-		`/api/${input.repoType}/${namespace}/${repo}/discussions`,
+		`/api/${hubRepoTypeSegment(input.repoType)}/${namespace}/${repo}/discussions`,
 		{
 			method: 'GET',
 			query: { status: input.status, type: input.type, p: input.p },
@@ -32,7 +32,7 @@ export const get: HuggingFaceEndpoints['discussionsGet'] = async (
 	const { namespace, repo } = splitRepoId(input.repoId);
 	const response = await req(
 		ctx,
-		`/api/${input.repoType}/${namespace}/${repo}/discussions/${input.discussionNum}`,
+		`/api/${hubRepoTypeSegment(input.repoType)}/${namespace}/${repo}/discussions/${input.discussionNum}`,
 		{ method: 'GET' },
 	);
 	await logEventFromContext(
@@ -51,7 +51,7 @@ export const create: HuggingFaceEndpoints['discussionsCreate'] = async (
 	const { namespace, repo } = splitRepoId(input.repoId);
 	const response = await req(
 		ctx,
-		`/api/${input.repoType}/${namespace}/${repo}/discussions`,
+		`/api/${hubRepoTypeSegment(input.repoType)}/${namespace}/${repo}/discussions`,
 		{
 			method: 'POST',
 			body: {
@@ -75,7 +75,7 @@ export const createComment: HuggingFaceEndpoints['discussionsCreateComment'] =
 		const { namespace, repo } = splitRepoId(input.repoId);
 		const response = await req(
 			ctx,
-			`/api/${input.repoType}/${namespace}/${repo}/discussions/${input.discussionNum}/comment`,
+			`/api/${hubRepoTypeSegment(input.repoType)}/${namespace}/${repo}/discussions/${input.discussionNum}/comment`,
 			{
 				method: 'POST',
 				body: { comment: input.comment },
@@ -95,7 +95,7 @@ export const changeStatus: HuggingFaceEndpoints['discussionsChangeStatus'] =
 		const { namespace, repo } = splitRepoId(input.repoId);
 		const response = await req(
 			ctx,
-			`/api/${input.repoType}/${namespace}/${repo}/discussions/${input.discussionNum}/status`,
+			`/api/${hubRepoTypeSegment(input.repoType)}/${namespace}/${repo}/discussions/${input.discussionNum}/status`,
 			{
 				method: 'POST',
 				body: { status: input.status },
@@ -115,7 +115,7 @@ export const updateTitle: HuggingFaceEndpoints['discussionsUpdateTitle'] =
 		const { namespace, repo } = splitRepoId(input.repoId);
 		const response = await req(
 			ctx,
-			`/api/${input.repoType}/${namespace}/${repo}/discussions/${input.discussionNum}/title`,
+			`/api/${hubRepoTypeSegment(input.repoType)}/${namespace}/${repo}/discussions/${input.discussionNum}/title`,
 			{
 				method: 'POST',
 				body: { title: input.title },
@@ -137,7 +137,7 @@ export const pin: HuggingFaceEndpoints['discussionsPin'] = async (
 	const { namespace, repo } = splitRepoId(input.repoId);
 	const response = await req(
 		ctx,
-		`/api/${input.repoType}/${namespace}/${repo}/discussions/${input.discussionNum}/pin`,
+		`/api/${hubRepoTypeSegment(input.repoType)}/${namespace}/${repo}/discussions/${input.discussionNum}/pin`,
 		{
 			method: 'POST',
 			body: { pinned: input.pinned },
@@ -157,7 +157,7 @@ export const deleteDiscussion: HuggingFaceEndpoints['discussionsDelete'] =
 		const { namespace, repo } = splitRepoId(input.repoId);
 		const response = await req(
 			ctx,
-			`/api/${input.repoType}/${namespace}/${repo}/discussions/${input.discussionNum}`,
+			`/api/${hubRepoTypeSegment(input.repoType)}/${namespace}/${repo}/discussions/${input.discussionNum}`,
 			{ method: 'DELETE' },
 		);
 		await logEventFromContext(

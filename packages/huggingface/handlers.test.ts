@@ -150,21 +150,21 @@ describe('handler path construction', () => {
 		expectPath('/api/settings/mcp');
 	});
 
-	it('discussions.list → /api/model/ns/repo/discussions', async () => {
+	it('discussions.list → /api/models/ns/repo/discussions', async () => {
 		await DiscussionsEndpoints.list(ctx(), {
 			repoType: 'model',
 			repoId: 'org/model',
 		});
-		expectPath('/api/model/org/model/discussions');
+		expectPath('/api/models/org/model/discussions');
 	});
 
-	it('discussions.get → /api/model/ns/repo/discussions/1', async () => {
+	it('discussions.get → /api/models/ns/repo/discussions/1', async () => {
 		await DiscussionsEndpoints.get(ctx(), {
 			repoType: 'model',
 			repoId: 'org/model',
 			discussionNum: 1,
 		});
-		expectPath('/api/model/org/model/discussions/1');
+		expectPath('/api/models/org/model/discussions/1');
 	});
 
 	it('papers.getDaily → /api/daily_papers', async () => {
