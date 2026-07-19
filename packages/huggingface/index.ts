@@ -1537,6 +1537,7 @@ export type ExternalHuggingFacePlugin<T extends HuggingFacePluginOptions> =
 	BaseHuggingFacePlugin<T>;
 
 export function huggingface<const T extends HuggingFacePluginOptions>(
+	// cast: empty default satisfies generic T when callers omit options
 	incomingOptions: HuggingFacePluginOptions &
 		T = {} as HuggingFacePluginOptions & T,
 ): ExternalHuggingFacePlugin<T> {

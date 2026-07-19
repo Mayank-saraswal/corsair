@@ -4,11 +4,19 @@ import {
 	AccountEndpoints,
 	CollectionsEndpoints,
 	DatasetsEndpoints,
+	DiscussionsEndpoints,
 	DocsEndpoints,
+	EndpointsEndpoints,
 	InferenceEndpoints,
+	JobsEndpoints,
 	ModelsEndpoints,
+	OrganizationsEndpoints,
+	PapersEndpoints,
 	ReposEndpoints,
+	SettingsEndpoints,
+	SpacesEndpoints,
 	TrendingEndpoints,
+	UsersEndpoints,
 } from './endpoints';
 import type { HuggingFaceEndpoints } from './index';
 
@@ -39,6 +47,10 @@ function lastCall() {
 	const call = mockReq.mock.calls.at(-1);
 	if (!call) throw new Error('makeHuggingFaceRequest was not called');
 	return call;
+}
+
+function expectPath(path: string) {
+	expect(lastCall()[0]).toBe(path);
 }
 
 beforeEach(() => {
@@ -72,7 +84,7 @@ describe('handler path construction', () => {
 
 	it('models.get → /api/models/ns/repo', async () => {
 		await ModelsEndpoints.get(ctx(), { repoId: 'gpt2/small' });
-		expect(lastCall()[0]).toBe('/api/models/gpt2/small');
+		expectPath('/api/models/gpt2/small');
 	});
 
 	it('datasets.checkValidity uses datasets-server', async () => {
@@ -90,17 +102,17 @@ describe('handler path construction', () => {
 
 	it('trending.get → /api/trending', async () => {
 		await TrendingEndpoints.get(ctx(), { type: 'model' });
-		expect(lastCall()[0]).toBe('/api/trending');
+		expectPath('/api/trending');
 	});
 
 	it('docs.search → /api/docs/search', async () => {
 		await DocsEndpoints.search(ctx(), { q: 'hub' });
-		expect(lastCall()[0]).toBe('/api/docs/search');
+		expectPath('/api/docs/search');
 	});
 
 	it('collections.list → /api/collections', async () => {
 		await CollectionsEndpoints.list(ctx(), { limit: 3 });
-		expect(lastCall()[0]).toBe('/api/collections');
+		expectPath('/api/collections');
 	});
 
 	it('inference.chatCompletion uses inference base', async () => {
@@ -118,6 +130,98 @@ describe('handler path construction', () => {
 			name: 'x',
 			type: 'model',
 		});
-		expect(lastCall()[0]).toBe('/api/repos/create');
+		expectPath('/api/repos/create');
+	});
+
+	// --- previously untested groups (Greptile / review-bot P1) ---
+
+	it('settings.listWebhooks → /api/settings/webhooks', async () => {
+		await SettingsEndpoints.listWebhooks(ctx(), {});
+		expectPath('/api/settings/webhooks');
+	});
+
+	it('settings.getBillingUsageV2 → /api/settings/billing/usage-v2', async () => {
+		await SettingsEndpoints.getBillingUsageV2(ctx(), {});
+		expectPath('/api/settings/billing/usage-v2');
+	});
+
+	it('settings.getMcp → /api/settings/mcp', async () => {
+		await SettingsEndpoints.getMcp(ctx(), {});
+		expectPath('/api/settings/mcp');
+	});
+
+	it('discussions.list → /api/model/ns/repo/discussions', async () => {
+		await DiscussionsEndpoints.list(ctx(), {
+			repoType: 'model',
+			repoId: 'org/model',
+		});
+		expectPath('/api/model/org/model/discussions');
+	});
+
+	it('discussions.get → /api/model/ns/repo/discussions/1', async () => {
+		await DiscussionsEndpoints.get(ctx(), {
+			repoType: 'model',
+			repoId: 'org/model',
+			discussionNum: 1,
+		});
+		expectPath('/api/model/org/model/discussions/1');
+	});
+
+	it('papers.getDaily → /api/daily_papers', async () => {
+		await PapersEndpoints.getDaily(ctx(), {});
+		expectPath('/api/daily_papers');
+	});
+
+	it('papers.search → /api/papers/search', async () => {
+		await PapersEndpoints.search(ctx(), { q: 'llm' });
+		expectPath('/api/papers/search');
+	});
+
+	it('spaces.listHardware → /api/spaces/hardware', async () => {
+		await SpacesEndpoints.listHardware(ctx(), {});
+		expectPath('/api/spaces/hardware');
+	});
+
+	it('spaces.createSecret → /api/spaces/ns/repo/secrets', async () => {
+		await SpacesEndpoints.createSecret(ctx(), {
+			repoId: 'user/space',
+			key: 'FOO',
+			value: 'bar',
+		});
+		expectPath('/api/spaces/user/space/secrets');
+		expect(lastCall()[2]).toEqual(expect.objectContaining({ method: 'POST' }));
+	});
+
+	it('spaces.getMetrics → /api/spaces/ns/repo/metrics', async () => {
+		await SpacesEndpoints.getMetrics(ctx(), { repoId: 'user/space' });
+		expectPath('/api/spaces/user/space/metrics');
+	});
+
+	it('users.getOverview → /api/users/u/overview', async () => {
+		await UsersEndpoints.getOverview(ctx(), { username: 'huggingface' });
+		expectPath('/api/users/huggingface/overview');
+	});
+
+	it('organizations.getMembers → /api/organizations/n/members', async () => {
+		await OrganizationsEndpoints.getMembers(ctx(), { name: 'huggingface' });
+		expectPath('/api/organizations/huggingface/members');
+	});
+
+	it('jobs.getHardware → /api/jobs/hardware', async () => {
+		await JobsEndpoints.getHardware(ctx(), {});
+		expectPath('/api/jobs/hardware');
+	});
+
+	it('endpoints.list uses inference endpoints base', async () => {
+		await EndpointsEndpoints.list(ctx(), { namespace: 'my-ns' });
+		const call = lastCall();
+		expect(call[0]).toBe('/v2/endpoint/my-ns');
+		expect(call[2]?.baseUrl).toBe(Client.HF_ENDPOINTS_BASE);
+	});
+
+	it('endpoints.listVendors → /v2/provider', async () => {
+		await EndpointsEndpoints.listVendors(ctx(), {});
+		expect(lastCall()[0]).toBe('/v2/provider');
+		expect(lastCall()[2]?.baseUrl).toBe(Client.HF_ENDPOINTS_BASE);
 	});
 });

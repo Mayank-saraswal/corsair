@@ -162,6 +162,7 @@ async function rawFetch<T>(
 		redirect: 'manual',
 	});
 	const text = await res.text();
+	// unknown: body may be JSON, plain text, or a synthetic redirect object
 	let parsed: unknown = text;
 	try {
 		parsed = text ? JSON.parse(text) : {};
