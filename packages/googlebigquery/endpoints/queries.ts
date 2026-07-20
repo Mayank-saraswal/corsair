@@ -18,10 +18,19 @@ export const query: GoogleBigqueryEndpoints['queriesQuery'] = async (
 		body,
 	});
 
+	// Never log SQL body / queryParameters — may contain PII or secrets
 	await logEventFromContext(
 		ctx,
 		'googlebigquery.queries.query',
-		{ ...input },
+		{
+			projectId,
+			dryRun: body.dryRun,
+			useLegacySql: body.useLegacySql,
+			timeoutMs: body.timeoutMs,
+			maxResults: body.maxResults,
+			location: body.location,
+			jobId: result.jobReference?.jobId,
+		},
 		'completed',
 	);
 	return result;
@@ -70,10 +79,16 @@ export const insertJob: GoogleBigqueryEndpoints['queriesInsertJob'] = async (
 		}
 	}
 
+	// Never log configuration (may embed SQL / params); identifiers only
 	await logEventFromContext(
 		ctx,
 		'googlebigquery.queries.insertJob',
-		{ ...input },
+		{
+			projectId,
+			jobId: jobReference?.jobId ?? result.jobReference?.jobId ?? result.id,
+			location: jobReference?.location,
+			hasConfiguration: Boolean(configuration),
+		},
 		'completed',
 	);
 	return result;
