@@ -151,6 +151,8 @@ const ModelsListInputSchema = z.object({
 	sort: z.string().optional(),
 	direction: z.union([z.literal(-1), z.literal(1), z.string()]).optional(),
 	limit: z.number().int().positive().max(1000).optional(),
+	// HF Hub page index (0-based); without p callers cannot walk past the first page
+	p: z.number().int().optional(),
 	full: z.boolean().optional(),
 	config: z.boolean().optional(),
 });
@@ -383,6 +385,8 @@ const DatasetsListInputSchema = z.object({
 	sort: z.string().optional(),
 	direction: z.union([z.literal(-1), z.literal(1), z.string()]).optional(),
 	limit: z.number().int().positive().max(1000).optional(),
+	// HF Hub page index (0-based); without p callers cannot walk past the first page
+	p: z.number().int().optional(),
 	full: z.boolean().optional(),
 	config: z.boolean().optional(),
 });
@@ -623,6 +627,8 @@ const SpacesListInputSchema = z.object({
 	sort: z.string().optional(),
 	direction: z.union([z.literal(-1), z.literal(1), z.string()]).optional(),
 	limit: z.number().int().positive().max(1000).optional(),
+	// HF Hub page index (0-based); without p callers cannot walk past the first page
+	p: z.number().int().optional(),
 	full: z.boolean().optional(),
 	config: z.boolean().optional(),
 });
@@ -1201,6 +1207,8 @@ const CollectionsListInputSchema = z.object({
 	item: z.string().optional(),
 	sort: z.string().optional(),
 	limit: z.number().int().optional(),
+	// HF Hub page index (0-based); without p callers cannot walk past the first page
+	p: z.number().int().optional(),
 	q: z.string().optional(),
 });
 
