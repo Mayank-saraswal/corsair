@@ -37,6 +37,7 @@ async function refreshAccessToken(
 		);
 	}
 
+	// OAuth token endpoint returns untyped JSON; cast to the known Google token fields
 	const json = (await response.json()) as {
 		access_token: string;
 		expires_in: number;
