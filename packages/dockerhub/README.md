@@ -74,6 +74,10 @@ $env:DOCKER_HUB_TOKEN = "dckr_pat_..."
 pnpm --filter @corsair-dev/dockerhub demo
 ```
 
+### R4 demo video
+
+[Loom — tests + live Hub demo](https://www.loom.com/share/8321f25934ef45a2bf0bfd23dbd1f7f0)
+
 ## Issue
 
 Implements [corsairdev/corsair#481](https://github.com/corsairdev/corsair/issues/481).
