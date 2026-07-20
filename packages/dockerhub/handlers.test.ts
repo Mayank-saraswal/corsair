@@ -79,6 +79,17 @@ describe('handler path construction', () => {
 		expect(lastCall()[2]?.method).toBe('POST');
 	});
 
+	it('repositories.delete', async () => {
+		await RepositoriesEndpoints.delete(ctx(), {
+			namespace: 'me',
+			name: 'app',
+		});
+		expectPath('/repositories/me/app/');
+		expect(lastCall()[2]).toEqual(
+			expect.objectContaining({ method: 'DELETE', okOn404: true }),
+		);
+	});
+
 	it('tags.list', async () => {
 		await TagsEndpoints.list(ctx(), {
 			namespace: 'library',
@@ -94,6 +105,15 @@ describe('handler path construction', () => {
 			tag: 'latest',
 		});
 		expectPath('/repositories/library/alpine/tags/latest');
+	});
+
+	it('tags.delete', async () => {
+		await TagsEndpoints.delete(ctx(), {
+			namespace: 'me',
+			name: 'app',
+			tag: 'v1',
+		});
+		expectPath('/repositories/me/app/tags/v1/');
 	});
 
 	it('images.list uses tags endpoint', async () => {
@@ -115,6 +135,33 @@ describe('handler path construction', () => {
 		expect((res as { count: number }).count).toBe(1);
 	});
 
+	it('images.get paginates until digest found', async () => {
+		mockReq
+			.mockResolvedValueOnce({
+				next: 'https://hub.docker.com/v2/.../tags?page=2',
+				results: [{ name: 'a', images: [{ digest: 'sha256:other' }] }],
+			})
+			.mockResolvedValueOnce({
+				next: null,
+				results: [
+					{
+						name: 'b',
+						images: [
+							{ digest: 'sha256:target', architecture: 'amd64', os: 'linux' },
+						],
+					},
+				],
+			});
+		const res = await ImagesEndpoints.get(ctx(), {
+			namespace: 'library',
+			name: 'alpine',
+			digest: 'sha256:target',
+		});
+		expect(mockReq).toHaveBeenCalledTimes(2);
+		expect((res as { digest: string }).digest).toBe('sha256:target');
+		expect((res as { foundOnPage: number }).foundOnPage).toBe(2);
+	});
+
 	it('images.delete bulk path', async () => {
 		await ImagesEndpoints.delete(ctx(), {
 			namespace: 'myuser',
@@ -128,9 +175,47 @@ describe('handler path construction', () => {
 		expectPath('/user/orgs/');
 	});
 
+	it('organizations.create', async () => {
+		await OrganizationsEndpoints.create(ctx(), { orgname: 'acme' });
+		// may call login first when username set — last call is create
+		const paths = mockReq.mock.calls.map((c) => c[0]);
+		expect(paths.some((p) => p === '/orgs/' || p === '/users/login/')).toBe(
+			true,
+		);
+	});
+
+	it('organizations.delete', async () => {
+		await OrganizationsEndpoints.delete(ctx(), { orgname: 'acme' });
+		expectPath('/orgs/acme/');
+	});
+
 	it('organizations.listMembers', async () => {
 		await OrganizationsEndpoints.listMembers(ctx(), { orgname: 'acme' });
 		expectPath('/orgs/acme/members/');
+	});
+
+	it('organizations.addMember', async () => {
+		await OrganizationsEndpoints.addMember(ctx(), {
+			orgname: 'acme',
+			member: 'u@example.com',
+		});
+		expectPath('/orgs/acme/members/');
+		expect(lastCall()[2]?.method).toBe('POST');
+	});
+
+	it('organizations.removeMember', async () => {
+		await OrganizationsEndpoints.removeMember(ctx(), {
+			orgname: 'acme',
+			username: 'bob',
+		});
+		expectPath('/orgs/acme/members/bob/');
+	});
+
+	it('organizations.listAccessTokens', async () => {
+		await OrganizationsEndpoints.listAccessTokens(ctx(), {
+			orgname: 'acme',
+		});
+		expectPath('/orgs/acme/access-tokens/');
 	});
 
 	it('teams.list uses groups', async () => {
@@ -146,12 +231,46 @@ describe('handler path construction', () => {
 		expectPath('/orgs/acme/groups/devs/');
 	});
 
+	it('teams.delete', async () => {
+		await TeamsEndpoints.delete(ctx(), {
+			orgname: 'acme',
+			teamname: 'devs',
+		});
+		expectPath('/orgs/acme/groups/devs/');
+	});
+
+	it('teams.listMembers', async () => {
+		await TeamsEndpoints.listMembers(ctx(), {
+			orgname: 'acme',
+			teamname: 'devs',
+		});
+		expectPath('/orgs/acme/groups/devs/members/');
+	});
+
+	it('teams.removeMember', async () => {
+		await TeamsEndpoints.removeMember(ctx(), {
+			orgname: 'acme',
+			teamname: 'devs',
+			username: 'bob',
+		});
+		expectPath('/orgs/acme/groups/devs/members/bob/');
+	});
+
 	it('webhooks.list', async () => {
 		await WebhooksEndpoints.list(ctx(), {
 			namespace: 'me',
 			name: 'app',
 		});
 		expectPath('/repositories/me/app/webhook_pipeline/');
+	});
+
+	it('webhooks.get', async () => {
+		await WebhooksEndpoints.get(ctx(), {
+			namespace: 'me',
+			name: 'app',
+			webhookId: 7,
+		});
+		expectPath('/repositories/me/app/webhook_pipeline/7/');
 	});
 
 	it('webhooks.create two-step', async () => {
@@ -171,5 +290,33 @@ describe('handler path construction', () => {
 		expect(mockReq.mock.calls[1]?.[0]).toBe(
 			'/repositories/me/app/webhook_pipeline/7/hooks/',
 		);
+	});
+
+	it('webhooks.create rolls back if hook attach fails', async () => {
+		mockReq
+			.mockResolvedValueOnce({ id: 7, name: 'deploy' })
+			.mockRejectedValueOnce(new Error('hook failed'))
+			.mockResolvedValueOnce({ success: true });
+		await expect(
+			WebhooksEndpoints.create(ctx(), {
+				namespace: 'me',
+				name: 'app',
+				webhookName: 'deploy',
+				hookUrl: 'https://example.com/h',
+			}),
+		).rejects.toThrow('hook failed');
+		expect(mockReq.mock.calls[2]?.[0]).toBe(
+			'/repositories/me/app/webhook_pipeline/7/',
+		);
+		expect(mockReq.mock.calls[2]?.[2]?.method).toBe('DELETE');
+	});
+
+	it('webhooks.delete', async () => {
+		await WebhooksEndpoints.delete(ctx(), {
+			namespace: 'me',
+			name: 'app',
+			webhookId: 7,
+		});
+		expectPath('/repositories/me/app/webhook_pipeline/7/');
 	});
 });

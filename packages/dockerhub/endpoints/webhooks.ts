@@ -34,6 +34,7 @@ export const get: DockerHubEndpoints['webhooksGet'] = async (ctx, input) => {
 
 /**
  * Two-step create: register webhook name, then attach hook URL.
+ * If the hook-URL step fails, delete the orphaned webhook pipeline entry.
  */
 export const create: DockerHubEndpoints['webhooksCreate'] = async (
 	ctx,
@@ -58,22 +59,41 @@ export const create: DockerHubEndpoints['webhooksCreate'] = async (
 		);
 		return created;
 	}
-	const withHook = await req(
-		ctx,
-		`${base}${encodeURIComponent(String(id))}/hooks/`,
-		{
-			method: 'POST',
-			body: { hook_url: input.hookUrl },
-		},
-	);
-	const response = { webhook: created, hook: withHook };
-	await logEventFromContext(
-		ctx,
-		'dockerhub.webhooks.create',
-		summarize(input),
-		'completed',
-	);
-	return response;
+	try {
+		const withHook = await req(
+			ctx,
+			`${base}${encodeURIComponent(String(id))}/hooks/`,
+			{
+				method: 'POST',
+				body: { hook_url: input.hookUrl },
+			},
+		);
+		const response = { webhook: created, hook: withHook };
+		await logEventFromContext(
+			ctx,
+			'dockerhub.webhooks.create',
+			summarize(input),
+			'completed',
+		);
+		return response;
+	} catch (error) {
+		// Rollback orphaned pipeline if attaching the hook URL fails
+		try {
+			await req(ctx, `${base}${encodeURIComponent(String(id))}/`, {
+				method: 'DELETE',
+				okOn404: true,
+			});
+		} catch {
+			// best-effort cleanup — surface the original hook error
+		}
+		await logEventFromContext(
+			ctx,
+			'dockerhub.webhooks.create',
+			summarize(input),
+			'failed',
+		);
+		throw error;
+	}
 };
 
 export const deleteWebhook: DockerHubEndpoints['webhooksDelete'] = async (

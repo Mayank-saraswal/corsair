@@ -23,8 +23,11 @@ type TagsPage = {
 	results?: TagResult[];
 };
 
+const MAX_TAG_PAGES = 50;
+
 /**
  * Collect platform-specific image variants from tag pages (dedupe by digest).
+ * Uses the requested page/pageSize for a single tags page (list view).
  */
 export const list: DockerHubEndpoints['imagesList'] = async (ctx, input) => {
 	const page = await req<TagsPage>(
@@ -68,40 +71,56 @@ export const list: DockerHubEndpoints['imagesList'] = async (ctx, input) => {
 	return response;
 };
 
+/**
+ * Find a platform image by digest by scanning tag pages until found.
+ * Caps at MAX_TAG_PAGES to avoid unbounded API walks.
+ */
 export const get: DockerHubEndpoints['imagesGet'] = async (ctx, input) => {
-	const page = await req<TagsPage>(
-		ctx,
-		`/repositories/${encodeURIComponent(input.namespace)}/${encodeURIComponent(input.name)}/tags`,
-		{ method: 'GET', query: pageQuery(input) },
-	);
 	const digest = input.digest.startsWith('sha256:')
 		? input.digest
 		: `sha256:${input.digest}`;
-	for (const tag of page.results ?? []) {
-		for (const img of tag.images ?? []) {
-			if (img.digest === digest || img.digest === input.digest) {
-				const response = {
-					digest: img.digest,
-					architecture: img.architecture,
-					os: img.os,
-					size: img.size,
-					status: img.status,
-					tag: tag.name,
-					namespace: input.namespace,
-					repository: input.name,
-					last_pulled: img.last_pulled,
-					last_pushed: img.last_pushed,
-				};
-				await logEventFromContext(
-					ctx,
-					'dockerhub.images.get',
-					summarize(input),
-					'completed',
-				);
-				return response;
+	const pageSize = input.pageSize ?? 100;
+	let pageNum = input.page ?? 1;
+
+	for (let i = 0; i < MAX_TAG_PAGES; i++) {
+		const page = await req<TagsPage>(
+			ctx,
+			`/repositories/${encodeURIComponent(input.namespace)}/${encodeURIComponent(input.name)}/tags`,
+			{
+				method: 'GET',
+				query: { page: pageNum, page_size: pageSize },
+			},
+		);
+		for (const tag of page.results ?? []) {
+			for (const img of tag.images ?? []) {
+				if (img.digest === digest || img.digest === input.digest) {
+					const response = {
+						digest: img.digest,
+						architecture: img.architecture,
+						os: img.os,
+						size: img.size,
+						status: img.status,
+						tag: tag.name,
+						namespace: input.namespace,
+						repository: input.name,
+						last_pulled: img.last_pulled,
+						last_pushed: img.last_pushed,
+						foundOnPage: pageNum,
+					};
+					await logEventFromContext(
+						ctx,
+						'dockerhub.images.get',
+						summarize(input),
+						'completed',
+					);
+					return response;
+				}
 			}
 		}
+		if (!page.next) break;
+		pageNum += 1;
 	}
+
 	await logEventFromContext(
 		ctx,
 		'dockerhub.images.get',
@@ -109,7 +128,7 @@ export const get: DockerHubEndpoints['imagesGet'] = async (ctx, input) => {
 		'failed',
 	);
 	throw new Error(
-		`Image digest not found on current tags page: ${input.digest}`,
+		`Image digest not found after scanning tag pages: ${input.digest}`,
 	);
 };
 
