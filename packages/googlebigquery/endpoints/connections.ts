@@ -57,10 +57,11 @@ export const create: GoogleBigqueryEndpoints['connectionsCreate'] = async (
 		body,
 	});
 
+	// Do not log body — may contain cloudSql/aws/azure credentials
 	await logEventFromContext(
 		ctx,
 		'googlebigquery.connections.create',
-		{ ...input },
+		{ projectId, location, connectionId },
 		'completed',
 	);
 	return result;
@@ -84,10 +85,11 @@ export const update: GoogleBigqueryEndpoints['connectionsUpdate'] = async (
 		},
 	);
 
+	// Do not log connection payload — may contain cloudSql/aws/azure credentials
 	await logEventFromContext(
 		ctx,
 		'googlebigquery.connections.update',
-		{ ...input },
+		{ projectId, location, connectionId, updateMask },
 		'completed',
 	);
 	return result;
