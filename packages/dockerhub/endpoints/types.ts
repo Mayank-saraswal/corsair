@@ -87,7 +87,8 @@ const ImagesGetInputSchema = z.object({
 	namespace: z.string(),
 	name: z.string(),
 	digest: z.string(),
-	...pageFields,
+	// pageSize only — imagesGet is a digest scan, not a paged list (page would skip early tags)
+	pageSize: z.number().int().positive().max(100).optional(),
 });
 export type ImagesGetInput = z.infer<typeof ImagesGetInputSchema>;
 export type ImagesGetResponse = DhOpenResponse; // open Hub JSON

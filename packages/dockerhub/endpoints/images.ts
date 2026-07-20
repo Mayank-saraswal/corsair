@@ -80,7 +80,8 @@ export const get: DockerHubEndpoints['imagesGet'] = async (ctx, input) => {
 		? input.digest
 		: `sha256:${input.digest}`;
 	const pageSize = input.pageSize ?? 100;
-	let pageNum = input.page ?? 1;
+	// Always scan from page 1; pageSize only controls internal batch size
+	let pageNum = 1;
 
 	for (let i = 0; i < MAX_TAG_PAGES; i++) {
 		const page = await req<TagsPage>(
