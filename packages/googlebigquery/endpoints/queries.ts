@@ -144,10 +144,17 @@ export const insertJobWithUpload: GoogleBigqueryEndpoints['queriesInsertJobWithU
 			}
 		}
 
+		// Never log configuration (may embed SQL / params); identifiers only
 		await logEventFromContext(
 			ctx,
 			'googlebigquery.queries.insertJobWithUpload',
-			{ projectId, jobReference, configuration, fileName: input.fileName },
+			{
+				projectId,
+				jobId: jobReference?.jobId ?? result.jobReference?.jobId ?? result.id,
+				location: jobReference?.location,
+				hasConfiguration: Boolean(configuration),
+				fileName: input.fileName,
+			},
 			'completed',
 		);
 		return result;
