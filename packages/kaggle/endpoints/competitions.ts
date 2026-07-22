@@ -123,10 +123,14 @@ export const generateSubmissionUrl: KaggleEndpoints['competitionsGenerateSubmiss
 			KaggleEndpointOutputs['competitionsGenerateSubmissionUrl']
 		>(
 			// Kaggle v1: POST /competitions/submissions/url/{contentLength}/{lastModifiedDateUtc}
-			// Competition id is not a path segment here (used only when submit is called later).
+			// Competition slug belongs in the body as competitionName (not a path segment).
 			`/competitions/submissions/url/${input.contentLength}/${input.lastModifiedDateUtc}`,
 			ctx.key,
-			{ method: 'POST', body: {}, username: ctx.options.username },
+			{
+				method: 'POST',
+				body: { competitionName: input.id },
+				username: ctx.options.username,
+			},
 		);
 
 		await logEventFromContext(
