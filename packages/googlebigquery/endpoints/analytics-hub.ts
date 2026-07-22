@@ -111,6 +111,7 @@ export const listOrganizationDataExchanges: GoogleBigqueryEndpoints['analyticsHu
 		return result;
 	};
 
+// Query Templates are only available on Analytics Hub v1beta1
 export const listQueryTemplates: GoogleBigqueryEndpoints['analyticsHubListQueryTemplates'] =
 	async (ctx, input) => {
 		const { projectId, location, dataExchangeId, ...query } = input;
@@ -119,7 +120,7 @@ export const listQueryTemplates: GoogleBigqueryEndpoints['analyticsHubListQueryT
 		>(
 			`/projects/${projectId}/locations/${location}/dataExchanges/${dataExchangeId}/queryTemplates`,
 			ctx,
-			{ method: 'GET', host: 'analyticsHub', query },
+			{ method: 'GET', host: 'analyticsHubBeta', query },
 		);
 
 		await logEventFromContext(
@@ -131,6 +132,7 @@ export const listQueryTemplates: GoogleBigqueryEndpoints['analyticsHubListQueryT
 		return result;
 	};
 
+// Query Templates are only available on Analytics Hub v1beta1
 export const createQueryTemplate: GoogleBigqueryEndpoints['analyticsHubCreateQueryTemplate'] =
 	async (ctx, input) => {
 		const { projectId, location, dataExchangeId, ...body } = input;
@@ -139,7 +141,7 @@ export const createQueryTemplate: GoogleBigqueryEndpoints['analyticsHubCreateQue
 		>(
 			`/projects/${projectId}/locations/${location}/dataExchanges/${dataExchangeId}/queryTemplates`,
 			ctx,
-			{ method: 'POST', host: 'analyticsHub', body },
+			{ method: 'POST', host: 'analyticsHubBeta', body },
 		);
 
 		await logEventFromContext(
