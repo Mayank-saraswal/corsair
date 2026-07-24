@@ -45,6 +45,7 @@ export const BaseProviders = [
 	'googlecalendar',
 	'googledocs',
 	'googledrive',
+	'googlemaps',
 	'googlemeet',
 	'googlesheets',
 	'grafana',
@@ -93,8 +94,8 @@ export const BaseProviders = [
 	'twitterapiio',
 	'typeform',
 	'vapi',
-	'whatsapp',
 	'vercel',
+	'whatsapp',
 	'xquik',
 	'youtube',
 	'zendesk',
@@ -135,6 +136,7 @@ export const ProviderDisplayNames = {
 	googlecalendar: 'Google Calendar',
 	googledocs: 'Google Docs',
 	googledrive: 'Google Drive',
+	googlemaps: 'Google Maps',
 	googlemeet: 'Google Meet',
 	googlesheets: 'Google Sheets',
 	grafana: 'Grafana',
@@ -183,8 +185,8 @@ export const ProviderDisplayNames = {
 	twitterapiio: 'Twitter API IO',
 	typeform: 'Typeform',
 	vapi: 'Vapi',
-	whatsapp: 'WhatsApp',
 	vercel: 'Vercel',
+	whatsapp: 'WhatsApp',
 	xquik: 'XQuik',
 	youtube: 'YouTube',
 	zendesk: 'Zendesk',
@@ -232,6 +234,7 @@ export type AllProviders =
 	| 'googlecalendar'
 	| 'googledocs'
 	| 'googledrive'
+	| 'googlemaps'
 	| 'googlemeet'
 	| 'googlesheets'
 	| 'grafana'
@@ -280,8 +283,8 @@ export type AllProviders =
 	| 'twitterapiio'
 	| 'typeform'
 	| 'vapi'
-	| 'whatsapp'
 	| 'vercel'
+	| 'whatsapp'
 	| 'xquik'
 	| 'youtube'
 	| 'zendesk'
