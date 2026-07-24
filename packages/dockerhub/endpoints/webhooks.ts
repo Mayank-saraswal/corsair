@@ -50,14 +50,17 @@ export const create: DockerHubEndpoints['webhooksCreate'] = async (
 		},
 	);
 	const id = created.id;
+	// Without an id we cannot attach hookUrl — do not log a false "completed"
 	if (id === undefined || id === null) {
 		await logEventFromContext(
 			ctx,
 			'dockerhub.webhooks.create',
 			summarize(input),
-			'completed',
+			'failed',
 		);
-		return created;
+		throw new Error(
+			'Docker Hub webhook pipeline create returned no id; hookUrl was not registered',
+		);
 	}
 	try {
 		const withHook = await req(
