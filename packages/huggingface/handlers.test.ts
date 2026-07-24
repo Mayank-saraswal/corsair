@@ -87,6 +87,23 @@ describe('handler path construction', () => {
 		expectPath('/api/models/gpt2/small');
 	});
 
+	it('models.createTag body uses tag field (not key)', async () => {
+		await ModelsEndpoints.createTag(ctx(), {
+			repoId: 'gpt2/small',
+			revision: 'main',
+			tag: 'v1.0',
+			message: 'release',
+		});
+		expect(mockReq).toHaveBeenCalledWith(
+			'/api/models/gpt2/small/tag/main',
+			'hf_test',
+			expect.objectContaining({
+				method: 'POST',
+				body: { tag: 'v1.0', message: 'release' },
+			}),
+		);
+	});
+
 	it('datasets.checkValidity uses datasets-server', async () => {
 		await DatasetsEndpoints.checkValidity(ctx(), {
 			dataset: 'nyu-mll/glue',

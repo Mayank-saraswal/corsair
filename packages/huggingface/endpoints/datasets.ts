@@ -335,7 +335,8 @@ export const createTag: HuggingFaceEndpoints['datasetsCreateTag'] = async (
 		`/api/datasets/${namespace}/${repo}/tag/${encodeURIComponent(input.revision)}`,
 		{
 			method: 'POST',
-			body: { key: input.tag, message: input.message },
+			// HF Hub create-tag body uses `tag` (not `key`) for the tag name
+			body: { tag: input.tag, message: input.message },
 		},
 	);
 	await logEventFromContext(
