@@ -144,10 +144,17 @@ export const createQueryTemplate: GoogleBigqueryEndpoints['analyticsHubCreateQue
 			{ method: 'POST', host: 'analyticsHubBeta', body },
 		);
 
+		// Never log SQL `query` body — same treatment as queriesQuery
 		await logEventFromContext(
 			ctx,
 			'googlebigquery.analyticsHub.createQueryTemplate',
-			{ ...input },
+			{
+				projectId,
+				location,
+				dataExchangeId,
+				displayName: input.displayName,
+				hasQuery: Boolean(input.query),
+			},
 			'completed',
 		);
 		return result;
