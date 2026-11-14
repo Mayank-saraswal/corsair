@@ -2,6 +2,7 @@ import type { OpenAPIConfig } from 'corsair/http';
 import { ApiError, request } from 'corsair/http';
 import { THINKIFIC_API_BASE, THINKIFIC_RATE_LIMIT_CONFIG } from './client';
 import { errorHandlers } from './error-handlers';
+import { thinkific } from './index';
 
 function apiError(status: number): ApiError {
 	return new ApiError(
@@ -103,5 +104,31 @@ describe('Thinkific error handling', () => {
 
 	it('keeps the catch-all handler last', () => {
 		expect(Object.keys(errorHandlers).at(-1)).toBe('DEFAULT');
+	});
+
+	it('allows callers to override built-in handlers while preserving DEFAULT', async () => {
+		const callerAuthHandler = {
+			match: (error: Error) => error.message === 'caller-specific auth failure',
+			handler: async () => ({ maxRetries: 2 }),
+		};
+		const plugin = thinkific({
+			errorHandlers: { AUTH_ERROR: callerAuthHandler },
+		});
+		const handlers = plugin.errorHandlers;
+		if (!handlers) throw new Error('Expected Thinkific error handlers');
+		const authHandler = handlers.AUTH_ERROR;
+		if (!authHandler) throw new Error('Expected the caller auth handler');
+
+		expect(authHandler).toBe(callerAuthHandler);
+		expect(Object.keys(handlers).at(-1)).toBe('DEFAULT');
+		const error = new Error('caller-specific auth failure');
+		await expect(
+			authHandler.handler(error, {
+				pluginId: 'thinkific',
+				operation: 'users.list',
+				input: {},
+				originalError: error,
+			}),
+		).resolves.toEqual({ maxRetries: 2 });
 	});
 });

@@ -419,12 +419,6 @@ const ThinkificPromotionResponseSchema = z
 		duration: z.number().optional(),
 	})
 	.strict();
-const ThinkificGetProductPublishResponseSchema = z
-	.object({
-		items: z.array(ThinkificPromotionResponseSchema),
-		meta: ThinkificMetaSchema,
-	})
-	.strict();
 const ThinkificProductPublishRequestSchema = z
 	.object({
 		product_id: z.number(),
@@ -435,6 +429,13 @@ const ThinkificProductPublishRequestSchema = z
 		completed_at: z.string().optional(),
 		created_at: z.string().optional(),
 		updated_at: z.string().optional(),
+	})
+	.strict();
+// The v1 list component points to PromotionResponse, but the operation and detail route return ProductPublishRequest records.
+const ThinkificGetProductPublishResponseSchema = z
+	.object({
+		items: z.array(ThinkificProductPublishRequestSchema),
+		meta: ThinkificMetaSchema,
 	})
 	.strict();
 const ThinkificProductPublishRequestBodySchema = z

@@ -19,7 +19,7 @@ Create an Enrollment in a Bundle of Courses
 **Risk:** `write`
 
 ```ts
-await corsair.thinkific.api.bundles.createEnrollment({ path: {"id":1} });
+await corsair.thinkific.api.bundles.createEnrollment({ path: {"id":1}, body: {"user_id":1} });
 ```
 
 **Input**
@@ -116,7 +116,7 @@ List Courses by bundle ID
 **Risk:** `read`
 
 ```ts
-await corsair.thinkific.api.bundles.listCourses({ path: {"id":1} });
+await corsair.thinkific.api.bundles.listCourses({ path: {"id":1}, query: {"page":1,"limit":25} });
 ```
 
 **Input**
@@ -214,7 +214,7 @@ List a enrollments in a bundle
 **Risk:** `read`
 
 ```ts
-await corsair.thinkific.api.bundles.listEnrollments({ path: {"id":1} });
+await corsair.thinkific.api.bundles.listEnrollments({ path: {"id":1}, query: {"page":1,"limit":25} });
 ```
 
 **Input**
@@ -350,7 +350,7 @@ Update Enrollments in a Bundle
 **Risk:** `write`
 
 ```ts
-await corsair.thinkific.api.bundles.updateEnrollments({ path: {"id":1} });
+await corsair.thinkific.api.bundles.updateEnrollments({ path: {"id":1}, body: {"user_id":1} });
 ```
 
 **Input**
@@ -400,7 +400,7 @@ Create a new Category
 **Risk:** `write`
 
 ```ts
-await corsair.thinkific.api.categories.create({  });
+await corsair.thinkific.api.categories.create({ body: {"description":"sample","name":"sample","slug":"sample"} });
 ```
 
 **Input**
@@ -496,7 +496,7 @@ Get Collections
 **Risk:** `read`
 
 ```ts
-await corsair.thinkific.api.categories.list({  });
+await corsair.thinkific.api.categories.list({ query: {"page":1,"limit":25} });
 ```
 
 **Input**
@@ -572,7 +572,7 @@ Get products by Collections id
 **Risk:** `read`
 
 ```ts
-await corsair.thinkific.api.categories.listProducts({ path: {"id":1} });
+await corsair.thinkific.api.categories.listProducts({ path: {"id":1}, query: {"page":1,"limit":25} });
 ```
 
 **Input**
@@ -725,7 +725,7 @@ Update collection by ID
 **Risk:** `write`
 
 ```ts
-await corsair.thinkific.api.categories.update({ path: {"id":1} });
+await corsair.thinkific.api.categories.update({ path: {"id":1}, body: {"description":"sample","name":"sample","slug":"sample"} });
 ```
 
 **Input**
@@ -915,7 +915,7 @@ Get Contents by Chapter id
 **Risk:** `read`
 
 ```ts
-await corsair.thinkific.api.chapters.listContents({ path: {"id":1} });
+await corsair.thinkific.api.chapters.listContents({ path: {"id":1}, query: {"page":1,"limit":25} });
 ```
 
 **Input**
@@ -1052,7 +1052,7 @@ Bulk Create Coupons
 **Risk:** `write`
 
 ```ts
-await corsair.thinkific.api.coupons.bulkCreate({ query: {"promotion_id":1}, body: {} });
+await corsair.thinkific.api.coupons.bulkCreate({ query: {"promotion_id":1}, body: {"bulk_quantity_per_coupon":1,"bulk_coupon_code_length":8,"bulk_quantity":2} });
 ```
 
 **Input**
@@ -1228,7 +1228,7 @@ Get Coupons
 **Risk:** `read`
 
 ```ts
-await corsair.thinkific.api.coupons.list({ query: {"promotion_id":1} });
+await corsair.thinkific.api.coupons.list({ query: {"promotion_id":1,"page":1,"limit":25} });
 ```
 
 **Input**
@@ -1502,7 +1502,7 @@ Get Course Reviews
 **Risk:** `read`
 
 ```ts
-await corsair.thinkific.api.courseReviews.list({ query: {"course_id":1} });
+await corsair.thinkific.api.courseReviews.list({ query: {"course_id":1,"page":1,"limit":25} });
 ```
 
 **Input**
@@ -1642,7 +1642,7 @@ Get Courses
 **Risk:** `read`
 
 ```ts
-await corsair.thinkific.api.courses.list({  });
+await corsair.thinkific.api.courses.list({ query: {"page":1,"limit":25} });
 ```
 
 **Input**
@@ -1730,7 +1730,7 @@ Get Chapters by Course ID
 **Risk:** `read`
 
 ```ts
-await corsair.thinkific.api.courses.listChapters({ path: {"id":1} });
+await corsair.thinkific.api.courses.listChapters({ path: {"id":1}, query: {"page":1,"limit":25} });
 ```
 
 **Input**
@@ -1817,7 +1817,7 @@ Get Custom profile field definition
 **Risk:** `read`
 
 ```ts
-await corsair.thinkific.api.customProfileFields.list({  });
+await corsair.thinkific.api.customProfileFields.list({ query: {"page":1,"limit":25} });
 ```
 
 **Input**
@@ -1892,7 +1892,7 @@ Create enrollment
 **Risk:** `write`
 
 ```ts
-await corsair.thinkific.api.enrollments.create({ body: {} });
+await corsair.thinkific.api.enrollments.create({ body: {"course_id":1,"user_id":1} });
 ```
 
 **Input**
@@ -2005,7 +2005,7 @@ Get Enrollments
 **Risk:** `read`
 
 ```ts
-await corsair.thinkific.api.enrollments.list({  });
+await corsair.thinkific.api.enrollments.list({ query: {"page":1,"limit":25} });
 ```
 
 **Input**
@@ -2137,7 +2137,7 @@ Update enrollment
 **Risk:** `write`
 
 ```ts
-await corsair.thinkific.api.enrollments.update({ path: {"id":1}, body: {} });
+await corsair.thinkific.api.enrollments.update({ path: {"id":1}, body: {"activated_at":"2026-01-01T00:00:00.000Z","expiry_date":"2027-01-01T00:00:00.000Z"} });
 ```
 
 **Input**
@@ -2186,7 +2186,7 @@ Create a new external order
 **Risk:** `write`
 
 ```ts
-await corsair.thinkific.api.externalOrders.create({  });
+await corsair.thinkific.api.externalOrders.create({ body: {"payment_provider":"sample","user_id":1,"product_id":1,"order_type":"one-time"} });
 ```
 
 **Input**
@@ -2236,7 +2236,7 @@ purchase transaction
 **Risk:** `destructive`
 
 ```ts
-await corsair.thinkific.api.externalOrders.purchase({ path: {"id":"sample"} });
+await corsair.thinkific.api.externalOrders.purchase({ path: {"id":"sample"}, body: {"amount":10000,"currency":"USD"} });
 ```
 
 **Input**
@@ -2285,7 +2285,7 @@ refund transaction
 **Risk:** `destructive`
 
 ```ts
-await corsair.thinkific.api.externalOrders.refund({ path: {"id":1} });
+await corsair.thinkific.api.externalOrders.refund({ path: {"id":1}, body: {"amount":10000,"currency":"USD"} });
 ```
 
 **Input**
@@ -2336,7 +2336,7 @@ Add Analyst to Groups
 **Risk:** `write`
 
 ```ts
-await corsair.thinkific.api.groupAnalysts.addGroup({ path: {"user_id":1} });
+await corsair.thinkific.api.groupAnalysts.addGroup({ path: {"user_id":1}, body: {"group_ids":[1]} });
 ```
 
 **Input**
@@ -2421,7 +2421,7 @@ Assign Analysts to a Group
 **Risk:** `write`
 
 ```ts
-await corsair.thinkific.api.groups.assignAnalysts({ path: {"group_id":1} });
+await corsair.thinkific.api.groups.assignAnalysts({ path: {"group_id":1}, body: {"user_ids":[1]} });
 ```
 
 **Input**
@@ -2467,7 +2467,7 @@ Create Group
 **Risk:** `write`
 
 ```ts
-await corsair.thinkific.api.groups.create({  });
+await corsair.thinkific.api.groups.create({ body: {"name":"sample"} });
 ```
 
 **Input**
@@ -2555,7 +2555,7 @@ Get Groups
 **Risk:** `read`
 
 ```ts
-await corsair.thinkific.api.groups.list({  });
+await corsair.thinkific.api.groups.list({ query: {"page":1,"limit":25} });
 ```
 
 **Input**
@@ -2890,7 +2890,7 @@ Get Instructors
 **Risk:** `read`
 
 ```ts
-await corsair.thinkific.api.instructors.list({  });
+await corsair.thinkific.api.instructors.list({ query: {"page":1,"limit":25} });
 ```
 
 **Input**
@@ -3129,7 +3129,7 @@ Get Orders
 **Risk:** `read`
 
 ```ts
-await corsair.thinkific.api.orders.list({  });
+await corsair.thinkific.api.orders.list({ query: {"page":1,"limit":25} });
 ```
 
 **Input**
@@ -3220,7 +3220,7 @@ Approves Product Publish Request
 **Risk:** `destructive`
 
 ```ts
-await corsair.thinkific.api.productPublishRequests.approve({ path: {"id":1} });
+await corsair.thinkific.api.productPublishRequests.approve({ path: {"id":1}, body: {"user_id":1} });
 ```
 
 **Input**
@@ -3268,7 +3268,7 @@ Denies Product Publish Request
 **Risk:** `destructive`
 
 ```ts
-await corsair.thinkific.api.productPublishRequests.deny({ path: {"id":1} });
+await corsair.thinkific.api.productPublishRequests.deny({ path: {"id":1}, body: {"user_id":1} });
 ```
 
 **Input**
@@ -3364,7 +3364,7 @@ Get List of unhandled product publish requests
 **Risk:** `read`
 
 ```ts
-await corsair.thinkific.api.productPublishRequests.list({  });
+await corsair.thinkific.api.productPublishRequests.list({ query: {"page":1,"limit":25} });
 ```
 
 **Input**
@@ -3372,6 +3372,8 @@ await corsair.thinkific.api.productPublishRequests.list({  });
 | Name | Type | Required | Description |
 |------|------|----------|-------------|
 | `query` | `object` | No | — |
+
+The published OpenAPI response component points its items to PromotionResponse, but the operation returns Product Publish Requests. This plugin validates items with ProductPublishRequest, matching the documented detail route.
 
 <AccordionGroup>
 <Accordion title="query full type">
@@ -3399,15 +3401,14 @@ await corsair.thinkific.api.productPublishRequests.list({  });
 
 ```ts
 {
-  id?: number,
-  name?: string,
-  description?: string,
-  starts_at?: string,
-  expires_at?: string,
-  discount_type?: fixed | percentage,
-  amount?: number,
-  coupon_ids?: number[],
-  duration?: number
+  product_id: number,
+  status: string,
+  response_text?: string,
+  requesting_user_id: number,
+  responding_user_id?: number,
+  completed_at?: string,
+  created_at?: string,
+  updated_at?: string
 }[]
 ```
 </Accordion>
@@ -3531,7 +3532,7 @@ List products
 **Risk:** `read`
 
 ```ts
-await corsair.thinkific.api.products.list({  });
+await corsair.thinkific.api.products.list({ query: {"page":1,"limit":25} });
 ```
 
 **Input**
@@ -3638,7 +3639,7 @@ Get related products
 **Risk:** `read`
 
 ```ts
-await corsair.thinkific.api.products.listRelated({ path: {"id":1} });
+await corsair.thinkific.api.products.listRelated({ path: {"id":1}, query: {"page":1,"limit":25} });
 ```
 
 **Input**
@@ -3757,7 +3758,7 @@ Create a new promotion
 **Risk:** `write`
 
 ```ts
-await corsair.thinkific.api.promotions.create({  });
+await corsair.thinkific.api.promotions.create({ body: {"amount":1,"discount_type":"fixed","name":"sample"} });
 ```
 
 **Input**
@@ -3913,7 +3914,7 @@ List promotions
 **Risk:** `read`
 
 ```ts
-await corsair.thinkific.api.promotions.list({  });
+await corsair.thinkific.api.promotions.list({ query: {"page":1,"limit":25} });
 ```
 
 **Input**
@@ -4027,7 +4028,7 @@ Update promotion by provided ID
 **Risk:** `write`
 
 ```ts
-await corsair.thinkific.api.promotions.update({ path: {"id":1} });
+await corsair.thinkific.api.promotions.update({ path: {"id":1}, body: {"amount":1,"discount_type":"fixed","name":"sample"} });
 ```
 
 **Input**
@@ -4343,7 +4344,7 @@ List Users
 **Risk:** `read`
 
 ```ts
-await corsair.thinkific.api.users.list({  });
+await corsair.thinkific.api.users.list({ query: {"page":1,"limit":25} });
 ```
 
 **Input**
@@ -4499,7 +4500,7 @@ Update user by ID
 **Risk:** `write`
 
 ```ts
-await corsair.thinkific.api.users.update({ path: {"id":"sample"}, body: {} });
+await corsair.thinkific.api.users.update({ path: {"id":"sample"}, body: {"first_name":"Updated"} });
 ```
 
 **Input**

@@ -105,8 +105,8 @@ export function thinkific<const T extends ThinkificPluginOptions>(
 		endpointMeta: thinkificEndpointMeta,
 		endpointSchemas: thinkificEndpointSchemas,
 		errorHandlers: {
-			...callerHandlers,
 			...builtInHandlers,
+			...callerHandlers,
 			DEFAULT: callerDefault ?? builtInDefault,
 		},
 		keyBuilder: async (ctx: ThinkificKeyBuilderContext, source) => {

@@ -28,6 +28,22 @@ describe('Thinkific operation schemas', () => {
 		).toBe(true);
 	});
 
+	it('validates publish-request lists with publish-request items', () => {
+		const response = ThinkificComponentSchemas.GetProductPublishResponse;
+		expect(
+			response.safeParse({
+				items: [{ product_id: 1, requesting_user_id: 2, status: 'pending' }],
+				meta: {},
+			}).success,
+		).toBe(true);
+		expect(
+			response.safeParse({
+				items: [{ id: 1, name: 'Promotion' }],
+				meta: {},
+			}).success,
+		).toBe(false);
+	});
+
 	it('enforces documented user password length and role enums', () => {
 		const userRequest = ThinkificComponentSchemas.CreateUserRequest;
 		const requiredUserFields = {

@@ -38,9 +38,16 @@ export const thinkificEndpointOperations = [
 			path: {
 				id: 1,
 			},
+			query: {
+				page: 1,
+				limit: 25,
+			},
 		},
 		expectedPath: '/bundles/1/courses',
-		expectedQuery: {},
+		expectedQuery: {
+			page: 1,
+			limit: 25,
+		},
 		expectedBody: undefined,
 		outputFixture: {},
 		endpoint: thinkificEndpointsNested.bundles.listCourses,
@@ -56,9 +63,16 @@ export const thinkificEndpointOperations = [
 			path: {
 				id: 1,
 			},
+			query: {
+				page: 1,
+				limit: 25,
+			},
 		},
 		expectedPath: '/bundles/1/enrollments',
-		expectedQuery: {},
+		expectedQuery: {
+			page: 1,
+			limit: 25,
+		},
 		expectedBody: undefined,
 		outputFixture: {
 			items: [
@@ -95,10 +109,15 @@ export const thinkificEndpointOperations = [
 			path: {
 				id: 1,
 			},
+			body: {
+				user_id: 1,
+			},
 		},
 		expectedPath: '/bundles/1/enrollments',
 		expectedQuery: {},
-		expectedBody: undefined,
+		expectedBody: {
+			user_id: 1,
+		},
 		outputFixture: undefined,
 		endpoint: thinkificEndpointsNested.bundles.createEnrollment,
 	},
@@ -113,10 +132,15 @@ export const thinkificEndpointOperations = [
 			path: {
 				id: 1,
 			},
+			body: {
+				user_id: 1,
+			},
 		},
 		expectedPath: '/bundles/1/enrollments',
 		expectedQuery: {},
-		expectedBody: undefined,
+		expectedBody: {
+			user_id: 1,
+		},
 		outputFixture: undefined,
 		endpoint: thinkificEndpointsNested.bundles.updateEnrollments,
 	},
@@ -154,9 +178,16 @@ export const thinkificEndpointOperations = [
 			path: {
 				id: 1,
 			},
+			query: {
+				page: 1,
+				limit: 25,
+			},
 		},
 		expectedPath: '/chapters/1/contents',
-		expectedQuery: {},
+		expectedQuery: {
+			page: 1,
+			limit: 25,
+		},
 		expectedBody: undefined,
 		outputFixture: {
 			items: [
@@ -181,9 +212,17 @@ export const thinkificEndpointOperations = [
 		successStatus: 200,
 		inputSchema: ThinkificOperationInputSchemas.categories_list,
 		outputSchema: ThinkificOperationOutputSchemas.categories_list,
-		inputFixture: {},
+		inputFixture: {
+			query: {
+				page: 1,
+				limit: 25,
+			},
+		},
 		expectedPath: '/collections',
-		expectedQuery: {},
+		expectedQuery: {
+			page: 1,
+			limit: 25,
+		},
 		expectedBody: undefined,
 		outputFixture: {
 			items: [
@@ -207,10 +246,20 @@ export const thinkificEndpointOperations = [
 		successStatus: 201,
 		inputSchema: ThinkificOperationInputSchemas.categories_create,
 		outputSchema: ThinkificOperationOutputSchemas.categories_create,
-		inputFixture: {},
+		inputFixture: {
+			body: {
+				description: 'sample',
+				name: 'sample',
+				slug: 'sample',
+			},
+		},
 		expectedPath: '/collections',
 		expectedQuery: {},
-		expectedBody: undefined,
+		expectedBody: {
+			description: 'sample',
+			name: 'sample',
+			slug: 'sample',
+		},
 		outputFixture: {
 			created_at: '2026-01-01T00:00:00.000Z',
 			default: false,
@@ -257,10 +306,19 @@ export const thinkificEndpointOperations = [
 			path: {
 				id: 1,
 			},
+			body: {
+				description: 'sample',
+				name: 'sample',
+				slug: 'sample',
+			},
 		},
 		expectedPath: '/collections/1',
 		expectedQuery: {},
-		expectedBody: undefined,
+		expectedBody: {
+			description: 'sample',
+			name: 'sample',
+			slug: 'sample',
+		},
 		outputFixture: undefined,
 		endpoint: thinkificEndpointsNested.categories.update,
 	},
@@ -293,9 +351,16 @@ export const thinkificEndpointOperations = [
 			path: {
 				id: 1,
 			},
+			query: {
+				page: 1,
+				limit: 25,
+			},
 		},
 		expectedPath: '/collections/1/products',
-		expectedQuery: {},
+		expectedQuery: {
+			page: 1,
+			limit: 25,
+		},
 		expectedBody: undefined,
 		outputFixture: {
 			items: [{}],
@@ -362,11 +427,15 @@ export const thinkificEndpointOperations = [
 		inputFixture: {
 			query: {
 				promotion_id: 1,
+				page: 1,
+				limit: 25,
 			},
 		},
 		expectedPath: '/coupons',
 		expectedQuery: {
 			promotion_id: 1,
+			page: 1,
+			limit: 25,
 		},
 		expectedBody: undefined,
 		outputFixture: {},
@@ -416,13 +485,21 @@ export const thinkificEndpointOperations = [
 			query: {
 				promotion_id: 1,
 			},
-			body: {},
+			body: {
+				bulk_quantity_per_coupon: 1,
+				bulk_coupon_code_length: 8,
+				bulk_quantity: 2,
+			},
 		},
 		expectedPath: '/coupons/bulk_create',
 		expectedQuery: {
 			promotion_id: 1,
 		},
-		expectedBody: {},
+		expectedBody: {
+			bulk_quantity_per_coupon: 1,
+			bulk_coupon_code_length: 8,
+			bulk_quantity: 2,
+		},
 		outputFixture: {},
 		endpoint: thinkificEndpointsNested.coupons.bulkCreate,
 	},
@@ -526,9 +603,17 @@ export const thinkificEndpointOperations = [
 		successStatus: 200,
 		inputSchema: ThinkificOperationInputSchemas.courses_list,
 		outputSchema: ThinkificOperationOutputSchemas.courses_list,
-		inputFixture: {},
+		inputFixture: {
+			query: {
+				page: 1,
+				limit: 25,
+			},
+		},
 		expectedPath: '/courses',
-		expectedQuery: {},
+		expectedQuery: {
+			page: 1,
+			limit: 25,
+		},
 		expectedBody: undefined,
 		outputFixture: {},
 		endpoint: thinkificEndpointsNested.courses.list,
@@ -569,9 +654,16 @@ export const thinkificEndpointOperations = [
 			path: {
 				id: 1,
 			},
+			query: {
+				page: 1,
+				limit: 25,
+			},
 		},
 		expectedPath: '/courses/1/chapters',
-		expectedQuery: {},
+		expectedQuery: {
+			page: 1,
+			limit: 25,
+		},
 		expectedBody: undefined,
 		outputFixture: {
 			items: [
@@ -593,9 +685,17 @@ export const thinkificEndpointOperations = [
 		successStatus: 200,
 		inputSchema: ThinkificOperationInputSchemas.customProfileFields_list,
 		outputSchema: ThinkificOperationOutputSchemas.customProfileFields_list,
-		inputFixture: {},
+		inputFixture: {
+			query: {
+				page: 1,
+				limit: 25,
+			},
+		},
 		expectedPath: '/custom_profile_field_definitions',
-		expectedQuery: {},
+		expectedQuery: {
+			page: 1,
+			limit: 25,
+		},
 		expectedBody: undefined,
 		outputFixture: {
 			items: [
@@ -617,9 +717,17 @@ export const thinkificEndpointOperations = [
 		successStatus: 200,
 		inputSchema: ThinkificOperationInputSchemas.enrollments_list,
 		outputSchema: ThinkificOperationOutputSchemas.enrollments_list,
-		inputFixture: {},
+		inputFixture: {
+			query: {
+				page: 1,
+				limit: 25,
+			},
+		},
 		expectedPath: '/enrollments',
-		expectedQuery: {},
+		expectedQuery: {
+			page: 1,
+			limit: 25,
+		},
 		expectedBody: undefined,
 		outputFixture: {
 			items: [
@@ -653,11 +761,14 @@ export const thinkificEndpointOperations = [
 		inputSchema: ThinkificOperationInputSchemas.enrollments_create,
 		outputSchema: ThinkificOperationOutputSchemas.enrollments_create,
 		inputFixture: {
-			body: {},
+			body: {
+				course_id: 1,
+				user_id: 1,
+			},
 		},
 		expectedPath: '/enrollments',
 		expectedQuery: {},
-		expectedBody: {},
+		expectedBody: { course_id: 1, user_id: 1 },
 		outputFixture: {
 			activated_at: '2026-01-01T00:00:00.000Z',
 			completed: false,
@@ -722,11 +833,17 @@ export const thinkificEndpointOperations = [
 			path: {
 				id: 1,
 			},
-			body: {},
+			body: {
+				activated_at: '2026-01-01T00:00:00.000Z',
+				expiry_date: '2027-01-01T00:00:00.000Z',
+			},
 		},
 		expectedPath: '/enrollments/1',
 		expectedQuery: {},
-		expectedBody: {},
+		expectedBody: {
+			activated_at: '2026-01-01T00:00:00.000Z',
+			expiry_date: '2027-01-01T00:00:00.000Z',
+		},
 		outputFixture: undefined,
 		endpoint: thinkificEndpointsNested.enrollments.update,
 	},
@@ -737,10 +854,22 @@ export const thinkificEndpointOperations = [
 		successStatus: 201,
 		inputSchema: ThinkificOperationInputSchemas.externalOrders_create,
 		outputSchema: ThinkificOperationOutputSchemas.externalOrders_create,
-		inputFixture: {},
+		inputFixture: {
+			body: {
+				payment_provider: 'sample',
+				user_id: 1,
+				product_id: 1,
+				order_type: 'one-time',
+			},
+		},
 		expectedPath: '/external_orders',
 		expectedQuery: {},
-		expectedBody: undefined,
+		expectedBody: {
+			payment_provider: 'sample',
+			user_id: 1,
+			product_id: 1,
+			order_type: 'one-time',
+		},
 		outputFixture: {},
 		endpoint: thinkificEndpointsNested.externalOrders.create,
 	},
@@ -755,10 +884,17 @@ export const thinkificEndpointOperations = [
 			path: {
 				id: 1,
 			},
+			body: {
+				amount: 10000,
+				currency: 'USD',
+			},
 		},
 		expectedPath: '/external_orders/1/transactions/refund',
 		expectedQuery: {},
-		expectedBody: undefined,
+		expectedBody: {
+			amount: 10000,
+			currency: 'USD',
+		},
 		outputFixture: undefined,
 		endpoint: thinkificEndpointsNested.externalOrders.refund,
 	},
@@ -773,10 +909,17 @@ export const thinkificEndpointOperations = [
 			path: {
 				id: 'sample',
 			},
+			body: {
+				amount: 10000,
+				currency: 'USD',
+			},
 		},
 		expectedPath: '/external_orders/sample/transactions/purchase',
 		expectedQuery: {},
-		expectedBody: undefined,
+		expectedBody: {
+			amount: 10000,
+			currency: 'USD',
+		},
 		outputFixture: undefined,
 		endpoint: thinkificEndpointsNested.externalOrders.purchase,
 	},
@@ -787,9 +930,17 @@ export const thinkificEndpointOperations = [
 		successStatus: 200,
 		inputSchema: ThinkificOperationInputSchemas.groups_list,
 		outputSchema: ThinkificOperationOutputSchemas.groups_list,
-		inputFixture: {},
+		inputFixture: {
+			query: {
+				page: 1,
+				limit: 25,
+			},
+		},
 		expectedPath: '/groups',
-		expectedQuery: {},
+		expectedQuery: {
+			page: 1,
+			limit: 25,
+		},
 		expectedBody: undefined,
 		outputFixture: {
 			items: [
@@ -811,10 +962,16 @@ export const thinkificEndpointOperations = [
 		successStatus: 200,
 		inputSchema: ThinkificOperationInputSchemas.groups_create,
 		outputSchema: ThinkificOperationOutputSchemas.groups_create,
-		inputFixture: {},
+		inputFixture: {
+			body: {
+				name: 'sample',
+			},
+		},
 		expectedPath: '/groups',
 		expectedQuery: {},
-		expectedBody: undefined,
+		expectedBody: {
+			name: 'sample',
+		},
 		outputFixture: {
 			id: 1,
 			created_at: '2026-01-01T00:00:00.000Z',
@@ -895,10 +1052,15 @@ export const thinkificEndpointOperations = [
 			path: {
 				group_id: 1,
 			},
+			body: {
+				user_ids: [1],
+			},
 		},
 		expectedPath: '/groups/1/analysts',
 		expectedQuery: {},
-		expectedBody: undefined,
+		expectedBody: {
+			user_ids: [1],
+		},
 		outputFixture: undefined,
 		endpoint: thinkificEndpointsNested.groups.assignAnalysts,
 	},
@@ -932,10 +1094,15 @@ export const thinkificEndpointOperations = [
 			path: {
 				user_id: 1,
 			},
+			body: {
+				group_ids: [1],
+			},
 		},
 		expectedPath: '/group_analysts/1/groups',
 		expectedQuery: {},
-		expectedBody: undefined,
+		expectedBody: {
+			group_ids: [1],
+		},
 		outputFixture: undefined,
 		endpoint: thinkificEndpointsNested.groupAnalysts.addGroup,
 	},
@@ -965,9 +1132,17 @@ export const thinkificEndpointOperations = [
 		successStatus: 200,
 		inputSchema: ThinkificOperationInputSchemas.instructors_list,
 		outputSchema: ThinkificOperationOutputSchemas.instructors_list,
-		inputFixture: {},
+		inputFixture: {
+			query: {
+				page: 1,
+				limit: 25,
+			},
+		},
 		expectedPath: '/instructors',
-		expectedQuery: {},
+		expectedQuery: {
+			page: 1,
+			limit: 25,
+		},
 		expectedBody: undefined,
 		outputFixture: {
 			items: [
@@ -1086,9 +1261,17 @@ export const thinkificEndpointOperations = [
 		successStatus: 200,
 		inputSchema: ThinkificOperationInputSchemas.orders_list,
 		outputSchema: ThinkificOperationOutputSchemas.orders_list,
-		inputFixture: {},
+		inputFixture: {
+			query: {
+				page: 1,
+				limit: 25,
+			},
+		},
 		expectedPath: '/orders',
-		expectedQuery: {},
+		expectedQuery: {
+			page: 1,
+			limit: 25,
+		},
 		expectedBody: undefined,
 		outputFixture: {
 			items: [
@@ -1167,12 +1350,26 @@ export const thinkificEndpointOperations = [
 		successStatus: 200,
 		inputSchema: ThinkificOperationInputSchemas.productPublishRequests_list,
 		outputSchema: ThinkificOperationOutputSchemas.productPublishRequests_list,
-		inputFixture: {},
+		inputFixture: {
+			query: {
+				page: 1,
+				limit: 25,
+			},
+		},
 		expectedPath: '/product_publish_requests',
-		expectedQuery: {},
+		expectedQuery: {
+			page: 1,
+			limit: 25,
+		},
 		expectedBody: undefined,
 		outputFixture: {
-			items: [{}],
+			items: [
+				{
+					product_id: 1,
+					requesting_user_id: 2,
+					status: 'approved',
+				},
+			],
 			meta: {},
 		},
 		endpoint: thinkificEndpointsNested.productPublishRequests.list,
@@ -1211,10 +1408,15 @@ export const thinkificEndpointOperations = [
 			path: {
 				id: 1,
 			},
+			body: {
+				user_id: 1,
+			},
 		},
 		expectedPath: '/product_publish_requests/1/approve',
 		expectedQuery: {},
-		expectedBody: undefined,
+		expectedBody: {
+			user_id: 1,
+		},
 		outputFixture: undefined,
 		endpoint: thinkificEndpointsNested.productPublishRequests.approve,
 	},
@@ -1229,10 +1431,15 @@ export const thinkificEndpointOperations = [
 			path: {
 				id: 1,
 			},
+			body: {
+				user_id: 1,
+			},
 		},
 		expectedPath: '/product_publish_requests/1/deny',
 		expectedQuery: {},
-		expectedBody: undefined,
+		expectedBody: {
+			user_id: 1,
+		},
 		outputFixture: undefined,
 		endpoint: thinkificEndpointsNested.productPublishRequests.deny,
 	},
@@ -1243,9 +1450,17 @@ export const thinkificEndpointOperations = [
 		successStatus: 200,
 		inputSchema: ThinkificOperationInputSchemas.products_list,
 		outputSchema: ThinkificOperationOutputSchemas.products_list,
-		inputFixture: {},
+		inputFixture: {
+			query: {
+				page: 1,
+				limit: 25,
+			},
+		},
 		expectedPath: '/products',
-		expectedQuery: {},
+		expectedQuery: {
+			page: 1,
+			limit: 25,
+		},
 		expectedBody: undefined,
 		outputFixture: {
 			items: [{}],
@@ -1282,9 +1497,16 @@ export const thinkificEndpointOperations = [
 			path: {
 				id: 1,
 			},
+			query: {
+				page: 1,
+				limit: 25,
+			},
 		},
 		expectedPath: '/products/1/related',
-		expectedQuery: {},
+		expectedQuery: {
+			page: 1,
+			limit: 25,
+		},
 		expectedBody: undefined,
 		outputFixture: {
 			items: [{}],
@@ -1299,9 +1521,17 @@ export const thinkificEndpointOperations = [
 		successStatus: 200,
 		inputSchema: ThinkificOperationInputSchemas.promotions_list,
 		outputSchema: ThinkificOperationOutputSchemas.promotions_list,
-		inputFixture: {},
+		inputFixture: {
+			query: {
+				page: 1,
+				limit: 25,
+			},
+		},
 		expectedPath: '/promotions',
-		expectedQuery: {},
+		expectedQuery: {
+			page: 1,
+			limit: 25,
+		},
 		expectedBody: undefined,
 		outputFixture: {
 			items: [{}],
@@ -1316,10 +1546,20 @@ export const thinkificEndpointOperations = [
 		successStatus: 201,
 		inputSchema: ThinkificOperationInputSchemas.promotions_create,
 		outputSchema: ThinkificOperationOutputSchemas.promotions_create,
-		inputFixture: {},
+		inputFixture: {
+			body: {
+				amount: 1,
+				discount_type: 'fixed',
+				name: 'sample',
+			},
+		},
 		expectedPath: '/promotions',
 		expectedQuery: {},
-		expectedBody: undefined,
+		expectedBody: {
+			amount: 1,
+			discount_type: 'fixed',
+			name: 'sample',
+		},
 		outputFixture: {},
 		endpoint: thinkificEndpointsNested.promotions.create,
 	},
@@ -1352,10 +1592,19 @@ export const thinkificEndpointOperations = [
 			path: {
 				id: 1,
 			},
+			body: {
+				amount: 1,
+				discount_type: 'fixed',
+				name: 'sample',
+			},
 		},
 		expectedPath: '/promotions/1',
 		expectedQuery: {},
-		expectedBody: undefined,
+		expectedBody: {
+			amount: 1,
+			discount_type: 'fixed',
+			name: 'sample',
+		},
 		outputFixture: undefined,
 		endpoint: thinkificEndpointsNested.promotions.update,
 	},
@@ -1409,11 +1658,15 @@ export const thinkificEndpointOperations = [
 		inputFixture: {
 			query: {
 				course_id: 1,
+				page: 1,
+				limit: 25,
 			},
 		},
 		expectedPath: '/course_reviews',
 		expectedQuery: {
 			course_id: 1,
+			page: 1,
+			limit: 25,
 		},
 		expectedBody: undefined,
 		outputFixture: {
@@ -1506,9 +1759,17 @@ export const thinkificEndpointOperations = [
 		successStatus: 200,
 		inputSchema: ThinkificOperationInputSchemas.users_list,
 		outputSchema: ThinkificOperationOutputSchemas.users_list,
-		inputFixture: {},
+		inputFixture: {
+			query: {
+				page: 1,
+				limit: 25,
+			},
+		},
 		expectedPath: '/users',
-		expectedQuery: {},
+		expectedQuery: {
+			page: 1,
+			limit: 25,
+		},
 		expectedBody: undefined,
 		outputFixture: {
 			items: [{}],
@@ -1569,11 +1830,13 @@ export const thinkificEndpointOperations = [
 			path: {
 				id: 'sample',
 			},
-			body: {},
+			body: {
+				first_name: 'Updated',
+			},
 		},
 		expectedPath: '/users/sample',
 		expectedQuery: {},
-		expectedBody: {},
+		expectedBody: { first_name: 'Updated' },
 		outputFixture: undefined,
 		endpoint: thinkificEndpointsNested.users.update,
 	},
