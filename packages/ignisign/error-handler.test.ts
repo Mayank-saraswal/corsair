@@ -114,9 +114,16 @@ describe('Ignisign errorHandlers', () => {
 			},
 		});
 		const callerRateLimit = plugin.errorHandlers?.RATE_LIMIT_ERROR;
+		const error = new Error('custom error');
+		const context = {
+			pluginId: 'ignisign',
+			operation: 'userInvitations.invite',
+			input: {},
+			originalError: error,
+		};
 
-		expect(callerRateLimit?.match(new Error('custom error'))).toBe(true);
-		await callerRateLimit?.handler();
+		expect(callerRateLimit?.match(error, context)).toBe(true);
+		await callerRateLimit?.handler(error, context);
 		expect(customMatch).toHaveBeenCalledTimes(1);
 		expect(customHandler).toHaveBeenCalledTimes(1);
 		expect(Object.keys(plugin.errorHandlers ?? {}).at(-1)).toBe('DEFAULT');
