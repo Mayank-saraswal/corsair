@@ -1,65 +1,67 @@
-import type { ApiRequestOptions } from 'corsair/http';
-import type { OpenAPIConfig } from 'corsair/http';
+import { Buffer } from 'node:buffer';
+import { AuthMissingError } from 'corsair/core';
+import type { ApiRequestOptions, OpenAPIConfig } from 'corsair/http';
 import { ApiError, request } from 'corsair/http';
 
-export class TeamworkAPIError extends Error {
-	constructor(
-		message: string,
-		public readonly code?: string,
-	) {
-		super(message);
-		this.name = 'TeamworkAPIError';
+export const TEAMWORK_API_HOST_SUFFIX = '.teamwork.com';
+
+export type TeamworkRequest = {
+	apiKey: string;
+	siteName: string;
+	version?: string;
+	method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+	path: string;
+	// `unknown` because each route validates its own path value schema before transport.
+	pathParameters: Record<string, unknown>;
+	// `unknown` because query parameter value types vary by OpenAPI operation.
+	query: Record<string, unknown>;
+	// `unknown` because route bodies have operation-specific JSON shapes validated before transport.
+	body?: unknown;
+};
+
+export function resolveTeamworkBaseUrl(siteName: string): string {
+	const normalized = siteName
+		.trim()
+		.toLowerCase()
+		.replace(/\.teamwork\.com$/, '');
+	if (!/^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/.test(normalized)) {
+		throw new Error('A valid Teamwork site name is required');
 	}
+	return `https://${normalized}${TEAMWORK_API_HOST_SUFFIX}`;
 }
 
-// TODO: Update with your API base URL
-const TEAMWORK_API_BASE = 'https://api.example.com';
-
-export async function makeTeamworkRequest<T>(
-	endpoint: string,
-	apiKey: string,
-	options: {
-		method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
-		body?: Record<string, unknown>;
-		query?: Record<string, string | number | boolean | undefined>;
-	} = {},
-): Promise<T> {
-	const { method = 'GET', body, query } = options;
-
+// `unknown` because response JSON is untrusted until its operation-specific schema validates it.
+export async function makeTeamworkRequest(
+	options: TeamworkRequest,
+): Promise<unknown> {
+	if (options.apiKey.length === 0) {
+		throw new AuthMissingError('teamwork', 'api_key');
+	}
 	const config: OpenAPIConfig = {
-		BASE: TEAMWORK_API_BASE,
-		VERSION: '1.0.0',
+		BASE: resolveTeamworkBaseUrl(options.siteName),
+		VERSION: options.version ?? '1.0.0',
 		WITH_CREDENTIALS: false,
 		CREDENTIALS: 'omit',
-		TOKEN: apiKey,
 		HEADERS: {
+			Authorization: `Basic ${Buffer.from(`${options.apiKey}:`).toString('base64')}`,
 			'Content-Type': 'application/json',
-			// TODO: Add authentication headers
-			// 'Authorization': \`Bearer \${apiKey}\`
 		},
 	};
-
 	const requestOptions: ApiRequestOptions = {
-		method,
-		url: endpoint,
-		body:
-			method === 'POST' || method === 'PUT' || method === 'PATCH'
-				? body
-				: undefined,
+		method: options.method,
+		url: options.path,
+		path: options.pathParameters,
+		query: options.query,
+		body: options.body,
 		mediaType: 'application/json; charset=utf-8',
-		query: method === 'GET' ? query : undefined,
 	};
-
 	try {
-		return await request<T>(config, requestOptions);
+		// `unknown` because the provider response is validated by the owning endpoint after transport.
+		return await request<unknown>(config, requestOptions);
 	} catch (error) {
-		// Rethrow core's ApiError as is: its status and retryAfter are what the
-		// error handlers match (429 retries) and what core reads to refresh an
-		// OAuth token after a 401. Wrapping it in a new error loses both.
+		// Preserve core transport status and Retry-After metadata for handlers.
 		if (error instanceof ApiError) throw error;
-		if (error instanceof Error) {
-			throw new TeamworkAPIError(error.message);
-		}
-		throw new TeamworkAPIError('Unknown error');
+		// Network errors can include the tenant URL; keep them out of public errors.
+		throw new Error('Teamwork request failed');
 	}
 }

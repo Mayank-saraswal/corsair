@@ -1,4 +1,728 @@
-# Display copy for the docs, the catalog, corsair.dev and Hub.
-# `pnpm validate:plugins` fails until the TODO is replaced.
-displayName: "Teamwork"
-description: TODO one sentence on what the API is and what this plugin can do with it.
+displayName: Teamwork
+description: Teamwork.com project management operations for projects, tasks, people, time tracking, and collaboration resources.
+overviewNote: "Teamwork requires the tenant site subdomain as the plugin option siteName; provide the API key through Corsair credentials before calling authenticated endpoints."
+apiExamples:
+  v1_get_projects_json:
+    args: {"path":{},"query":{}}
+  v1_post_projects_json:
+    args: {"path":{},"query":{}}
+  v1_get_projects_id_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_put_projects_id_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_delete_projects_id_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_post_projects_id_clone_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_get_companies_id_projects_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_get_projects_starred_json:
+    args: {"path":{},"query":{}}
+  v1_get_projects_id_rates_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_post_projects_id_rates_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_get_projects_id_stats_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_put_projects_id_star_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_get_projectcategories_json:
+    args: {"path":{},"query":{}}
+  v1_post_projectcategories_json:
+    args: {"path":{},"query":{}}
+  v1_get_projectcategories_id_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_put_projectcategories_id_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_delete_projectcategories_id_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_get_projectcategories_categoryid_tasks_json:
+    args: {"path":{"categoryId":"1"},"query":{}}
+  v1_put_projects_projectid_json:
+    args: {"path":{"projectId":"1"},"query":{}}
+  v1_get_milestones_json:
+    args: {"path":{},"query":{}}
+  v1_get_projects_id_milestones_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_post_projects_id_milestones_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_get_milestones_id_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_put_milestones_id_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_delete_milestones_id_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_put_milestones_id_complete_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_put_milestones_id_uncomplete_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_get_tasklists_json:
+    args: {"path":{},"query":{}}
+  v1_get_projects_id_tasklists_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_post_projects_id_tasklists_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_get_tasklists_id_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_put_tasklists_id_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_delete_tasklists_id_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_get_tasklists_templates_json:
+    args: {"path":{},"query":{}}
+  v1_put_projects_id_tasklists_reorder_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_put_tasklist_id_copy_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_put_tasklist_id_move_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_get_tasks_json:
+    args: {"path":{},"query":{}}
+  v1_get_projects_id_tasks_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_post_projects_id_tasks_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_get_tasklists_id_tasks_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_post_tasklists_id_tasks_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_get_tasks_id_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_post_tasks_id_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_get_tasks_id_dependencies_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_get_completedtasks_json:
+    args: {"path":{},"query":{}}
+  v1_get_tasks_id_predecessors_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_get_tasks_parenttaskid_subtasks_json:
+    args: {"path":{"parentTaskId":"1"},"query":{}}
+  v1_get_tasks_taskid_recurring_json:
+    args: {"path":{"taskId":"1"},"query":{}}
+  v1_post_tasks_id_quickadd_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_post_projects_projectid_tasks_quickadd_json:
+    args: {"path":{"projectId":"1"},"query":{}}
+  v1_put_tasks_id_complete_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_put_tasks_id_uncomplete_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_put_tasklists_id_tasks_reorder_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_put_tasks_taskid_move_json:
+    args: {"path":{"taskId":"1"},"query":{}}
+  v1_put_tasks_taskid_copy_json:
+    args: {"path":{"taskId":"1"},"query":{}}
+  v1_get_tasks_id_reminders_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_post_tasks_id_reminders_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_put_taskreminders_id_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_delete_taskreminders_id_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_get_companies_json:
+    args: {"path":{},"query":{}}
+  v1_post_companies_json:
+    args: {"path":{},"query":{}}
+  v1_get_projects_id_companies_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_get_companies_id_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_put_companies_id_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_delete_companies_id_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_get_people_json:
+    args: {"path":{},"query":{}}
+  v1_post_people_json:
+    args: {"path":{},"query":{}}
+  v1_get_calendarevents_eventid_availablepeople_json:
+    args: {"path":{"eventId":"1"},"query":{"privacy":"Teamwork API value"}}
+  v1_get_projects_projectid_messages_availablepeople_json:
+    args: {"path":{"projectId":"1"},"query":{}}
+  v1_get_projects_projectid_milestones_availablepeople_json:
+    args: {"path":{"projectId":"1"},"query":{}}
+  v1_get_projects_projectid_notebooks_availablepeople_json:
+    args: {"path":{"projectId":"1"},"query":{}}
+  v1_get_projects_projectid_tasks_availablepeople_json:
+    args: {"path":{"projectId":"1"},"query":{}}
+  v1_get_projects_projectid_files_availablepeople_json:
+    args: {"path":{"projectId":"1"},"query":{}}
+  v1_get_projects_projectid_links_availablepeople_json:
+    args: {"path":{"projectId":"1"},"query":{}}
+  v1_get_projects_projectid_people_json:
+    args: {"path":{"projectId":"1"},"query":{}}
+  v1_get_companies_id_people_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_get_me_json:
+    args: {"path":{},"query":{}}
+  v1_get_stats_json:
+    args: {"path":{},"query":{}}
+  v1_get_people_id_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_put_people_id_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_delete_people_id_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_get_people_apikeys_json:
+    args: {"path":{},"query":{}}
+  v1_get_people_deleted_json:
+    args: {"path":{},"query":{}}
+  v1_get_statuses_json:
+    args: {"path":{},"query":{}}
+  v1_get_people_id_status_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_post_people_id_status_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_get_me_status_json:
+    args: {"path":{},"query":{}}
+  v1_put_me_status_id_json:
+    args: {"path":{},"query":{}}
+  v1_put_people_personid_status_statusid_json:
+    args: {"path":{"personId":"1","statusId":"1"},"query":{}}
+  v1_delete_people_personid_status_statusid_json:
+    args: {"path":{"personId":"1","statusId":"1"},"query":{}}
+  v1_put_people_status_id_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_delete_people_status_id_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_delete_me_status_id_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_get_tasks_id_files_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_post_tasks_id_files_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_get_projects_id_files_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_post_projects_id_files_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_post_files_id_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_delete_files_id_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_get_files_id_sharedlink_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_put_files_id_copy_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_get_projects_id_filecategories_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_post_projects_id_filecategories_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_get_filecategories_id_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_put_filecategories_id_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_delete_filecategories_id_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_get_notebooks_json:
+    args: {"path":{},"query":{}}
+  v1_get_projects_id_notebooks_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_post_projects_id_notebooks_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_get_notebookcategories_id_notebooks_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_get_notebooks_id_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_put_notebooks_id_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_delete_notebooks_id_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_put_notebooks_id_lock_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_put_notebooks_id_unlock_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_put_notebooks_id_copy_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_put_notebooks_id_move_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_get_projects_id_notebookcategories_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_post_projects_id_notebookcategories_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_get_notebookcategories_id_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_put_notebookcategories_id_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_delete_notebookcategories_id_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_get_projects_id_links_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_post_projects_id_links_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_get_links_json:
+    args: {"path":{},"query":{}}
+  v1_get_links_id_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_put_links_id_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_delete_links_id_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_get_projects_id_linkcategories_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_post_projects_id_linkcategories_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_get_linkcategories_id_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_delete_linkcategories_id_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_get_time_entries_json:
+    args: {"path":{},"query":{}}
+  v1_get_projects_id_time_entries_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_post_projects_id_time_entries_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_get_tasks_id_time_entries_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_post_tasks_id_time_entries_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_get_time_entries_id_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_put_time_entries_id_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_delete_time_entries_id_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_get_projects_id_time_total_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_get_time_total_json:
+    args: {"path":{},"query":{}}
+  v1_get_projects_time_total_json:
+    args: {"path":{},"query":{}}
+  v1_get_projects_estimatedtime_total_json:
+    args: {"path":{},"query":{}}
+  v1_get_tasklists_id_time_total_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_get_tasks_id_time_total_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_get_people_id_loggedtime_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_get_timers_json:
+    args: {"path":{},"query":{}}
+  v1_get_me_timers_json:
+    args: {"path":{},"query":{}}
+  v1_get_people_id_timers_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_put_tasks_id_estimatedtime_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_delete_comments_id_json:
+    args: {"path":{"id":1},"query":{}}
+  v1_put_comments_id_json:
+    args: {"path":{"id":1},"query":{}}
+  v1_get_resource_resourceid_comments_json:
+    args: {"path":{"resource":"Teamwork API value","resourceId":"1"},"query":{}}
+  v1_post_resource_resourceid_comments_json:
+    args: {"path":{"resource":"Teamwork API value","resourceId":"1"},"query":{}}
+  v1_get_comments_json:
+    args: {"path":{},"query":{}}
+  v1_put_comments_id_markread_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_get_projects_id_boards_columns_json:
+    args: {"path":{"id":1},"query":{}}
+  v1_post_projects_id_boards_columns_json:
+    args: {"path":{"id":1},"query":{}}
+  v1_get_boards_columns_id_cards_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_put_boards_columns_cards_id_move_json:
+    args: {"path":{"id":1},"query":{}}
+  v1_put_boards_columns_cards_id_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_delete_boards_columns_cards_id_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_get_boards_columns_cards_id_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_delete_boards_columns_id_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_put_boards_columns_id_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_get_boards_columns_id_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_get_portfolio_boards_json:
+    args: {"path":{},"query":{}}
+  v1_post_portfolio_boards_json:
+    args: {"path":{},"query":{}}
+  v1_put_portfolio_boards_boardid_json:
+    args: {"path":{"boardId":"1"},"query":{}}
+  v1_delete_portfolio_boards_boardid_json:
+    args: {"path":{"boardId":"1"},"query":{}}
+  v1_get_portfolio_boards_boardid_columns_json:
+    args: {"path":{"boardId":"1"},"query":{}}
+  v1_post_portfolio_boards_boardid_columns_json:
+    args: {"path":{"boardId":"1"},"query":{}}
+  v1_get_portfolio_columns_columnid_cards_json:
+    args: {"path":{"columnId":"1"},"query":{}}
+  v1_post_portfolio_columns_columnid_cards_json:
+    args: {"path":{"columnId":"1"},"query":{}}
+  v1_get_portfolio_cards_cardid_json:
+    args: {"path":{"cardId":"1"},"query":{}}
+  v1_delete_portfolio_cards_cardid_json:
+    args: {"path":{"cardId":"1"},"query":{}}
+  v1_put_portfolio_cards_cardid_move_json:
+    args: {"path":{"cardId":"1"},"query":{}}
+  v1_delete_portfolio_columns_columnid_json:
+    args: {"path":{"columnId":"1"},"query":{}}
+  v1_get_portfolio_columns_columnid_json:
+    args: {"path":{"columnId":"1"},"query":{}}
+  v1_get_projects_projectid_updates_json:
+    args: {"path":{"projectId":"1"},"query":{}}
+  v1_get_projects_projectid_update_json:
+    args: {"path":{"projectId":"1"},"query":{}}
+  v1_post_projects_projectid_update_json:
+    args: {"path":{"projectId":"1"},"query":{}}
+  v1_put_projects_updates_updateid_json:
+    args: {"path":{"updateId":"1"},"query":{}}
+  v1_delete_projects_updates_updateid_json:
+    args: {"path":{"updateId":"1"},"query":{}}
+  v1_put_projects_projectid_update_request_json:
+    args: {"path":{"projectId":"1"},"query":{}}
+  v1_post_projects_projectid_people_personid_json:
+    args: {"path":{"projectId":1,"personId":1},"query":{}}
+  v1_put_projects_projectid_people_personid_json:
+    args: {"path":{"projectId":1,"personId":1},"query":{}}
+  v1_get_projects_projectid_people_personid_json:
+    args: {"path":{"projectId":1,"personId":1},"query":{}}
+  v1_get_projects_id_roles_json:
+    args: {"path":{"id":1},"query":{}}
+  v1_get_roles_id_json:
+    args: {"path":{"id":1},"query":{}}
+  v1_put_roles_id_json:
+    args: {"path":{"id":1},"query":{}}
+  v1_delete_roles_id_json:
+    args: {"path":{"id":1},"query":{}}
+  v1_get_comments_commentid_reactions_json:
+    args: {"path":{"commentId":"1"},"query":{"reactionType":"Teamwork API value"}}
+  v1_get_projects_updates_updateid_reactions_json:
+    args: {"path":{"updateId":"1"},"query":{"getReactions":"Teamwork API value"}}
+  v1_put_comments_commentid_react_json:
+    args: {"path":{"commentId":"1"},"query":{}}
+  v1_put_projects_updates_updateid_react_json:
+    args: {"path":{"updateId":"1"},"query":{}}
+  v1_put_resource_id_unreact_json:
+    args: {"path":{"resource":"Teamwork API value","id":"1"},"query":{}}
+  v1_post_projects_template_json:
+    args: {"path":{},"query":{}}
+  v1_get_teams_json:
+    args: {"path":{},"query":{}}
+  v1_post_teams_json:
+    args: {"path":{},"query":{}}
+  v1_delete_teams_json:
+    args: {"path":{},"query":{}}
+  v1_get_teams_id_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_put_teams_id_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_delete_teams_id_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_put_teams_id_people_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_get_projects_id_teams_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_post_projects_id_teams_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_get_companies_id_teams_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_get_milestones_id_teams_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_get_notebooks_id_teams_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_get_tasks_id_teams_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_get_files_id_teams_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_get_tasklists_id_teams_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_get_links_id_teams_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_get_portfolio_boards_id_teams_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_get_comments_id_teams_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_get_teams_id_subteams_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_get_people_id_teams_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_get_milestones_id_comments_teams_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_get_notebooks_id_comments_teams_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_get_tasks_id_comments_teams_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_get_files_id_comments_teams_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_get_tasklists_id_comments_teams_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_get_links_id_comments_teams_json:
+    args: {"path":{"id":"1"},"query":{}}
+  v1_get_teams_users_json:
+    args: {"path":{},"query":{}}
+  v2_get_projects_api_v2_projects_templates_json:
+    args: {"path":{},"query":{}}
+  v2_get_projects_api_v2_projects_id_predecessors_json:
+    args: {"path":{"id":1},"query":{}}
+  v2_get_projects_api_v2_tasklists_id_taskids_json:
+    args: {"path":{"id":1},"query":{}}
+  v2_get_projects_api_v2_projects_id_taskids_json:
+    args: {"path":{"id":1},"query":{}}
+  v2_get_projects_api_v2_projects_json:
+    args: {"path":{},"query":{"includeCustomFields":true}}
+  v2_get_projects_api_v2_tasks_json:
+    args: {"path":{},"query":{"includeCustomFields":true}}
+  v2_get_projects_api_v2_tasks_taskid_json:
+    args: {"path":{"taskId":"1"},"query":{"includeCustomFields":true}}
+  v2_get_projects_api_v2_projects_projectid_json:
+    args: {"path":{"projectId":"1"},"query":{"includeCustomFields":true}}
+  v3_get_projects_api_v3_allocations_allocationid_time_json:
+    args: {"path":{"allocationId":1},"query":{}}
+  v3_get_projects_api_v3_comments_json:
+    args: {"path":{},"query":{}}
+  v3_post_projects_api_v3_comments_json:
+    args: {"path":{},"query":{},"body":{"comment":{"fileIds":{"Value":[1],"Null":true,"Set":true}},"commentOptions":{},"attachments":{}}}
+  v3_get_projects_api_v3_comments_id_json:
+    args: {"path":{"id":1},"query":{}}
+  v3_get_projects_api_v3_comments_id_notified_json:
+    args: {"path":{"id":1},"query":{}}
+  v3_get_projects_api_v3_companies_json:
+    args: {"path":{},"query":{}}
+  v3_post_projects_api_v3_companies_json:
+    args: {"path":{},"query":{},"body":{"company":{"clientManagedBy":1,"customFields":{"Values":[{"customfieldId":1,"value":null,"countryCode":"Teamwork API value","currencySymbol":"Teamwork API value","urlTextToDisplay":"https://acme.invalid/resource"}]}},"companyOptions":{},"tags":[{}]}}
+  v3_delete_projects_api_v3_companies_domains_id_json:
+    args: {"path":{"id":1},"query":{}}
+  v3_patch_projects_api_v3_companies_domains_id_json:
+    args: {"path":{"id":1},"query":{},"body":{"companyDomain":{"domain":"Teamwork API value","companyId":1}}}
+  v3_get_projects_api_v3_companies_time_json:
+    args: {"path":{},"query":{}}
+  v3_delete_projects_api_v3_companies_companyid_json:
+    args: {"path":{"companyId":1},"query":{}}
+  v3_get_projects_api_v3_companies_companyid_json:
+    args: {"path":{"companyId":1},"query":{}}
+  v3_patch_projects_api_v3_companies_companyid_json:
+    args: {"path":{"companyId":1},"query":{},"body":{"company":{"clientManagedBy":1,"customFields":{"Values":[{"customfieldId":1,"value":null,"countryCode":"Teamwork API value","currencySymbol":"Teamwork API value","urlTextToDisplay":"https://acme.invalid/resource"}]}},"companyOptions":{},"tags":[{}]}}
+  v3_patch_projects_api_v3_companies_companyid_rates_json:
+    args: {"path":{"companyId":1},"query":{},"body":{"clientRateByRoleId":{}}}
+  v3_post_projects_api_v3_companies_id_convert_currency_json:
+    args: {"path":{"id":1},"query":{}}
+  v3_post_projects_api_v3_companies_id_domains_json:
+    args: {"path":{"id":1},"query":{},"body":{"companyDomains":[{"domain":"Teamwork API value","companyId":1}]}}
+  v3_get_projects_api_v3_files_fileid_project_json:
+    args: {"path":{"fileId":1},"query":{}}
+  v3_get_projects_api_v3_links_linkid_comments_json:
+    args: {"path":{"linkId":1},"query":{}}
+  v3_post_projects_api_v3_links_linkid_comments_json:
+    args: {"path":{"linkId":1},"query":{},"body":{"comment":{"fileIds":{"Value":[1],"Null":true,"Set":true}},"commentOptions":{},"attachments":{}}}
+  v3_get_projects_api_v3_links_linkid_project_json:
+    args: {"path":{"linkId":1},"query":{}}
+  v3_get_projects_api_v3_me_json:
+    args: {"path":{},"query":{}}
+  v3_get_projects_api_v3_me_personaltasks_json:
+    args: {"path":{},"query":{}}
+  v3_post_projects_api_v3_me_personaltasks_json:
+    args: {"path":{},"query":{},"body":{"task":{"startAt":"2026-01-15T12:00:00Z","startDate":"2026-01-15","dueAt":"2026-01-15T12:00:00Z","dueDate":"2026-01-15","originalDueDate":"2026-01-15","priority":{"Value":"Teamwork API value","Null":true,"Set":true},"customFields":{"Values":[{"customfieldId":1,"value":null,"countryCode":"Teamwork API value","currencySymbol":"Teamwork API value","urlTextToDisplay":"https://acme.invalid/resource"}]}},"taskOptions":{"notify":true,"everyoneMustDo":true,"isTemplate":true,"parseInlineTags":true,"appendAssignees":true,"checkInvalidusers":true,"pushSubtasks":true,"pushDependents":true},"tags":[{}],"attachments":{},"attachmentOptions":{},"predecessors":[{"id":1,"type":"Teamwork API value"}],"workflows":{}}}
+  v3_get_projects_api_v3_me_personaltasks_id_json:
+    args: {"path":{"id":1},"query":{}}
+  v3_get_projects_api_v3_me_timers_json:
+    args: {"path":{},"query":{}}
+  v3_post_projects_api_v3_me_timers_json:
+    args: {"path":{},"query":{},"body":{"timer":{"projectId":1,"taskId":1}}}
+  v3_delete_projects_api_v3_me_timers_timerid_json:
+    args: {"path":{"timerId":1},"query":{},"body":{}}
+  v3_put_projects_api_v3_me_timers_timerid_json:
+    args: {"path":{"timerId":1},"query":{},"body":{"timer":{"projectId":1,"taskId":1}}}
+  v3_put_projects_api_v3_me_timers_timerid_complete_json:
+    args: {"path":{"timerId":1},"query":{}}
+  v3_put_projects_api_v3_me_timers_timerid_pause_json:
+    args: {"path":{"timerId":1},"query":{}}
+  v3_put_projects_api_v3_me_timers_timerid_resume_json:
+    args: {"path":{"timerId":1},"query":{}}
+  v3_put_projects_api_v3_me_timers_timerid_undelete_json:
+    args: {"path":{"timerId":1},"query":{}}
+  v3_get_projects_api_v3_milestones_json:
+    args: {"path":{},"query":{}}
+  v3_get_projects_api_v3_milestones_metrics_deadlines_json:
+    args: {"path":{},"query":{}}
+  v3_get_projects_api_v3_milestones_milestoneid_json:
+    args: {"path":{"milestoneId":1},"query":{}}
+  v3_get_projects_api_v3_milestones_milestoneid_project_json:
+    args: {"path":{"milestoneId":1},"query":{}}
+  v3_get_projects_api_v3_notebooks_json:
+    args: {"path":{},"query":{}}
+  v3_delete_projects_api_v3_notebooks_notebookid_json:
+    args: {"path":{"notebookId":1},"query":{}}
+  v3_get_projects_api_v3_notebooks_notebookid_json:
+    args: {"path":{"notebookId":1},"query":{}}
+  v3_patch_projects_api_v3_notebooks_notebookid_json:
+    args: {"path":{"notebookId":1},"query":{},"body":{"notebook":{"tagIds":{"Value":[1],"Null":true,"Set":true},"categoryId":1}}}
+  v3_get_projects_api_v3_notebooks_notebookid_compare_json:
+    args: {"path":{"notebookId":1},"query":{}}
+  v3_get_projects_api_v3_notebooks_notebookid_project_json:
+    args: {"path":{"notebookId":1},"query":{}}
+  v3_delete_projects_api_v3_notebooks_notebookid_versions_json:
+    args: {"path":{"notebookId":1},"query":{}}
+  v3_get_projects_api_v3_notebooks_notebookid_versions_json:
+    args: {"path":{"notebookId":1},"query":{}}
+  v3_get_projects_api_v3_notebooks_notebookid_versions_versionid_json:
+    args: {"path":{"versionId":1,"notebookId":1},"query":{}}
+  v3_get_projects_api_v3_people_json:
+    args: {"path":{},"query":{}}
+  v3_get_projects_api_v3_people_metrics_performance_json:
+    args: {"path":{},"query":{}}
+  v3_get_projects_api_v3_people_utilization_json:
+    args: {"path":{},"query":{}}
+  v3_delete_projects_api_v3_people_personid_json:
+    args: {"path":{"personId":1},"query":{}}
+  v3_get_projects_api_v3_people_personid_json:
+    args: {"path":{"personId":1},"query":{}}
+  v3_get_projects_api_v3_projects_json:
+    args: {"path":{},"query":{}}
+  v3_get_projects_api_v3_projects_metrics_active_json:
+    args: {"path":{},"query":{}}
+  v3_get_projects_api_v3_projects_metrics_billable_json:
+    args: {"path":{},"query":{}}
+  v3_get_projects_api_v3_projects_metrics_healths_json:
+    args: {"path":{},"query":{}}
+  v3_get_projects_api_v3_projects_metrics_invoices_json:
+    args: {"path":{},"query":{}}
+  v3_get_projects_api_v3_projects_metrics_owners_json:
+    args: {"path":{},"query":{}}
+  v3_get_projects_api_v3_projects_metrics_unbilled_json:
+    args: {"path":{},"query":{}}
+  v3_get_projects_api_v3_projects_number_json:
+    args: {"path":{},"query":{}}
+  v3_put_projects_api_v3_projects_number_json:
+    args: {"path":{},"query":{},"body":{"projectNumberSettings":{}}}
+  v3_put_projects_api_v3_projects_people_userid_enqueue_json:
+    args: {"path":{"userId":1},"query":{}}
+  v3_get_projects_api_v3_projects_starred_json:
+    args: {"path":{},"query":{}}
+  v3_get_projects_api_v3_projects_teamwork_samples_json:
+    args: {"path":{},"query":{}}
+  v3_get_projects_api_v3_projects_templates_json:
+    args: {"path":{},"query":{}}
+  v3_get_projects_api_v3_projects_templates_id_json:
+    args: {"path":{"id":1},"query":{}}
+  v3_get_projects_api_v3_projects_templates_id_customfields_required_json:
+    args: {"path":{"id":1},"query":{}}
+  v3_put_projects_api_v3_projects_tentative_projectid_convert_json:
+    args: {"path":{"projectId":1},"query":{}}
+  v3_get_projects_api_v3_projects_updates_json:
+    args: {"path":{},"query":{}}
+  v3_get_projects_api_v3_projects_projectids_updates_json:
+    args: {"path":{"projectIds":1},"query":{}}
+  v3_get_projects_api_v3_projects_projectid_json:
+    args: {"path":{"projectId":1},"query":{}}
+  v3_get_projects_api_v3_projects_projectid_featureorder_json:
+    args: {"path":{"projectId":1},"query":{}}
+  v3_put_projects_api_v3_projects_projectid_featureorder_json:
+    args: {"path":{"projectId":1},"query":{},"body":{"featureOrderOptions":{}}}
+  v3_get_projects_api_v3_projects_projectid_milestones_json:
+    args: {"path":{"projectId":1},"query":{}}
+  v3_post_projects_api_v3_projects_projectid_notebooks_json:
+    args: {"path":{"projectId":1},"query":{},"body":{"notebook":{"tagIds":{"Value":[1],"Null":true,"Set":true},"categoryId":1}}}
+  v3_get_projects_api_v3_projects_projectid_people_json:
+    args: {"path":{"projectId":1},"query":{}}
+  v3_put_projects_api_v3_projects_projectid_people_json:
+    args: {"path":{"projectId":1},"query":{},"body":{"userIds":[1],"checkTeamIds":[1]}}
+  v3_get_projects_api_v3_projects_projectid_people_personid_json:
+    args: {"path":{"projectId":1,"personId":1},"query":{}}
+  v3_get_projects_api_v3_projects_projectid_tasklists_json:
+    args: {"path":{"projectId":1},"query":{}}
+  v3_get_projects_api_v3_projects_projectid_tasks_json:
+    args: {"path":{"projectId":1},"query":{}}
+  v3_get_projects_api_v3_projects_projectid_time_json:
+    args: {"path":{"projectId":1},"query":{}}
+  v3_post_projects_api_v3_projects_projectid_time_json:
+    args: {"path":{"projectId":1},"query":{},"body":{"timelog":{"taskId":1,"isUtc":true},"timelogOptions":{},"tags":[{}]}}
+  v3_get_projects_api_v3_projects_projectid_time_total_json:
+    args: {"path":{"projectId":1},"query":{}}
+  v3_get_projects_api_v3_reporting_dashboards_data_milestones_json:
+    args: {"path":{},"query":{}}
+  v3_get_projects_api_v3_reporting_dashboards_details_milestones_json:
+    args: {"path":{},"query":{}}
+  v3_get_projects_api_v3_reporting_precanned_companytime_json:
+    args: {"path":{},"query":{}}
+  v3_get_projects_api_v3_reporting_precanned_tasktime_json:
+    args: {"path":{},"query":{}}
+  v3_get_projects_api_v3_reporting_precanned_usertaskcompletion_json:
+    args: {"path":{},"query":{}}
+  v3_get_projects_api_v3_statuses_json:
+    args: {"path":{},"query":{}}
+  v3_get_projects_api_v3_statuses_timeline_json:
+    args: {"path":{},"query":{}}
+  v3_get_projects_api_v3_taskgroups_taskgroupid_tasks_json:
+    args: {"path":{"taskgroupId":1},"query":{}}
+  v3_post_projects_api_v3_taskgroups_taskgroupid_tasks_json:
+    args: {"path":{"taskgroupId":1},"query":{},"body":{"task":{"startAt":"2026-01-15T12:00:00Z","startDate":"2026-01-15","dueAt":"2026-01-15T12:00:00Z","dueDate":"2026-01-15","originalDueDate":"2026-01-15","priority":{"Value":"Teamwork API value","Null":true,"Set":true},"customFields":{"Values":[{"customfieldId":1,"value":null,"countryCode":"Teamwork API value","currencySymbol":"Teamwork API value","urlTextToDisplay":"https://acme.invalid/resource"}]}},"taskOptions":{"notify":true,"everyoneMustDo":true,"isTemplate":true,"parseInlineTags":true,"appendAssignees":true,"checkInvalidusers":true,"pushSubtasks":true,"pushDependents":true},"tags":[{}],"attachments":{},"attachmentOptions":{},"predecessors":[{"id":1,"type":"Teamwork API value"}],"workflows":{}}}
+  v3_get_projects_api_v3_tasklists_json:
+    args: {"path":{},"query":{}}
+  v3_get_projects_api_v3_tasklists_templates_json:
+    args: {"path":{},"query":{}}
+  v3_delete_projects_api_v3_tasklists_tasklistid_json:
+    args: {"path":{"tasklistId":1},"query":{}}
+  v3_get_projects_api_v3_tasklists_tasklistid_json:
+    args: {"path":{"tasklistId":1},"query":{}}
+  v3_get_projects_api_v3_tasklists_tasklistid_project_json:
+    args: {"path":{"tasklistId":1},"query":{}}
+  v3_get_projects_api_v3_tasklists_tasklistid_tasks_json:
+    args: {"path":{"tasklistId":1},"query":{}}
+  v3_post_projects_api_v3_tasklists_tasklistid_tasks_json:
+    args: {"path":{"tasklistId":1},"query":{},"body":{"task":{"startAt":"2026-01-15T12:00:00Z","startDate":"2026-01-15","dueAt":"2026-01-15T12:00:00Z","dueDate":"2026-01-15","originalDueDate":"2026-01-15","priority":{"Value":"Teamwork API value","Null":true,"Set":true},"customFields":{"Values":[{"customfieldId":1,"value":null,"countryCode":"Teamwork API value","currencySymbol":"Teamwork API value","urlTextToDisplay":"https://acme.invalid/resource"}]}},"taskOptions":{"notify":true,"everyoneMustDo":true,"isTemplate":true,"parseInlineTags":true,"appendAssignees":true,"checkInvalidusers":true,"pushSubtasks":true,"pushDependents":true},"tags":[{}],"attachments":{},"attachmentOptions":{},"predecessors":[{"id":1,"type":"Teamwork API value"}],"workflows":{}}}
+  v3_get_projects_api_v3_tasklists_tasklistid_time_total_json:
+    args: {"path":{"tasklistId":1},"query":{}}
+  v3_get_projects_api_v3_tasks_json:
+    args: {"path":{},"query":{}}
+  v3_get_projects_api_v3_tasks_metrics_complete_json:
+    args: {"path":{},"query":{}}
+  v3_get_projects_api_v3_tasks_metrics_late_json:
+    args: {"path":{},"query":{}}
+  v3_get_projects_api_v3_tasks_id_reminders_json:
+    args: {"path":{"id":1},"query":{}}
+  v3_delete_projects_api_v3_tasks_taskid_json:
+    args: {"path":{"taskId":1},"query":{}}
+  v3_get_projects_api_v3_tasks_taskid_json:
+    args: {"path":{"taskId":1},"query":{}}
+  v3_patch_projects_api_v3_tasks_taskid_json:
+    args: {"path":{"taskId":1},"query":{},"body":{"task":{"startAt":"2026-01-15T12:00:00Z","startDate":"2026-01-15","dueAt":"2026-01-15T12:00:00Z","dueDate":"2026-01-15","originalDueDate":"2026-01-15","priority":{"Value":"Teamwork API value","Null":true,"Set":true},"customFields":{"Values":[{"customfieldId":1,"value":null,"countryCode":"Teamwork API value","currencySymbol":"Teamwork API value","urlTextToDisplay":"https://acme.invalid/resource"}]}},"taskOptions":{"notify":true,"everyoneMustDo":true,"isTemplate":true,"parseInlineTags":true,"appendAssignees":true,"checkInvalidusers":true,"pushSubtasks":true,"pushDependents":true},"tags":[{}],"attachments":{},"attachmentOptions":{},"predecessors":[{"id":1,"type":"Teamwork API value"}],"workflows":{}}}
+  v3_put_projects_api_v3_tasks_taskid_json:
+    args: {"path":{"taskId":1},"query":{},"body":{"task":{"startAt":"2026-01-15T12:00:00Z","startDate":"2026-01-15","dueAt":"2026-01-15T12:00:00Z","dueDate":"2026-01-15","originalDueDate":"2026-01-15","priority":{"Value":"Teamwork API value","Null":true,"Set":true},"customFields":{"Values":[{"customfieldId":1,"value":null,"countryCode":"Teamwork API value","currencySymbol":"Teamwork API value","urlTextToDisplay":"https://acme.invalid/resource"}]}},"taskOptions":{"notify":true,"everyoneMustDo":true,"isTemplate":true,"parseInlineTags":true,"appendAssignees":true,"checkInvalidusers":true,"pushSubtasks":true,"pushDependents":true},"tags":[{}],"attachments":{},"attachmentOptions":{},"predecessors":[{"id":1,"type":"Teamwork API value"}],"workflows":{}}}
+  v3_get_projects_api_v3_tasks_taskid_project_json:
+    args: {"path":{"taskId":1},"query":{}}
+  v3_post_projects_api_v3_tasks_taskid_reminders_json:
+    args: {"path":{"taskId":1},"query":{},"body":{"reminder":{"userIds":[1],"teamIds":[1],"remindAt":{},"type":"Teamwork API value","isRelative":true,"relativeNumberDays":1}}}
+  v3_delete_projects_api_v3_tasks_taskid_reminders_reminderid_json:
+    args: {"path":{"taskId":1,"reminderId":1},"query":{}}
+  v3_patch_projects_api_v3_tasks_taskid_reminders_reminderid_json:
+    args: {"path":{"taskId":1,"reminderId":1},"query":{},"body":{"reminder":{"userIds":[1],"teamIds":[1],"remindAt":{},"type":"Teamwork API value","isRelative":true,"relativeNumberDays":1}}}
+  v3_get_projects_api_v3_tasks_taskid_subtasks_json:
+    args: {"path":{"taskId":1},"query":{}}
+  v3_post_projects_api_v3_tasks_taskid_subtasks_json:
+    args: {"path":{"taskId":1},"query":{},"body":{"task":{"startAt":"2026-01-15T12:00:00Z","startDate":"2026-01-15","dueAt":"2026-01-15T12:00:00Z","dueDate":"2026-01-15","originalDueDate":"2026-01-15","priority":{"Value":"Teamwork API value","Null":true,"Set":true},"customFields":{"Values":[{"customfieldId":1,"value":null,"countryCode":"Teamwork API value","currencySymbol":"Teamwork API value","urlTextToDisplay":"https://acme.invalid/resource"}]}},"taskOptions":{"notify":true,"everyoneMustDo":true,"isTemplate":true,"parseInlineTags":true,"appendAssignees":true,"checkInvalidusers":true,"pushSubtasks":true,"pushDependents":true},"tags":[{}],"attachments":{},"attachmentOptions":{},"predecessors":[{"id":1,"type":"Teamwork API value"}],"workflows":{}}}
+  v3_get_projects_api_v3_tasks_taskid_time_json:
+    args: {"path":{"taskId":1},"query":{}}
+  v3_post_projects_api_v3_tasks_taskid_time_json:
+    args: {"path":{"taskId":1},"query":{},"body":{"timelog":{"taskId":1,"isUtc":true},"timelogOptions":{},"tags":[{}]}}
+  v3_get_projects_api_v3_tasks_taskid_time_total_json:
+    args: {"path":{"taskId":1},"query":{}}
+  v3_get_projects_api_v3_time_json:
+    args: {"path":{},"query":{}}
+  v3_get_projects_api_v3_time_report_json:
+    args: {"path":{},"query":{}}
+  v3_get_projects_api_v3_time_report_totals_json:
+    args: {"path":{},"query":{}}
+  v3_get_projects_api_v3_time_report_type_json:
+    args: {"path":{"type":"Teamwork API value"},"query":{}}
+  v3_get_projects_api_v3_time_total_json:
+    args: {"path":{},"query":{}}
+  v3_get_projects_api_v3_time_validate_json:
+    args: {"path":{},"query":{}}
+  v3_delete_projects_api_v3_time_timelogid_json:
+    args: {"path":{"timelogId":1},"query":{}}
+  v3_get_projects_api_v3_time_timelogid_json:
+    args: {"path":{"timelogId":1},"query":{}}
+  v3_patch_projects_api_v3_time_timelogid_json:
+    args: {"path":{"timelogId":1},"query":{},"body":{"timelog":{"taskId":1,"isUtc":true},"timelogOptions":{},"tags":[{}]}}
+  v3_put_projects_api_v3_time_timelogid_json:
+    args: {"path":{"timelogId":1},"query":{},"body":{"timelog":{"taskId":1,"isUtc":true},"timelogOptions":{},"tags":[{}]}}
+  v3_get_projects_api_v3_timers_json:
+    args: {"path":{},"query":{}}
+  v3_get_projects_api_v3_timers_timerid_json:
+    args: {"path":{"timerId":1},"query":{}}

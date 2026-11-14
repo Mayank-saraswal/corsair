@@ -1,40 +1,38 @@
 import type {
+	AuthTypes,
 	BindEndpoints,
-	BindWebhooks,
-	CorsairEndpoint,
 	CorsairErrorHandler,
 	CorsairPlugin,
 	CorsairPluginContext,
-	CorsairWebhook,
 	KeyBuilderContext,
 	PickAuth,
 	PluginAuthConfig,
 	PluginPermissionsConfig,
 	RequiredPluginEndpointMeta,
 	RequiredPluginEndpointSchemas,
-	RequiredPluginWebhookSchemas,
 } from 'corsair/core';
-import type { AuthTypes } from 'corsair/core';
-import type { TeamworkEndpointInputs, TeamworkEndpointOutputs } from './endpoints/types';
-import { TeamworkEndpointInputSchemas, TeamworkEndpointOutputSchemas } from './endpoints/types';
+import { AuthMissingError } from 'corsair/core';
+import {
+	teamworkInputSchemas,
+	teamworkOutputSchemas,
+} from './endpoints/openapi-schema';
+import type { TeamworkOperationEndpoint } from './endpoints/operations';
+import { teamworkOperationsNested } from './endpoints/operations';
 import type {
-	TeamworkWebhookOutputs,
-	ExampleEvent,
-} from './webhooks/types';
-import { ExampleEventSchema } from './webhooks/types';
-import { Example } from './endpoints';
-import { TeamworkSchema } from './schema';
-import { ExampleWebhooks } from './webhooks';
+	TeamworkEndpointInputs,
+	TeamworkEndpointOutputs,
+} from './endpoints/types';
+import { teamworkOperations } from './endpoints/types';
 import { errorHandlers } from './error-handlers';
-import { matchTeamworkTenantWebhook } from './webhooks/tenant-matcher';
-import { resolveTeamworkOAuthWebhookTenantLink } from './webhooks/oauth-tenant-link';
+import { TeamworkSchema } from './schema';
+
+const teamworkEndpointsNested = teamworkOperationsNested;
 
 export type TeamworkPluginOptions = {
-	authType?: PickAuth<'api_key' | 'oauth_2'>;
+	authType?: PickAuth<'api_key'>;
 	key?: string;
-	webhookSecret?: string;
+	siteName?: string;
 	hooks?: InternalTeamworkPlugin['hooks'];
-	webhookHooks?: InternalTeamworkPlugin['webhookHooks'];
 	errorHandlers?: CorsairErrorHandler;
 	permissions?: PluginPermissionsConfig<typeof teamworkEndpointsNested>;
 };
@@ -44,74 +42,44 @@ export type TeamworkContext = CorsairPluginContext<
 	TeamworkPluginOptions
 >;
 
-export type TeamworkKeyBuilderContext = KeyBuilderContext<TeamworkPluginOptions>;
+export type TeamworkKeyBuilderContext =
+	KeyBuilderContext<TeamworkPluginOptions>;
 
-export type TeamworkBoundEndpoints = BindEndpoints<typeof teamworkEndpointsNested>;
-
-type TeamworkEndpoint<
-	K extends keyof TeamworkEndpointOutputs,
-> = CorsairEndpoint<
-	TeamworkContext,
-	TeamworkEndpointInputs[K],
-	TeamworkEndpointOutputs[K]
+export type TeamworkBoundEndpoints = BindEndpoints<
+	typeof teamworkEndpointsNested
 >;
+export type TeamworkEndpoints = Record<string, TeamworkOperationEndpoint>;
 
-export type TeamworkEndpoints = {
-	exampleGet: TeamworkEndpoint<'exampleGet'>;
-};
+export const teamworkEndpointSchemas = Object.fromEntries(
+	teamworkOperations.map((operation) => [
+		operation.id,
+		{
+			input: teamworkInputSchemas[operation.id],
+			output: teamworkOutputSchemas[operation.id],
+		},
+	]),
+) satisfies RequiredPluginEndpointSchemas<typeof teamworkEndpointsNested>;
 
-type TeamworkWebhook<
-	K extends keyof TeamworkWebhookOutputs,
-	TEvent,
-> = CorsairWebhook<TeamworkContext, TEvent, TeamworkWebhookOutputs[K]>;
-
-export type TeamworkWebhooks = {
-	example: TeamworkWebhook<'example', ExampleEvent>;
-};
-
-export type TeamworkBoundWebhooks = BindWebhooks<TeamworkWebhooks>;
-
-const teamworkEndpointsNested = {
-	example: {
-		get: Example.get,
-	},
-} as const;
-
-const teamworkWebhooksNested = {
-	example: {
-		example: ExampleWebhooks.example,
-	},
-} as const;
-
-export const teamworkEndpointSchemas = {
-	'example.get': {
-		input: TeamworkEndpointInputSchemas.exampleGet,
-		output: TeamworkEndpointOutputSchemas.exampleGet,
-	},
-} as const satisfies RequiredPluginEndpointSchemas<typeof teamworkEndpointsNested>;
-
-const teamworkWebhookSchemas = {
-	'example.example': {
-		description: 'An example webhook event',
-		payload: ExampleEventSchema,
-		response: ExampleEventSchema,
-	},
-} as const satisfies RequiredPluginWebhookSchemas<typeof teamworkWebhooksNested>;
+const teamworkEndpointMeta = Object.fromEntries(
+	teamworkOperations.map((operation) => [
+		operation.id,
+		{
+			riskLevel:
+				operation.method === 'GET'
+					? 'read'
+					: operation.method === 'DELETE' ||
+							/\b(delete|remove)\b|convert.*currency/i.test(operation.summary)
+						? 'destructive'
+						: 'write',
+			description: operation.summary,
+		},
+	]),
+) satisfies RequiredPluginEndpointMeta<typeof teamworkEndpointsNested>;
 
 const defaultAuthType: AuthTypes = 'api_key' as const;
 
-const teamworkEndpointMeta = {
-	'example.get': {
-		riskLevel: 'read',
-		description: 'Get an example resource by ID',
-	},
-} as const satisfies RequiredPluginEndpointMeta<typeof teamworkEndpointsNested>;
-
 export const teamworkAuthConfig = {
 	api_key: {
-		account: ['tenant_external_id'] as const,
-	},
-	oauth_2: {
 		account: ['tenant_external_id'] as const,
 	},
 } as const satisfies PluginAuthConfig;
@@ -120,13 +88,12 @@ export type BaseTeamworkPlugin<T extends TeamworkPluginOptions> = CorsairPlugin<
 	'teamwork',
 	typeof TeamworkSchema,
 	typeof teamworkEndpointsNested,
-	typeof teamworkWebhooksNested,
+	Record<string, never>,
 	T,
 	typeof defaultAuthType
 >;
 
 export type InternalTeamworkPlugin = BaseTeamworkPlugin<TeamworkPluginOptions>;
-
 export type ExternalTeamworkPlugin<T extends TeamworkPluginOptions> =
 	BaseTeamworkPlugin<T>;
 
@@ -141,62 +108,27 @@ export function teamwork<const T extends TeamworkPluginOptions>(
 		id: 'teamwork',
 		authConfig: teamworkAuthConfig,
 		schema: TeamworkSchema,
-		options: options,
+		options,
 		hooks: options.hooks,
-		webhookHooks: options.webhookHooks,
-		endpoints: teamworkEndpointsNested,
-		webhooks: teamworkWebhooksNested,
+		endpoints: teamworkOperationsNested,
+		webhooks: {},
 		endpointMeta: teamworkEndpointMeta,
 		endpointSchemas: teamworkEndpointSchemas,
-		webhookSchemas: teamworkWebhookSchemas,
-		pluginWebhookMatcher: (request) => {
-			const headers = request.headers;
-			// TODO: Update to match your webhook signature headers
-			return 'x-teamwork-signature' in headers;
-		},
-		pluginTenantWebhookMatcher: matchTeamworkTenantWebhook,
-		oauthWebhookTenantLinkResolver: resolveTeamworkOAuthWebhookTenantLink,
 		errorHandlers: {
 			...errorHandlers,
 			...options.errorHandlers,
 		},
 		keyBuilder: async (ctx: TeamworkKeyBuilderContext, source) => {
-			if (source === 'webhook' && options.webhookSecret) {
-				return options.webhookSecret;
-			}
-
-			if (source === 'webhook') {
-				const res = await ctx.keys.get_webhook_signature();
-				return res ?? '';
-			}
-
-			if (source === 'endpoint' && options.key) {
-				return options.key;
-			}
-
-			if (source === 'endpoint' && ctx.authType === 'api_key') {
-				const res = await ctx.keys.get_api_key();
-				return res ?? '';
-			}
-
-			if (source === 'endpoint' && ctx.authType === 'oauth_2') {
-				const res = await ctx.keys.get_access_token();
-				return res ?? '';
-			}
-
-			return '';
+			if (source !== 'endpoint') return '';
+			if (options.key !== undefined) return options.key;
+			if (!ctx.keys) throw new AuthMissingError('teamwork', 'api_key');
+			const apiKey = await ctx.keys.get_api_key();
+			if (!apiKey) throw new AuthMissingError('teamwork', 'api_key');
+			return apiKey;
 		},
 	} satisfies InternalTeamworkPlugin;
 }
 
-export type {
-	ExampleEvent,
-	TeamworkWebhookOutputs,
-} from './webhooks/types';
-
-export type {
-	TeamworkEndpointInputs,
-	TeamworkEndpointOutputs,
-	ExampleGetInput,
-	ExampleGetResponse,
-} from './endpoints/types';
+export { TeamworkSchema };
+export type { TeamworkEndpointInputs, TeamworkEndpointOutputs };
+export { teamworkOperations, teamworkInputSchemas, teamworkOutputSchemas };
