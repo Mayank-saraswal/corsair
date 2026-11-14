@@ -1,9 +1,4 @@
-import { z } from 'zod';
-
-// TODO: Define your database entities here
-// export const HexExample = z.object({
-// 	id: z.string(),
-// 	name: z.string(),
-// 	created_at: z.coerce.date().nullable().optional(),
-// });
-// export type HexExample = z.infer<typeof HexExample>;
+// Hex is a cloud analytics and workspace platform: all operations query or
+// mutate live resources via the REST API and nothing is persisted locally,
+// so the plugin declares no database entities.
+export const hexEntities = {} as const;

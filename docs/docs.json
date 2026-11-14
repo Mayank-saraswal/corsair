@@ -2364,19 +2364,19 @@
                 ]
               },
               {
-                "group": "Genderize",
-                "pages": [
-                  "plugins/genderize/overview",
-                  "plugins/genderize/api",
-                  "plugins/genderize/database"
-                ]
-              },
-              {
                 "group": "GenderAPI.io",
                 "pages": [
                   "plugins/genderapiio/overview",
                   "plugins/genderapiio/api",
                   "plugins/genderapiio/database"
+                ]
+              },
+              {
+                "group": "Genderize",
+                "pages": [
+                  "plugins/genderize/overview",
+                  "plugins/genderize/api",
+                  "plugins/genderize/database"
                 ]
               },
               {
@@ -2623,6 +2623,14 @@
                   "plugins/here/overview",
                   "plugins/here/api",
                   "plugins/here/database"
+                ]
+              },
+              {
+                "group": "Hex",
+                "pages": [
+                  "plugins/hex/overview",
+                  "plugins/hex/api",
+                  "plugins/hex/database"
                 ]
               },
               {
