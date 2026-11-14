@@ -5,9 +5,9 @@ recommendedAuth: api_key
 factory:
   options:
     domain: acme.freshdesk.com
-  note: Provide the account hostname shown in your Freshdesk portal; it is not discovered from the API key.
+  note: "Each connected account stores its own Freshdesk hostname (the `domain` field) next to its API key: `pnpm corsair setup --plugin=freshdesk --tenant=acme domain=acme.freshdesk.com`, or the connect page with Hub. Set the `domain` option only for a single-account setup; it overrides the stored value."
 overviewNote: |
-  Set the exact account hostname from your Freshdesk portal in the `domain` option. Freshdesk API v2 does not support custom CNAMEs. The API key is sent using HTTP Basic authentication with `X` as the password.
+  Every Freshdesk account has its own hostname (for example `acme.freshdesk.com`), so each connected account supplies it as the `domain` field with its API key; the `domain` plugin option overrides it for single-account setups. Freshdesk API v2 does not support custom CNAMEs. The API key is sent using HTTP Basic authentication with `X` as the password.
 
   Freshdesk applies per-minute account and API sublimits. List operations accept `page` (1-based) and `per_page` (maximum 100). A 429 includes `Retry-After`; automatic retries are limited to safe GET requests.
 

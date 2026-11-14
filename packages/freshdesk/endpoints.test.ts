@@ -28,6 +28,8 @@ function buildContext(): FreshdeskContext {
 			get_dek: () => Promise.resolve('test-dek'),
 			issue_new_dek: () => Promise.resolve('test-dek'),
 			get_api_key: () => Promise.resolve('test-key'),
+			get_domain: () => Promise.resolve(null),
+			set_domain: () => Promise.resolve(),
 			set_api_key: () => Promise.resolve(),
 			get_webhook_signature: () => Promise.resolve(null),
 			set_webhook_signature: () => Promise.resolve(),

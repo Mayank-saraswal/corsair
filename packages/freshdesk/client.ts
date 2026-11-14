@@ -48,10 +48,12 @@ function normalizedParamName(name: string): string {
 }
 
 async function resolveDomain(ctx: FreshdeskContext): Promise<string> {
-	const configured = ctx.options.domain;
+	const configured = ctx.options.domain || (await ctx.keys.get_domain());
 	if (configured) return validateDomain(configured);
-	throw new FreshdeskAPIError(
-		'Freshdesk domain is not configured. Set the account-specific domain option.',
+	throw new AuthMissingError(
+		'freshdesk',
+		'api_key',
+		'Freshdesk domain is not set: connect the account with its helpdesk hostname or set the domain option.',
 	);
 }
 

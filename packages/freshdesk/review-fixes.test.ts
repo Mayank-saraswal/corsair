@@ -1,3 +1,4 @@
+import { AuthMissingError } from 'corsair/core';
 import { request } from 'corsair/http';
 import { z } from 'zod';
 import { makeFreshdeskRequest } from './client';
@@ -28,6 +29,8 @@ function buildContext(): FreshdeskContext {
 			get_dek: () => Promise.resolve('test-dek'),
 			issue_new_dek: () => Promise.resolve('test-dek'),
 			get_api_key: () => Promise.resolve('test-key'),
+			get_domain: () => Promise.resolve(null),
+			set_domain: () => Promise.resolve(),
 			set_api_key: () => Promise.resolve(),
 			get_webhook_signature: () => Promise.resolve(null),
 			set_webhook_signature: () => Promise.resolve(),
@@ -256,5 +259,34 @@ describe('Freshdesk review fixes', () => {
 		expect(freshdeskEndpointMeta[`routes.${name}.run`].riskLevel).toBe(
 			'destructive',
 		);
+	});
+
+	it('uses the connected account domain when no domain option is set', async () => {
+		const ctx = buildContext();
+		ctx.options = {};
+		ctx.keys.get_domain = () => Promise.resolve('tenant-b.freshdesk.com');
+		await makeFreshdeskRequest(
+			ctx,
+			'test-api-key',
+			FRESHDESK_OPERATIONS.listAllTicketsGetTickets,
+			{},
+		);
+		expect(mockedRequest.mock.calls.at(-1)?.[0].BASE).toBe(
+			'https://tenant-b.freshdesk.com',
+		);
+	});
+
+	it('asks for a connection when neither a domain option nor a stored domain exists', async () => {
+		const ctx = buildContext();
+		ctx.options = {};
+		await expect(
+			makeFreshdeskRequest(
+				ctx,
+				'test-api-key',
+				FRESHDESK_OPERATIONS.listAllTicketsGetTickets,
+				{},
+			),
+		).rejects.toThrow(AuthMissingError);
+		expect(mockedRequest).not.toHaveBeenCalled();
 	});
 });

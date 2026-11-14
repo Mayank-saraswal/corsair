@@ -30,16 +30,21 @@ export type FreshdeskPluginOptions = {
 	authType?: PickAuth<'api_key'>;
 	key?: string;
 	// Exact account hostname from the Freshdesk portal; custom CNAMEs are unsupported.
+	// When unset, each connected account's stored `domain` field is used.
 	domain?: string;
 	errorHandlers?: CorsairErrorHandler;
 };
 
 export type FreshdeskContext = CorsairPluginContext<
 	typeof FreshdeskSchema,
-	FreshdeskPluginOptions
+	FreshdeskPluginOptions,
+	undefined,
+	typeof freshdeskAuthConfig
 >;
-export type FreshdeskKeyBuilderContext =
-	KeyBuilderContext<FreshdeskPluginOptions>;
+export type FreshdeskKeyBuilderContext = KeyBuilderContext<
+	FreshdeskPluginOptions,
+	typeof freshdeskAuthConfig
+>;
 export type FreshdeskBoundEndpoints = BindEndpoints<
 	typeof freshdeskEndpointsNested
 >;
@@ -2836,8 +2841,15 @@ export const freshdeskEndpointMeta = {
 
 const defaultAuthType: AuthTypes = 'api_key';
 
+/**
+ * Each Freshdesk account lives on its own hostname, so the domain is an
+ * account-level credential field (`get_domain()`) that every connected tenant
+ * supplies. The `domain` plugin option, when set, overrides it.
+ */
 export const freshdeskAuthConfig = {
-	api_key: {},
+	api_key: {
+		account: ['domain'] as const,
+	},
 } as const satisfies PluginAuthConfig;
 
 export type BaseFreshdeskPlugin<T extends FreshdeskPluginOptions> =
@@ -2847,7 +2859,8 @@ export type BaseFreshdeskPlugin<T extends FreshdeskPluginOptions> =
 		typeof freshdeskEndpointsNested,
 		Record<string, never>,
 		T,
-		typeof defaultAuthType
+		typeof defaultAuthType,
+		typeof freshdeskAuthConfig
 	>;
 
 export type InternalFreshdeskPlugin =

@@ -19,6 +19,8 @@ function buildContext(): FreshdeskContext {
 			get_dek: () => Promise.resolve(''),
 			issue_new_dek: () => Promise.resolve(''),
 			get_api_key: () => Promise.resolve(apiKey),
+			get_domain: () => Promise.resolve(null),
+			set_domain: () => Promise.resolve(),
 			set_api_key: () => Promise.resolve(),
 			get_webhook_signature: () => Promise.resolve(null),
 			set_webhook_signature: () => Promise.resolve(),

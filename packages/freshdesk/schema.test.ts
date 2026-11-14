@@ -100,7 +100,7 @@ describe('Freshdesk endpoint schemas', () => {
 
 	it('declares API-key auth, account domain setup, and no webhook surface', () => {
 		const plugin = freshdesk({ domain: 'acme.freshdesk.com' });
-		expect(plugin.authConfig).toEqual({ api_key: {} });
+		expect(plugin.authConfig).toEqual({ api_key: { account: ['domain'] } });
 		expect(plugin.webhooks).toEqual({});
 		expect(plugin.options?.domain).toBe('acme.freshdesk.com');
 		expect(
