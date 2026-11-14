@@ -697,7 +697,7 @@ describe('7. Projects endpoints', () => {
 			{ method: 'POST', body: { name: 'Project Alpha' } },
 		);
 
-		mockedRequest.mockResolvedValue({ project: { id: 'p-1' } });
+		mockedRequest.mockResolvedValue({ success: true, project: { id: 'p-1' } });
 		await Projects.get(ctx, { project_id: 'p-1' });
 		expect(mockedRequest).toHaveBeenCalledWith(
 			'/v1/projects/p-1',
@@ -705,7 +705,7 @@ describe('7. Projects endpoints', () => {
 			{ method: 'GET' },
 		);
 
-		mockedRequest.mockResolvedValue({ updated: true });
+		mockedRequest.mockResolvedValue({ success: true, updated: true });
 		await Projects.update(ctx, { project_id: 'p-1', name: 'Project Beta' });
 		expect(mockedRequest).toHaveBeenCalledWith(
 			'/v1/projects/p-1',
@@ -713,7 +713,7 @@ describe('7. Projects endpoints', () => {
 			{ method: 'PUT', body: { name: 'Project Beta' } },
 		);
 
-		mockedRequest.mockResolvedValue({ deleted: true });
+		mockedRequest.mockResolvedValue({ success: true, deleted: true });
 		await Projects.delete(ctx, { project_id: 'p-1' });
 		expect(mockedRequest).toHaveBeenCalledWith(
 			'/v1/projects/p-1',

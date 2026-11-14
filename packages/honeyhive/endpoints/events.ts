@@ -15,106 +15,126 @@ import type {
 	EventsUpdateInput,
 	EventsUpdateResponse,
 } from './types';
+import {
+	HoneyHiveEndpointInputSchemas,
+	HoneyHiveEndpointOutputSchemas,
+} from './types';
 
 export async function createEvent(
 	ctx: HoneyHiveContext,
 	input: EventsCreateInput,
 ): Promise<EventsCreateResponse> {
+	const parsedInput = HoneyHiveEndpointInputSchemas.eventsCreate.parse(input);
 	const response = await makeHoneyHiveRequest<EventsCreateResponse>(
 		'/v1/events',
 		ctx.key,
 		{
 			method: 'POST',
-			body: input,
+			baseUrl: ctx.options?.baseUrl,
+			body: parsedInput,
 		},
 	);
+	const parsed = HoneyHiveEndpointOutputSchemas.eventsCreate.parse(response);
 
 	await logEventFromContext(
 		ctx,
 		'honeyhive.events.create',
-		{ event_id: response.event_id },
+		{ event_id: parsed.event_id },
 		'completed',
 	);
 
-	return response;
+	return parsed;
 }
 
 export async function createEventBatch(
 	ctx: HoneyHiveContext,
 	input: EventsCreateBatchInput,
 ): Promise<EventsCreateBatchResponse> {
+	const parsedInput =
+		HoneyHiveEndpointInputSchemas.eventsCreateBatch.parse(input);
 	const response = await makeHoneyHiveRequest<EventsCreateBatchResponse>(
 		'/v1/events/batch',
 		ctx.key,
 		{
 			method: 'POST',
-			body: input,
+			baseUrl: ctx.options?.baseUrl,
+			body: parsedInput,
 		},
 	);
+	const parsed =
+		HoneyHiveEndpointOutputSchemas.eventsCreateBatch.parse(response);
 
 	await logEventFromContext(
 		ctx,
 		'honeyhive.events.createBatch',
-		{ count: input.events.length },
+		{ count: parsedInput.events.length },
 		'completed',
 	);
 
-	return response;
+	return parsed;
 }
 
 export async function getEvent(
 	ctx: HoneyHiveContext,
 	input: EventsGetInput,
 ): Promise<EventsGetResponse> {
+	const parsedInput = HoneyHiveEndpointInputSchemas.eventsGet.parse(input);
 	const response = await makeHoneyHiveRequest<EventsGetResponse>(
-		`/v1/projects/${encodeURIComponent(input.project_id)}/events/${encodeURIComponent(input.event_id)}`,
+		`/v1/projects/${encodeURIComponent(parsedInput.project_id)}/events/${encodeURIComponent(parsedInput.event_id)}`,
 		ctx.key,
-		{ method: 'GET' },
+		{ method: 'GET', baseUrl: ctx.options?.baseUrl },
 	);
+	const parsed = HoneyHiveEndpointOutputSchemas.eventsGet.parse(response);
 
 	await logEventFromContext(
 		ctx,
 		'honeyhive.events.get',
-		{ project_id: input.project_id, event_id: input.event_id },
+		{ project_id: parsedInput.project_id, event_id: parsedInput.event_id },
 		'completed',
 	);
 
-	return response;
+	return parsed;
 }
 
 export async function getEventLegacy(
 	ctx: HoneyHiveContext,
 	input: EventsGetLegacyInput,
 ): Promise<EventsGetResponse> {
+	const parsedInput =
+		HoneyHiveEndpointInputSchemas.eventsGetLegacy.parse(input);
 	const response = await makeHoneyHiveRequest<EventsGetResponse>(
-		`/v1/events/${encodeURIComponent(input.event_id)}`,
+		`/v1/events/${encodeURIComponent(parsedInput.event_id)}`,
 		ctx.key,
-		{ method: 'GET' },
+		{ method: 'GET', baseUrl: ctx.options?.baseUrl },
 	);
+	const parsed = HoneyHiveEndpointOutputSchemas.eventsGetLegacy.parse(response);
 
 	await logEventFromContext(
 		ctx,
 		'honeyhive.events.getLegacy',
-		{ event_id: input.event_id },
+		{ event_id: parsedInput.event_id },
 		'completed',
 	);
 
-	return response;
+	return parsed;
 }
 
 export async function updateEvent(
 	ctx: HoneyHiveContext,
 	input: EventsUpdateInput,
 ): Promise<EventsUpdateResponse> {
-	const { event_id, ...body } = input;
+	const parsedInput = HoneyHiveEndpointInputSchemas.eventsUpdate.parse(input);
+	const { event_id, ...body } = parsedInput;
 	const response = await makeHoneyHiveRequest<EventsUpdateResponse>(
 		`/v1/events/${encodeURIComponent(event_id)}`,
 		ctx.key,
 		{
 			method: 'PUT',
+			baseUrl: ctx.options?.baseUrl,
 			body,
 		},
 	);
+	const parsed = HoneyHiveEndpointOutputSchemas.eventsUpdate.parse(response);
 
 	await logEventFromContext(
 		ctx,
@@ -123,54 +143,62 @@ export async function updateEvent(
 		'completed',
 	);
 
-	return response;
+	return parsed;
 }
 
 export async function searchEvents(
 	ctx: HoneyHiveContext,
 	input: EventsSearchInput,
 ): Promise<EventsSearchResponse> {
-	const { project_id, ...body } = input;
+	const parsedInput = HoneyHiveEndpointInputSchemas.eventsSearch.parse(input);
+	const { project_id, ...body } = parsedInput;
 	const response = await makeHoneyHiveRequest<EventsSearchResponse>(
 		`/v1/projects/${encodeURIComponent(project_id)}/events/search`,
 		ctx.key,
 		{
 			method: 'POST',
+			baseUrl: ctx.options?.baseUrl,
 			body,
 		},
 	);
+	const parsed = HoneyHiveEndpointOutputSchemas.eventsSearch.parse(response);
 
 	await logEventFromContext(
 		ctx,
 		'honeyhive.events.search',
-		{ project_id, count: response.count ?? response.events?.length },
+		{ project_id, count: parsed.count ?? parsed.events?.length },
 		'completed',
 	);
 
-	return response;
+	return parsed;
 }
 
 export async function searchEventsLegacy(
 	ctx: HoneyHiveContext,
 	input: EventsSearchLegacyInput,
 ): Promise<EventsSearchResponse> {
+	const parsedInput =
+		HoneyHiveEndpointInputSchemas.eventsSearchLegacy.parse(input);
 	const response = await makeHoneyHiveRequest<EventsSearchResponse>(
 		'/v1/events/search',
 		ctx.key,
 		{
 			method: 'POST',
-			body: input,
+			baseUrl: ctx.options?.baseUrl,
+			body: parsedInput,
 		},
 	);
+	const parsed =
+		HoneyHiveEndpointOutputSchemas.eventsSearchLegacy.parse(response);
 
 	await logEventFromContext(
 		ctx,
 		'honeyhive.events.searchLegacy',
-		{ count: response.count ?? response.events?.length },
+		{ count: parsed.count ?? parsed.events?.length },
 		'completed',
 	);
 
-	return response;
+	return parsed;
 }
 
 export const Events = {

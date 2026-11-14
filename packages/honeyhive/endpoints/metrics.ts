@@ -19,57 +19,79 @@ import type {
 	MetricsUpdateInput,
 	MetricsUpdateResponse,
 } from './types';
+import {
+	HoneyHiveEndpointInputSchemas,
+	HoneyHiveEndpointOutputSchemas,
+} from './types';
 
 export async function listMetrics(
 	ctx: HoneyHiveContext,
 	input: MetricsListInput,
 ): Promise<MetricsListResponse> {
+	const parsedInput = HoneyHiveEndpointInputSchemas.metricsList.parse(input);
 	const response = await makeHoneyHiveRequest<MetricsListResponse>(
 		'/v1/metrics',
 		ctx.key,
-		{ method: 'GET', query: input },
+		{
+			method: 'GET',
+			baseUrl: ctx.options?.baseUrl,
+			query: parsedInput,
+		},
 	);
+	const parsed = HoneyHiveEndpointOutputSchemas.metricsList.parse(response);
 
 	await logEventFromContext(
 		ctx,
 		'honeyhive.metrics.list',
-		{ count: response.metrics?.length },
+		{ count: parsed.metrics?.length },
 		'completed',
 	);
 
-	return response;
+	return parsed;
 }
 
 export async function createMetric(
 	ctx: HoneyHiveContext,
 	input: MetricsCreateInput,
 ): Promise<MetricsCreateResponse> {
+	const parsedInput = HoneyHiveEndpointInputSchemas.metricsCreate.parse(input);
 	const response = await makeHoneyHiveRequest<MetricsCreateResponse>(
 		'/v1/metrics',
 		ctx.key,
-		{ method: 'POST', body: input },
+		{
+			method: 'POST',
+			baseUrl: ctx.options?.baseUrl,
+			body: parsedInput,
+		},
 	);
+	const parsed = HoneyHiveEndpointOutputSchemas.metricsCreate.parse(response);
 
 	await logEventFromContext(
 		ctx,
 		'honeyhive.metrics.create',
-		{ metric_id: response.metric_id },
+		{ metric_id: parsed.metric_id },
 		'completed',
 	);
 
-	return response;
+	return parsed;
 }
 
 export async function updateMetric(
 	ctx: HoneyHiveContext,
 	input: MetricsUpdateInput,
 ): Promise<MetricsUpdateResponse> {
-	const { metric_id, ...body } = input;
+	const parsedInput = HoneyHiveEndpointInputSchemas.metricsUpdate.parse(input);
+	const { metric_id, ...body } = parsedInput;
 	const response = await makeHoneyHiveRequest<MetricsUpdateResponse>(
 		`/v1/metrics/${encodeURIComponent(metric_id)}`,
 		ctx.key,
-		{ method: 'PUT', body },
+		{
+			method: 'PUT',
+			baseUrl: ctx.options?.baseUrl,
+			body,
+		},
 	);
+	const parsed = HoneyHiveEndpointOutputSchemas.metricsUpdate.parse(response);
 
 	await logEventFromContext(
 		ctx,
@@ -78,79 +100,105 @@ export async function updateMetric(
 		'completed',
 	);
 
-	return response;
+	return parsed;
 }
 
 export async function deleteMetric(
 	ctx: HoneyHiveContext,
 	input: MetricsDeleteInput,
 ): Promise<MetricsDeleteResponse> {
+	const parsedInput = HoneyHiveEndpointInputSchemas.metricsDelete.parse(input);
 	const response = await makeHoneyHiveRequest<MetricsDeleteResponse>(
-		`/v1/metrics/${encodeURIComponent(input.metric_id)}`,
+		`/v1/metrics/${encodeURIComponent(parsedInput.metric_id)}`,
 		ctx.key,
-		{ method: 'DELETE' },
+		{
+			method: 'DELETE',
+			baseUrl: ctx.options?.baseUrl,
+		},
 	);
+	const parsed = HoneyHiveEndpointOutputSchemas.metricsDelete.parse(response);
 
 	await logEventFromContext(
 		ctx,
 		'honeyhive.metrics.delete',
-		{ metric_id: input.metric_id },
+		{ metric_id: parsedInput.metric_id },
 		'completed',
 	);
 
-	return response;
+	return parsed;
 }
 
 export async function runMetric(
 	ctx: HoneyHiveContext,
 	input: MetricsRunInput,
 ): Promise<MetricsRunResponse> {
+	const parsedInput = HoneyHiveEndpointInputSchemas.metricsRun.parse(input);
 	const response = await makeHoneyHiveRequest<MetricsRunResponse>(
 		'/v1/metrics/run',
 		ctx.key,
-		{ method: 'POST', body: input },
+		{
+			method: 'POST',
+			baseUrl: ctx.options?.baseUrl,
+			body: parsedInput,
+		},
 	);
+	const parsed = HoneyHiveEndpointOutputSchemas.metricsRun.parse(response);
 
 	await logEventFromContext(
 		ctx,
 		'honeyhive.metrics.run',
-		{ success: response.success },
+		{ success: parsed.success },
 		'completed',
 	);
 
-	return response;
+	return parsed;
 }
 
 export async function listMetricVersions(
 	ctx: HoneyHiveContext,
 	input: MetricsListVersionsInput,
 ): Promise<MetricsListVersionsResponse> {
+	const parsedInput =
+		HoneyHiveEndpointInputSchemas.metricsListVersions.parse(input);
 	const response = await makeHoneyHiveRequest<MetricsListVersionsResponse>(
-		`/v1/metrics/${encodeURIComponent(input.metric_id)}/versions`,
+		`/v1/metrics/${encodeURIComponent(parsedInput.metric_id)}/versions`,
 		ctx.key,
-		{ method: 'GET' },
+		{
+			method: 'GET',
+			baseUrl: ctx.options?.baseUrl,
+		},
 	);
+	const parsed =
+		HoneyHiveEndpointOutputSchemas.metricsListVersions.parse(response);
 
 	await logEventFromContext(
 		ctx,
 		'honeyhive.metrics.listVersions',
-		{ metric_id: input.metric_id, count: response.data?.length },
+		{ metric_id: parsedInput.metric_id, count: parsed.data?.length },
 		'completed',
 	);
 
-	return response;
+	return parsed;
 }
 
 export async function createMetricVersion(
 	ctx: HoneyHiveContext,
 	input: MetricsCreateVersionInput,
 ): Promise<MetricsCreateVersionResponse> {
-	const { metric_id, ...body } = input;
+	const parsedInput =
+		HoneyHiveEndpointInputSchemas.metricsCreateVersion.parse(input);
+	const { metric_id, ...body } = parsedInput;
 	const response = await makeHoneyHiveRequest<MetricsCreateVersionResponse>(
 		`/v1/metrics/${encodeURIComponent(metric_id)}/versions`,
 		ctx.key,
-		{ method: 'POST', body },
+		{
+			method: 'POST',
+			baseUrl: ctx.options?.baseUrl,
+			body,
+		},
 	);
+	const parsed =
+		HoneyHiveEndpointOutputSchemas.metricsCreateVersion.parse(response);
 
 	await logEventFromContext(
 		ctx,
@@ -159,27 +207,37 @@ export async function createMetricVersion(
 		'completed',
 	);
 
-	return response;
+	return parsed;
 }
 
 export async function deployMetricVersion(
 	ctx: HoneyHiveContext,
 	input: MetricsDeployVersionInput,
 ): Promise<MetricsDeployVersionResponse> {
+	const parsedInput =
+		HoneyHiveEndpointInputSchemas.metricsDeployVersion.parse(input);
 	const response = await makeHoneyHiveRequest<MetricsDeployVersionResponse>(
-		`/v1/metrics/${encodeURIComponent(input.metric_id)}/versions/${encodeURIComponent(input.version_name)}/deploy`,
+		`/v1/metrics/${encodeURIComponent(parsedInput.metric_id)}/versions/${encodeURIComponent(parsedInput.version_name)}/deploy`,
 		ctx.key,
-		{ method: 'POST' },
+		{
+			method: 'POST',
+			baseUrl: ctx.options?.baseUrl,
+		},
 	);
+	const parsed =
+		HoneyHiveEndpointOutputSchemas.metricsDeployVersion.parse(response);
 
 	await logEventFromContext(
 		ctx,
 		'honeyhive.metrics.deployVersion',
-		{ metric_id: input.metric_id, version_name: input.version_name },
+		{
+			metric_id: parsedInput.metric_id,
+			version_name: parsedInput.version_name,
+		},
 		'completed',
 	);
 
-	return response;
+	return parsed;
 }
 
 export const Metrics = {

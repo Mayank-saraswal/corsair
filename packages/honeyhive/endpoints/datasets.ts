@@ -19,62 +19,72 @@ import type {
 	DatasetsUpdateLegacyInput,
 	DatasetsUpdateResponse,
 } from './types';
+import {
+	HoneyHiveEndpointInputSchemas,
+	HoneyHiveEndpointOutputSchemas,
+} from './types';
 
 export async function listDatasets(
 	ctx: HoneyHiveContext,
 	input: DatasetsListInput,
 ): Promise<DatasetsListResponse> {
+	const parsedInput = HoneyHiveEndpointInputSchemas.datasetsList.parse(input);
 	const query: Record<string, string | undefined> = {};
-	if (input.dataset_id) query.dataset_id = input.dataset_id;
-	if (input.name) query.name = input.name;
+	if (parsedInput.dataset_id) query.dataset_id = parsedInput.dataset_id;
+	if (parsedInput.name) query.name = parsedInput.name;
 
 	const response = await makeHoneyHiveRequest<DatasetsListResponse>(
-		`/v1/projects/${encodeURIComponent(input.project_id)}/datasets`,
+		`/v1/projects/${encodeURIComponent(parsedInput.project_id)}/datasets`,
 		ctx.key,
-		{ method: 'GET', query },
+		{ method: 'GET', baseUrl: ctx.options?.baseUrl, query },
 	);
+	const parsed = HoneyHiveEndpointOutputSchemas.datasetsList.parse(response);
 
 	await logEventFromContext(
 		ctx,
 		'honeyhive.datasets.list',
-		{ project_id: input.project_id, count: response.datasets?.length },
+		{ project_id: parsedInput.project_id, count: parsed.datasets?.length },
 		'completed',
 	);
 
-	return response;
+	return parsed;
 }
 
 export async function createDataset(
 	ctx: HoneyHiveContext,
 	input: DatasetsCreateInput,
 ): Promise<DatasetsCreateResponse> {
-	const { project_id, ...body } = input;
+	const parsedInput = HoneyHiveEndpointInputSchemas.datasetsCreate.parse(input);
+	const { project_id, ...body } = parsedInput;
 	const response = await makeHoneyHiveRequest<DatasetsCreateResponse>(
 		`/v1/projects/${encodeURIComponent(project_id)}/datasets`,
 		ctx.key,
-		{ method: 'POST', body },
+		{ method: 'POST', baseUrl: ctx.options?.baseUrl, body },
 	);
+	const parsed = HoneyHiveEndpointOutputSchemas.datasetsCreate.parse(response);
 
 	await logEventFromContext(
 		ctx,
 		'honeyhive.datasets.create',
-		{ project_id, name: input.name },
+		{ project_id, name: parsedInput.name },
 		'completed',
 	);
 
-	return response;
+	return parsed;
 }
 
 export async function updateDataset(
 	ctx: HoneyHiveContext,
 	input: DatasetsUpdateInput,
 ): Promise<DatasetsUpdateResponse> {
-	const { project_id, dataset_id, ...body } = input;
+	const parsedInput = HoneyHiveEndpointInputSchemas.datasetsUpdate.parse(input);
+	const { project_id, dataset_id, ...body } = parsedInput;
 	const response = await makeHoneyHiveRequest<DatasetsUpdateResponse>(
 		`/v1/projects/${encodeURIComponent(project_id)}/datasets/${encodeURIComponent(dataset_id)}`,
 		ctx.key,
-		{ method: 'PATCH', body },
+		{ method: 'PATCH', baseUrl: ctx.options?.baseUrl, body },
 	);
+	const parsed = HoneyHiveEndpointOutputSchemas.datasetsUpdate.parse(response);
 
 	await logEventFromContext(
 		ctx,
@@ -83,128 +93,150 @@ export async function updateDataset(
 		'completed',
 	);
 
-	return response;
+	return parsed;
 }
 
 export async function deleteDataset(
 	ctx: HoneyHiveContext,
 	input: DatasetsDeleteInput,
 ): Promise<DatasetsDeleteResponse> {
+	const parsedInput = HoneyHiveEndpointInputSchemas.datasetsDelete.parse(input);
 	const response = await makeHoneyHiveRequest<DatasetsDeleteResponse>(
-		`/v1/projects/${encodeURIComponent(input.project_id)}/datasets/${encodeURIComponent(input.dataset_id)}`,
+		`/v1/projects/${encodeURIComponent(parsedInput.project_id)}/datasets/${encodeURIComponent(parsedInput.dataset_id)}`,
 		ctx.key,
-		{ method: 'DELETE' },
+		{ method: 'DELETE', baseUrl: ctx.options?.baseUrl },
 	);
+	const parsed = HoneyHiveEndpointOutputSchemas.datasetsDelete.parse(response);
 
 	await logEventFromContext(
 		ctx,
 		'honeyhive.datasets.delete',
-		{ project_id: input.project_id, dataset_id: input.dataset_id },
+		{ project_id: parsedInput.project_id, dataset_id: parsedInput.dataset_id },
 		'completed',
 	);
 
-	return response;
+	return parsed;
 }
 
 export async function addDatapoints(
 	ctx: HoneyHiveContext,
 	input: DatasetsAddDatapointsInput,
 ): Promise<DatasetsAddDatapointsResponse> {
-	const { project_id, dataset_id, ...body } = input;
+	const parsedInput =
+		HoneyHiveEndpointInputSchemas.datasetsAddDatapoints.parse(input);
+	const { project_id, dataset_id, ...body } = parsedInput;
 	const response = await makeHoneyHiveRequest<DatasetsAddDatapointsResponse>(
 		`/v1/projects/${encodeURIComponent(project_id)}/datasets/${encodeURIComponent(dataset_id)}/datapoints`,
 		ctx.key,
-		{ method: 'POST', body },
+		{ method: 'POST', baseUrl: ctx.options?.baseUrl, body },
 	);
+	const parsed =
+		HoneyHiveEndpointOutputSchemas.datasetsAddDatapoints.parse(response);
 
 	await logEventFromContext(
 		ctx,
 		'honeyhive.datasets.addDatapoints',
-		{ project_id, dataset_id, count: input.data.length },
+		{ project_id, dataset_id, count: parsedInput.data.length },
 		'completed',
 	);
 
-	return response;
+	return parsed;
 }
 
 export async function removeDatapoint(
 	ctx: HoneyHiveContext,
 	input: DatasetsRemoveDatapointInput,
 ): Promise<DatasetsRemoveDatapointResponse> {
+	const parsedInput =
+		HoneyHiveEndpointInputSchemas.datasetsRemoveDatapoint.parse(input);
 	const response = await makeHoneyHiveRequest<DatasetsRemoveDatapointResponse>(
-		`/v1/projects/${encodeURIComponent(input.project_id)}/datasets/${encodeURIComponent(input.dataset_id)}/datapoints/${encodeURIComponent(input.datapoint_id)}`,
+		`/v1/projects/${encodeURIComponent(parsedInput.project_id)}/datasets/${encodeURIComponent(parsedInput.dataset_id)}/datapoints/${encodeURIComponent(parsedInput.datapoint_id)}`,
 		ctx.key,
-		{ method: 'DELETE' },
+		{ method: 'DELETE', baseUrl: ctx.options?.baseUrl },
 	);
+	const parsed =
+		HoneyHiveEndpointOutputSchemas.datasetsRemoveDatapoint.parse(response);
 
 	await logEventFromContext(
 		ctx,
 		'honeyhive.datasets.removeDatapoint',
 		{
-			project_id: input.project_id,
-			dataset_id: input.dataset_id,
-			datapoint_id: input.datapoint_id,
+			project_id: parsedInput.project_id,
+			dataset_id: parsedInput.dataset_id,
+			datapoint_id: parsedInput.datapoint_id,
 		},
 		'completed',
 	);
 
-	return response;
+	return parsed;
 }
 
 export async function listDatasetsLegacy(
 	ctx: HoneyHiveContext,
 	input: DatasetsListLegacyInput,
 ): Promise<DatasetsListResponse> {
+	const parsedInput =
+		HoneyHiveEndpointInputSchemas.datasetsListLegacy.parse(input);
 	const query: Record<string, string | undefined> = {};
-	if (input.dataset_id) query.dataset_id = input.dataset_id;
-	if (input.name) query.name = input.name;
+	if (parsedInput.dataset_id) query.dataset_id = parsedInput.dataset_id;
+	if (parsedInput.name) query.name = parsedInput.name;
 
 	const response = await makeHoneyHiveRequest<DatasetsListResponse>(
 		'/v1/datasets',
 		ctx.key,
-		{ method: 'GET', query },
+		{ method: 'GET', baseUrl: ctx.options?.baseUrl, query },
 	);
+	const parsed =
+		HoneyHiveEndpointOutputSchemas.datasetsListLegacy.parse(response);
 
 	await logEventFromContext(
 		ctx,
 		'honeyhive.datasets.listLegacy',
-		{ count: response.datasets?.length },
+		{ count: parsed.datasets?.length },
 		'completed',
 	);
 
-	return response;
+	return parsed;
 }
 
 export async function createDatasetLegacy(
 	ctx: HoneyHiveContext,
 	input: DatasetsCreateLegacyInput,
 ): Promise<DatasetsCreateResponse> {
+	const parsedInput =
+		HoneyHiveEndpointInputSchemas.datasetsCreateLegacy.parse(input);
 	const response = await makeHoneyHiveRequest<DatasetsCreateResponse>(
 		'/v1/datasets',
 		ctx.key,
-		{ method: 'POST', body: input },
+		{ method: 'POST', baseUrl: ctx.options?.baseUrl, body: parsedInput },
 	);
+	const parsed =
+		HoneyHiveEndpointOutputSchemas.datasetsCreateLegacy.parse(response);
 
 	await logEventFromContext(
 		ctx,
 		'honeyhive.datasets.createLegacy',
-		{ name: input.name },
+		{ name: parsedInput.name },
 		'completed',
 	);
 
-	return response;
+	return parsed;
 }
 
 export async function updateDatasetLegacy(
 	ctx: HoneyHiveContext,
 	input: DatasetsUpdateLegacyInput,
 ): Promise<DatasetsUpdateResponse> {
-	const { dataset_id, ...body } = input;
+	const parsedInput =
+		HoneyHiveEndpointInputSchemas.datasetsUpdateLegacy.parse(input);
+	const { dataset_id, ...body } = parsedInput;
 	const response = await makeHoneyHiveRequest<DatasetsUpdateResponse>(
 		`/v1/datasets/${encodeURIComponent(dataset_id)}`,
 		ctx.key,
-		{ method: 'PUT', body },
+		{ method: 'PUT', baseUrl: ctx.options?.baseUrl, body },
 	);
+	const parsed =
+		HoneyHiveEndpointOutputSchemas.datasetsUpdateLegacy.parse(response);
 
 	await logEventFromContext(
 		ctx,
@@ -213,27 +245,31 @@ export async function updateDatasetLegacy(
 		'completed',
 	);
 
-	return response;
+	return parsed;
 }
 
 export async function deleteDatasetLegacy(
 	ctx: HoneyHiveContext,
 	input: DatasetsDeleteLegacyInput,
 ): Promise<DatasetsDeleteResponse> {
+	const parsedInput =
+		HoneyHiveEndpointInputSchemas.datasetsDeleteLegacy.parse(input);
 	const response = await makeHoneyHiveRequest<DatasetsDeleteResponse>(
-		`/v1/datasets/${encodeURIComponent(input.dataset_id)}`,
+		`/v1/datasets/${encodeURIComponent(parsedInput.dataset_id)}`,
 		ctx.key,
-		{ method: 'DELETE' },
+		{ method: 'DELETE', baseUrl: ctx.options?.baseUrl },
 	);
+	const parsed =
+		HoneyHiveEndpointOutputSchemas.datasetsDeleteLegacy.parse(response);
 
 	await logEventFromContext(
 		ctx,
 		'honeyhive.datasets.deleteLegacy',
-		{ dataset_id: input.dataset_id },
+		{ dataset_id: parsedInput.dataset_id },
 		'completed',
 	);
 
-	return response;
+	return parsed;
 }
 
 export const Datasets = {

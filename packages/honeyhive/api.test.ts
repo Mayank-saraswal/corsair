@@ -14,6 +14,11 @@ import {
 } from './endpoints/types';
 
 const LIVE_KEY = process.env.HONEYHIVE_API_KEY ?? process.env.HH_API_KEY ?? '';
+if (!LIVE_KEY) {
+	console.warn(
+		'Skipping live tests: HONEYHIVE_API_KEY or HH_API_KEY is not set',
+	);
+}
 const describeLive = LIVE_KEY.length > 0 ? describe : describe.skip;
 
 describeLive('HoneyHive live API read-only smoke tests (env-gated)', () => {

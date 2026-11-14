@@ -7,57 +7,69 @@ import type {
 	SessionsCreateInput,
 	SessionsCreateResponse,
 } from './types';
+import {
+	HoneyHiveEndpointInputSchemas,
+	HoneyHiveEndpointOutputSchemas,
+} from './types';
 
 export async function createSession(
 	ctx: HoneyHiveContext,
 	input: SessionsCreateInput,
 ): Promise<SessionsCreateResponse> {
+	const parsedInput = HoneyHiveEndpointInputSchemas.sessionsCreate.parse(input);
 	const response = await makeHoneyHiveRequest<SessionsCreateResponse>(
 		'/v1/sessions',
 		ctx.key,
 		{
 			method: 'POST',
-			body: input,
+			baseUrl: ctx.options?.baseUrl,
+			body: parsedInput,
 		},
 	);
+	const parsed = HoneyHiveEndpointOutputSchemas.sessionsCreate.parse(response);
 
 	await logEventFromContext(
 		ctx,
 		'honeyhive.sessions.create',
 		{
-			session_id: response.session_id,
-			event_id: response.event_id,
+			session_id: parsed.session_id,
+			event_id: parsed.event_id,
 		},
 		'completed',
 	);
 
-	return response;
+	return parsed;
 }
 
 export async function createSessionEventBatch(
 	ctx: HoneyHiveContext,
 	input: SessionsCreateEventBatchInput,
 ): Promise<SessionsCreateEventBatchResponse> {
+	const parsedInput =
+		HoneyHiveEndpointInputSchemas.sessionsCreateEventBatch.parse(input);
 	const response = await makeHoneyHiveRequest<SessionsCreateEventBatchResponse>(
-		`/v1/sessions/${encodeURIComponent(input.session_id)}/events/batch`,
+		`/v1/sessions/${encodeURIComponent(parsedInput.session_id)}/events/batch`,
 		ctx.key,
 		{
 			method: 'POST',
-			body: { events: input.events },
+			baseUrl: ctx.options?.baseUrl,
+			body: { events: parsedInput.events },
 		},
 	);
+	const parsed =
+		HoneyHiveEndpointOutputSchemas.sessionsCreateEventBatch.parse(response);
 
 	await logEventFromContext(
 		ctx,
 		'honeyhive.sessions.createEventBatch',
 		{
-			session_id: input.session_id,
-			count: input.events.length,
+			session_id: parsedInput.session_id,
+			count: parsedInput.events.length,
 		},
 		'completed',
 	);
 
-	return response;
+	return parsed;
 }
 
 export const Sessions = {

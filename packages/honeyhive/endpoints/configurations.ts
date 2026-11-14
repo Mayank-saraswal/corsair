@@ -11,57 +11,85 @@ import type {
 	ConfigurationsUpdateInput,
 	ConfigurationsUpdateResponse,
 } from './types';
+import {
+	HoneyHiveEndpointInputSchemas,
+	HoneyHiveEndpointOutputSchemas,
+} from './types';
 
 export async function listConfigurations(
 	ctx: HoneyHiveContext,
 	input: ConfigurationsListInput,
 ): Promise<ConfigurationsListResponse> {
+	const parsedInput =
+		HoneyHiveEndpointInputSchemas.configurationsList.parse(input);
 	const response = await makeHoneyHiveRequest<ConfigurationsListResponse>(
 		'/v1/configurations',
 		ctx.key,
-		{ method: 'GET', query: input },
+		{
+			method: 'GET',
+			baseUrl: ctx.options?.baseUrl,
+			query: parsedInput,
+		},
 	);
+	const parsed =
+		HoneyHiveEndpointOutputSchemas.configurationsList.parse(response);
 
 	await logEventFromContext(
 		ctx,
 		'honeyhive.configurations.list',
-		{ count: response.configurations?.length },
+		{ count: parsed.configurations?.length },
 		'completed',
 	);
 
-	return response;
+	return parsed;
 }
 
 export async function createConfiguration(
 	ctx: HoneyHiveContext,
 	input: ConfigurationsCreateInput,
 ): Promise<ConfigurationsCreateResponse> {
+	const parsedInput =
+		HoneyHiveEndpointInputSchemas.configurationsCreate.parse(input);
 	const response = await makeHoneyHiveRequest<ConfigurationsCreateResponse>(
 		'/v1/configurations',
 		ctx.key,
-		{ method: 'POST', body: input },
+		{
+			method: 'POST',
+			baseUrl: ctx.options?.baseUrl,
+			body: parsedInput,
+		},
 	);
+	const parsed =
+		HoneyHiveEndpointOutputSchemas.configurationsCreate.parse(response);
 
 	await logEventFromContext(
 		ctx,
 		'honeyhive.configurations.create',
-		{ insertedId: response.insertedId },
+		{ insertedId: parsed.insertedId },
 		'completed',
 	);
 
-	return response;
+	return parsed;
 }
 
 export async function updateConfiguration(
 	ctx: HoneyHiveContext,
 	input: ConfigurationsUpdateInput,
 ): Promise<ConfigurationsUpdateResponse> {
-	const { configId, ...body } = input;
+	const parsedInput =
+		HoneyHiveEndpointInputSchemas.configurationsUpdate.parse(input);
+	const { configId, ...body } = parsedInput;
 	const response = await makeHoneyHiveRequest<ConfigurationsUpdateResponse>(
 		`/v1/configurations/${encodeURIComponent(configId)}`,
 		ctx.key,
-		{ method: 'PUT', body },
+		{
+			method: 'PUT',
+			baseUrl: ctx.options?.baseUrl,
+			body,
+		},
 	);
+	const parsed =
+		HoneyHiveEndpointOutputSchemas.configurationsUpdate.parse(response);
 
 	await logEventFromContext(
 		ctx,
@@ -70,27 +98,34 @@ export async function updateConfiguration(
 		'completed',
 	);
 
-	return response;
+	return parsed;
 }
 
 export async function deleteConfiguration(
 	ctx: HoneyHiveContext,
 	input: ConfigurationsDeleteInput,
 ): Promise<ConfigurationsDeleteResponse> {
+	const parsedInput =
+		HoneyHiveEndpointInputSchemas.configurationsDelete.parse(input);
 	const response = await makeHoneyHiveRequest<ConfigurationsDeleteResponse>(
-		`/v1/configurations/${encodeURIComponent(input.configId)}`,
+		`/v1/configurations/${encodeURIComponent(parsedInput.configId)}`,
 		ctx.key,
-		{ method: 'DELETE' },
+		{
+			method: 'DELETE',
+			baseUrl: ctx.options?.baseUrl,
+		},
 	);
+	const parsed =
+		HoneyHiveEndpointOutputSchemas.configurationsDelete.parse(response);
 
 	await logEventFromContext(
 		ctx,
 		'honeyhive.configurations.delete',
-		{ configId: input.configId },
+		{ configId: parsedInput.configId },
 		'completed',
 	);
 
-	return response;
+	return parsed;
 }
 
 export const Configurations = {
