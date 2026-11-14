@@ -1738,6 +1738,17 @@ describe('Gorgias schemas', () => {
 		expect(plugin.endpointMeta?.['widgets.updateWidget']?.riskLevel).toBe(
 			'write',
 		);
+		// Sends to customers, runs bulk jobs, or replaces data (R8).
+		for (const key of [
+			'tickets.createTicket',
+			'ticketMessages.createTicketMessage',
+			'jobs.createJob',
+			'tickets.updateTicketCustomFields',
+			'tickets.updateTicketTags',
+			'customers.updateCustomerData',
+		] as const) {
+			expect(plugin.endpointMeta?.[key]?.riskLevel).toBe('destructive');
+		}
 	});
 
 	it('accepts documented customer channel fields and nullable ticket/page state', () => {

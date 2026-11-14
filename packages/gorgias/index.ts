@@ -628,8 +628,8 @@ const gorgiasEndpointMeta = {
 		description: 'Gorgias REST: Update customer fields values.',
 	},
 	'customers.updateCustomerData': {
-		riskLevel: 'write',
-		description: 'Gorgias REST: Set customer data.',
+		riskLevel: 'destructive',
+		description: "Gorgias REST: Replace a customer's data object.",
 	},
 	'events.getEvent': {
 		riskLevel: 'read',
@@ -672,8 +672,9 @@ const gorgiasEndpointMeta = {
 		description: 'Gorgias REST: Cancel a job.',
 	},
 	'jobs.createJob': {
-		riskLevel: 'write',
-		description: 'Gorgias REST: Create a job.',
+		riskLevel: 'destructive',
+		description:
+			'Gorgias REST: Create a background job (apply a macro, delete or update tickets, export).',
 	},
 	'jobs.getJob': {
 		riskLevel: 'read',
@@ -856,8 +857,9 @@ const gorgiasEndpointMeta = {
 		description: 'Gorgias REST: Update a message.',
 	},
 	'tickets.createTicket': {
-		riskLevel: 'write',
-		description: 'Gorgias REST: Create a ticket.',
+		riskLevel: 'destructive',
+		description:
+			'Gorgias REST: Create a ticket. Messages without sent_datetime are sent to the customer by Gorgias.',
 	},
 	'tickets.createTicketTags': {
 		riskLevel: 'write',
@@ -900,12 +902,14 @@ const gorgiasEndpointMeta = {
 		description: 'Gorgias REST: Update ticket field value.',
 	},
 	'tickets.updateTicketCustomFields': {
-		riskLevel: 'write',
-		description: 'Gorgias REST: Update ticket fields values.',
+		riskLevel: 'destructive',
+		description:
+			'Gorgias REST: Replace all custom field values on a ticket. Fields left out of the request are deleted.',
 	},
 	'tickets.updateTicketTags': {
-		riskLevel: 'write',
-		description: 'Gorgias REST: Set ticket tags.',
+		riskLevel: 'destructive',
+		description:
+			'Gorgias REST: Replace all tags on a ticket with the given list.',
 	},
 	'users.createUser': {
 		riskLevel: 'write',
