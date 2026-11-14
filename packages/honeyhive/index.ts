@@ -532,7 +532,7 @@ export const honeyHiveEndpointMeta = {
 		description: 'Delete an evaluator metric',
 	},
 	'metrics.run': {
-		riskLevel: 'write',
+		riskLevel: 'destructive',
 		description: 'Run an evaluator metric on an event',
 	},
 	'metrics.listVersions': {

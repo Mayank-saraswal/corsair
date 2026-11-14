@@ -96,6 +96,7 @@ describe('HoneyHive metadata and endpoint sync', () => {
 			'projects.update',
 			'projects.delete',
 			'metrics.delete',
+			'metrics.run',
 		];
 
 		for (const op of destructiveOperations) {
