@@ -1,40 +1,36 @@
 import type {
+	AuthTypes,
 	BindEndpoints,
-	BindWebhooks,
 	CorsairEndpoint,
 	CorsairErrorHandler,
 	CorsairPlugin,
 	CorsairPluginContext,
-	CorsairWebhook,
 	KeyBuilderContext,
 	PickAuth,
 	PluginAuthConfig,
 	PluginPermissionsConfig,
 	RequiredPluginEndpointMeta,
 	RequiredPluginEndpointSchemas,
-	RequiredPluginWebhookSchemas,
 } from 'corsair/core';
-import type { AuthTypes } from 'corsair/core';
-import type { IgnisignEndpointInputs, IgnisignEndpointOutputs } from './endpoints/types';
-import { IgnisignEndpointInputSchemas, IgnisignEndpointOutputSchemas } from './endpoints/types';
+import { AuthMissingError } from 'corsair/core';
+import { ignisignEndpointsNested } from './endpoints';
+export { ignisignEndpointsNested };
+
 import type {
-	IgnisignWebhookOutputs,
-	ExampleEvent,
-} from './webhooks/types';
-import { ExampleEventSchema } from './webhooks/types';
-import { Example } from './endpoints';
-import { IgnisignSchema } from './schema';
-import { ExampleWebhooks } from './webhooks';
+	IgnisignEndpointInputs,
+	IgnisignEndpointOutputs,
+} from './endpoints/types';
+import {
+	IgnisignEndpointInputSchemas,
+	IgnisignEndpointOutputSchemas,
+} from './endpoints/types';
 import { errorHandlers } from './error-handlers';
-import { matchIgnisignTenantWebhook } from './webhooks/tenant-matcher';
-import { resolveIgnisignOAuthWebhookTenantLink } from './webhooks/oauth-tenant-link';
+import { IgnisignSchema } from './schema';
 
 export type IgnisignPluginOptions = {
-	authType?: PickAuth<'api_key' | 'oauth_2'>;
+	authType?: PickAuth<'api_key'>;
 	key?: string;
-	webhookSecret?: string;
 	hooks?: InternalIgnisignPlugin['hooks'];
-	webhookHooks?: InternalIgnisignPlugin['webhookHooks'];
 	errorHandlers?: CorsairErrorHandler;
 	permissions?: PluginPermissionsConfig<typeof ignisignEndpointsNested>;
 };
@@ -44,83 +40,445 @@ export type IgnisignContext = CorsairPluginContext<
 	IgnisignPluginOptions
 >;
 
-export type IgnisignKeyBuilderContext = KeyBuilderContext<IgnisignPluginOptions>;
+export type IgnisignKeyBuilderContext =
+	KeyBuilderContext<IgnisignPluginOptions>;
 
-export type IgnisignBoundEndpoints = BindEndpoints<typeof ignisignEndpointsNested>;
-
-type IgnisignEndpoint<
-	K extends keyof IgnisignEndpointOutputs,
-> = CorsairEndpoint<
-	IgnisignContext,
-	IgnisignEndpointInputs[K],
-	IgnisignEndpointOutputs[K]
+export type IgnisignBoundEndpoints = BindEndpoints<
+	typeof ignisignEndpointsNested
 >;
 
-export type IgnisignEndpoints = {
-	exampleGet: IgnisignEndpoint<'exampleGet'>;
-};
-
-type IgnisignWebhook<
-	K extends keyof IgnisignWebhookOutputs,
-	TEvent,
-> = CorsairWebhook<IgnisignContext, TEvent, IgnisignWebhookOutputs[K]>;
-
-export type IgnisignWebhooks = {
-	example: IgnisignWebhook<'example', ExampleEvent>;
-};
-
-export type IgnisignBoundWebhooks = BindWebhooks<IgnisignWebhooks>;
-
-const ignisignEndpointsNested = {
-	example: {
-		get: Example.get,
-	},
-} as const;
-
-const ignisignWebhooksNested = {
-	example: {
-		example: ExampleWebhooks.example,
-	},
-} as const;
+export type IgnisignEndpoint<K extends keyof IgnisignEndpointOutputs> =
+	CorsairEndpoint<
+		IgnisignContext,
+		IgnisignEndpointInputs[K],
+		IgnisignEndpointOutputs[K]
+	>;
 
 export const ignisignEndpointSchemas = {
-	'example.get': {
-		input: IgnisignEndpointInputSchemas.exampleGet,
-		output: IgnisignEndpointOutputSchemas.exampleGet,
+	'signatureRequests.createInOneCall': {
+		input: IgnisignEndpointInputSchemas['signatureRequests.createInOneCall'],
+		output: IgnisignEndpointOutputSchemas['signatureRequests.createInOneCall'],
 	},
-} as const satisfies RequiredPluginEndpointSchemas<typeof ignisignEndpointsNested>;
-
-const ignisignWebhookSchemas = {
-	'example.example': {
-		description: 'An example webhook event',
-		payload: ExampleEventSchema,
-		response: ExampleEventSchema,
+	'signatureRequests.init': {
+		input: IgnisignEndpointInputSchemas['signatureRequests.init'],
+		output: IgnisignEndpointOutputSchemas['signatureRequests.init'],
 	},
-} as const satisfies RequiredPluginWebhookSchemas<typeof ignisignWebhooksNested>;
+	'signatureRequests.initSignerSetup': {
+		input: IgnisignEndpointInputSchemas['signatureRequests.initSignerSetup'],
+		output: IgnisignEndpointOutputSchemas['signatureRequests.initSignerSetup'],
+	},
+	'signatureRequests.list': {
+		input: IgnisignEndpointInputSchemas['signatureRequests.list'],
+		output: IgnisignEndpointOutputSchemas['signatureRequests.list'],
+	},
+	'signatureRequests.getContext': {
+		input: IgnisignEndpointInputSchemas['signatureRequests.getContext'],
+		output: IgnisignEndpointOutputSchemas['signatureRequests.getContext'],
+	},
+	'signatureRequests.update': {
+		input: IgnisignEndpointInputSchemas['signatureRequests.update'],
+		output: IgnisignEndpointOutputSchemas['signatureRequests.update'],
+	},
+	'signatureRequests.publish': {
+		input: IgnisignEndpointInputSchemas['signatureRequests.publish'],
+		output: IgnisignEndpointOutputSchemas['signatureRequests.publish'],
+	},
+	'signatureRequests.close': {
+		input: IgnisignEndpointInputSchemas['signatureRequests.close'],
+		output: IgnisignEndpointOutputSchemas['signatureRequests.close'],
+	},
+	'signatureRequests.getStatus': {
+		input: IgnisignEndpointInputSchemas['signatureRequests.getStatus'],
+		output: IgnisignEndpointOutputSchemas['signatureRequests.getStatus'],
+	},
 
-const defaultAuthType: AuthTypes = 'api_key' as const;
+	'signers.create': {
+		input: IgnisignEndpointInputSchemas['signers.create'],
+		output: IgnisignEndpointOutputSchemas['signers.create'],
+	},
+	'signers.getDetails': {
+		input: IgnisignEndpointInputSchemas['signers.getDetails'],
+		output: IgnisignEndpointOutputSchemas['signers.getDetails'],
+	},
+	'signers.getSummary': {
+		input: IgnisignEndpointInputSchemas['signers.getSummary'],
+		output: IgnisignEndpointOutputSchemas['signers.getSummary'],
+	},
+	'signers.update': {
+		input: IgnisignEndpointInputSchemas['signers.update'],
+		output: IgnisignEndpointOutputSchemas['signers.update'],
+	},
+	'signers.revoke': {
+		input: IgnisignEndpointInputSchemas['signers.revoke'],
+		output: IgnisignEndpointOutputSchemas['signers.revoke'],
+	},
+	'signers.regenerateAuthSecret': {
+		input: IgnisignEndpointInputSchemas['signers.regenerateAuthSecret'],
+		output: IgnisignEndpointOutputSchemas['signers.regenerateAuthSecret'],
+	},
+	'signers.search': {
+		input: IgnisignEndpointInputSchemas['signers.search'],
+		output: IgnisignEndpointOutputSchemas['signers.search'],
+	},
+	'signers.list': {
+		input: IgnisignEndpointInputSchemas['signers.list'],
+		output: IgnisignEndpointOutputSchemas['signers.list'],
+	},
 
-const ignisignEndpointMeta = {
-	'example.get': {
+	'documents.initialize': {
+		input: IgnisignEndpointInputSchemas['documents.initialize'],
+		output: IgnisignEndpointOutputSchemas['documents.initialize'],
+	},
+	'documents.get': {
+		input: IgnisignEndpointInputSchemas['documents.get'],
+		output: IgnisignEndpointOutputSchemas['documents.get'],
+	},
+	'documents.getContext': {
+		input: IgnisignEndpointInputSchemas['documents.getContext'],
+		output: IgnisignEndpointOutputSchemas['documents.getContext'],
+	},
+	'documents.update': {
+		input: IgnisignEndpointInputSchemas['documents.update'],
+		output: IgnisignEndpointOutputSchemas['documents.update'],
+	},
+	'documents.remove': {
+		input: IgnisignEndpointInputSchemas['documents.remove'],
+		output: IgnisignEndpointOutputSchemas['documents.remove'],
+	},
+	'documents.removeContent': {
+		input: IgnisignEndpointInputSchemas['documents.removeContent'],
+		output: IgnisignEndpointOutputSchemas['documents.removeContent'],
+	},
+	'documents.provideJsonContent': {
+		input: IgnisignEndpointInputSchemas['documents.provideJsonContent'],
+		output: IgnisignEndpointOutputSchemas['documents.provideJsonContent'],
+	},
+	'documents.providePrivateContent': {
+		input: IgnisignEndpointInputSchemas['documents.providePrivateContent'],
+		output: IgnisignEndpointOutputSchemas['documents.providePrivateContent'],
+	},
+	'documents.downloadOriginalDoc': {
+		input: IgnisignEndpointInputSchemas['documents.downloadOriginalDoc'],
+		output: IgnisignEndpointOutputSchemas['documents.downloadOriginalDoc'],
+	},
+	'documents.checkAuthenticity': {
+		input: IgnisignEndpointInputSchemas['documents.checkAuthenticity'],
+		output: IgnisignEndpointOutputSchemas['documents.checkAuthenticity'],
+	},
+
+	'signatures.list': {
+		input: IgnisignEndpointInputSchemas['signatures.list'],
+		output: IgnisignEndpointOutputSchemas['signatures.list'],
+	},
+	'signatures.get': {
+		input: IgnisignEndpointInputSchemas['signatures.get'],
+		output: IgnisignEndpointOutputSchemas['signatures.get'],
+	},
+	'signatures.getImages': {
+		input: IgnisignEndpointInputSchemas['signatures.getImages'],
+		output: IgnisignEndpointOutputSchemas['signatures.getImages'],
+	},
+
+	'proofs.downloadSignatureByType': {
+		input: IgnisignEndpointInputSchemas['proofs.downloadSignatureByType'],
+		output: IgnisignEndpointOutputSchemas['proofs.downloadSignatureByType'],
+	},
+	'proofs.downloadLowLevelSignatureProof': {
+		input:
+			IgnisignEndpointInputSchemas['proofs.downloadLowLevelSignatureProof'],
+		output:
+			IgnisignEndpointOutputSchemas['proofs.downloadLowLevelSignatureProof'],
+	},
+
+	'signerProfiles.list': {
+		input: IgnisignEndpointInputSchemas['signerProfiles.list'],
+		output: IgnisignEndpointOutputSchemas['signerProfiles.list'],
+	},
+	'signerProfiles.get': {
+		input: IgnisignEndpointInputSchemas['signerProfiles.get'],
+		output: IgnisignEndpointOutputSchemas['signerProfiles.get'],
+	},
+	'signerProfiles.getInputsNeeded': {
+		input: IgnisignEndpointInputSchemas['signerProfiles.getInputsNeeded'],
+		output: IgnisignEndpointOutputSchemas['signerProfiles.getInputsNeeded'],
+	},
+
+	'applications.getContext': {
+		input: IgnisignEndpointInputSchemas['applications.getContext'],
+		output: IgnisignEndpointOutputSchemas['applications.getContext'],
+	},
+
+	'seal.signM2M': {
+		input: IgnisignEndpointInputSchemas['seal.signM2M'],
+		output: IgnisignEndpointOutputSchemas['seal.signM2M'],
+	},
+
+	'logCapsules.create': {
+		input: IgnisignEndpointInputSchemas['logCapsules.create'],
+		output: IgnisignEndpointOutputSchemas['logCapsules.create'],
+	},
+
+	'bareSignatures.getConfiguration': {
+		input: IgnisignEndpointInputSchemas['bareSignatures.getConfiguration'],
+		output: IgnisignEndpointOutputSchemas['bareSignatures.getConfiguration'],
+	},
+	'bareSignatures.getProofToken': {
+		input: IgnisignEndpointInputSchemas['bareSignatures.getProofToken'],
+		output: IgnisignEndpointOutputSchemas['bareSignatures.getProofToken'],
+	},
+	'bareSignatures.getProofs': {
+		input: IgnisignEndpointInputSchemas['bareSignatures.getProofs'],
+		output: IgnisignEndpointOutputSchemas['bareSignatures.getProofs'],
+	},
+
+	'userInvitations.list': {
+		input: IgnisignEndpointInputSchemas['userInvitations.list'],
+		output: IgnisignEndpointOutputSchemas['userInvitations.list'],
+	},
+	'userInvitations.invite': {
+		input: IgnisignEndpointInputSchemas['userInvitations.invite'],
+		output: IgnisignEndpointOutputSchemas['userInvitations.invite'],
+	},
+	'userInvitations.resend': {
+		input: IgnisignEndpointInputSchemas['userInvitations.resend'],
+		output: IgnisignEndpointOutputSchemas['userInvitations.resend'],
+	},
+	'userInvitations.cancel': {
+		input: IgnisignEndpointInputSchemas['userInvitations.cancel'],
+		output: IgnisignEndpointOutputSchemas['userInvitations.cancel'],
+	},
+	'userInvitations.edit': {
+		input: IgnisignEndpointInputSchemas['userInvitations.edit'],
+		output: IgnisignEndpointOutputSchemas['userInvitations.edit'],
+	},
+} as const satisfies RequiredPluginEndpointSchemas<
+	typeof ignisignEndpointsNested
+>;
+
+export const ignisignEndpointMeta = {
+	'signatureRequests.createInOneCall': {
+		riskLevel: 'write',
+		description:
+			'Create, configure and publish a signature request in a single call',
+	},
+	'signatureRequests.init': {
+		riskLevel: 'write',
+		description: 'Initialize a new empty signature request draft',
+	},
+	'signatureRequests.initSignerSetup': {
+		riskLevel: 'write',
+		description: 'Initialize a signer setup session',
+	},
+	'signatureRequests.list': {
 		riskLevel: 'read',
-		description: 'Get an example resource by ID',
+		description: 'List signature requests for an application and environment',
+	},
+	'signatureRequests.getContext': {
+		riskLevel: 'read',
+		description: 'Get full context and details for a signature request',
+	},
+	'signatureRequests.update': {
+		riskLevel: 'write',
+		description: 'Update signature request settings, signers, and documents',
+	},
+	'signatureRequests.publish': {
+		riskLevel: 'write',
+		description: 'Publish and launch a signature request to begin signing',
+	},
+	'signatureRequests.close': {
+		riskLevel: 'write',
+		description: 'Close an active or expired signature request',
+	},
+	'signatureRequests.getStatus': {
+		riskLevel: 'read',
+		description: 'Get current status for multiple signature requests',
+	},
+
+	'signers.create': {
+		riskLevel: 'write',
+		description: 'Create a new signer in an application environment',
+	},
+	'signers.getDetails': {
+		riskLevel: 'read',
+		description:
+			'Get detailed signer profile including verified claims and signature requests',
+	},
+	'signers.getSummary': {
+		riskLevel: 'read',
+		description: 'Get signer summary information',
+	},
+	'signers.update': {
+		riskLevel: 'write',
+		description: 'Update signer profile inputs and attributes',
+	},
+	'signers.revoke': {
+		riskLevel: 'destructive',
+		description: 'Revoke a signer and their active signature sessions',
+	},
+	'signers.regenerateAuthSecret': {
+		riskLevel: 'write',
+		description: 'Regenerate authentication secret for a signer',
+	},
+	'signers.search': {
+		riskLevel: 'read',
+		description: 'Search signers by name, email or external ID',
+	},
+	'signers.list': {
+		riskLevel: 'read',
+		description: 'List signers with pagination',
+	},
+
+	'documents.initialize': {
+		riskLevel: 'write',
+		description: 'Initialize a document descriptor for a signature request',
+	},
+	'documents.get': {
+		riskLevel: 'read',
+		description: 'Get document record and metadata by ID',
+	},
+	'documents.getContext': {
+		riskLevel: 'read',
+		description:
+			'Get document context including signature summaries and statements',
+	},
+	'documents.update': {
+		riskLevel: 'write',
+		description: 'Update document metadata and display template settings',
+	},
+	'documents.remove': {
+		riskLevel: 'destructive',
+		description: 'Delete a document and its associated records',
+	},
+	'documents.removeContent': {
+		riskLevel: 'destructive',
+		description:
+			'Remove document content while preserving the document descriptor',
+	},
+	'documents.provideJsonContent': {
+		riskLevel: 'write',
+		description: 'Provide structured JSON data content for a document',
+	},
+	'documents.providePrivateContent': {
+		riskLevel: 'write',
+		description:
+			'Provide SHA-256 document hash for private client-side managed documents',
+	},
+	'documents.downloadOriginalDoc': {
+		riskLevel: 'read',
+		description: 'Download original document file as binary data',
+	},
+	'documents.checkAuthenticity': {
+		riskLevel: 'read',
+		description: 'Verify document authenticity and hash integrity',
+	},
+
+	'signatures.list': {
+		riskLevel: 'read',
+		description: 'List all signatures recorded on a document',
+	},
+	'signatures.get': {
+		riskLevel: 'read',
+		description: 'Get details of a specific signature on a document',
+	},
+	'signatures.getImages': {
+		riskLevel: 'read',
+		description: 'Get visual signature images associated with document signers',
+	},
+
+	'proofs.downloadSignatureByType': {
+		riskLevel: 'read',
+		description:
+			'Download signature proof bundle by proof type (e.g. signed PDF or legal kit)',
+	},
+	'proofs.downloadLowLevelSignatureProof': {
+		riskLevel: 'read',
+		description:
+			'Download cryptographic low-level proof file for a specific signer',
+	},
+
+	'signerProfiles.list': {
+		riskLevel: 'read',
+		description:
+			'List signer profiles configured for an application environment',
+	},
+	'signerProfiles.get': {
+		riskLevel: 'read',
+		description: 'Get signer profile configuration by ID',
+	},
+	'signerProfiles.getInputsNeeded': {
+		riskLevel: 'read',
+		description:
+			'Get required and optional input constraints for a signer profile',
+	},
+
+	'applications.getContext': {
+		riskLevel: 'read',
+		description:
+			'Get application configuration, environments, and settings context',
+	},
+
+	'seal.signM2M': {
+		riskLevel: 'write',
+		description: 'Perform automated machine-to-machine (M2M) document sealing',
+	},
+
+	'logCapsules.create': {
+		riskLevel: 'write',
+		description:
+			'Create a timestamped log capsule for tamper-proof data verification',
+	},
+
+	'bareSignatures.getConfiguration': {
+		riskLevel: 'read',
+		description:
+			'Get bare signature application configuration and authorized origins',
+	},
+	'bareSignatures.getProofToken': {
+		riskLevel: 'read',
+		description:
+			'Exchange authorization code for proof access token in bare signature flow',
+	},
+	'bareSignatures.getProofs': {
+		riskLevel: 'read',
+		description:
+			'Fetch cryptographic proofs and signer claims using proof access token',
+	},
+
+	'userInvitations.list': {
+		riskLevel: 'read',
+		description:
+			'List pending and accepted user invitations for an application',
+	},
+	'userInvitations.invite': {
+		riskLevel: 'write',
+		description:
+			'Invite a new collaborator to an application with environment roles',
+	},
+	'userInvitations.resend': {
+		riskLevel: 'write',
+		description: 'Resend invitation email to an invited user',
+	},
+	'userInvitations.cancel': {
+		riskLevel: 'destructive',
+		description: 'Cancel an active user invitation',
+	},
+	'userInvitations.edit': {
+		riskLevel: 'write',
+		description: 'Update environment roles for an invited application user',
 	},
 } as const satisfies RequiredPluginEndpointMeta<typeof ignisignEndpointsNested>;
 
+const defaultAuthType: AuthTypes = 'api_key' as const;
+
 export const ignisignAuthConfig = {
-	api_key: {
-		account: ['tenant_external_id'] as const,
-	},
-	oauth_2: {
-		account: ['tenant_external_id'] as const,
-	},
+	api_key: {},
 } as const satisfies PluginAuthConfig;
 
 export type BaseIgnisignPlugin<T extends IgnisignPluginOptions> = CorsairPlugin<
 	'ignisign',
 	typeof IgnisignSchema,
 	typeof ignisignEndpointsNested,
-	typeof ignisignWebhooksNested,
+	Record<string, never>,
 	T,
 	typeof defaultAuthType
 >;
@@ -137,66 +495,61 @@ export function ignisign<const T extends IgnisignPluginOptions>(
 		...incomingOptions,
 		authType: incomingOptions.authType ?? defaultAuthType,
 	};
+
+	const { DEFAULT: builtInDefault, ...builtIns } = errorHandlers;
+	const { DEFAULT: callerDefault, ...callers } = options.errorHandlers ?? {};
+	const orderedErrorHandlers = {
+		...callers,
+		...builtIns,
+		DEFAULT: callerDefault ?? builtInDefault,
+	};
+
 	return {
 		id: 'ignisign',
 		authConfig: ignisignAuthConfig,
 		schema: IgnisignSchema,
-		options: options,
+		options,
 		hooks: options.hooks,
-		webhookHooks: options.webhookHooks,
 		endpoints: ignisignEndpointsNested,
-		webhooks: ignisignWebhooksNested,
+		webhooks: {},
 		endpointMeta: ignisignEndpointMeta,
 		endpointSchemas: ignisignEndpointSchemas,
-		webhookSchemas: ignisignWebhookSchemas,
-		pluginWebhookMatcher: (request) => {
-			const headers = request.headers;
-			// TODO: Update to match your webhook signature headers
-			return 'x-ignisign-signature' in headers;
-		},
-		pluginTenantWebhookMatcher: matchIgnisignTenantWebhook,
-		oauthWebhookTenantLinkResolver: resolveIgnisignOAuthWebhookTenantLink,
-		errorHandlers: {
-			...errorHandlers,
-			...options.errorHandlers,
-		},
+		errorHandlers: orderedErrorHandlers,
 		keyBuilder: async (ctx: IgnisignKeyBuilderContext, source) => {
-			if (source === 'webhook' && options.webhookSecret) {
-				return options.webhookSecret;
-			}
-
-			if (source === 'webhook') {
-				const res = await ctx.keys.get_webhook_signature();
-				return res ?? '';
-			}
-
-			if (source === 'endpoint' && options.key) {
-				return options.key;
-			}
-
-			if (source === 'endpoint' && ctx.authType === 'api_key') {
-				const res = await ctx.keys.get_api_key();
-				return res ?? '';
-			}
-
-			if (source === 'endpoint' && ctx.authType === 'oauth_2') {
-				const res = await ctx.keys.get_access_token();
-				return res ?? '';
-			}
-
-			return '';
+			if (source !== 'endpoint') return '';
+			if (options.key) return options.key;
+			if (!ctx.keys) throw new AuthMissingError('ignisign', 'api_key');
+			const apiKey = await ctx.keys.get_api_key();
+			if (!apiKey) throw new AuthMissingError('ignisign', 'api_key');
+			return apiKey;
 		},
 	} satisfies InternalIgnisignPlugin;
 }
 
 export type {
-	ExampleEvent,
-	IgnisignWebhookOutputs,
-} from './webhooks/types';
-
-export type {
+	AppEnv,
+	ApplicationContext,
+	BareSignatureProof,
+	BinaryData,
+	Document,
+	DocumentContext,
 	IgnisignEndpointInputs,
 	IgnisignEndpointOutputs,
-	ExampleGetInput,
-	ExampleGetResponse,
+	PaginationData,
+	Signature,
+	SignatureImages,
+	SignatureLowLevelProofType,
+	SignatureProofType,
+	SignatureRequest,
+	SignatureRequestContext,
+	SignatureRequestPublishResponse,
+	SignatureRequestsPaginate,
+	SignatureRequestsStatusContainer,
+	SignerContext,
+	SignerCreationResponse,
+	SignerProfile,
+	SignerSummary,
+	SignersSearchResult,
+	UserInvitation,
+	UserRoles,
 } from './endpoints/types';

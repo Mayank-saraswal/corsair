@@ -1,4 +1,176 @@
-# Display copy for the docs, the catalog, corsair.dev and Hub.
-# `pnpm validate:plugins` fails until the TODO is replaced.
-displayName: "Ignisign"
-description: TODO one sentence on what the API is and what this plugin can do with it.
+displayName: Ignisign
+description: Electronic signature and document workflow integration for Ignisign eIDAS-compliant digital signatures.
+overviewNote: >-
+  Ignisign operations require an API key configured as a Bearer token.
+  Run the Corsair database migration once before passing the connection to
+  `createCorsair`; creating a SQLite file does not create Corsair's tables.
+  Before creating a tenant connect link, mount a Hub delivery handler as
+  described in [Connect / OAuth](/management/connect). A call for a tenant with
+  no stored key fails with `AuthMissingError`, which carries a connect link when
+  Hub is configured.
+examples:
+  read:
+    path: applications.getContext
+    title: Read application context
+    args:
+      appId: appId_sample
+  write:
+    path: signatureRequests.createInOneCall
+    title: Create signature request in one call
+    args:
+      title: Employment Agreement
+      signatureMethod: SIMPLE_STD
+      signers:
+        - email: signer@example.com
+      documents:
+        - originalName: contract.pdf
+          mimeType: application/pdf
+          base64: JVBERi0xLjQK...
+apiExamples:
+  signatureRequests.createInOneCall:
+    title: Sample Agreement
+    signatureMethod: SIMPLE_STD
+    signers:
+      - email: signer@example.com
+    documents:
+      - originalName: contract.pdf
+        mimeType: application/pdf
+        base64: JVBERi0xLjQK...
+  signatureRequests.init:
+    appId: appId_sample
+  signatureRequests.initSignerSetup:
+    appId: appId_sample
+  signatureRequests.list:
+    appId: appId_sample
+  signatureRequests.getContext:
+    signatureRequestId: sig_req_sample
+  signatureRequests.update:
+    signatureRequestId: sig_req_sample
+    title: Updated Title
+  signatureRequests.publish:
+    signatureRequestId: sig_req_sample
+  signatureRequests.close:
+    signatureRequestId: sig_req_sample
+  signatureRequests.getStatus:
+    appId: appId_sample
+    signatureRequestIds:
+      - sig_req_sample
+  signers.create:
+    appId: appId_sample
+    email: signer@example.com
+  signers.getDetails:
+    appId: appId_sample
+    signerId: signer_sample
+  signers.getSummary:
+    appId: appId_sample
+    signerId: signer_sample
+  signers.update:
+    appId: appId_sample
+    signerId: signer_sample
+    firstName: Jane
+  signers.revoke:
+    appId: appId_sample
+    signerId: signer_sample
+  signers.regenerateAuthSecret:
+    appId: appId_sample
+    signerId: signer_sample
+  signers.search:
+    appId: appId_sample
+    filter: sample
+  signers.list:
+    appId: appId_sample
+  documents.initialize:
+    appId: appId_sample
+    signatureRequestId: sig_req_sample
+    label: Contract Document
+  documents.get:
+    documentId: doc_sample
+  documents.getContext:
+    documentId: doc_sample
+  documents.update:
+    documentId: doc_sample
+    label: Updated Label
+  documents.remove:
+    documentId: doc_sample
+  documents.removeContent:
+    documentId: doc_sample
+  documents.provideJsonContent:
+    documentId: doc_sample
+    jsonContent:
+      field: sampleValue
+  documents.providePrivateContent:
+    documentId: doc_sample
+    documentHash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+  documents.downloadOriginalDoc:
+    documentId: doc_sample
+  documents.checkAuthenticity:
+    documentId: doc_sample
+    documentHash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+  signatures.list:
+    documentId: doc_sample
+  signatures.get:
+    documentId: doc_sample
+    signatureId: sig_sample
+  signatures.getImages:
+    documentId: doc_sample
+  proofs.downloadSignatureByType:
+    call: "{ documentId: 'doc_sample', signatureType: 'PDF_WITH_SIGNATURES' }"
+  proofs.downloadLowLevelSignatureProof:
+    call: "{ documentId: 'doc_sample', signatureType: 'PKCS7', signerId: 'signer_sample' }"
+  signerProfiles.list:
+    appId: appId_sample
+  signerProfiles.get:
+    appId: appId_sample
+    signerProfileId: prof_sample
+  signerProfiles.getInputsNeeded:
+    appId: appId_sample
+    signerProfileId: prof_sample
+  applications.getContext:
+    appId: appId_sample
+  seal.signM2M:
+    appId: appId_sample
+    m2mId: m2m_sample
+    documentHashSignedByM2MPrivateKey: hex_signature
+    document:
+      documentType: PDF
+      documentHash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+  logCapsules.create:
+    appId: appId_sample
+    hashSha256_b64: 47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=
+  bareSignatures.getConfiguration:
+    appId: appId_sample
+  bareSignatures.getProofToken:
+    client_id: client_sample
+    client_secret: secret_sample
+    code_verifier: verifier_sample
+    redirect_uri: https://app.example.com/callback
+    code: code_sample
+  bareSignatures.getProofs:
+    proofToken: token_sample
+  userInvitations.list:
+    appId: appId_sample
+  userInvitations.invite:
+    appId: appId_sample
+    email: colleague@example.com
+    roles:
+      DEVELOPMENT:
+        - ADMIN
+  userInvitations.resend:
+    appId: appId_sample
+    userInvitationId: inv_sample
+  userInvitations.cancel:
+    appId: appId_sample
+    userInvitationId: inv_sample
+  userInvitations.edit:
+    appId: appId_sample
+    userInvitationId: inv_sample
+    roles:
+      DEVELOPMENT:
+        - SIGNER
+apiNotes:
+  documents.downloadOriginalDoc: >-
+    Returns a binary response `{ kind: 'binary', contentType, base64, size }`.
+  proofs.downloadSignatureByType: >-
+    Returns a binary response `{ kind: 'binary', contentType, base64, size }`.
+  proofs.downloadLowLevelSignatureProof: >-
+    Returns a binary response `{ kind: 'binary', contentType, base64, size }`.
