@@ -1,6 +1,8 @@
 import { AuthMissingError } from 'corsair/core';
 import { ApiError } from 'corsair/http';
 import { makeTrustpilotRequest } from './client';
+import type { TrustpilotKeyBuilderContext } from './index';
+import { trustpilot } from './index';
 
 const apiKey = 'trustpilot-test-api-key';
 const accessToken = 'trustpilot-test-access-token';
@@ -129,5 +131,69 @@ describe('Trustpilot HTTP client', () => {
 			expect(rejection.retryAfter).toBe(4000);
 			expect(rejection.message).toBe('Trustpilot request failed');
 		}
+	});
+
+	it('refreshes an expired authorization-code access token before a private call', async () => {
+		let accessToken = 'expired-access-token';
+		let refreshToken = 'valid-refresh-token';
+		const keys = {
+			get_dek: async () => 'dek',
+			issue_new_dek: async () => 'dek',
+			get_api_key: async () => null,
+			set_api_key: async (_value: string | null) => undefined,
+			get_access_token: async () => accessToken,
+			set_access_token: async (value: string | null) => {
+				accessToken = value ?? '';
+			},
+			get_refresh_token: async () => refreshToken,
+			set_refresh_token: async (value: string | null) => {
+				refreshToken = value ?? '';
+			},
+			get_expires_at: async () => '1',
+			set_expires_at: async (_value: string | null) => undefined,
+			get_scope: async () => null,
+			set_scope: async (_value: string | null) => undefined,
+			get_webhook_signature: async () => null,
+			set_webhook_signature: async (_value: string | null) => undefined,
+			get_integration_credentials: async () => ({
+				client_id: 'trustpilot-client-id',
+				client_secret: 'trustpilot-client-secret',
+				redirect_url: 'https://app.example.invalid/callback',
+			}),
+		};
+		const context = {
+			authType: 'oauth_2',
+			options: { authType: 'oauth_2' },
+			tenantId: 'tenant-1',
+			meteredOperationId: 'reviews.getPrivate',
+			keys,
+		} satisfies TrustpilotKeyBuilderContext;
+		const fetchMock = jest
+			.spyOn(global, 'fetch')
+			.mockResolvedValue(
+				new Response(
+					'{"access_token":"fresh-access-token","refresh_token":"rotated-refresh-token","expires_in":"3600"}',
+					{ status: 200, headers: { 'Content-Type': 'application/json' } },
+				),
+			);
+		const plugin = trustpilot({ authType: 'oauth_2' });
+		const keyBuilder = plugin.keyBuilder;
+		if (!keyBuilder)
+			throw new Error('Trustpilot OAuth key builder is not configured');
+		const token = await keyBuilder(context, 'endpoint');
+		expect(token).toBe('fresh-access-token');
+		expect(accessToken).toBe('fresh-access-token');
+		expect(refreshToken).toBe('rotated-refresh-token');
+		expect(String(fetchMock.mock.calls[0]?.[0])).toBe(
+			'https://api.trustpilot.com/v1/oauth/oauth-business-users-for-applications/accesstoken',
+		);
+		expect(
+			new Headers(fetchMock.mock.calls[0]?.[1]?.headers).get('authorization'),
+		).toBe(
+			`Basic ${Buffer.from('trustpilot-client-id:trustpilot-client-secret').toString('base64')}`,
+		);
+		expect(String(fetchMock.mock.calls[0]?.[1]?.body)).toContain(
+			'grant_type=refresh_token',
+		);
 	});
 });

@@ -11,7 +11,7 @@ import type {
 	RequiredPluginEndpointMeta,
 	RequiredPluginEndpointSchemas,
 } from 'corsair/core';
-import { AuthMissingError } from 'corsair/core';
+import { AuthMissingError, getOAuthAccessToken } from 'corsair/core';
 import {
 	BusinessUnits,
 	ConsumerProfiles,
@@ -589,6 +589,14 @@ export function trustpilot<const T extends TrustpilotPluginOptions>(
 		webhooks: trustpilotWebhooksNested,
 		endpointMeta: trustpilotEndpointMeta,
 		endpointSchemas: trustpilotEndpointSchemas,
+		oauthConfig: {
+			providerName: 'Trustpilot',
+			authUrl: 'https://authenticate.trustpilot.com',
+			tokenUrl:
+				'https://api.trustpilot.com/v1/oauth/oauth-business-users-for-applications/accesstoken',
+			tokenAuthMethod: 'basic',
+			scopes: [],
+		},
 		pluginWebhookMatcher: undefined,
 		errorHandlers: {
 			...callers,
@@ -610,7 +618,13 @@ export function trustpilot<const T extends TrustpilotPluginOptions>(
 			}
 			const token =
 				ctx.authType === 'oauth_2'
-					? await ctx.keys.get_access_token()
+					? await getOAuthAccessToken(ctx, {
+							plugin: 'trustpilot',
+							tokenUrl:
+								'https://api.trustpilot.com/v1/oauth/oauth-business-users-for-applications/accesstoken',
+							tokenAuthMethod: 'basic',
+							bodyFormat: 'form',
+						})
 					: undefined;
 			if (token) return token;
 			throw new AuthMissingError('trustpilot', 'oauth_2');
