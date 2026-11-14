@@ -1,0 +1,172 @@
+import { logEventFromContext } from 'corsair/core';
+import { makeInterzoidRequest } from '../client';
+import type { InterzoidContext } from '../index';
+import type {
+	GetOrgStandardInput,
+	GetOrgStandardOutput,
+	GetCountryStandardInput,
+	GetCountryStandardOutput,
+	GetCountryInfoInput,
+	GetCountryInfoOutput,
+	GetStateAbbreviationInput,
+	GetStateAbbreviationOutput,
+	GetCityStandardInput,
+	GetCityStandardOutput,
+	GetOfficialNameInput,
+	GetOfficialNameOutput,
+} from './types';
+import {
+	GetOrgStandardInputSchema,
+	GetOrgStandardOutputSchema,
+	GetCountryStandardInputSchema,
+	GetCountryStandardOutputSchema,
+	GetCountryInfoInputSchema,
+	GetCountryInfoOutputSchema,
+	GetStateAbbreviationInputSchema,
+	GetStateAbbreviationOutputSchema,
+	GetCityStandardInputSchema,
+	GetCityStandardOutputSchema,
+	GetOfficialNameInputSchema,
+	GetOfficialNameOutputSchema,
+} from './types';
+
+export const Standardization = {
+	getOrgStandard: async (
+		ctx: InterzoidContext,
+		input: GetOrgStandardInput,
+	): Promise<GetOrgStandardOutput> => {
+		const validatedInput = GetOrgStandardInputSchema.parse(input);
+		const rawResponse = await makeInterzoidRequest<GetOrgStandardOutput>(
+			'/getorgstandard',
+			ctx.key,
+			{
+				method: 'GET',
+				query: validatedInput as Record<
+					string,
+					string | number | boolean | undefined
+				>,
+			},
+		);
+		const parsed = GetOrgStandardOutputSchema.parse(rawResponse);
+		logEventFromContext(ctx, 'interzoid_getOrgStandard', {
+			endpoint: '/getorgstandard',
+			status: (parsed as { Code?: string }).Code ?? 'Success',
+		});
+		return parsed;
+	},
+	getCountryStandard: async (
+		ctx: InterzoidContext,
+		input: GetCountryStandardInput,
+	): Promise<GetCountryStandardOutput> => {
+		const validatedInput = GetCountryStandardInputSchema.parse(input);
+		const rawResponse = await makeInterzoidRequest<GetCountryStandardOutput>(
+			'/getcountrystandard',
+			ctx.key,
+			{
+				method: 'GET',
+				query: validatedInput as Record<
+					string,
+					string | number | boolean | undefined
+				>,
+			},
+		);
+		const parsed = GetCountryStandardOutputSchema.parse(rawResponse);
+		logEventFromContext(ctx, 'interzoid_getCountryStandard', {
+			endpoint: '/getcountrystandard',
+			status: (parsed as { Code?: string }).Code ?? 'Success',
+		});
+		return parsed;
+	},
+	getCountryInfo: async (
+		ctx: InterzoidContext,
+		input: GetCountryInfoInput,
+	): Promise<GetCountryInfoOutput> => {
+		const validatedInput = GetCountryInfoInputSchema.parse(input);
+		const rawResponse = await makeInterzoidRequest<GetCountryInfoOutput>(
+			'/getcountryinfo',
+			ctx.key,
+			{
+				method: 'GET',
+				query: validatedInput as Record<
+					string,
+					string | number | boolean | undefined
+				>,
+			},
+		);
+		const parsed = GetCountryInfoOutputSchema.parse(rawResponse);
+		logEventFromContext(ctx, 'interzoid_getCountryInfo', {
+			endpoint: '/getcountryinfo',
+			status: (parsed as { Code?: string }).Code ?? 'Success',
+		});
+		return parsed;
+	},
+	getStateAbbreviation: async (
+		ctx: InterzoidContext,
+		input: GetStateAbbreviationInput,
+	): Promise<GetStateAbbreviationOutput> => {
+		const validatedInput = GetStateAbbreviationInputSchema.parse(input);
+		const rawResponse = await makeInterzoidRequest<GetStateAbbreviationOutput>(
+			'/getstateabbreviation',
+			ctx.key,
+			{
+				method: 'GET',
+				query: validatedInput as Record<
+					string,
+					string | number | boolean | undefined
+				>,
+			},
+		);
+		const parsed = GetStateAbbreviationOutputSchema.parse(rawResponse);
+		logEventFromContext(ctx, 'interzoid_getStateAbbreviation', {
+			endpoint: '/getstateabbreviation',
+			status: (parsed as { Code?: string }).Code ?? 'Success',
+		});
+		return parsed;
+	},
+	getCityStandard: async (
+		ctx: InterzoidContext,
+		input: GetCityStandardInput,
+	): Promise<GetCityStandardOutput> => {
+		const validatedInput = GetCityStandardInputSchema.parse(input);
+		const rawResponse = await makeInterzoidRequest<GetCityStandardOutput>(
+			'/getcitystandard',
+			ctx.key,
+			{
+				method: 'GET',
+				query: validatedInput as Record<
+					string,
+					string | number | boolean | undefined
+				>,
+			},
+		);
+		const parsed = GetCityStandardOutputSchema.parse(rawResponse);
+		logEventFromContext(ctx, 'interzoid_getCityStandard', {
+			endpoint: '/getcitystandard',
+			status: (parsed as { Code?: string }).Code ?? 'Success',
+		});
+		return parsed;
+	},
+	getOfficialName: async (
+		ctx: InterzoidContext,
+		input: GetOfficialNameInput,
+	): Promise<GetOfficialNameOutput> => {
+		const validatedInput = GetOfficialNameInputSchema.parse(input);
+		const rawResponse = await makeInterzoidRequest<GetOfficialNameOutput>(
+			'/getofficialname',
+			ctx.key,
+			{
+				method: 'GET',
+				query: validatedInput as Record<
+					string,
+					string | number | boolean | undefined
+				>,
+			},
+		);
+		const parsed = GetOfficialNameOutputSchema.parse(rawResponse);
+		logEventFromContext(ctx, 'interzoid_getOfficialName', {
+			endpoint: '/getofficialname',
+			status: (parsed as { Code?: string }).Code ?? 'Success',
+		});
+		return parsed;
+	},
+};

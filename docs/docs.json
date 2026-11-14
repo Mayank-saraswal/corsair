@@ -2364,19 +2364,19 @@
                 ]
               },
               {
-                "group": "Genderize",
-                "pages": [
-                  "plugins/genderize/overview",
-                  "plugins/genderize/api",
-                  "plugins/genderize/database"
-                ]
-              },
-              {
                 "group": "GenderAPI.io",
                 "pages": [
                   "plugins/genderapiio/overview",
                   "plugins/genderapiio/api",
                   "plugins/genderapiio/database"
+                ]
+              },
+              {
+                "group": "Genderize",
+                "pages": [
+                  "plugins/genderize/overview",
+                  "plugins/genderize/api",
+                  "plugins/genderize/database"
                 ]
               },
               {
@@ -2775,6 +2775,14 @@
                   "plugins/intercom/api",
                   "plugins/intercom/database",
                   "plugins/intercom/webhooks"
+                ]
+              },
+              {
+                "group": "Interzoid",
+                "pages": [
+                  "plugins/interzoid/overview",
+                  "plugins/interzoid/api",
+                  "plugins/interzoid/database"
                 ]
               },
               {

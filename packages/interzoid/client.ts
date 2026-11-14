@@ -1,6 +1,6 @@
-import type { ApiRequestOptions } from 'corsair/http';
-import type { OpenAPIConfig } from 'corsair/http';
-import { ApiError, request } from 'corsair/http';
+import { AuthMissingError } from 'corsair/core';
+import type { ApiRequestOptions, OpenAPIConfig } from 'corsair/http';
+import { request } from 'corsair/http';
 
 export class InterzoidAPIError extends Error {
 	constructor(
@@ -12,53 +12,52 @@ export class InterzoidAPIError extends Error {
 	}
 }
 
-// TODO: Update with your API base URL
-const INTERZOID_API_BASE = 'https://api.example.com';
+export const INTERZOID_API_BASE = 'https://api.interzoid.com';
 
 export async function makeInterzoidRequest<T>(
 	endpoint: string,
-	apiKey: string,
+	apiKey?: string,
 	options: {
-		method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
+		method?: 'GET' | 'POST';
+		// `unknown` because request body can be any JSON-serializable record.
 		body?: Record<string, unknown>;
 		query?: Record<string, string | number | boolean | undefined>;
 	} = {},
 ): Promise<T> {
 	const { method = 'GET', body, query } = options;
 
+	// Fail fast on missing credentials before sending keyless requests.
+	if (apiKey !== undefined && apiKey.length === 0) {
+		throw new AuthMissingError('interzoid', 'api_key');
+	}
+	if (!apiKey) {
+		throw new AuthMissingError('interzoid', 'api_key');
+	}
+
 	const config: OpenAPIConfig = {
 		BASE: INTERZOID_API_BASE,
 		VERSION: '1.0.0',
 		WITH_CREDENTIALS: false,
 		CREDENTIALS: 'omit',
-		TOKEN: apiKey,
 		HEADERS: {
 			'Content-Type': 'application/json',
-			// TODO: Add authentication headers
-			// 'Authorization': \`Bearer \${apiKey}\`
+			'x-api-key': apiKey,
 		},
 	};
 
 	const requestOptions: ApiRequestOptions = {
 		method,
 		url: endpoint,
-		body:
-			method === 'POST' || method === 'PUT' || method === 'PATCH'
-				? body
-				: undefined,
+		body: method === 'POST' ? body : undefined,
 		mediaType: 'application/json; charset=utf-8',
-		query: method === 'GET' ? query : undefined,
+		query,
 	};
 
 	try {
 		return await request<T>(config, requestOptions);
 	} catch (error) {
-		// Rethrow core's ApiError as is: its status and retryAfter are what the
-		// error handlers match (429 retries) and what core reads to refresh an
-		// OAuth token after a 401. Wrapping it in a new error loses both.
-		if (error instanceof ApiError) throw error;
 		if (error instanceof Error) {
-			throw new InterzoidAPIError(error.message);
+			throw error;
 		}
 		throw new InterzoidAPIError('Unknown error');
 	}

@@ -1,0 +1,280 @@
+import { logEventFromContext } from 'corsair/core';
+import { makeInterzoidRequest } from '../client';
+import type { InterzoidContext } from '../index';
+import type {
+	GetEmailInfoInput,
+	GetEmailInfoOutput,
+	GetEmailTrustScoreInput,
+	GetEmailTrustScoreOutput,
+	GetEmailDomainTypeInput,
+	GetEmailDomainTypeOutput,
+	GetIpProfileInput,
+	GetIpProfileOutput,
+	GetPhoneProfileInput,
+	GetPhoneProfileOutput,
+	GetGlobalNumberInfoInput,
+	GetGlobalNumberInfoOutput,
+	GetAreaCodeFromNumberInput,
+	GetAreaCodeFromNumberOutput,
+	GetAreaCodeInput,
+	GetAreaCodeOutput,
+	GetZipCodeInfoInput,
+	GetZipCodeInfoOutput,
+	AddressParseInput,
+	AddressParseOutput,
+} from './types';
+import {
+	GetEmailInfoInputSchema,
+	GetEmailInfoOutputSchema,
+	GetEmailTrustScoreInputSchema,
+	GetEmailTrustScoreOutputSchema,
+	GetEmailDomainTypeInputSchema,
+	GetEmailDomainTypeOutputSchema,
+	GetIpProfileInputSchema,
+	GetIpProfileOutputSchema,
+	GetPhoneProfileInputSchema,
+	GetPhoneProfileOutputSchema,
+	GetGlobalNumberInfoInputSchema,
+	GetGlobalNumberInfoOutputSchema,
+	GetAreaCodeFromNumberInputSchema,
+	GetAreaCodeFromNumberOutputSchema,
+	GetAreaCodeInputSchema,
+	GetAreaCodeOutputSchema,
+	GetZipCodeInfoInputSchema,
+	GetZipCodeInfoOutputSchema,
+	AddressParseInputSchema,
+	AddressParseOutputSchema,
+} from './types';
+
+export const Validation = {
+	getEmailInfo: async (
+		ctx: InterzoidContext,
+		input: GetEmailInfoInput,
+	): Promise<GetEmailInfoOutput> => {
+		const validatedInput = GetEmailInfoInputSchema.parse(input);
+		const rawResponse = await makeInterzoidRequest<GetEmailInfoOutput>(
+			'/getemailinfo',
+			ctx.key,
+			{
+				method: 'GET',
+				query: validatedInput as Record<
+					string,
+					string | number | boolean | undefined
+				>,
+			},
+		);
+		const parsed = GetEmailInfoOutputSchema.parse(rawResponse);
+		logEventFromContext(ctx, 'interzoid_getEmailInfo', {
+			endpoint: '/getemailinfo',
+			status: (parsed as { Code?: string }).Code ?? 'Success',
+		});
+		return parsed;
+	},
+	getEmailTrustScore: async (
+		ctx: InterzoidContext,
+		input: GetEmailTrustScoreInput,
+	): Promise<GetEmailTrustScoreOutput> => {
+		const validatedInput = GetEmailTrustScoreInputSchema.parse(input);
+		const rawResponse = await makeInterzoidRequest<GetEmailTrustScoreOutput>(
+			'/emailtrustscore',
+			ctx.key,
+			{
+				method: 'GET',
+				query: validatedInput as Record<
+					string,
+					string | number | boolean | undefined
+				>,
+			},
+		);
+		const parsed = GetEmailTrustScoreOutputSchema.parse(rawResponse);
+		logEventFromContext(ctx, 'interzoid_getEmailTrustScore', {
+			endpoint: '/emailtrustscore',
+			status: (parsed as { Code?: string }).Code ?? 'Success',
+		});
+		return parsed;
+	},
+	getEmailDomainType: async (
+		ctx: InterzoidContext,
+		input: GetEmailDomainTypeInput,
+	): Promise<GetEmailDomainTypeOutput> => {
+		const validatedInput = GetEmailDomainTypeInputSchema.parse(input);
+		const rawResponse = await makeInterzoidRequest<GetEmailDomainTypeOutput>(
+			'/getemaildomaintype',
+			ctx.key,
+			{
+				method: 'GET',
+				query: validatedInput as Record<
+					string,
+					string | number | boolean | undefined
+				>,
+			},
+		);
+		const parsed = GetEmailDomainTypeOutputSchema.parse(rawResponse);
+		logEventFromContext(ctx, 'interzoid_getEmailDomainType', {
+			endpoint: '/getemaildomaintype',
+			status: (parsed as { Code?: string }).Code ?? 'Success',
+		});
+		return parsed;
+	},
+	getIpProfile: async (
+		ctx: InterzoidContext,
+		input: GetIpProfileInput,
+	): Promise<GetIpProfileOutput> => {
+		const validatedInput = GetIpProfileInputSchema.parse(input);
+		const rawResponse = await makeInterzoidRequest<GetIpProfileOutput>(
+			'/getipprofile',
+			ctx.key,
+			{
+				method: 'GET',
+				query: validatedInput as Record<
+					string,
+					string | number | boolean | undefined
+				>,
+			},
+		);
+		const parsed = GetIpProfileOutputSchema.parse(rawResponse);
+		logEventFromContext(ctx, 'interzoid_getIpProfile', {
+			endpoint: '/getipprofile',
+			status: (parsed as { Code?: string }).Code ?? 'Success',
+		});
+		return parsed;
+	},
+	getPhoneProfile: async (
+		ctx: InterzoidContext,
+		input: GetPhoneProfileInput,
+	): Promise<GetPhoneProfileOutput> => {
+		const validatedInput = GetPhoneProfileInputSchema.parse(input);
+		const rawResponse = await makeInterzoidRequest<GetPhoneProfileOutput>(
+			'/getphoneprofile',
+			ctx.key,
+			{
+				method: 'GET',
+				query: validatedInput as Record<
+					string,
+					string | number | boolean | undefined
+				>,
+			},
+		);
+		const parsed = GetPhoneProfileOutputSchema.parse(rawResponse);
+		logEventFromContext(ctx, 'interzoid_getPhoneProfile', {
+			endpoint: '/getphoneprofile',
+			status: (parsed as { Code?: string }).Code ?? 'Success',
+		});
+		return parsed;
+	},
+	getGlobalNumberInfo: async (
+		ctx: InterzoidContext,
+		input: GetGlobalNumberInfoInput,
+	): Promise<GetGlobalNumberInfoOutput> => {
+		const validatedInput = GetGlobalNumberInfoInputSchema.parse(input);
+		const rawResponse = await makeInterzoidRequest<GetGlobalNumberInfoOutput>(
+			'/getglobalnumberinfo',
+			ctx.key,
+			{
+				method: 'GET',
+				query: validatedInput as Record<
+					string,
+					string | number | boolean | undefined
+				>,
+			},
+		);
+		const parsed = GetGlobalNumberInfoOutputSchema.parse(rawResponse);
+		logEventFromContext(ctx, 'interzoid_getGlobalNumberInfo', {
+			endpoint: '/getglobalnumberinfo',
+			status: (parsed as { Code?: string }).Code ?? 'Success',
+		});
+		return parsed;
+	},
+	getAreaCodeFromNumber: async (
+		ctx: InterzoidContext,
+		input: GetAreaCodeFromNumberInput,
+	): Promise<GetAreaCodeFromNumberOutput> => {
+		const validatedInput = GetAreaCodeFromNumberInputSchema.parse(input);
+		const rawResponse = await makeInterzoidRequest<GetAreaCodeFromNumberOutput>(
+			'/getareacodefromnumber',
+			ctx.key,
+			{
+				method: 'GET',
+				query: validatedInput as Record<
+					string,
+					string | number | boolean | undefined
+				>,
+			},
+		);
+		const parsed = GetAreaCodeFromNumberOutputSchema.parse(rawResponse);
+		logEventFromContext(ctx, 'interzoid_getAreaCodeFromNumber', {
+			endpoint: '/getareacodefromnumber',
+			status: (parsed as { Code?: string }).Code ?? 'Success',
+		});
+		return parsed;
+	},
+	getAreaCode: async (
+		ctx: InterzoidContext,
+		input: GetAreaCodeInput,
+	): Promise<GetAreaCodeOutput> => {
+		const validatedInput = GetAreaCodeInputSchema.parse(input);
+		const rawResponse = await makeInterzoidRequest<GetAreaCodeOutput>(
+			'/getareacode',
+			ctx.key,
+			{
+				method: 'GET',
+				query: validatedInput as Record<
+					string,
+					string | number | boolean | undefined
+				>,
+			},
+		);
+		const parsed = GetAreaCodeOutputSchema.parse(rawResponse);
+		logEventFromContext(ctx, 'interzoid_getAreaCode', {
+			endpoint: '/getareacode',
+			status: (parsed as { Code?: string }).Code ?? 'Success',
+		});
+		return parsed;
+	},
+	getZipCodeInfo: async (
+		ctx: InterzoidContext,
+		input: GetZipCodeInfoInput,
+	): Promise<GetZipCodeInfoOutput> => {
+		const validatedInput = GetZipCodeInfoInputSchema.parse(input);
+		const rawResponse = await makeInterzoidRequest<GetZipCodeInfoOutput>(
+			'/getzipcodeinfo',
+			ctx.key,
+			{
+				method: 'GET',
+				query: validatedInput as Record<
+					string,
+					string | number | boolean | undefined
+				>,
+			},
+		);
+		const parsed = GetZipCodeInfoOutputSchema.parse(rawResponse);
+		logEventFromContext(ctx, 'interzoid_getZipCodeInfo', {
+			endpoint: '/getzipcodeinfo',
+			status: (parsed as { Code?: string }).Code ?? 'Success',
+		});
+		return parsed;
+	},
+	addressParse: async (
+		ctx: InterzoidContext,
+		input: AddressParseInput,
+	): Promise<AddressParseOutput> => {
+		const validatedInput = AddressParseInputSchema.parse(input);
+		const rawResponse = await makeInterzoidRequest<AddressParseOutput>(
+			'/addressparse',
+			ctx.key,
+			{
+				method: 'GET',
+				query: validatedInput as Record<
+					string,
+					string | number | boolean | undefined
+				>,
+			},
+		);
+		const parsed = AddressParseOutputSchema.parse(rawResponse);
+		logEventFromContext(ctx, 'interzoid_addressParse', {
+			endpoint: '/addressparse',
+			status: (parsed as { Code?: string }).Code ?? 'Success',
+		});
+		return parsed;
+	},
+};
