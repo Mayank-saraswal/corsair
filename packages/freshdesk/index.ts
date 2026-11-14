@@ -1578,7 +1578,7 @@ export const freshdeskEndpointMeta = {
 		description: 'Create a Ticket: POST /api/v2/tickets (Freshdesk API v2).',
 	},
 	'routes.createOutboundEmailPostOutboundEmail.run': {
-		riskLevel: 'write',
+		riskLevel: 'destructive',
 		description:
 			'Create an Outbound Email: POST /api/v2/tickets/outbound_email (Freshdesk API v2).',
 	},
@@ -1616,12 +1616,12 @@ export const freshdeskEndpointMeta = {
 			'Update Multiple Tickets: POST /api/v2/tickets/bulk_update (Freshdesk API v2).',
 	},
 	'routes.forwardTicketsPostForward.run': {
-		riskLevel: 'write',
+		riskLevel: 'destructive',
 		description:
 			'Forward a ticket: POST /api/v2/tickets/[id]/forward (Freshdesk API v2).',
 	},
 	'routes.ticketMergePutMerge.run': {
-		riskLevel: 'write',
+		riskLevel: 'destructive',
 		description:
 			'Ticket Merge API: PUT /api/v2/tickets/merge (Freshdesk API v2).',
 	},
@@ -1834,7 +1834,7 @@ export const freshdeskEndpointMeta = {
 			"Delete a Ticket Form's Field: DELETE /api/v2/ticket-forms/[form-id]/fields/[field-id] (Freshdesk API v2).",
 	},
 	'routes.replyTicketPostReply.run': {
-		riskLevel: 'write',
+		riskLevel: 'destructive',
 		description:
 			'Create a Reply: POST /api/v2/tickets/[id]/reply (Freshdesk API v2).',
 	},
@@ -1854,12 +1854,12 @@ export const freshdeskEndpointMeta = {
 			'Delete a conversation: DELETE /api/v2/conversations/[id] (Freshdesk API v2).',
 	},
 	'routes.replyToForwardPostReplyToForward.run': {
-		riskLevel: 'write',
+		riskLevel: 'destructive',
 		description:
 			'Reply to Forward: POST /api/v2/tickets/[id]/reply_to_forward (Freshdesk API v2).',
 	},
 	'routes.sendOutboundMessagePostOutboundMessages.run': {
-		riskLevel: 'write',
+		riskLevel: 'destructive',
 		description:
 			'Send Proactive Message: POST /api/v2/channels/outbound-messages (Freshdesk API v2).',
 	},
@@ -1920,7 +1920,7 @@ export const freshdeskEndpointMeta = {
 			'Permanently Delete a Contact: DELETE /api/v2/contacts/[id]/hard_delete (Freshdesk API v2).',
 	},
 	'routes.makeAgentPutMakeAgent.run': {
-		riskLevel: 'write',
+		riskLevel: 'destructive',
 		description:
 			'Make Agent: PUT /api/v2/contacts/[id]/make_agent (Freshdesk API v2).',
 	},
@@ -1930,12 +1930,12 @@ export const freshdeskEndpointMeta = {
 			'Restore a Contact: PUT /api/v2/contacts/[id]/restore (Freshdesk API v2).',
 	},
 	'routes.sendInvitePutSendInvite.run': {
-		riskLevel: 'write',
+		riskLevel: 'destructive',
 		description:
 			'Send Invite to a Contact: PUT /api/v2/contacts/[id]/send_invite (Freshdesk API v2).',
 	},
 	'routes.mergeContactPostMerge.run': {
-		riskLevel: 'write',
+		riskLevel: 'destructive',
 		description:
 			'Merge Contacts: POST /api/v2/contacts/merge (Freshdesk API v2).',
 	},
@@ -2043,7 +2043,7 @@ export const freshdeskEndpointMeta = {
 	'routes.updateAgentAvailabilityPutAvailability.run': {
 		riskLevel: 'write',
 		description:
-			'Update Agent load settings: PUT /api/v2/agents/[id]/availability (Freshdesk API v2).',
+			'Update Agent load settings: PATCH /api/v2/agents/[id]/availability (Freshdesk API v2).',
 	},
 	'routes.viewSkillGet.run': {
 		riskLevel: 'read',
@@ -2068,7 +2068,7 @@ export const freshdeskEndpointMeta = {
 	'routes.updateSkillPut.run': {
 		riskLevel: 'write',
 		description:
-			'Update a Skill: PUT /api/v2/admin/skills/[id] (Freshdesk API v2).',
+			'Update a Skill: PATCH /api/v2/admin/skills/[id] (Freshdesk API v2).',
 	},
 	'routes.viewRoleGet.run': {
 		riskLevel: 'read',
@@ -2796,7 +2796,7 @@ export const freshdeskEndpointMeta = {
 			'Delete a thread: DELETE /api/v2/collaboration/threads/[id] (Freshdesk API v2).',
 	},
 	'routes.createMessageForThreadPostMessages.run': {
-		riskLevel: 'write',
+		riskLevel: 'destructive',
 		description:
 			'Create message for thread: POST /api/v2/collaboration/messages (Freshdesk API v2).',
 	},
