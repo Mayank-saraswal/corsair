@@ -1,6 +1,6 @@
 import { logEventFromContext } from 'corsair/core';
 import type { HexEndpoints } from '..';
-import { compactQuery, makeHexRequest } from '../client';
+import { makeHexRequest } from '../client';
 import type { HexEndpointOutputs } from './types';
 import { HexEndpointInputSchemas, HexEndpointOutputSchemas } from './types';
 

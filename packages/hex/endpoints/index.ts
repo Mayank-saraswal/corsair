@@ -1,81 +1,81 @@
 import {
 	adminListAgentUsage,
-	adminListTopics,
 	adminListCreditGrants,
+	adminListTopics,
 } from './admin';
 import {
-	cellsList,
 	cellsCreate,
 	cellsDelete,
 	cellsGet,
-	cellsUpdate,
 	cellsGetChartImage,
 	cellsGetOutput,
+	cellsList,
+	cellsUpdate,
 } from './cells';
 import {
-	collectionsList,
 	collectionsCreate,
 	collectionsGet,
+	collectionsList,
 	collectionsUpdate,
 } from './collections';
 import {
-	dataConnectionsList,
 	dataConnectionsCreate,
 	dataConnectionsGet,
+	dataConnectionsList,
 	dataConnectionsUpdate,
 	dataConnectionsUpdateSchema,
 } from './data-connections';
 import { embeddingCreatePresignedUrl } from './embedding';
 import {
-	groupsList,
 	groupsCreate,
 	groupsDelete,
 	groupsGet,
+	groupsList,
 	groupsUpdate,
 } from './groups';
 import {
-	guidesUpsertDraft,
 	guidesDeleteDraft,
 	guidesListDrafts,
 	guidesPublish,
+	guidesUpsertDraft,
 } from './guides';
 import {
-	projectsList,
-	projectsCreate,
-	projectsGet,
-	projectsUpdate,
-	projectsGetQueriedTables,
-	projectsEditSharingCollections,
-	projectsEditSharingGroups,
-	projectsEditSharingUsers,
-	projectsEditSharingOrgAndPublic,
-	projectsBatchUpdateComputeProfile,
-	projectsExport,
-} from './projects';
-import {
+	projectRunsCancel,
+	projectRunsGetChartImage,
+	projectRunsGetStatus,
 	projectRunsList,
 	projectRunsRun,
-	projectRunsCancel,
-	projectRunsGetStatus,
-	projectRunsGetChartImage,
 } from './project-runs';
-import { semanticUpdate, semanticIngest } from './semantic';
 import {
-	suggestionsList,
+	projectsBatchUpdateComputeProfile,
+	projectsCreate,
+	projectsEditSharingCollections,
+	projectsEditSharingGroups,
+	projectsEditSharingOrgAndPublic,
+	projectsEditSharingUsers,
+	projectsExport,
+	projectsGet,
+	projectsGetQueriedTables,
+	projectsList,
+	projectsUpdate,
+} from './projects';
+import { semanticIngest, semanticUpdate } from './semantic';
+import {
 	suggestionsGet,
+	suggestionsGetV2,
+	suggestionsList,
+	suggestionsTriggerReview,
 	suggestionsUpdate,
 	suggestionsUpdateChange,
-	suggestionsTriggerReview,
-	suggestionsGetV2,
 } from './suggestions';
 import {
-	threadsList,
+	threadsContinue,
 	threadsCreate,
 	threadsGet,
-	threadsContinue,
 	threadsGetMessages,
+	threadsList,
 } from './threads';
-import { usersList, usersDeactivate, usersMe } from './users';
+import { usersDeactivate, usersList, usersMe } from './users';
 
 export const Admin = {
 	listAgentUsage: adminListAgentUsage,

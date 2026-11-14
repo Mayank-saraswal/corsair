@@ -1,9 +1,9 @@
 import { AuthMissingError } from 'corsair/core';
 import { ApiError, request } from 'corsair/http';
 import {
+	compactQuery,
 	HEX_API_BASE,
 	HEX_NO_TRANSPORT_RETRIES,
-	compactQuery,
 	makeHexRequest,
 } from './client';
 import { errorHandlers } from './error-handlers';

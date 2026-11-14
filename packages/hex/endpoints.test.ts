@@ -73,7 +73,10 @@ function expectLogged(operation: string) {
 describe('Admin endpoints', () => {
 	it('Admin.listAgentUsage executes GET /v1/agent-usage', async () => {
 		mockedRequest.mockResolvedValue(validOutputs.adminListAgentUsage);
-		const result = await Admin.listAgentUsage(ctx, validInputs.adminListAgentUsage);
+		const result = await Admin.listAgentUsage(
+			ctx,
+			validInputs.adminListAgentUsage,
+		);
 		expect(result).toEqual(validOutputs.adminListAgentUsage);
 		expect(mockedRequest).toHaveBeenCalledTimes(1);
 		expect(mockedRequest).toHaveBeenCalledWith(
@@ -86,9 +89,14 @@ describe('Admin endpoints', () => {
 
 	it('Admin.listAgentUsage rejects invalid input before network I/O', async () => {
 		// unknown because invalid input signature must bypass static typing for runtime test
-		const fn = Admin.listAgentUsage as (c: unknown, i: unknown) => Promise<unknown>;
+		const fn = Admin.listAgentUsage as (
+			c: unknown,
+			i: unknown,
+		) => Promise<unknown>;
 		// unknown because a rejection value has no static type; assertions below narrow it.
-		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch((caught: unknown) => caught);
+		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch(
+			(caught: unknown) => caught,
+		);
 		expect(error).toBeDefined();
 		expect(mockedRequest).not.toHaveBeenCalled();
 	});
@@ -110,14 +118,19 @@ describe('Admin endpoints', () => {
 		// unknown because invalid input signature must bypass static typing for runtime test
 		const fn = Admin.listTopics as (c: unknown, i: unknown) => Promise<unknown>;
 		// unknown because a rejection value has no static type; assertions below narrow it.
-		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch((caught: unknown) => caught);
+		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch(
+			(caught: unknown) => caught,
+		);
 		expect(error).toBeDefined();
 		expect(mockedRequest).not.toHaveBeenCalled();
 	});
 
 	it('Admin.listCreditGrants executes GET /v1/credit-grants', async () => {
 		mockedRequest.mockResolvedValue(validOutputs.adminListCreditGrants);
-		const result = await Admin.listCreditGrants(ctx, validInputs.adminListCreditGrants);
+		const result = await Admin.listCreditGrants(
+			ctx,
+			validInputs.adminListCreditGrants,
+		);
 		expect(result).toEqual(validOutputs.adminListCreditGrants);
 		expect(mockedRequest).toHaveBeenCalledTimes(1);
 		expect(mockedRequest).toHaveBeenCalledWith(
@@ -130,13 +143,17 @@ describe('Admin endpoints', () => {
 
 	it('Admin.listCreditGrants rejects invalid input before network I/O', async () => {
 		// unknown because invalid input signature must bypass static typing for runtime test
-		const fn = Admin.listCreditGrants as (c: unknown, i: unknown) => Promise<unknown>;
+		const fn = Admin.listCreditGrants as (
+			c: unknown,
+			i: unknown,
+		) => Promise<unknown>;
 		// unknown because a rejection value has no static type; assertions below narrow it.
-		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch((caught: unknown) => caught);
+		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch(
+			(caught: unknown) => caught,
+		);
 		expect(error).toBeDefined();
 		expect(mockedRequest).not.toHaveBeenCalled();
 	});
-
 });
 
 describe('Cells endpoints', () => {
@@ -157,7 +174,9 @@ describe('Cells endpoints', () => {
 		// unknown because invalid input signature must bypass static typing for runtime test
 		const fn = Cells.list as (c: unknown, i: unknown) => Promise<unknown>;
 		// unknown because a rejection value has no static type; assertions below narrow it.
-		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch((caught: unknown) => caught);
+		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch(
+			(caught: unknown) => caught,
+		);
 		expect(error).toBeDefined();
 		expect(mockedRequest).not.toHaveBeenCalled();
 	});
@@ -179,7 +198,9 @@ describe('Cells endpoints', () => {
 		// unknown because invalid input signature must bypass static typing for runtime test
 		const fn = Cells.create as (c: unknown, i: unknown) => Promise<unknown>;
 		// unknown because a rejection value has no static type; assertions below narrow it.
-		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch((caught: unknown) => caught);
+		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch(
+			(caught: unknown) => caught,
+		);
 		expect(error).toBeDefined();
 		expect(mockedRequest).not.toHaveBeenCalled();
 	});
@@ -201,7 +222,9 @@ describe('Cells endpoints', () => {
 		// unknown because invalid input signature must bypass static typing for runtime test
 		const fn = Cells.delete as (c: unknown, i: unknown) => Promise<unknown>;
 		// unknown because a rejection value has no static type; assertions below narrow it.
-		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch((caught: unknown) => caught);
+		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch(
+			(caught: unknown) => caught,
+		);
 		expect(error).toBeDefined();
 		expect(mockedRequest).not.toHaveBeenCalled();
 	});
@@ -223,7 +246,9 @@ describe('Cells endpoints', () => {
 		// unknown because invalid input signature must bypass static typing for runtime test
 		const fn = Cells.get as (c: unknown, i: unknown) => Promise<unknown>;
 		// unknown because a rejection value has no static type; assertions below narrow it.
-		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch((caught: unknown) => caught);
+		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch(
+			(caught: unknown) => caught,
+		);
 		expect(error).toBeDefined();
 		expect(mockedRequest).not.toHaveBeenCalled();
 	});
@@ -245,14 +270,19 @@ describe('Cells endpoints', () => {
 		// unknown because invalid input signature must bypass static typing for runtime test
 		const fn = Cells.update as (c: unknown, i: unknown) => Promise<unknown>;
 		// unknown because a rejection value has no static type; assertions below narrow it.
-		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch((caught: unknown) => caught);
+		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch(
+			(caught: unknown) => caught,
+		);
 		expect(error).toBeDefined();
 		expect(mockedRequest).not.toHaveBeenCalled();
 	});
 
 	it('Cells.getChartImage executes GET /v1/cells/{cellId}/image', async () => {
 		mockedRequest.mockResolvedValue(validOutputs.cellsGetChartImage);
-		const result = await Cells.getChartImage(ctx, validInputs.cellsGetChartImage);
+		const result = await Cells.getChartImage(
+			ctx,
+			validInputs.cellsGetChartImage,
+		);
 		expect(result).toEqual(validOutputs.cellsGetChartImage);
 		expect(mockedRequest).toHaveBeenCalledTimes(1);
 		expect(mockedRequest).toHaveBeenCalledWith(
@@ -265,9 +295,14 @@ describe('Cells endpoints', () => {
 
 	it('Cells.getChartImage rejects invalid input before network I/O', async () => {
 		// unknown because invalid input signature must bypass static typing for runtime test
-		const fn = Cells.getChartImage as (c: unknown, i: unknown) => Promise<unknown>;
+		const fn = Cells.getChartImage as (
+			c: unknown,
+			i: unknown,
+		) => Promise<unknown>;
 		// unknown because a rejection value has no static type; assertions below narrow it.
-		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch((caught: unknown) => caught);
+		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch(
+			(caught: unknown) => caught,
+		);
 		expect(error).toBeDefined();
 		expect(mockedRequest).not.toHaveBeenCalled();
 	});
@@ -289,11 +324,12 @@ describe('Cells endpoints', () => {
 		// unknown because invalid input signature must bypass static typing for runtime test
 		const fn = Cells.getOutput as (c: unknown, i: unknown) => Promise<unknown>;
 		// unknown because a rejection value has no static type; assertions below narrow it.
-		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch((caught: unknown) => caught);
+		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch(
+			(caught: unknown) => caught,
+		);
 		expect(error).toBeDefined();
 		expect(mockedRequest).not.toHaveBeenCalled();
 	});
-
 });
 
 describe('Collections endpoints', () => {
@@ -314,7 +350,9 @@ describe('Collections endpoints', () => {
 		// unknown because invalid input signature must bypass static typing for runtime test
 		const fn = Collections.list as (c: unknown, i: unknown) => Promise<unknown>;
 		// unknown because a rejection value has no static type; assertions below narrow it.
-		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch((caught: unknown) => caught);
+		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch(
+			(caught: unknown) => caught,
+		);
 		expect(error).toBeDefined();
 		expect(mockedRequest).not.toHaveBeenCalled();
 	});
@@ -334,9 +372,14 @@ describe('Collections endpoints', () => {
 
 	it('Collections.create rejects invalid input before network I/O', async () => {
 		// unknown because invalid input signature must bypass static typing for runtime test
-		const fn = Collections.create as (c: unknown, i: unknown) => Promise<unknown>;
+		const fn = Collections.create as (
+			c: unknown,
+			i: unknown,
+		) => Promise<unknown>;
 		// unknown because a rejection value has no static type; assertions below narrow it.
-		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch((caught: unknown) => caught);
+		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch(
+			(caught: unknown) => caught,
+		);
 		expect(error).toBeDefined();
 		expect(mockedRequest).not.toHaveBeenCalled();
 	});
@@ -358,7 +401,9 @@ describe('Collections endpoints', () => {
 		// unknown because invalid input signature must bypass static typing for runtime test
 		const fn = Collections.get as (c: unknown, i: unknown) => Promise<unknown>;
 		// unknown because a rejection value has no static type; assertions below narrow it.
-		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch((caught: unknown) => caught);
+		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch(
+			(caught: unknown) => caught,
+		);
 		expect(error).toBeDefined();
 		expect(mockedRequest).not.toHaveBeenCalled();
 	});
@@ -378,19 +423,26 @@ describe('Collections endpoints', () => {
 
 	it('Collections.update rejects invalid input before network I/O', async () => {
 		// unknown because invalid input signature must bypass static typing for runtime test
-		const fn = Collections.update as (c: unknown, i: unknown) => Promise<unknown>;
+		const fn = Collections.update as (
+			c: unknown,
+			i: unknown,
+		) => Promise<unknown>;
 		// unknown because a rejection value has no static type; assertions below narrow it.
-		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch((caught: unknown) => caught);
+		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch(
+			(caught: unknown) => caught,
+		);
 		expect(error).toBeDefined();
 		expect(mockedRequest).not.toHaveBeenCalled();
 	});
-
 });
 
 describe('DataConnections endpoints', () => {
 	it('DataConnections.list executes GET /v1/data-connections', async () => {
 		mockedRequest.mockResolvedValue(validOutputs.dataConnectionsList);
-		const result = await DataConnections.list(ctx, validInputs.dataConnectionsList);
+		const result = await DataConnections.list(
+			ctx,
+			validInputs.dataConnectionsList,
+		);
 		expect(result).toEqual(validOutputs.dataConnectionsList);
 		expect(mockedRequest).toHaveBeenCalledTimes(1);
 		expect(mockedRequest).toHaveBeenCalledWith(
@@ -403,16 +455,24 @@ describe('DataConnections endpoints', () => {
 
 	it('DataConnections.list rejects invalid input before network I/O', async () => {
 		// unknown because invalid input signature must bypass static typing for runtime test
-		const fn = DataConnections.list as (c: unknown, i: unknown) => Promise<unknown>;
+		const fn = DataConnections.list as (
+			c: unknown,
+			i: unknown,
+		) => Promise<unknown>;
 		// unknown because a rejection value has no static type; assertions below narrow it.
-		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch((caught: unknown) => caught);
+		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch(
+			(caught: unknown) => caught,
+		);
 		expect(error).toBeDefined();
 		expect(mockedRequest).not.toHaveBeenCalled();
 	});
 
 	it('DataConnections.create executes POST /v1/data-connections', async () => {
 		mockedRequest.mockResolvedValue(validOutputs.dataConnectionsCreate);
-		const result = await DataConnections.create(ctx, validInputs.dataConnectionsCreate);
+		const result = await DataConnections.create(
+			ctx,
+			validInputs.dataConnectionsCreate,
+		);
 		expect(result).toEqual(validOutputs.dataConnectionsCreate);
 		expect(mockedRequest).toHaveBeenCalledTimes(1);
 		expect(mockedRequest).toHaveBeenCalledWith(
@@ -425,16 +485,24 @@ describe('DataConnections endpoints', () => {
 
 	it('DataConnections.create rejects invalid input before network I/O', async () => {
 		// unknown because invalid input signature must bypass static typing for runtime test
-		const fn = DataConnections.create as (c: unknown, i: unknown) => Promise<unknown>;
+		const fn = DataConnections.create as (
+			c: unknown,
+			i: unknown,
+		) => Promise<unknown>;
 		// unknown because a rejection value has no static type; assertions below narrow it.
-		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch((caught: unknown) => caught);
+		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch(
+			(caught: unknown) => caught,
+		);
 		expect(error).toBeDefined();
 		expect(mockedRequest).not.toHaveBeenCalled();
 	});
 
 	it('DataConnections.get executes GET /v1/data-connections/{dataConnectionId}', async () => {
 		mockedRequest.mockResolvedValue(validOutputs.dataConnectionsGet);
-		const result = await DataConnections.get(ctx, validInputs.dataConnectionsGet);
+		const result = await DataConnections.get(
+			ctx,
+			validInputs.dataConnectionsGet,
+		);
 		expect(result).toEqual(validOutputs.dataConnectionsGet);
 		expect(mockedRequest).toHaveBeenCalledTimes(1);
 		expect(mockedRequest).toHaveBeenCalledWith(
@@ -447,16 +515,24 @@ describe('DataConnections endpoints', () => {
 
 	it('DataConnections.get rejects invalid input before network I/O', async () => {
 		// unknown because invalid input signature must bypass static typing for runtime test
-		const fn = DataConnections.get as (c: unknown, i: unknown) => Promise<unknown>;
+		const fn = DataConnections.get as (
+			c: unknown,
+			i: unknown,
+		) => Promise<unknown>;
 		// unknown because a rejection value has no static type; assertions below narrow it.
-		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch((caught: unknown) => caught);
+		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch(
+			(caught: unknown) => caught,
+		);
 		expect(error).toBeDefined();
 		expect(mockedRequest).not.toHaveBeenCalled();
 	});
 
 	it('DataConnections.update executes PATCH /v1/data-connections/{dataConnectionId}', async () => {
 		mockedRequest.mockResolvedValue(validOutputs.dataConnectionsUpdate);
-		const result = await DataConnections.update(ctx, validInputs.dataConnectionsUpdate);
+		const result = await DataConnections.update(
+			ctx,
+			validInputs.dataConnectionsUpdate,
+		);
 		expect(result).toEqual(validOutputs.dataConnectionsUpdate);
 		expect(mockedRequest).toHaveBeenCalledTimes(1);
 		expect(mockedRequest).toHaveBeenCalledWith(
@@ -469,16 +545,24 @@ describe('DataConnections endpoints', () => {
 
 	it('DataConnections.update rejects invalid input before network I/O', async () => {
 		// unknown because invalid input signature must bypass static typing for runtime test
-		const fn = DataConnections.update as (c: unknown, i: unknown) => Promise<unknown>;
+		const fn = DataConnections.update as (
+			c: unknown,
+			i: unknown,
+		) => Promise<unknown>;
 		// unknown because a rejection value has no static type; assertions below narrow it.
-		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch((caught: unknown) => caught);
+		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch(
+			(caught: unknown) => caught,
+		);
 		expect(error).toBeDefined();
 		expect(mockedRequest).not.toHaveBeenCalled();
 	});
 
 	it('DataConnections.updateSchema executes PATCH /v1/data-connections/{dataConnectionId}/schema', async () => {
 		mockedRequest.mockResolvedValue(validOutputs.dataConnectionsUpdateSchema);
-		const result = await DataConnections.updateSchema(ctx, validInputs.dataConnectionsUpdateSchema);
+		const result = await DataConnections.updateSchema(
+			ctx,
+			validInputs.dataConnectionsUpdateSchema,
+		);
 		expect(result).toEqual(validOutputs.dataConnectionsUpdateSchema);
 		expect(mockedRequest).toHaveBeenCalledTimes(1);
 		expect(mockedRequest).toHaveBeenCalledWith(
@@ -491,23 +575,32 @@ describe('DataConnections endpoints', () => {
 
 	it('DataConnections.updateSchema rejects invalid input before network I/O', async () => {
 		// unknown because invalid input signature must bypass static typing for runtime test
-		const fn = DataConnections.updateSchema as (c: unknown, i: unknown) => Promise<unknown>;
+		const fn = DataConnections.updateSchema as (
+			c: unknown,
+			i: unknown,
+		) => Promise<unknown>;
 		// unknown because a rejection value has no static type; assertions below narrow it.
-		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch((caught: unknown) => caught);
+		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch(
+			(caught: unknown) => caught,
+		);
 		expect(error).toBeDefined();
 		expect(mockedRequest).not.toHaveBeenCalled();
 	});
-
 });
 
 describe('Embedding endpoints', () => {
 	it('Embedding.createPresignedUrl executes POST /v1/embedding/createPresignedUrl/{projectId}', async () => {
 		mockedRequest.mockResolvedValue(validOutputs.embeddingCreatePresignedUrl);
-		const result = await Embedding.createPresignedUrl(ctx, validInputs.embeddingCreatePresignedUrl);
+		const result = await Embedding.createPresignedUrl(
+			ctx,
+			validInputs.embeddingCreatePresignedUrl,
+		);
 		expect(result).toEqual(validOutputs.embeddingCreatePresignedUrl);
 		expect(mockedRequest).toHaveBeenCalledTimes(1);
 		expect(mockedRequest).toHaveBeenCalledWith(
-			expect.stringMatching(new RegExp('^/v1/embedding/createPresignedUrl/[^/]+$')),
+			expect.stringMatching(
+				new RegExp('^/v1/embedding/createPresignedUrl/[^/]+$'),
+			),
 			'test-api-key',
 			expect.objectContaining({ method: 'POST' }),
 		);
@@ -516,13 +609,17 @@ describe('Embedding endpoints', () => {
 
 	it('Embedding.createPresignedUrl rejects invalid input before network I/O', async () => {
 		// unknown because invalid input signature must bypass static typing for runtime test
-		const fn = Embedding.createPresignedUrl as (c: unknown, i: unknown) => Promise<unknown>;
+		const fn = Embedding.createPresignedUrl as (
+			c: unknown,
+			i: unknown,
+		) => Promise<unknown>;
 		// unknown because a rejection value has no static type; assertions below narrow it.
-		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch((caught: unknown) => caught);
+		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch(
+			(caught: unknown) => caught,
+		);
 		expect(error).toBeDefined();
 		expect(mockedRequest).not.toHaveBeenCalled();
 	});
-
 });
 
 describe('Groups endpoints', () => {
@@ -543,7 +640,9 @@ describe('Groups endpoints', () => {
 		// unknown because invalid input signature must bypass static typing for runtime test
 		const fn = Groups.list as (c: unknown, i: unknown) => Promise<unknown>;
 		// unknown because a rejection value has no static type; assertions below narrow it.
-		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch((caught: unknown) => caught);
+		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch(
+			(caught: unknown) => caught,
+		);
 		expect(error).toBeDefined();
 		expect(mockedRequest).not.toHaveBeenCalled();
 	});
@@ -565,7 +664,9 @@ describe('Groups endpoints', () => {
 		// unknown because invalid input signature must bypass static typing for runtime test
 		const fn = Groups.create as (c: unknown, i: unknown) => Promise<unknown>;
 		// unknown because a rejection value has no static type; assertions below narrow it.
-		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch((caught: unknown) => caught);
+		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch(
+			(caught: unknown) => caught,
+		);
 		expect(error).toBeDefined();
 		expect(mockedRequest).not.toHaveBeenCalled();
 	});
@@ -587,7 +688,9 @@ describe('Groups endpoints', () => {
 		// unknown because invalid input signature must bypass static typing for runtime test
 		const fn = Groups.delete as (c: unknown, i: unknown) => Promise<unknown>;
 		// unknown because a rejection value has no static type; assertions below narrow it.
-		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch((caught: unknown) => caught);
+		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch(
+			(caught: unknown) => caught,
+		);
 		expect(error).toBeDefined();
 		expect(mockedRequest).not.toHaveBeenCalled();
 	});
@@ -609,7 +712,9 @@ describe('Groups endpoints', () => {
 		// unknown because invalid input signature must bypass static typing for runtime test
 		const fn = Groups.get as (c: unknown, i: unknown) => Promise<unknown>;
 		// unknown because a rejection value has no static type; assertions below narrow it.
-		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch((caught: unknown) => caught);
+		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch(
+			(caught: unknown) => caught,
+		);
 		expect(error).toBeDefined();
 		expect(mockedRequest).not.toHaveBeenCalled();
 	});
@@ -631,11 +736,12 @@ describe('Groups endpoints', () => {
 		// unknown because invalid input signature must bypass static typing for runtime test
 		const fn = Groups.update as (c: unknown, i: unknown) => Promise<unknown>;
 		// unknown because a rejection value has no static type; assertions below narrow it.
-		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch((caught: unknown) => caught);
+		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch(
+			(caught: unknown) => caught,
+		);
 		expect(error).toBeDefined();
 		expect(mockedRequest).not.toHaveBeenCalled();
 	});
-
 });
 
 describe('Guides endpoints', () => {
@@ -654,9 +760,14 @@ describe('Guides endpoints', () => {
 
 	it('Guides.upsertDraft rejects invalid input before network I/O', async () => {
 		// unknown because invalid input signature must bypass static typing for runtime test
-		const fn = Guides.upsertDraft as (c: unknown, i: unknown) => Promise<unknown>;
+		const fn = Guides.upsertDraft as (
+			c: unknown,
+			i: unknown,
+		) => Promise<unknown>;
 		// unknown because a rejection value has no static type; assertions below narrow it.
-		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch((caught: unknown) => caught);
+		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch(
+			(caught: unknown) => caught,
+		);
 		expect(error).toBeDefined();
 		expect(mockedRequest).not.toHaveBeenCalled();
 	});
@@ -676,9 +787,14 @@ describe('Guides endpoints', () => {
 
 	it('Guides.deleteDraft rejects invalid input before network I/O', async () => {
 		// unknown because invalid input signature must bypass static typing for runtime test
-		const fn = Guides.deleteDraft as (c: unknown, i: unknown) => Promise<unknown>;
+		const fn = Guides.deleteDraft as (
+			c: unknown,
+			i: unknown,
+		) => Promise<unknown>;
 		// unknown because a rejection value has no static type; assertions below narrow it.
-		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch((caught: unknown) => caught);
+		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch(
+			(caught: unknown) => caught,
+		);
 		expect(error).toBeDefined();
 		expect(mockedRequest).not.toHaveBeenCalled();
 	});
@@ -698,9 +814,14 @@ describe('Guides endpoints', () => {
 
 	it('Guides.listDrafts rejects invalid input before network I/O', async () => {
 		// unknown because invalid input signature must bypass static typing for runtime test
-		const fn = Guides.listDrafts as (c: unknown, i: unknown) => Promise<unknown>;
+		const fn = Guides.listDrafts as (
+			c: unknown,
+			i: unknown,
+		) => Promise<unknown>;
 		// unknown because a rejection value has no static type; assertions below narrow it.
-		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch((caught: unknown) => caught);
+		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch(
+			(caught: unknown) => caught,
+		);
 		expect(error).toBeDefined();
 		expect(mockedRequest).not.toHaveBeenCalled();
 	});
@@ -722,11 +843,12 @@ describe('Guides endpoints', () => {
 		// unknown because invalid input signature must bypass static typing for runtime test
 		const fn = Guides.publish as (c: unknown, i: unknown) => Promise<unknown>;
 		// unknown because a rejection value has no static type; assertions below narrow it.
-		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch((caught: unknown) => caught);
+		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch(
+			(caught: unknown) => caught,
+		);
 		expect(error).toBeDefined();
 		expect(mockedRequest).not.toHaveBeenCalled();
 	});
-
 });
 
 describe('Projects endpoints', () => {
@@ -747,7 +869,9 @@ describe('Projects endpoints', () => {
 		// unknown because invalid input signature must bypass static typing for runtime test
 		const fn = Projects.list as (c: unknown, i: unknown) => Promise<unknown>;
 		// unknown because a rejection value has no static type; assertions below narrow it.
-		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch((caught: unknown) => caught);
+		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch(
+			(caught: unknown) => caught,
+		);
 		expect(error).toBeDefined();
 		expect(mockedRequest).not.toHaveBeenCalled();
 	});
@@ -769,7 +893,9 @@ describe('Projects endpoints', () => {
 		// unknown because invalid input signature must bypass static typing for runtime test
 		const fn = Projects.create as (c: unknown, i: unknown) => Promise<unknown>;
 		// unknown because a rejection value has no static type; assertions below narrow it.
-		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch((caught: unknown) => caught);
+		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch(
+			(caught: unknown) => caught,
+		);
 		expect(error).toBeDefined();
 		expect(mockedRequest).not.toHaveBeenCalled();
 	});
@@ -791,7 +917,9 @@ describe('Projects endpoints', () => {
 		// unknown because invalid input signature must bypass static typing for runtime test
 		const fn = Projects.get as (c: unknown, i: unknown) => Promise<unknown>;
 		// unknown because a rejection value has no static type; assertions below narrow it.
-		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch((caught: unknown) => caught);
+		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch(
+			(caught: unknown) => caught,
+		);
 		expect(error).toBeDefined();
 		expect(mockedRequest).not.toHaveBeenCalled();
 	});
@@ -813,14 +941,19 @@ describe('Projects endpoints', () => {
 		// unknown because invalid input signature must bypass static typing for runtime test
 		const fn = Projects.update as (c: unknown, i: unknown) => Promise<unknown>;
 		// unknown because a rejection value has no static type; assertions below narrow it.
-		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch((caught: unknown) => caught);
+		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch(
+			(caught: unknown) => caught,
+		);
 		expect(error).toBeDefined();
 		expect(mockedRequest).not.toHaveBeenCalled();
 	});
 
 	it('Projects.getQueriedTables executes GET /v1/projects/{projectId}/queriedTables', async () => {
 		mockedRequest.mockResolvedValue(validOutputs.projectsGetQueriedTables);
-		const result = await Projects.getQueriedTables(ctx, validInputs.projectsGetQueriedTables);
+		const result = await Projects.getQueriedTables(
+			ctx,
+			validInputs.projectsGetQueriedTables,
+		);
 		expect(result).toEqual(validOutputs.projectsGetQueriedTables);
 		expect(mockedRequest).toHaveBeenCalledTimes(1);
 		expect(mockedRequest).toHaveBeenCalledWith(
@@ -833,20 +966,32 @@ describe('Projects endpoints', () => {
 
 	it('Projects.getQueriedTables rejects invalid input before network I/O', async () => {
 		// unknown because invalid input signature must bypass static typing for runtime test
-		const fn = Projects.getQueriedTables as (c: unknown, i: unknown) => Promise<unknown>;
+		const fn = Projects.getQueriedTables as (
+			c: unknown,
+			i: unknown,
+		) => Promise<unknown>;
 		// unknown because a rejection value has no static type; assertions below narrow it.
-		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch((caught: unknown) => caught);
+		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch(
+			(caught: unknown) => caught,
+		);
 		expect(error).toBeDefined();
 		expect(mockedRequest).not.toHaveBeenCalled();
 	});
 
 	it('Projects.editSharingCollections executes PATCH /v1/projects/{projectId}/sharing/collections', async () => {
-		mockedRequest.mockResolvedValue(validOutputs.projectsEditSharingCollections);
-		const result = await Projects.editSharingCollections(ctx, validInputs.projectsEditSharingCollections);
+		mockedRequest.mockResolvedValue(
+			validOutputs.projectsEditSharingCollections,
+		);
+		const result = await Projects.editSharingCollections(
+			ctx,
+			validInputs.projectsEditSharingCollections,
+		);
 		expect(result).toEqual(validOutputs.projectsEditSharingCollections);
 		expect(mockedRequest).toHaveBeenCalledTimes(1);
 		expect(mockedRequest).toHaveBeenCalledWith(
-			expect.stringMatching(new RegExp('^/v1/projects/[^/]+/sharing/collections$')),
+			expect.stringMatching(
+				new RegExp('^/v1/projects/[^/]+/sharing/collections$'),
+			),
 			'test-api-key',
 			expect.objectContaining({ method: 'PATCH' }),
 		);
@@ -855,16 +1000,24 @@ describe('Projects endpoints', () => {
 
 	it('Projects.editSharingCollections rejects invalid input before network I/O', async () => {
 		// unknown because invalid input signature must bypass static typing for runtime test
-		const fn = Projects.editSharingCollections as (c: unknown, i: unknown) => Promise<unknown>;
+		const fn = Projects.editSharingCollections as (
+			c: unknown,
+			i: unknown,
+		) => Promise<unknown>;
 		// unknown because a rejection value has no static type; assertions below narrow it.
-		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch((caught: unknown) => caught);
+		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch(
+			(caught: unknown) => caught,
+		);
 		expect(error).toBeDefined();
 		expect(mockedRequest).not.toHaveBeenCalled();
 	});
 
 	it('Projects.editSharingGroups executes PATCH /v1/projects/{projectId}/sharing/groups', async () => {
 		mockedRequest.mockResolvedValue(validOutputs.projectsEditSharingGroups);
-		const result = await Projects.editSharingGroups(ctx, validInputs.projectsEditSharingGroups);
+		const result = await Projects.editSharingGroups(
+			ctx,
+			validInputs.projectsEditSharingGroups,
+		);
 		expect(result).toEqual(validOutputs.projectsEditSharingGroups);
 		expect(mockedRequest).toHaveBeenCalledTimes(1);
 		expect(mockedRequest).toHaveBeenCalledWith(
@@ -877,16 +1030,24 @@ describe('Projects endpoints', () => {
 
 	it('Projects.editSharingGroups rejects invalid input before network I/O', async () => {
 		// unknown because invalid input signature must bypass static typing for runtime test
-		const fn = Projects.editSharingGroups as (c: unknown, i: unknown) => Promise<unknown>;
+		const fn = Projects.editSharingGroups as (
+			c: unknown,
+			i: unknown,
+		) => Promise<unknown>;
 		// unknown because a rejection value has no static type; assertions below narrow it.
-		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch((caught: unknown) => caught);
+		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch(
+			(caught: unknown) => caught,
+		);
 		expect(error).toBeDefined();
 		expect(mockedRequest).not.toHaveBeenCalled();
 	});
 
 	it('Projects.editSharingUsers executes PATCH /v1/projects/{projectId}/sharing/users', async () => {
 		mockedRequest.mockResolvedValue(validOutputs.projectsEditSharingUsers);
-		const result = await Projects.editSharingUsers(ctx, validInputs.projectsEditSharingUsers);
+		const result = await Projects.editSharingUsers(
+			ctx,
+			validInputs.projectsEditSharingUsers,
+		);
 		expect(result).toEqual(validOutputs.projectsEditSharingUsers);
 		expect(mockedRequest).toHaveBeenCalledTimes(1);
 		expect(mockedRequest).toHaveBeenCalledWith(
@@ -899,20 +1060,32 @@ describe('Projects endpoints', () => {
 
 	it('Projects.editSharingUsers rejects invalid input before network I/O', async () => {
 		// unknown because invalid input signature must bypass static typing for runtime test
-		const fn = Projects.editSharingUsers as (c: unknown, i: unknown) => Promise<unknown>;
+		const fn = Projects.editSharingUsers as (
+			c: unknown,
+			i: unknown,
+		) => Promise<unknown>;
 		// unknown because a rejection value has no static type; assertions below narrow it.
-		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch((caught: unknown) => caught);
+		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch(
+			(caught: unknown) => caught,
+		);
 		expect(error).toBeDefined();
 		expect(mockedRequest).not.toHaveBeenCalled();
 	});
 
 	it('Projects.editSharingOrgAndPublic executes PATCH /v1/projects/{projectId}/sharing/workspaceAndPublic', async () => {
-		mockedRequest.mockResolvedValue(validOutputs.projectsEditSharingOrgAndPublic);
-		const result = await Projects.editSharingOrgAndPublic(ctx, validInputs.projectsEditSharingOrgAndPublic);
+		mockedRequest.mockResolvedValue(
+			validOutputs.projectsEditSharingOrgAndPublic,
+		);
+		const result = await Projects.editSharingOrgAndPublic(
+			ctx,
+			validInputs.projectsEditSharingOrgAndPublic,
+		);
 		expect(result).toEqual(validOutputs.projectsEditSharingOrgAndPublic);
 		expect(mockedRequest).toHaveBeenCalledTimes(1);
 		expect(mockedRequest).toHaveBeenCalledWith(
-			expect.stringMatching(new RegExp('^/v1/projects/[^/]+/sharing/workspaceAndPublic$')),
+			expect.stringMatching(
+				new RegExp('^/v1/projects/[^/]+/sharing/workspaceAndPublic$'),
+			),
 			'test-api-key',
 			expect.objectContaining({ method: 'PATCH' }),
 		);
@@ -921,16 +1094,26 @@ describe('Projects endpoints', () => {
 
 	it('Projects.editSharingOrgAndPublic rejects invalid input before network I/O', async () => {
 		// unknown because invalid input signature must bypass static typing for runtime test
-		const fn = Projects.editSharingOrgAndPublic as (c: unknown, i: unknown) => Promise<unknown>;
+		const fn = Projects.editSharingOrgAndPublic as (
+			c: unknown,
+			i: unknown,
+		) => Promise<unknown>;
 		// unknown because a rejection value has no static type; assertions below narrow it.
-		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch((caught: unknown) => caught);
+		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch(
+			(caught: unknown) => caught,
+		);
 		expect(error).toBeDefined();
 		expect(mockedRequest).not.toHaveBeenCalled();
 	});
 
 	it('Projects.batchUpdateComputeProfile executes POST /v1/projects/compute-profile/batch', async () => {
-		mockedRequest.mockResolvedValue(validOutputs.projectsBatchUpdateComputeProfile);
-		const result = await Projects.batchUpdateComputeProfile(ctx, validInputs.projectsBatchUpdateComputeProfile);
+		mockedRequest.mockResolvedValue(
+			validOutputs.projectsBatchUpdateComputeProfile,
+		);
+		const result = await Projects.batchUpdateComputeProfile(
+			ctx,
+			validInputs.projectsBatchUpdateComputeProfile,
+		);
 		expect(result).toEqual(validOutputs.projectsBatchUpdateComputeProfile);
 		expect(mockedRequest).toHaveBeenCalledTimes(1);
 		expect(mockedRequest).toHaveBeenCalledWith(
@@ -943,9 +1126,14 @@ describe('Projects endpoints', () => {
 
 	it('Projects.batchUpdateComputeProfile rejects invalid input before network I/O', async () => {
 		// unknown because invalid input signature must bypass static typing for runtime test
-		const fn = Projects.batchUpdateComputeProfile as (c: unknown, i: unknown) => Promise<unknown>;
+		const fn = Projects.batchUpdateComputeProfile as (
+			c: unknown,
+			i: unknown,
+		) => Promise<unknown>;
 		// unknown because a rejection value has no static type; assertions below narrow it.
-		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch((caught: unknown) => caught);
+		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch(
+			(caught: unknown) => caught,
+		);
 		expect(error).toBeDefined();
 		expect(mockedRequest).not.toHaveBeenCalled();
 	});
@@ -967,11 +1155,12 @@ describe('Projects endpoints', () => {
 		// unknown because invalid input signature must bypass static typing for runtime test
 		const fn = Projects.export as (c: unknown, i: unknown) => Promise<unknown>;
 		// unknown because a rejection value has no static type; assertions below narrow it.
-		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch((caught: unknown) => caught);
+		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch(
+			(caught: unknown) => caught,
+		);
 		expect(error).toBeDefined();
 		expect(mockedRequest).not.toHaveBeenCalled();
 	});
-
 });
 
 describe('ProjectRuns endpoints', () => {
@@ -992,7 +1181,9 @@ describe('ProjectRuns endpoints', () => {
 		// unknown because invalid input signature must bypass static typing for runtime test
 		const fn = ProjectRuns.list as (c: unknown, i: unknown) => Promise<unknown>;
 		// unknown because a rejection value has no static type; assertions below narrow it.
-		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch((caught: unknown) => caught);
+		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch(
+			(caught: unknown) => caught,
+		);
 		expect(error).toBeDefined();
 		expect(mockedRequest).not.toHaveBeenCalled();
 	});
@@ -1014,7 +1205,9 @@ describe('ProjectRuns endpoints', () => {
 		// unknown because invalid input signature must bypass static typing for runtime test
 		const fn = ProjectRuns.run as (c: unknown, i: unknown) => Promise<unknown>;
 		// unknown because a rejection value has no static type; assertions below narrow it.
-		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch((caught: unknown) => caught);
+		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch(
+			(caught: unknown) => caught,
+		);
 		expect(error).toBeDefined();
 		expect(mockedRequest).not.toHaveBeenCalled();
 	});
@@ -1034,16 +1227,24 @@ describe('ProjectRuns endpoints', () => {
 
 	it('ProjectRuns.cancel rejects invalid input before network I/O', async () => {
 		// unknown because invalid input signature must bypass static typing for runtime test
-		const fn = ProjectRuns.cancel as (c: unknown, i: unknown) => Promise<unknown>;
+		const fn = ProjectRuns.cancel as (
+			c: unknown,
+			i: unknown,
+		) => Promise<unknown>;
 		// unknown because a rejection value has no static type; assertions below narrow it.
-		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch((caught: unknown) => caught);
+		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch(
+			(caught: unknown) => caught,
+		);
 		expect(error).toBeDefined();
 		expect(mockedRequest).not.toHaveBeenCalled();
 	});
 
 	it('ProjectRuns.getStatus executes GET /v1/projects/{projectId}/runs/{runId}', async () => {
 		mockedRequest.mockResolvedValue(validOutputs.projectRunsGetStatus);
-		const result = await ProjectRuns.getStatus(ctx, validInputs.projectRunsGetStatus);
+		const result = await ProjectRuns.getStatus(
+			ctx,
+			validInputs.projectRunsGetStatus,
+		);
 		expect(result).toEqual(validOutputs.projectRunsGetStatus);
 		expect(mockedRequest).toHaveBeenCalledTimes(1);
 		expect(mockedRequest).toHaveBeenCalledWith(
@@ -1056,20 +1257,30 @@ describe('ProjectRuns endpoints', () => {
 
 	it('ProjectRuns.getStatus rejects invalid input before network I/O', async () => {
 		// unknown because invalid input signature must bypass static typing for runtime test
-		const fn = ProjectRuns.getStatus as (c: unknown, i: unknown) => Promise<unknown>;
+		const fn = ProjectRuns.getStatus as (
+			c: unknown,
+			i: unknown,
+		) => Promise<unknown>;
 		// unknown because a rejection value has no static type; assertions below narrow it.
-		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch((caught: unknown) => caught);
+		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch(
+			(caught: unknown) => caught,
+		);
 		expect(error).toBeDefined();
 		expect(mockedRequest).not.toHaveBeenCalled();
 	});
 
 	it('ProjectRuns.getChartImage executes GET /v1/projects/{projectId}/runs/{runId}/cells/{staticId}/image', async () => {
 		mockedRequest.mockResolvedValue(validOutputs.projectRunsGetChartImage);
-		const result = await ProjectRuns.getChartImage(ctx, validInputs.projectRunsGetChartImage);
+		const result = await ProjectRuns.getChartImage(
+			ctx,
+			validInputs.projectRunsGetChartImage,
+		);
 		expect(result).toEqual(validOutputs.projectRunsGetChartImage);
 		expect(mockedRequest).toHaveBeenCalledTimes(1);
 		expect(mockedRequest).toHaveBeenCalledWith(
-			expect.stringMatching(new RegExp('^/v1/projects/[^/]+/runs/[^/]+/cells/[^/]+/image$')),
+			expect.stringMatching(
+				new RegExp('^/v1/projects/[^/]+/runs/[^/]+/cells/[^/]+/image$'),
+			),
 			'test-api-key',
 			expect.objectContaining({ method: 'GET' }),
 		);
@@ -1078,13 +1289,17 @@ describe('ProjectRuns endpoints', () => {
 
 	it('ProjectRuns.getChartImage rejects invalid input before network I/O', async () => {
 		// unknown because invalid input signature must bypass static typing for runtime test
-		const fn = ProjectRuns.getChartImage as (c: unknown, i: unknown) => Promise<unknown>;
+		const fn = ProjectRuns.getChartImage as (
+			c: unknown,
+			i: unknown,
+		) => Promise<unknown>;
 		// unknown because a rejection value has no static type; assertions below narrow it.
-		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch((caught: unknown) => caught);
+		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch(
+			(caught: unknown) => caught,
+		);
 		expect(error).toBeDefined();
 		expect(mockedRequest).not.toHaveBeenCalled();
 	});
-
 });
 
 describe('Semantic endpoints', () => {
@@ -1094,7 +1309,9 @@ describe('Semantic endpoints', () => {
 		expect(result).toEqual(validOutputs.semanticUpdate);
 		expect(mockedRequest).toHaveBeenCalledTimes(1);
 		expect(mockedRequest).toHaveBeenCalledWith(
-			expect.stringMatching(new RegExp('^/v1/semantic-(projects|models)/[^/]+$')),
+			expect.stringMatching(
+				new RegExp('^/v1/semantic-(projects|models)/[^/]+$'),
+			),
 			'test-api-key',
 			expect.objectContaining({ method: 'PATCH' }),
 		);
@@ -1105,7 +1322,9 @@ describe('Semantic endpoints', () => {
 		// unknown because invalid input signature must bypass static typing for runtime test
 		const fn = Semantic.update as (c: unknown, i: unknown) => Promise<unknown>;
 		// unknown because a rejection value has no static type; assertions below narrow it.
-		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch((caught: unknown) => caught);
+		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch(
+			(caught: unknown) => caught,
+		);
 		expect(error).toBeDefined();
 		expect(mockedRequest).not.toHaveBeenCalled();
 	});
@@ -1116,7 +1335,9 @@ describe('Semantic endpoints', () => {
 		expect(result).toEqual(validOutputs.semanticIngest);
 		expect(mockedRequest).toHaveBeenCalledTimes(1);
 		expect(mockedRequest).toHaveBeenCalledWith(
-			expect.stringMatching(new RegExp('^/v1/semantic-(projects|models)/[^/]+/ingest$')),
+			expect.stringMatching(
+				new RegExp('^/v1/semantic-(projects|models)/[^/]+/ingest$'),
+			),
 			'test-api-key',
 			expect.objectContaining({ method: 'POST' }),
 		);
@@ -1127,11 +1348,12 @@ describe('Semantic endpoints', () => {
 		// unknown because invalid input signature must bypass static typing for runtime test
 		const fn = Semantic.ingest as (c: unknown, i: unknown) => Promise<unknown>;
 		// unknown because a rejection value has no static type; assertions below narrow it.
-		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch((caught: unknown) => caught);
+		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch(
+			(caught: unknown) => caught,
+		);
 		expect(error).toBeDefined();
 		expect(mockedRequest).not.toHaveBeenCalled();
 	});
-
 });
 
 describe('Suggestions endpoints', () => {
@@ -1152,7 +1374,9 @@ describe('Suggestions endpoints', () => {
 		// unknown because invalid input signature must bypass static typing for runtime test
 		const fn = Suggestions.list as (c: unknown, i: unknown) => Promise<unknown>;
 		// unknown because a rejection value has no static type; assertions below narrow it.
-		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch((caught: unknown) => caught);
+		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch(
+			(caught: unknown) => caught,
+		);
 		expect(error).toBeDefined();
 		expect(mockedRequest).not.toHaveBeenCalled();
 	});
@@ -1174,7 +1398,9 @@ describe('Suggestions endpoints', () => {
 		// unknown because invalid input signature must bypass static typing for runtime test
 		const fn = Suggestions.get as (c: unknown, i: unknown) => Promise<unknown>;
 		// unknown because a rejection value has no static type; assertions below narrow it.
-		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch((caught: unknown) => caught);
+		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch(
+			(caught: unknown) => caught,
+		);
 		expect(error).toBeDefined();
 		expect(mockedRequest).not.toHaveBeenCalled();
 	});
@@ -1194,20 +1420,30 @@ describe('Suggestions endpoints', () => {
 
 	it('Suggestions.update rejects invalid input before network I/O', async () => {
 		// unknown because invalid input signature must bypass static typing for runtime test
-		const fn = Suggestions.update as (c: unknown, i: unknown) => Promise<unknown>;
+		const fn = Suggestions.update as (
+			c: unknown,
+			i: unknown,
+		) => Promise<unknown>;
 		// unknown because a rejection value has no static type; assertions below narrow it.
-		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch((caught: unknown) => caught);
+		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch(
+			(caught: unknown) => caught,
+		);
 		expect(error).toBeDefined();
 		expect(mockedRequest).not.toHaveBeenCalled();
 	});
 
 	it('Suggestions.updateChange executes POST /v1/suggestions/{suggestionId}/changes/{changeId}', async () => {
 		mockedRequest.mockResolvedValue(validOutputs.suggestionsUpdateChange);
-		const result = await Suggestions.updateChange(ctx, validInputs.suggestionsUpdateChange);
+		const result = await Suggestions.updateChange(
+			ctx,
+			validInputs.suggestionsUpdateChange,
+		);
 		expect(result).toEqual(validOutputs.suggestionsUpdateChange);
 		expect(mockedRequest).toHaveBeenCalledTimes(1);
 		expect(mockedRequest).toHaveBeenCalledWith(
-			expect.stringMatching(new RegExp('^/v1/suggestions/[^/]+/changes/[^/]+$')),
+			expect.stringMatching(
+				new RegExp('^/v1/suggestions/[^/]+/changes/[^/]+$'),
+			),
 			'test-api-key',
 			expect.objectContaining({ method: 'POST' }),
 		);
@@ -1216,16 +1452,24 @@ describe('Suggestions endpoints', () => {
 
 	it('Suggestions.updateChange rejects invalid input before network I/O', async () => {
 		// unknown because invalid input signature must bypass static typing for runtime test
-		const fn = Suggestions.updateChange as (c: unknown, i: unknown) => Promise<unknown>;
+		const fn = Suggestions.updateChange as (
+			c: unknown,
+			i: unknown,
+		) => Promise<unknown>;
 		// unknown because a rejection value has no static type; assertions below narrow it.
-		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch((caught: unknown) => caught);
+		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch(
+			(caught: unknown) => caught,
+		);
 		expect(error).toBeDefined();
 		expect(mockedRequest).not.toHaveBeenCalled();
 	});
 
 	it('Suggestions.triggerReview executes POST /v1/suggestions/{suggestionId}/review', async () => {
 		mockedRequest.mockResolvedValue(validOutputs.suggestionsTriggerReview);
-		const result = await Suggestions.triggerReview(ctx, validInputs.suggestionsTriggerReview);
+		const result = await Suggestions.triggerReview(
+			ctx,
+			validInputs.suggestionsTriggerReview,
+		);
 		expect(result).toEqual(validOutputs.suggestionsTriggerReview);
 		expect(mockedRequest).toHaveBeenCalledTimes(1);
 		expect(mockedRequest).toHaveBeenCalledWith(
@@ -1238,9 +1482,14 @@ describe('Suggestions endpoints', () => {
 
 	it('Suggestions.triggerReview rejects invalid input before network I/O', async () => {
 		// unknown because invalid input signature must bypass static typing for runtime test
-		const fn = Suggestions.triggerReview as (c: unknown, i: unknown) => Promise<unknown>;
+		const fn = Suggestions.triggerReview as (
+			c: unknown,
+			i: unknown,
+		) => Promise<unknown>;
 		// unknown because a rejection value has no static type; assertions below narrow it.
-		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch((caught: unknown) => caught);
+		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch(
+			(caught: unknown) => caught,
+		);
 		expect(error).toBeDefined();
 		expect(mockedRequest).not.toHaveBeenCalled();
 	});
@@ -1260,13 +1509,17 @@ describe('Suggestions endpoints', () => {
 
 	it('Suggestions.getV2 rejects invalid input before network I/O', async () => {
 		// unknown because invalid input signature must bypass static typing for runtime test
-		const fn = Suggestions.getV2 as (c: unknown, i: unknown) => Promise<unknown>;
+		const fn = Suggestions.getV2 as (
+			c: unknown,
+			i: unknown,
+		) => Promise<unknown>;
 		// unknown because a rejection value has no static type; assertions below narrow it.
-		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch((caught: unknown) => caught);
+		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch(
+			(caught: unknown) => caught,
+		);
 		expect(error).toBeDefined();
 		expect(mockedRequest).not.toHaveBeenCalled();
 	});
-
 });
 
 describe('Threads endpoints', () => {
@@ -1287,7 +1540,9 @@ describe('Threads endpoints', () => {
 		// unknown because invalid input signature must bypass static typing for runtime test
 		const fn = Threads.list as (c: unknown, i: unknown) => Promise<unknown>;
 		// unknown because a rejection value has no static type; assertions below narrow it.
-		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch((caught: unknown) => caught);
+		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch(
+			(caught: unknown) => caught,
+		);
 		expect(error).toBeDefined();
 		expect(mockedRequest).not.toHaveBeenCalled();
 	});
@@ -1309,7 +1564,9 @@ describe('Threads endpoints', () => {
 		// unknown because invalid input signature must bypass static typing for runtime test
 		const fn = Threads.create as (c: unknown, i: unknown) => Promise<unknown>;
 		// unknown because a rejection value has no static type; assertions below narrow it.
-		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch((caught: unknown) => caught);
+		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch(
+			(caught: unknown) => caught,
+		);
 		expect(error).toBeDefined();
 		expect(mockedRequest).not.toHaveBeenCalled();
 	});
@@ -1331,7 +1588,9 @@ describe('Threads endpoints', () => {
 		// unknown because invalid input signature must bypass static typing for runtime test
 		const fn = Threads.get as (c: unknown, i: unknown) => Promise<unknown>;
 		// unknown because a rejection value has no static type; assertions below narrow it.
-		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch((caught: unknown) => caught);
+		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch(
+			(caught: unknown) => caught,
+		);
 		expect(error).toBeDefined();
 		expect(mockedRequest).not.toHaveBeenCalled();
 	});
@@ -1353,14 +1612,19 @@ describe('Threads endpoints', () => {
 		// unknown because invalid input signature must bypass static typing for runtime test
 		const fn = Threads.continue as (c: unknown, i: unknown) => Promise<unknown>;
 		// unknown because a rejection value has no static type; assertions below narrow it.
-		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch((caught: unknown) => caught);
+		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch(
+			(caught: unknown) => caught,
+		);
 		expect(error).toBeDefined();
 		expect(mockedRequest).not.toHaveBeenCalled();
 	});
 
 	it('Threads.getMessages executes GET /v1/threads/{threadId}/messages', async () => {
 		mockedRequest.mockResolvedValue(validOutputs.threadsGetMessages);
-		const result = await Threads.getMessages(ctx, validInputs.threadsGetMessages);
+		const result = await Threads.getMessages(
+			ctx,
+			validInputs.threadsGetMessages,
+		);
 		expect(result).toEqual(validOutputs.threadsGetMessages);
 		expect(mockedRequest).toHaveBeenCalledTimes(1);
 		expect(mockedRequest).toHaveBeenCalledWith(
@@ -1373,13 +1637,17 @@ describe('Threads endpoints', () => {
 
 	it('Threads.getMessages rejects invalid input before network I/O', async () => {
 		// unknown because invalid input signature must bypass static typing for runtime test
-		const fn = Threads.getMessages as (c: unknown, i: unknown) => Promise<unknown>;
+		const fn = Threads.getMessages as (
+			c: unknown,
+			i: unknown,
+		) => Promise<unknown>;
 		// unknown because a rejection value has no static type; assertions below narrow it.
-		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch((caught: unknown) => caught);
+		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch(
+			(caught: unknown) => caught,
+		);
 		expect(error).toBeDefined();
 		expect(mockedRequest).not.toHaveBeenCalled();
 	});
-
 });
 
 describe('Users endpoints', () => {
@@ -1400,7 +1668,9 @@ describe('Users endpoints', () => {
 		// unknown because invalid input signature must bypass static typing for runtime test
 		const fn = Users.list as (c: unknown, i: unknown) => Promise<unknown>;
 		// unknown because a rejection value has no static type; assertions below narrow it.
-		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch((caught: unknown) => caught);
+		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch(
+			(caught: unknown) => caught,
+		);
 		expect(error).toBeDefined();
 		expect(mockedRequest).not.toHaveBeenCalled();
 	});
@@ -1422,7 +1692,9 @@ describe('Users endpoints', () => {
 		// unknown because invalid input signature must bypass static typing for runtime test
 		const fn = Users.deactivate as (c: unknown, i: unknown) => Promise<unknown>;
 		// unknown because a rejection value has no static type; assertions below narrow it.
-		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch((caught: unknown) => caught);
+		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch(
+			(caught: unknown) => caught,
+		);
 		expect(error).toBeDefined();
 		expect(mockedRequest).not.toHaveBeenCalled();
 	});
@@ -1444,9 +1716,10 @@ describe('Users endpoints', () => {
 		// unknown because invalid input signature must bypass static typing for runtime test
 		const fn = Users.me as (c: unknown, i: unknown) => Promise<unknown>;
 		// unknown because a rejection value has no static type; assertions below narrow it.
-		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch((caught: unknown) => caught);
+		const error = await fn(ctx, { __invalid_unexpected_field__: true }).catch(
+			(caught: unknown) => caught,
+		);
 		expect(error).toBeDefined();
 		expect(mockedRequest).not.toHaveBeenCalled();
 	});
-
 });
