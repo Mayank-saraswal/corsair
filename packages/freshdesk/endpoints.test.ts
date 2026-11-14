@@ -241,7 +241,7 @@ describe('Freshdesk v2 route endpoints', () => {
 						availability_control: 'agent_controlled',
 					},
 				},
-				method: 'PUT',
+				method: 'PATCH',
 				url: '/api/v2/agents/12/availability',
 			},
 			{
@@ -317,10 +317,18 @@ describe('Freshdesk v2 route endpoints', () => {
 	});
 
 	it('rejects missing path parameters, extra input keys, and page sizes over 100 before I/O', async () => {
-		await expect(Routes.viewATicketGet.run(ctx, {})).rejects.toThrow();
+		await expect(Routes.viewATicketGet.run(ctx, {})).rejects.toThrow(
+			'"pathParams"',
+		);
+		await expect(
+			Routes.addNoteToATicketPostNotes.run(ctx, {
+				pathParams: { ticket_id: '1' },
+				body: { body: 'note' },
+			}),
+		).rejects.toThrow('"ticketId"');
 		await expect(
 			Routes.filterTicketsGetTickets.run(ctx, { query: {} }),
-		).rejects.toThrow('Missing required query parameter');
+		).rejects.toThrow('"query"');
 		await expect(
 			Routes.listAllTicketsGetTickets.run(ctx, { query: { per_page: 101 } }),
 		).rejects.toThrow();
@@ -328,10 +336,10 @@ describe('Freshdesk v2 route endpoints', () => {
 			Routes.createTicketPostTickets.run(ctx, {
 				body: { undocumented_field: 'reject me' },
 			}),
-		).rejects.toThrow('Undocumented Freshdesk request field');
+		).rejects.toThrow('undocumented_field');
 		await expect(
 			Routes.createTicketPostTickets.run(ctx, { body: { email: 123 } }),
-		).rejects.toThrow('Invalid value for Freshdesk request field');
+		).rejects.toThrow('"email"');
 
 		expect(mockedRequest).not.toHaveBeenCalled();
 	});
