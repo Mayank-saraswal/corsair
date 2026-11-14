@@ -61,16 +61,6 @@ export type SimlaComOperation = {
 	response: { kind: 'binary' } | { kind: 'json'; schema: JsonSchema };
 };
 
-// Every dynamic `unknown` is narrowed by the generated Zod schema before transport or return.
-export type SimlaComEndpointInput = {
-	path?: Record<string, unknown>;
-	query?: Record<string, unknown>;
-	body?: unknown;
-};
-
-// Every successful API response is JSON or the plugin's documented base64 binary envelope.
-export type SimlaComEndpointOutput = JsonValue;
-
 export type OperationData = {
 	version: string;
 	operations: SimlaComOperation[];

@@ -1,3 +1,7 @@
+import type {
+	SimlaComEndpointInputs,
+	SimlaComEndpointOutputs,
+} from './endpoints/operation-io-types';
 import type { JsonSchema, JsonValue } from './endpoints/operation-types';
 import {
 	SIMLACOM_INPUT_SCHEMAS,
@@ -78,6 +82,18 @@ function documentedResponseSample(
 }
 
 describe('OpenAPI-derived Zod schemas', () => {
+	it('exports endpoint-specific request and response types', () => {
+		const listInput: SimlaComEndpointInputs['cost.list.get'] = {
+			query: { limit: 50, page: 2 },
+		};
+		const versionOutput: SimlaComEndpointOutputs['api.apiVersions.get'] = {
+			success: true,
+			versions: ['5'],
+		};
+		expect(listInput.query?.page).toBe(2);
+		expect(versionOutput.versions?.[0]).toBe('5');
+	});
+
 	it('registers strict request schemas for all documented operations', () => {
 		expect(SIMLACOM_INPUT_SCHEMAS.size).toBe(SIMLACOM_OPERATIONS.length);
 		for (const operation of SIMLACOM_OPERATIONS) {
@@ -115,6 +131,58 @@ describe('OpenAPI-derived Zod schemas', () => {
 			if (!schema.safeParse(output).success) failures.push(operation.id);
 		}
 		expect(failures).toEqual([]);
+	});
+
+	it('merges object fields across allOf request and response models', () => {
+		const customerCombine = SIMLACOM_INPUT_SCHEMAS.get(
+			'customers.combine.post',
+		);
+		expect(
+			customerCombine?.safeParse({
+				body: {
+					customers: [{ id: 2 }],
+					resultCustomer: { id: 1 },
+				},
+			}).success,
+		).toBe(true);
+
+		const addressList = SIMLACOM_OUTPUT_SCHEMAS.get(
+			'corporateCustomers.getByExternalidaddresses.get',
+		);
+		expect(
+			addressList?.safeParse({ success: true, addresses: [] }).success,
+		).toBe(true);
+	});
+
+	it('keeps required members from both sides of a documented allOf request', () => {
+		const orderCombine = SIMLACOM_INPUT_SCHEMAS.get('orders.combine.post');
+		expect(
+			orderCombine?.safeParse({
+				body: {
+					order: { id: 2 },
+					resultOrder: { id: 1 },
+					technique: 'merge',
+				},
+			}).success,
+		).toBe(true);
+	});
+
+	it('enforces presence of required call-event fields that have undocumented types', () => {
+		const callEvent = SIMLACOM_INPUT_SCHEMAS.get('telephony.callEvent.post');
+		expect(
+			callEvent?.safeParse({ body: { phone: '+12025550123', type: 'in' } })
+				.success,
+		).toBe(false);
+		expect(
+			callEvent?.safeParse({
+				body: { phone: '+12025550123', type: 'in', code: '101' },
+			}).success,
+		).toBe(true);
+	});
+
+	it('rejects call events missing fields that the OpenAPI marks required', () => {
+		const callEvent = SIMLACOM_INPUT_SCHEMAS.get('telephony.callEvent.post');
+		expect(callEvent?.safeParse({ body: {} }).success).toBe(false);
 	});
 
 	it('enforces the documented list-page bounds and enums', () => {

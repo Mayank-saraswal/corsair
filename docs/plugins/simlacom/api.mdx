@@ -791,10 +791,6 @@ await corsair.simlacom.api.corporateCustomers.combine.post({
   resultCustomer: {
     id: number
   }
-}& {
-  resultCustomer?: {
-    id: number
-  }
 }
 ```
 </Accordion>
@@ -1204,44 +1200,46 @@ await corsair.simlacom.api.corporateCustomers.getByExternalidaddresses.get({
 
 
 
-**Output:** `object`
+**Output**
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `success` | `boolean` | No | Query result (successful/unsuccessful) |
+| `addresses` | `object[]` | No | — |
 
 <AccordionGroup>
-<Accordion title="Output full type">
+<Accordion title="addresses full type">
 
 ```ts
 {
-  success?: boolean
-}& {
-  addresses?: {
-    id?: number,
-    index?: string | null,
-    countryIso?: string | null,
-    region?: string | null,
-    regionId?: number | null,
-    city?: string | null,
-    cityId?: number | null,
-    cityType?: string,
-    street?: string | null,
-    streetId?: number | null,
-    streetType?: string,
-    building?: string | null,
-    flat?: string | null,
-    floor?: number | null,
-    block?: number | null,
-    house?: string | null,
-    housing?: string,
-    metro?: string | null,
-    notes?: string | null,
-    text?: string,
-    isMain?: boolean,
-    externalId?: string,
-    name?: string
-  }[]
-}
+  id?: number,
+  index?: string | null,
+  countryIso?: string | null,
+  region?: string | null,
+  regionId?: number | null,
+  city?: string | null,
+  cityId?: number | null,
+  cityType?: string,
+  street?: string | null,
+  streetId?: number | null,
+  streetType?: string,
+  building?: string | null,
+  flat?: string | null,
+  floor?: number | null,
+  block?: number | null,
+  house?: string | null,
+  housing?: string,
+  metro?: string | null,
+  notes?: string | null,
+  text?: string,
+  isMain?: boolean,
+  externalId?: string,
+  name?: string
+}[]
 ```
 </Accordion>
 </AccordionGroup>
+
 
 
 ---
@@ -1296,84 +1294,86 @@ await corsair.simlacom.api.corporateCustomers.getByExternalidcompanies.get({
 
 
 
-**Output:** `object`
+**Output**
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `success` | `boolean` | No | Query result (successful/unsuccessful) |
+| `companies` | `object[]` | No | — |
 
 <AccordionGroup>
-<Accordion title="Output full type">
+<Accordion title="companies full type">
 
 ```ts
 {
-  success?: boolean
-}& {
-  companies?: {
-    isMain?: boolean,
+  isMain?: boolean,
+  id?: number,
+  externalId?: string,
+  customer?: {
+    site?: string,
     id?: number,
     externalId?: string,
-    customer?: {
-      site?: string,
-      id?: number,
-      externalId?: string,
-      type?: string
-    } | null,
-    active?: boolean,
-    name?: string,
-    brand?: string,
-    site?: string,
-    createdAt?: string,
-    contragent?: {
-      contragentType?: string | null,
-      legalName?: string,
-      legalAddress?: string,
-      INN?: string,
-      OKPO?: string,
-      KPP?: string,
-      OGRN?: string,
-      OGRNIP?: string,
-      certificateNumber?: string,
-      certificateDate?: string | null,
-      BIK?: string,
-      bank?: string,
-      bankAddress?: string,
-      corrAccount?: string,
-      bankAccount?: string
-    } | null,
-    address?: {
-      id?: number,
-      index?: string | null,
-      countryIso?: string | null,
-      region?: string | null,
-      regionId?: number | null,
-      city?: string | null,
-      cityId?: number | null,
-      cityType?: string,
-      street?: string | null,
-      streetId?: number | null,
-      streetType?: string,
-      building?: string | null,
-      flat?: string | null,
-      floor?: number | null,
-      block?: number | null,
-      house?: string | null,
-      housing?: string,
-      metro?: string | null,
-      notes?: string | null,
-      text?: string,
-      externalId?: string,
-      name?: string
-    } | null,
-    avgMarginSumm?: number | null,
-    marginSumm?: number,
-    totalSumm?: number,
-    averageSumm?: number | null,
-    costSumm?: number | null,
-    ordersCount?: number | null,
-    customFields?: {
-    }
-  }[]
-}
+    type?: string
+  } | null,
+  active?: boolean,
+  name?: string,
+  brand?: string,
+  site?: string,
+  createdAt?: string,
+  contragent?: {
+    contragentType?: string | null,
+    legalName?: string,
+    legalAddress?: string,
+    INN?: string,
+    OKPO?: string,
+    KPP?: string,
+    OGRN?: string,
+    OGRNIP?: string,
+    certificateNumber?: string,
+    certificateDate?: string | null,
+    BIK?: string,
+    bank?: string,
+    bankAddress?: string,
+    corrAccount?: string,
+    bankAccount?: string
+  } | null,
+  address?: {
+    id?: number,
+    index?: string | null,
+    countryIso?: string | null,
+    region?: string | null,
+    regionId?: number | null,
+    city?: string | null,
+    cityId?: number | null,
+    cityType?: string,
+    street?: string | null,
+    streetId?: number | null,
+    streetType?: string,
+    building?: string | null,
+    flat?: string | null,
+    floor?: number | null,
+    block?: number | null,
+    house?: string | null,
+    housing?: string,
+    metro?: string | null,
+    notes?: string | null,
+    text?: string,
+    externalId?: string,
+    name?: string
+  } | null,
+  avgMarginSumm?: number | null,
+  marginSumm?: number,
+  totalSumm?: number,
+  averageSumm?: number | null,
+  costSumm?: number | null,
+  ordersCount?: number | null,
+  customFields?: {
+  }
+}[]
 ```
 </Accordion>
 </AccordionGroup>
+
 
 
 ---
@@ -1428,37 +1428,39 @@ await corsair.simlacom.api.corporateCustomers.getByExternalidcontacts.get({
 
 
 
-**Output:** `object`
+**Output**
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `success` | `boolean` | No | Query result (successful/unsuccessful) |
+| `contacts` | `object[]` | No | — |
 
 <AccordionGroup>
-<Accordion title="Output full type">
+<Accordion title="contacts full type">
 
 ```ts
 {
-  success?: boolean
-}& {
-  contacts?: {
-    isMain?: boolean,
+  isMain?: boolean,
+  id?: number,
+  customer?: {
     id?: number,
-    customer?: {
+    externalId?: string,
+    browserId?: string,
+    site?: string
+  } | null,
+  companies?: {
+    id?: number,
+    company?: {
       id?: number,
       externalId?: string,
-      browserId?: string,
-      site?: string
-    } | null,
-    companies?: {
-      id?: number,
-      company?: {
-        id?: number,
-        externalId?: string,
-        name?: string
-      } | null
-    }[]
+      name?: string
+    } | null
   }[]
-}
+}[]
 ```
 </Accordion>
 </AccordionGroup>
+
 
 
 ---
@@ -3538,6 +3540,7 @@ Combining of customers
 ```ts
 await corsair.simlacom.api.customers.combine.post({
 	body: {
+		customers: [{ id: 2 }],
 		resultCustomer: { id: 1 },
 	},
 });
@@ -3576,10 +3579,6 @@ await corsair.simlacom.api.customers.combine.post({
     id: number
   }[],
   resultCustomer: {
-    id: number
-  }
-}& {
-  resultCustomer?: {
     id: number
   }
 }
@@ -5209,26 +5208,18 @@ await corsair.simlacom.api.customFields.byEntityByCodeEdit.post({
 ```ts
 {
   customField?: {
-    name?: string,
+    name: string & string,
     required?: boolean,
     inFilter?: boolean,
     inList?: boolean,
     inGroupActions?: boolean,
     entity?: string,
     default?: string | null,
-    ordering?: number,
-    displayArea?: string,
-    viewMode?: string,
-    viewModeMobile?: string,
+    ordering: number & number,
+    displayArea?: string & custom,
+    viewMode?: string & custom,
+    viewModeMobile?: string & custom,
     defaultTyped?: custom
-  }
-}& {
-  customField?: {
-    name: string,
-    ordering: number,
-    displayArea?: custom,
-    viewMode?: custom,
-    viewModeMobile?: custom
   }
 }
 ```
@@ -5470,17 +5461,12 @@ await corsair.simlacom.api.customFields.dictionariesByCodeEdit.post({
 ```ts
 {
   customDictionary?: {
-    name: string,
+    name: string & string,
     elements: {
       name: string,
       code?: string,
       ordering?: number
-    }[]
-  }
-}& {
-  customDictionary?: {
-    name: string,
-    elements: {
+    }[]& {
       name: string,
       code?: string,
       ordering?: number
@@ -6386,7 +6372,7 @@ The official OpenAPI marks `courier.firstName` required but omits its type and c
 ```ts
 {
   courier?: {
-    firstName?: string,
+    firstName: string,
     lastName?: string,
     patronymic?: string,
     active?: boolean,
@@ -6395,10 +6381,6 @@ The official OpenAPI marks `courier.firstName` required but omits its type and c
       number?: string | null
     },
     description?: string
-  }
-}& {
-  courier?: {
-    firstName: custom
   }
 }
 ```
@@ -6465,7 +6447,7 @@ The official OpenAPI marks `courier.firstName` required but omits its type and c
 ```ts
 {
   courier?: {
-    firstName?: string,
+    firstName: string,
     lastName?: string,
     patronymic?: string,
     active?: boolean,
@@ -6474,10 +6456,6 @@ The official OpenAPI marks `courier.firstName` required but omits its type and c
       number?: string | null
     },
     description?: string
-  }
-}& {
-  courier?: {
-    firstName: custom
   }
 }
 ```
@@ -6613,15 +6591,11 @@ await corsair.simlacom.api.dataBook.referenceCurrenciesByIdEdit.post({
 ```ts
 {
   currency?: {
-    code?: string,
+    code: string & (string | null),
     isAutoConvert?: boolean,
     autoConvertExtraPercent?: number,
     manualConvertNominal?: custom,
     manualConvertValue?: number
-  }
-}& {
-  currency?: {
-    code: string | null
   }
 }
 ```
@@ -6686,15 +6660,11 @@ await corsair.simlacom.api.dataBook.referenceCurrenciesCreate.post({
 ```ts
 {
   currency?: {
-    code?: string,
+    code: string & (string | null),
     isAutoConvert?: boolean,
     autoConvertExtraPercent?: number,
     manualConvertNominal?: custom,
     manualConvertValue?: number
-  }
-}& {
-  currency?: {
-    code: string | null
   }
 }
 ```
@@ -6823,15 +6793,10 @@ await corsair.simlacom.api.dataBook.referenceDeliveryServicesByCodeEdit.post({
 ```ts
 {
   deliveryService?: {
-    name?: string | null,
-    code?: string | null,
+    name: string | null,
+    code: string | null,
     active?: boolean,
     deliveryType?: string
-  }
-}& {
-  deliveryService?: {
-    name: string | null,
-    code: string | null
   }
 }
 ```
@@ -6965,11 +6930,11 @@ await corsair.simlacom.api.dataBook.referenceDeliveryTypesByCodeEdit.post({
   deliveryType?: {
     paymentTypes?: {
     },
-    name?: string,
+    name: string & string,
     code?: string,
     active?: boolean,
-    defaultCost?: number | null,
-    defaultNetCost?: number | null,
+    defaultCost: (number | null)& (number | null),
+    defaultNetCost: (number | null)& (number | null),
     description?: string,
     defaultForCrm?: boolean,
     defaultTariffCode?: string | null,
@@ -6978,13 +6943,7 @@ await corsair.simlacom.api.dataBook.referenceDeliveryTypesByCodeEdit.post({
     deliveryServices?: {
     },
     sites?: {
-    }
-  }
-}& {
-  deliveryType?: {
-    name: string,
-    defaultCost: number | null,
-    defaultNetCost: number | null,
+    },
     vatRate?: string | null
   }
 }
@@ -7343,15 +7302,11 @@ await corsair.simlacom.api.dataBook.referenceOrderMethodsByCodeEdit.post({
 ```ts
 {
   orderMethod?: {
-    name?: string,
+    name: string & string,
     code?: string,
     active?: boolean,
     defaultForCrm?: boolean,
     defaultForApi?: boolean
-  }
-}& {
-  orderMethod?: {
-    name: string
   }
 }
 ```
@@ -7479,17 +7434,12 @@ await corsair.simlacom.api.dataBook.referenceOrderTypesByCodeEdit.post({
 ```ts
 {
   orderType?: {
-    name?: string,
+    name: string & string,
     code?: string,
     active?: boolean,
     defaultForCrm?: boolean,
     defaultForApi?: boolean,
-    ordering?: number
-  }
-}& {
-  orderType?: {
-    name: string,
-    ordering: number
+    ordering: number & number
   }
 }
 ```
@@ -7617,19 +7567,14 @@ await corsair.simlacom.api.dataBook.referencePaymentStatusesByCodeEdit.post({
 ```ts
 {
   paymentStatus?: {
-    name?: string,
+    name: string & string,
     code?: string,
     active?: boolean,
     defaultForCrm?: boolean,
     defaultForApi?: boolean,
     paymentComplete?: boolean,
-    ordering?: number,
+    ordering: number & number,
     description?: string
-  }
-}& {
-  paymentStatus?: {
-    name: string,
-    ordering: number
   }
 }
 ```
@@ -7757,7 +7702,7 @@ await corsair.simlacom.api.dataBook.referencePaymentTypesByCodeEdit.post({
 ```ts
 {
   paymentType?: {
-    name?: string,
+    name: string & string,
     code?: string,
     active?: boolean,
     defaultForCrm?: boolean,
@@ -7771,10 +7716,6 @@ await corsair.simlacom.api.dataBook.referencePaymentTypesByCodeEdit.post({
       code: string,
       cod?: boolean
     }[]
-  }
-}& {
-  paymentType?: {
-    name: string
   }
 }
 ```
@@ -8071,11 +8012,7 @@ await corsair.simlacom.api.dataBook.referenceProductStatusesByCodeEdit.post({
     cancelStatus?: boolean,
     name: string,
     orderStatusByProductStatus?: string,
-    orderStatusForProductStatus?: string
-  }
-}& {
-  productStatus?: {
-    name: string,
+    orderStatusForProductStatus?: string,
     type?: custom | null
   }
 }
@@ -8339,30 +8276,19 @@ await corsair.simlacom.api.dataBook.referenceSitesByCodeEdit.post({
 ```ts
 {
   site?: {
-    name?: string,
-    url?: string,
-    code?: string,
-    description?: string,
-    phones?: string,
-    address?: string,
-    zip?: string,
+    name: string & string,
+    url?: string & string,
+    code?: string & string,
+    description?: string & string,
+    phones?: string & string,
+    address?: string & string,
+    zip?: string & string,
     defaultForCrm?: boolean,
-    ymlUrl?: string,
+    ymlUrl?: string & string,
     loadFromYml?: boolean,
     countryIso?: string,
     contragentCode?: string,
     currency?: string
-  }
-}& {
-  site?: {
-    name: string,
-    url?: string,
-    code?: string,
-    description?: string,
-    phones?: string,
-    address?: string,
-    zip?: string,
-    ymlUrl?: string
   }
 }
 ```
@@ -8491,16 +8417,10 @@ await corsair.simlacom.api.dataBook.referenceStatusesByCodeEdit.post({
 ```ts
 {
   status?: {
-    name?: string,
+    name: string & string,
     code?: string,
     active?: boolean,
-    ordering?: number,
-    group?: string
-  }
-}& {
-  status?: {
-    name: string,
-    ordering: number,
+    ordering: number & number,
     group: string
   }
 }
@@ -8854,10 +8774,6 @@ await corsair.simlacom.api.dataBook.referenceStoresByCodeEdit.post({
       }[]
     }
   }
-}& {
-  store?: {
-    name: string
-  }
 }
 ```
 </Accordion>
@@ -9203,13 +9119,13 @@ await corsair.simlacom.api.dataBook.referenceTicketChannelsCreate.post({
 ```ts
 {
   ticketChannel: {
-    name?: string,
+    name: string,
     code?: string,
     active?: boolean,
     ordering?: number,
     defaultForCrm?: boolean,
     defaultForApi?: boolean
-  }& custom
+  }
 }
 ```
 </Accordion>
@@ -9421,14 +9337,14 @@ await corsair.simlacom.api.dataBook.referenceTicketStatusesCreate.post({
 ```ts
 {
   ticketStatus: {
-    name?: string,
+    name: string,
     code?: string,
     active?: boolean,
     ordering?: number,
-    group?: {
+    group: {
       id: number
     }
-  }& custom
+  }
 }
 ```
 </Accordion>
@@ -9631,12 +9547,12 @@ await corsair.simlacom.api.dataBook.referenceTicketStatusGroupsCreate.post({
 ```ts
 {
   ticketStatusGroup: {
-    name?: string,
+    name: string,
     code?: string,
     active?: boolean,
     ordering?: number,
     color?: custom | null
-  }& custom
+  }
 }
 ```
 </Accordion>
@@ -9847,14 +9763,14 @@ await corsair.simlacom.api.dataBook.referenceTicketSubtopicsCreate.post({
 ```ts
 {
   ticketSubtopic: {
-    name?: string,
+    name: string,
     code?: string,
     active?: boolean,
     ordering?: number,
-    topic?: {
+    topic: {
       id: number
     }
-  }& custom
+  }
 }
 ```
 </Accordion>
@@ -10055,11 +9971,11 @@ await corsair.simlacom.api.dataBook.referenceTicketTopicsCreate.post({
 ```ts
 {
   ticketTopic: {
-    name?: string,
+    name: string,
     code?: string,
     active?: boolean,
     ordering?: number
-  }& custom
+  }
 }
 ```
 </Accordion>
@@ -10264,13 +10180,13 @@ await corsair.simlacom.api.dataBook.referenceTicketTypesCreate.post({
 ```ts
 {
   ticketType: {
-    name?: string,
+    name: string,
     code?: string,
     active?: boolean,
     ordering?: number,
     defaultForCrm?: boolean,
     defaultForApi?: boolean
-  }& custom
+  }
 }
 ```
 </Accordion>
@@ -15601,13 +15517,6 @@ await corsair.simlacom.api.orders.combine.post({
     id: number
   },
   technique?: custom
-}& {
-  order?: {
-    id: number
-  },
-  resultOrder?: {
-    id: number
-  }
 }
 ```
 </Accordion>
@@ -24636,7 +24545,9 @@ Call events
 **Risk:** `write`
 
 ```ts
-await corsair.simlacom.api.telephony.callEvent.post({});
+await corsair.simlacom.api.telephony.callEvent.post({
+	body: { phone: '+15555550100', type: 'in', code: '101' },
+});
 ```
 
 **Input**
@@ -25612,7 +25523,7 @@ await corsair.simlacom.api.tickets.commentsByIdEdit.post({
 {
   comment: {
     text: string
-  }& custom
+  }
 }
 ```
 </Accordion>
@@ -25680,7 +25591,7 @@ await corsair.simlacom.api.tickets.commentsCreate.post({});
       site?: string
     },
     authorId?: number
-  }& custom
+  }
 }
 ```
 </Accordion>
@@ -25744,7 +25655,7 @@ await corsair.simlacom.api.tickets.create.post({});
     number?: string,
     externalId?: string,
     description?: string,
-    customer?: {
+    customer: {
       id?: number,
       externalId?: string,
       type?: custom,
@@ -25794,7 +25705,7 @@ await corsair.simlacom.api.tickets.create.post({});
     callIds?: number[],
     dialogIds?: number[],
     createdAt?: string
-  }& custom,
+  },
   site?: string
 }
 ```

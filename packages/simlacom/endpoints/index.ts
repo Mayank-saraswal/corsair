@@ -970,7 +970,9 @@ export const simlaComEndpointsNested = {
 	},
 } as const;
 
-export const simlaComEndpointSchemas = {
+export const simlaComEndpointSchemas: RequiredPluginEndpointSchemas<
+	typeof simlaComEndpointsNested
+> = {
 	'api.apiVersions.get': {
 		input: createOperationInputSchema(
 			getSimlaComOperation('api.apiVersions.get'),
@@ -2847,11 +2849,11 @@ export const simlaComEndpointSchemas = {
 			getSimlaComOperation('statistics.statisticUpdate.get'),
 		),
 	},
-} as const satisfies RequiredPluginEndpointSchemas<
-	typeof simlaComEndpointsNested
->;
+};
 
-export const simlaComEndpointMeta = {
+export const simlaComEndpointMeta: RequiredPluginEndpointMeta<
+	typeof simlaComEndpointsNested
+> = {
 	'api.apiVersions.get': {
 		riskLevel: 'read',
 		description: 'Getting the list of available api versions',
@@ -3787,4 +3789,4 @@ export const simlaComEndpointMeta = {
 		riskLevel: 'read',
 		description: 'Statistics updating',
 	},
-} as const satisfies RequiredPluginEndpointMeta<typeof simlaComEndpointsNested>;
+};

@@ -115,6 +115,8 @@ apiExamples:
   customers.combine.post:
     args:
       "body":
+        "customers":
+          - "id": 2
         "resultCustomer":
           "id": 1
   customers.create.post:
@@ -993,7 +995,11 @@ apiExamples:
       "path":
         "id": 1
   telephony.callEvent.post:
-    args: {}
+    args:
+      body:
+        phone: "+15555550100"
+        type: in
+        code: "101"
   telephony.calls.get:
     args: {}
   telephony.callsUpload.post:

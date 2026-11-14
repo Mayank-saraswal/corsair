@@ -1,7 +1,7 @@
 import { AuthMissingError } from 'corsair/core';
-import type { OpenAPIConfig } from 'corsair/http';
+import type { ApiRequestOptions, ApiResult, OpenAPIConfig } from 'corsair/http';
 import { ApiError } from 'corsair/http';
-import { makeSimlaComRequest } from './client';
+import { makeSimlaComRequest, sanitizeSimlaComApiError } from './client';
 import { getSimlaComOperation } from './endpoints/types';
 
 const jsonResponse = (body: object, status = 200): Response =>
@@ -99,6 +99,29 @@ describe('Simla.com transport', () => {
 		expect(fetchMock).toHaveBeenCalledTimes(2);
 	});
 
+	it('cancels a binary stream as soon as it exceeds the client size limit', async () => {
+		let cancelled = false;
+		const oversizedChunk = new Uint8Array(20 * 1024 * 1024 + 1);
+		const response = new Response(
+			new ReadableStream<Uint8Array>({
+				start(controller) {
+					controller.enqueue(oversizedChunk);
+				},
+				cancel() {
+					cancelled = true;
+				},
+			}),
+			{ headers: { 'content-type': 'application/pdf' } },
+		);
+		jest.spyOn(globalThis, 'fetch').mockResolvedValue(response);
+		const download = getSimlaComOperation('files.byIdDownload.get');
+
+		await expect(
+			makeSimlaComRequest(download, 'key', 'demo', { path: { id: 17 } }),
+		).rejects.toThrow('20 MiB client limit');
+		expect(cancelled).toBe(true);
+	});
+
 	it('redacts provider errors while retaining the HTTP status for retry handlers', async () => {
 		jest
 			.spyOn(globalThis, 'fetch')
@@ -115,6 +138,7 @@ describe('Simla.com transport', () => {
 		expect(error).toBeInstanceOf(ApiError);
 		if (error instanceof ApiError) {
 			expect(error.message).not.toContain('reader@sample.invalid');
+			expect(error.stack).toContain('catchErrorCodes');
 			expect(error.body).toEqual({
 				message: 'Simla.com request failed; response details were redacted.',
 			});
@@ -122,6 +146,44 @@ describe('Simla.com transport', () => {
 			expect(error.request.path).toBeUndefined();
 			expect(error.url).not.toContain('private-customer-id');
 		}
+	});
+
+	it('redacts a core ApiError in place and preserves its original stack and retry metadata', () => {
+		const request: ApiRequestOptions = {
+			method: 'GET',
+			url: 'customers/{externalId}',
+			path: { externalId: 'private-customer-id' },
+			query: { email: 'reader@sample.invalid' },
+			body: 'customer data',
+		};
+		const result: ApiResult = {
+			url: 'https://demo.simla.com/api/v5/customers/private-customer-id',
+			ok: false,
+			status: 429,
+			statusText: 'private provider detail',
+			body: { message: 'reader@sample.invalid' },
+		};
+		const original = new ApiError(
+			request,
+			result,
+			'provider detail reader@sample.invalid',
+			{ retryAfter: 500 },
+		);
+		const originalFrames = original.stack?.split('\n').slice(1).join('\n');
+
+		const sanitized = sanitizeSimlaComApiError(original);
+
+		expect(sanitized).toBe(original);
+		expect(sanitized.status).toBe(429);
+		expect(sanitized.retryAfter).toBe(500);
+		expect(sanitized.message).not.toContain('reader@sample.invalid');
+		expect(sanitized.url).not.toContain('private-customer-id');
+		expect(sanitized.request.path).toBeUndefined();
+		expect(sanitized.request.query).toBeUndefined();
+		expect(sanitized.request.body).toBeUndefined();
+		expect(sanitized.stack?.split('\n').slice(1).join('\n')).toBe(
+			originalFrames,
+		);
 	});
 
 	it('fails without an API key and rejects unsafe instance subdomains before network I/O', async () => {

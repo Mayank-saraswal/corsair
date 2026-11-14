@@ -1,12 +1,19 @@
 import { operationData } from '../operation-data';
+import type {
+	SimlaComEndpointInputs,
+	SimlaComEndpointOutputs,
+} from './operation-io-types';
 import type { JsonSchema, SimlaComOperation } from './operation-types';
 
+export type {
+	SimlaComEndpointInputs,
+	SimlaComEndpointOutputs,
+	SimlaComOperationId,
+} from './operation-io-types';
 export type {
 	JsonSchema,
 	JsonValue,
 	OperationData,
-	SimlaComEndpointInput,
-	SimlaComEndpointOutput,
 	SimlaComOperation,
 } from './operation-types';
 
@@ -14,6 +21,11 @@ export {
 	SIMLACOM_INPUT_SCHEMAS as SimlaComEndpointInputSchemas,
 	SIMLACOM_OUTPUT_SCHEMAS as SimlaComEndpointOutputSchemas,
 } from './schemas';
+
+export type SimlaComEndpointInput =
+	SimlaComEndpointInputs[keyof SimlaComEndpointInputs];
+export type SimlaComEndpointOutput =
+	SimlaComEndpointOutputs[keyof SimlaComEndpointOutputs];
 
 export const SIMLACOM_OPERATIONS: readonly SimlaComOperation[] =
 	operationData.operations;

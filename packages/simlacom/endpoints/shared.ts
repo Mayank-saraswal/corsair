@@ -1,19 +1,21 @@
 import type { CorsairEndpoint } from 'corsair/core';
 import { logEventFromContext } from 'corsair/core';
+import { z } from 'zod';
 import type { SimlaComContext } from '..';
 import { makeSimlaComRequest } from '../client';
-import { SIMLACOM_INPUT_SCHEMAS, SIMLACOM_OUTPUT_SCHEMAS } from './schemas';
 import type {
-	JsonValue,
-	SimlaComEndpointInput,
-	SimlaComOperation,
-} from './types';
+	SimlaComEndpointInputs,
+	SimlaComEndpointOutputs,
+	SimlaComOperationId,
+} from './operation-io-types';
+import { SIMLACOM_INPUT_SCHEMAS, SIMLACOM_OUTPUT_SCHEMAS } from './schemas';
+import type { JsonValue, SimlaComOperation } from './types';
 import { SIMLACOM_OPERATIONS } from './types';
 
-export type SimlaComEndpoint = CorsairEndpoint<
+export type SimlaComEndpoint<Id extends SimlaComOperationId> = CorsairEndpoint<
 	SimlaComContext,
-	SimlaComEndpointInput,
-	JsonValue
+	SimlaComEndpointInputs[Id],
+	SimlaComEndpointOutputs[Id]
 >;
 
 // Dynamic endpoint inputs and provider responses must be narrowed before property access.
@@ -70,7 +72,18 @@ function requestInput(value: unknown): {
 	return request;
 }
 
-export function createSimlaComOperationEndpoint(id: string): SimlaComEndpoint {
+function typedOutputSchema<Id extends SimlaComOperationId>(
+	schema: z.ZodType<unknown>,
+): z.ZodType<SimlaComEndpointOutputs[Id]> {
+	// This generated operation type and its runtime validator share the official OpenAPI source.
+	return z.custom<SimlaComEndpointOutputs[Id]>(
+		(value) => schema.safeParse(value).success,
+	);
+}
+
+export function createSimlaComOperationEndpoint<Id extends SimlaComOperationId>(
+	id: Id,
+): SimlaComEndpoint<Id> {
 	return async (ctx, input) => {
 		const operation = operationFor(id);
 		const inputSchema = SIMLACOM_INPUT_SCHEMAS.get(id);
@@ -86,7 +99,7 @@ export function createSimlaComOperationEndpoint(id: string): SimlaComEndpoint {
 			subdomain,
 			requestInput(parsedInput),
 		);
-		const parsedOutput = outputSchema.parse(response);
+		const parsedOutput = typedOutputSchema<Id>(outputSchema).parse(response);
 		if (!isJsonValue(parsedOutput)) {
 			throw new Error(`Simla.com ${operation.id} returned invalid JSON data.`);
 		}

@@ -12,6 +12,8 @@ const simla = simlacom({ subdomain: 'demo' });
 
 Configure the instance API key in Corsair credentials. The plugin sends it only in the `X-API-KEY` header. `subdomain` is the part of `https://{subdomain}.simla.com`; the API key is never put in the URL.
 
+Each operation exposes its own TypeScript input and output types, generated from the v5 request and response schemas. The API reference page includes a call example for every registered operation.
+
 Official sources: [v5 method reference](https://rest-api-docs.simla.com/v5/), [API rules, authentication, pagination and limits](https://docs.simla.com/developers/api/api-features/api-rules/), and [API version guide](https://docs.simla.com/developers/api/api-versions/).
 
 ## Request and response behavior
@@ -267,4 +269,4 @@ The list below covers 228 `/api/v5/*` methods and the two documented `/api/api-v
 
 The reference also describes 27 provider-hosted integration-module callback/configuration routes (including `/{configUrl}`, `/{registerUrl}`, and dynamic delivery, payment, telephony and messaging action URLs). These are destinations Simla.com invokes as part of separately hosted integrations, not stable Simla.com REST routes for a Corsair client, so they are excluded. Webhook receiving/management is excluded by issue #2408; this plugin registers no inbound webhooks.
 
-The live smoke test is read-only and runs only when both `SIMLACOM_API_KEY` and `SIMLACOM_SUBDOMAIN` are set.
+The live smoke test is read-only. Set `SIMLACOM_API_KEY` and `SIMLACOM_SUBDOMAIN`, then run `pnpm --dir packages/simlacom test:live`; without both values it logs a skip warning and does not call Simla.com.

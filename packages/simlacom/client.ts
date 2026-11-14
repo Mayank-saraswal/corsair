@@ -67,6 +67,45 @@ function encodeBase64(value: Uint8Array): string {
 	return btoa(binary);
 }
 
+async function readBinaryBody(response: Response): Promise<Uint8Array> {
+	const contentLength = Number(response.headers.get('content-length'));
+	if (Number.isFinite(contentLength) && contentLength > MAX_BINARY_BYTES) {
+		await response.body?.cancel().catch(() => undefined);
+		throw new Error(
+			'Simla.com binary response exceeds the 20 MiB client limit.',
+		);
+	}
+	const reader = response.body?.getReader();
+	if (!reader) return new Uint8Array();
+	const chunks: Uint8Array[] = [];
+	let totalBytes = 0;
+	try {
+		while (true) {
+			const chunk = await reader.read();
+			if (chunk.done) break;
+			totalBytes += chunk.value.byteLength;
+			if (totalBytes > MAX_BINARY_BYTES) {
+				await reader.cancel().catch(() => undefined);
+				throw new Error(
+					'Simla.com binary response exceeds the 20 MiB client limit.',
+				);
+			}
+			chunks.push(chunk.value);
+		}
+	} catch (error: unknown) {
+		// `unknown` is required because a response stream can reject with any runtime value.
+		if (error instanceof Error) throw error;
+		throw new Error('Simla.com binary response could not be read.');
+	}
+	const output = new Uint8Array(totalBytes);
+	let offset = 0;
+	for (const chunk of chunks) {
+		output.set(chunk, offset);
+		offset += chunk.byteLength;
+	}
+	return output;
+}
+
 function retryAfterMs(response: Response): number | undefined {
 	const value = response.headers.get('retry-after');
 	if (value === null) return undefined;
@@ -118,38 +157,56 @@ function safeApiError(
 	);
 }
 
-function safeTransportError(error: ApiError): ApiError {
+export function sanitizeSimlaComApiError(error: ApiError): ApiError {
 	const parsedUrl = new URL(error.url);
 	const pathPrefix = parsedUrl.pathname.startsWith('/api/v5/')
 		? '/api/v5/'
 		: '/';
-	const result: ApiResult = {
-		url: `${parsedUrl.origin}${pathPrefix}${error.request.url.replace(/^\/+/, '')}`,
-		ok: false,
-		status: error.status,
-		statusText: `HTTP ${error.status}`,
-		body: {
-			message: 'Simla.com request failed; response details were redacted.',
-		},
-	};
+	const safeUrl = `${parsedUrl.origin}${pathPrefix}${error.request.url.replace(/^\/+/, '')}`;
+	const safeMessage = `Simla.com request failed with HTTP ${error.status}.`;
 	const requestOptions: ApiRequestOptions = {
 		...error.request,
 		path: undefined,
 		query: undefined,
 		body: undefined,
 		formData: undefined,
+		headers: undefined,
 	};
-	return new ApiError(
-		requestOptions,
-		result,
-		`Simla.com request failed with HTTP ${error.status}.`,
-		{
-			retryAfter: error.retryAfter,
-			rateLimitReset: error.rateLimitReset,
-			rateLimitRemaining: error.rateLimitRemaining,
-			rateLimitLimit: error.rateLimitLimit,
+	Object.defineProperties(error, {
+		url: {
+			value: safeUrl,
+			enumerable: true,
+			configurable: true,
+			writable: true,
 		},
-	);
+		statusText: {
+			value: `HTTP ${error.status}`,
+			enumerable: true,
+			configurable: true,
+			writable: true,
+		},
+		body: {
+			value: {
+				message: 'Simla.com request failed; response details were redacted.',
+			},
+			enumerable: true,
+			configurable: true,
+			writable: true,
+		},
+		request: {
+			value: requestOptions,
+			enumerable: true,
+			configurable: true,
+			writable: true,
+		},
+	});
+	error.message = safeMessage;
+	if (error.stack) {
+		const stack = error.stack.split('\n');
+		stack[0] = `${error.name}: ${safeMessage}`;
+		error.stack = stack.join('\n');
+	}
+	return error;
 }
 
 // Query values vary by provider parameter, so recursion narrows the validated JSON structure at runtime.
@@ -256,7 +313,7 @@ export async function makeSimlaComRequest(
 		return await request<unknown>(config, requestOptions);
 	} catch (error: unknown) {
 		// `unknown` is required because a rejected transport promise may carry any value.
-		if (error instanceof ApiError) throw safeTransportError(error);
+		if (error instanceof ApiError) throw sanitizeSimlaComApiError(error);
 		if (error instanceof Error) throw new Error('Simla.com request failed.');
 		throw new Error('Simla.com request failed.');
 	}
@@ -314,12 +371,7 @@ async function requestBinary(
 		const responseBody: unknown = await response.json();
 		return responseBody;
 	}
-	const body = new Uint8Array(await response.arrayBuffer());
-	if (body.byteLength > MAX_BINARY_BYTES) {
-		throw new Error(
-			'Simla.com binary response exceeds the 20 MiB client limit.',
-		);
-	}
+	const body = await readBinaryBody(response);
 	const output: SimlaComBinaryOutput = {
 		kind: 'binary',
 		contentType,

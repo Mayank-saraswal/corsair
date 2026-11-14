@@ -1,18 +1,35 @@
 import { z } from 'zod';
 import { operationData } from '../operation-data';
+import type { SimlaComEndpointInputs } from './operation-io-types';
 import type {
 	JsonSchema,
-	SimlaComEndpointInput,
+	JsonValue,
 	SimlaComOperation,
 } from './operation-types';
+
+type SimlaComEndpointInput =
+	SimlaComEndpointInputs[keyof SimlaComEndpointInputs];
 
 const operations = operationData.operations;
 const openApiSchemas = new Map<string, JsonSchema>(
 	Object.entries(operationData.schemas),
 );
 
-// Unknown here represents open-ended JSON properties explicitly allowed by the OpenAPI contract.
-const allowJsonValue = z.custom<unknown>(() => true);
+function isJsonValue(value: unknown): value is JsonValue {
+	if (
+		value === null ||
+		typeof value === 'string' ||
+		typeof value === 'boolean'
+	) {
+		return true;
+	}
+	if (typeof value === 'number') return Number.isFinite(value);
+	if (Array.isArray(value)) return value.every(isJsonValue);
+	if (typeof value !== 'object') return false;
+	return Object.values(value).every(isJsonValue);
+}
+
+const allowJsonValue = z.custom<JsonValue>(isJsonValue);
 
 function referencedSchema(reference: string): JsonSchema {
 	const name = reference.replace(/^#\/components\/schemas\//, '');
@@ -36,6 +53,74 @@ function regexForPattern(pattern: string): RegExp {
 	};
 	const normalized = datePatterns[pattern] ?? pattern;
 	return new RegExp(normalized.replace(/^\\A/, '^').replace(/\\z$/, '$'));
+}
+
+function mergeAllOfObjectSchemas(
+	parts: readonly JsonSchema[],
+): JsonSchema | undefined {
+	const properties: Record<string, JsonSchema> = {};
+	const required = new Set<string>();
+	const referenced = new Set<string>();
+	let objectPartCount = 0;
+	let incompatiblePart = false;
+	let allowsAdditionalProperties = false;
+	let forbidsAdditionalProperties = false;
+	let additionalPropertiesSchema: JsonSchema | undefined;
+
+	const collect = (part: JsonSchema): void => {
+		if (part.$ref) {
+			const name = part.$ref.replace(/^#\/components\/schemas\//, '');
+			if (referenced.has(name)) return;
+			referenced.add(name);
+			collect(referencedSchema(part.$ref));
+			return;
+		}
+		if (part.allOf?.length) {
+			for (const nested of part.allOf) collect(nested);
+			return;
+		}
+		if (part.oneOf || part.anyOf) {
+			incompatiblePart = true;
+			return;
+		}
+		if (part.type !== 'object' && !part.properties && !part.required) {
+			incompatiblePart = true;
+			return;
+		}
+
+		objectPartCount += 1;
+		for (const [name, property] of Object.entries(part.properties ?? {})) {
+			const previous = properties[name];
+			if (!previous) {
+				properties[name] = property;
+			} else if (JSON.stringify(previous) !== JSON.stringify(property)) {
+				properties[name] = { allOf: [previous, property] };
+			}
+		}
+		for (const name of part.required ?? []) required.add(name);
+		if (part.additionalProperties === false) {
+			forbidsAdditionalProperties = true;
+		} else if (part.additionalProperties === true) {
+			allowsAdditionalProperties = true;
+		} else if (part.additionalProperties) {
+			additionalPropertiesSchema = part.additionalProperties;
+		}
+	};
+
+	for (const part of parts) collect(part);
+	if (objectPartCount === 0 || incompatiblePart) return undefined;
+	const merged: JsonSchema = {
+		type: 'object',
+		properties,
+		...(required.size === 0 ? {} : { required: [...required] }),
+	};
+	if (forbidsAdditionalProperties) merged.additionalProperties = false;
+	else if (additionalPropertiesSchema) {
+		merged.additionalProperties = additionalPropertiesSchema;
+	} else if (allowsAdditionalProperties) {
+		merged.additionalProperties = true;
+	}
+	return merged;
 }
 
 // The provider publishes recursive and extensible objects; unknown here is narrowed by each generated OpenAPI schema.
@@ -65,13 +150,18 @@ function schemaToZod(schema: JsonSchema): z.ZodType<unknown> {
 			schemaToZod(choices[0] ?? {}),
 		);
 	} else if (schema.allOf && schema.allOf.length > 0) {
-		// Intersections can combine distinct provider models, so the common runtime type is unknown.
-		result = schema.allOf
-			.slice(1)
-			.reduce<z.ZodType<unknown>>(
-				(combined, part) => z.intersection(combined, schemaToZod(part)),
-				schemaToZod(schema.allOf?.[0] ?? {}),
-			);
+		const merged = mergeAllOfObjectSchemas(schema.allOf);
+		if (merged) {
+			result = schemaToZod(merged);
+		} else {
+			// Non-object intersections retain both OpenAPI validators at runtime.
+			result = schema.allOf
+				.slice(1)
+				.reduce<z.ZodType<unknown>>(
+					(combined, part) => z.intersection(combined, schemaToZod(part)),
+					schemaToZod(schema.allOf?.[0] ?? {}),
+				);
+		}
 	} else if (type === 'string') {
 		let stringSchema = z.string();
 		if (schema.minLength !== undefined)
@@ -112,7 +202,7 @@ function schemaToZod(schema: JsonSchema): z.ZodType<unknown> {
 		for (const requiredName of schema.required ?? []) {
 			if (!(requiredName in (schema.properties ?? {}))) {
 				// Simla.com's OpenAPI marks this field required but publishes no type or constraints for it.
-				fields[requiredName] = z.custom<unknown>(() => true);
+				fields[requiredName] = allowJsonValue;
 			}
 		}
 		const objectSchema = z.object(fields);

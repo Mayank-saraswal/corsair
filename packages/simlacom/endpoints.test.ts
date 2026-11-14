@@ -1,4 +1,5 @@
 import { makeSimlaComRequest } from './client';
+import { SIMLACOM_OPERATION_IDS } from './endpoints/operation-io-types';
 import { createSimlaComOperationEndpoint } from './endpoints/shared';
 import { getSimlaComOperation, SIMLACOM_OPERATIONS } from './endpoints/types';
 import type { SimlaComContext } from './index';
@@ -46,9 +47,9 @@ describe('documented operation transport', () => {
 		};
 		const invalidInput = { path: { undocumented: true } };
 
-		for (const operation of SIMLACOM_OPERATIONS) {
+		for (const id of SIMLACOM_OPERATION_IDS) {
 			await expect(
-				createSimlaComOperationEndpoint(operation.id)(context, invalidInput),
+				createSimlaComOperationEndpoint(id)(context, invalidInput),
 			).rejects.toThrow();
 		}
 		expect(fetchMock).not.toHaveBeenCalled();
