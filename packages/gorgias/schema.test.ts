@@ -188,7 +188,15 @@ const fixtures: Record<string, OperationFixture> = {
 		input: { path: { customer_id: 1 } },
 		output: [],
 	},
-	'customers.listCustomers': { input: {}, output: [] },
+	'customers.listCustomers': {
+		input: {},
+		output: {
+			data: [],
+			object: 'list',
+			uri: '/api/x',
+			meta: { next_cursor: 'x', prev_cursor: null },
+		},
+	},
 	'customers.mergeCustomers': {
 		input: {
 			query: { source_id: 1, target_id: 1 },
@@ -292,7 +300,15 @@ const fixtures: Record<string, OperationFixture> = {
 			uri: 'x',
 		},
 	},
-	'events.listEvents': { input: {}, output: [] },
+	'events.listEvents': {
+		input: {},
+		output: {
+			data: [],
+			object: 'list',
+			uri: '/api/x',
+			meta: { next_cursor: 'x', prev_cursor: null },
+		},
+	},
 	'files.uploadFiles': {
 		input: {
 			body: {
@@ -339,8 +355,8 @@ const fixtures: Record<string, OperationFixture> = {
 		output: {
 			data: [],
 			meta: { next_cursor: 'x', prev_cursor: 'x' },
-			object: {},
-			uri: 'https://acme.test/resource',
+			object: 'list',
+			uri: '/api/x',
 		},
 	},
 	'integrations.updateIntegration': {
@@ -524,7 +540,15 @@ const fixtures: Record<string, OperationFixture> = {
 			uri: 'x',
 		},
 	},
-	'macros.listMacros': { input: {}, output: [] },
+	'macros.listMacros': {
+		input: {},
+		output: {
+			data: [],
+			object: 'list',
+			uri: '/api/x',
+			meta: { next_cursor: 'x', prev_cursor: null },
+		},
+	},
 	'macros.updateMacro': {
 		input: {
 			path: { id: 1 },
@@ -621,7 +645,15 @@ const fixtures: Record<string, OperationFixture> = {
 			uri: 'x',
 		},
 	},
-	'rules.listRules': { input: {}, output: [] },
+	'rules.listRules': {
+		input: {},
+		output: {
+			data: [],
+			object: 'list',
+			uri: '/api/x',
+			meta: { next_cursor: 'x', prev_cursor: null },
+		},
+	},
 	'rules.updateRule': {
 		input: {
 			path: { id: 1 },
@@ -685,7 +717,15 @@ const fixtures: Record<string, OperationFixture> = {
 			uri: 'x',
 		},
 	},
-	'satisfactionSurveys.listSatisfactionSurveys': { input: {}, output: [] },
+	'satisfactionSurveys.listSatisfactionSurveys': {
+		input: {},
+		output: {
+			data: [],
+			object: 'list',
+			uri: '/api/x',
+			meta: { next_cursor: 'x', prev_cursor: null },
+		},
+	},
 	'satisfactionSurveys.updateSatisfactionSurvey': {
 		input: {
 			path: { id: 1 },
@@ -860,7 +900,15 @@ const fixtures: Record<string, OperationFixture> = {
 			created_datetime: '2025-01-01T00:00:00Z',
 		},
 	},
-	'teams.listTeams': { input: {}, output: [] },
+	'teams.listTeams': {
+		input: {},
+		output: {
+			data: [],
+			object: 'list',
+			uri: '/api/x',
+			meta: { next_cursor: 'x', prev_cursor: null },
+		},
+	},
 	'teams.updateTeam': {
 		input: {
 			path: { id: 1 },
@@ -1390,7 +1438,15 @@ const fixtures: Record<string, OperationFixture> = {
 			client_id: 'x',
 		},
 	},
-	'users.listUsers': { input: {}, output: [] },
+	'users.listUsers': {
+		input: {},
+		output: {
+			data: [],
+			object: 'list',
+			uri: '/api/x',
+			meta: { next_cursor: 'x', prev_cursor: null },
+		},
+	},
 	'users.updateUser': {
 		input: {
 			path: { id: 1 },
@@ -1518,7 +1574,15 @@ const fixtures: Record<string, OperationFixture> = {
 			meta: {},
 		},
 	},
-	'voiceCallEvents.listVoiceCallEvents': { input: {}, output: [] },
+	'voiceCallEvents.listVoiceCallEvents': {
+		input: {},
+		output: {
+			data: [],
+			object: 'list',
+			uri: '/api/x',
+			meta: { next_cursor: 'x', prev_cursor: null },
+		},
+	},
 	'voiceCallRecordings.deleteVoiceCallRecording': {
 		input: { path: { id: 1 } },
 		output: undefined,
@@ -1539,7 +1603,15 @@ const fixtures: Record<string, OperationFixture> = {
 			transcription_status: 'requested',
 		},
 	},
-	'voiceCallRecordings.listVoiceCallRecordings': { input: {}, output: [] },
+	'voiceCallRecordings.listVoiceCallRecordings': {
+		input: {},
+		output: {
+			data: [],
+			object: 'list',
+			uri: '/api/x',
+			meta: { next_cursor: 'x', prev_cursor: null },
+		},
+	},
 	'voiceCalls.getVoiceCall': {
 		input: { path: { id: 1 } },
 		output: {
@@ -1557,8 +1629,8 @@ const fixtures: Record<string, OperationFixture> = {
 		output: {
 			data: [],
 			meta: { next_cursor: 'x', prev_cursor: 'x' },
-			object: {},
-			uri: 'https://acme.test/resource',
+			object: 'list',
+			uri: '/api/x',
 		},
 	},
 	'widgets.createWidget': {
@@ -1594,7 +1666,15 @@ const fixtures: Record<string, OperationFixture> = {
 			uri: 'x',
 		},
 	},
-	'widgets.listWidgets': { input: {}, output: [] },
+	'widgets.listWidgets': {
+		input: {},
+		output: {
+			data: [],
+			object: 'list',
+			uri: '/api/x',
+			meta: { next_cursor: 'x', prev_cursor: null },
+		},
+	},
 	'widgets.updateWidget': {
 		input: {
 			path: { id: 1 },

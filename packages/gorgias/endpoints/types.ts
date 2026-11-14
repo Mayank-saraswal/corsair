@@ -1,125 +1,145 @@
 import { z } from 'zod';
 
+// Gorgias wraps every cursor-paginated list in this envelope
+// (https://developers.gorgias.com/reference/pagination), including lists whose
+// reference page shows only the bare array of items.
+function gorgiasListSchema<Item extends z.ZodType>(item: Item) {
+	return z
+		.object({
+			data: z.array(item),
+			object: z.string().optional(),
+			uri: z.string().optional(),
+			meta: z
+				.object({
+					prev_cursor: z.string().nullish(),
+					next_cursor: z.string().nullish(),
+				})
+				.passthrough()
+				.optional(),
+		})
+		.passthrough();
+}
+
 const ArchiveMacrosAsUserSchema = z
 	.object({
 		ids: z.array(z.number().int()).min(1).max(30),
 	})
 	.strict();
-const ArchiveMacroAsUserStatusEnumSchema = z.enum([
-	'archived',
-	'not_found',
-	'already_archived',
-	'macro_used',
-]);
+const ArchiveMacroAsUserStatusEnumSchema = z
+	.enum(['archived', 'not_found', 'already_archived', 'macro_used'])
+	.or(z.string());
 const MacroUsageErrorDataSchema = z
 	.object({
-		rules: z.array(z.string()),
+		rules: z.array(z.string()).nullish(),
 	})
-	.strict();
+	.passthrough();
 const MacroUsageErrorSchema = z
 	.object({
-		data: MacroUsageErrorDataSchema,
-		msg: z.string(),
+		data: MacroUsageErrorDataSchema.nullish(),
+		msg: z.string().nullish(),
 	})
-	.strict();
+	.passthrough();
 const ArchiveMacroAsUserResultSchema = z
 	.object({
-		id: z.number().int(),
-		status: ArchiveMacroAsUserStatusEnumSchema,
-		error: MacroUsageErrorSchema.optional(),
+		id: z.number().int().nullish(),
+		status: ArchiveMacroAsUserStatusEnumSchema.nullish(),
+		error: MacroUsageErrorSchema.nullish(),
 	})
-	.strict();
+	.passthrough();
 const ArchiveMacrosAsUserResultSchema = z
 	.object({
-		data: z.array(ArchiveMacroAsUserResultSchema),
+		data: z.array(ArchiveMacroAsUserResultSchema).nullish(),
 	})
-	.strict();
+	.passthrough();
 const UnarchiveMacrosAsUserSchema = z
 	.object({
 		ids: z.array(z.number().int()).min(1).max(30),
 	})
 	.strict();
-const UnarchiveMacroAsUserStatusEnumSchema = z.enum([
-	'unarchived',
-	'not_found',
-	'already_not_archived',
-]);
+const UnarchiveMacroAsUserStatusEnumSchema = z
+	.enum(['unarchived', 'not_found', 'already_not_archived'])
+	.or(z.string());
 const UnArchiveMacroAsUserResultSchema = z
 	.object({
-		id: z.number().int(),
-		status: UnarchiveMacroAsUserStatusEnumSchema,
+		id: z.number().int().nullish(),
+		status: UnarchiveMacroAsUserStatusEnumSchema.nullish(),
 	})
-	.strict();
+	.passthrough();
 const UnarchiveMacrosAsUserResultSchema = z
 	.object({
-		data: z.array(UnArchiveMacroAsUserResultSchema),
+		data: z.array(UnArchiveMacroAsUserResultSchema).nullish(),
 	})
-	.strict();
+	.passthrough();
 const AccountSettingSatisfactionSurveysTypedSchema = z
 	.object({
-		id: z.number().int().optional(),
+		id: z.number().int().nullish(),
 		data: z
 			.object({
-				send_survey_for_chat: z.boolean().optional(),
-				send_survey_for_email: z.boolean().optional(),
-				send_survey_for_contact_form: z.boolean().optional(),
-				send_survey_for_help_center: z.boolean().optional(),
-				survey_email_html: z.string().optional(),
-				survey_email_text: z.string().optional(),
-				survey_interval: z.number().int().optional(),
+				send_survey_for_chat: z.boolean().nullish(),
+				send_survey_for_email: z.boolean().nullish(),
+				send_survey_for_contact_form: z.boolean().nullish(),
+				send_survey_for_help_center: z.boolean().nullish(),
+				survey_email_html: z.string().nullish(),
+				survey_email_text: z.string().nullish(),
+				survey_interval: z.number().int().nullish(),
 			})
-			.strict(),
-		type: z.string(),
+			.passthrough()
+			.nullish(),
+		type: z.string().nullish(),
 	})
-	.strict();
+	.passthrough();
 const AccountSettingAutoMergeTypedSchema = z
 	.object({
-		id: z.number().int().optional(),
+		id: z.number().int().nullish(),
 		data: z
 			.object({
 				tickets: z
 					.object({
-						enabled: z.boolean(),
-						merging_window_days: z.number().int().min(1).max(180),
+						enabled: z.boolean().nullish(),
+						merging_window_days: z.number().int().min(1).max(180).nullish(),
 					})
-					.strict(),
+					.passthrough()
+					.nullish(),
 			})
-			.strict(),
-		type: z.string(),
+			.passthrough()
+			.nullish(),
+		type: z.string().nullish(),
 	})
-	.strict();
+	.passthrough();
 const AccountSettingAutoSplitTypedSchema = z
 	.object({
-		id: z.number().int().optional(),
+		id: z.number().int().nullish(),
 		data: z
 			.object({
 				email: z
 					.object({
-						enabled: z.boolean(),
-						split_after_days: z.number().int().min(1).max(30).optional(),
+						enabled: z.boolean().nullish(),
+						split_after_days: z.number().int().min(1).max(30).nullish(),
 					})
-					.strict(),
+					.passthrough()
+					.nullish(),
 			})
-			.strict(),
-		type: z.string(),
+			.passthrough()
+			.nullish(),
+		type: z.string().nullish(),
 	})
-	.strict();
+	.passthrough();
 const AccountSettingBusinessHoursTypedSchema = z
 	.object({
-		id: z.number().int().optional(),
+		id: z.number().int().nullish(),
 		data: z
 			.object({
 				business_hours: z
 					.array(
 						z
 							.object({
-								days: z.string().optional(),
-								from_time: z.string().optional(),
-								to_time: z.string().optional(),
+								days: z.string().nullish(),
+								from_time: z.string().nullish(),
+								to_time: z.string().nullish(),
 							})
-							.strict(),
+							.passthrough(),
 					)
-					.optional(),
+					.nullish(),
 				timezone: z
 					.enum([
 						'Africa/Abidjan',
@@ -720,292 +740,321 @@ const AccountSettingBusinessHoursTypedSchema = z
 						'WET',
 						'Zulu',
 					])
-					.optional(),
+					.or(z.string())
+					.nullish(),
 			})
-			.strict(),
-		type: z.string(),
+			.passthrough()
+			.nullish(),
+		type: z.string().nullish(),
 	})
-	.strict();
+	.passthrough();
 const AccountSettingTicketAssignmentTypedSchema = z
 	.object({
-		id: z.number().int().optional(),
+		id: z.number().int().nullish(),
 		data: z
 			.object({
 				assignment_channels: z
 					.array(
-						z.enum([
-							'google-business-messages',
-							'tiktok-shop',
-							'aircall',
-							'api',
-							'chat',
-							'contact_form',
-							'email',
-							'facebook',
-							'facebook-mention',
-							'facebook-messenger',
-							'facebook-recommendations',
-							'help-center',
-							'instagram-ad-comment',
-							'instagram-comment',
-							'instagram-mention',
-							'instagram-direct-message',
-							'internal-note',
-							'phone',
-							'sms',
-							'twitter',
-							'twitter-direct-message',
-							'yotpo-review',
-							'whatsapp',
-							'custom-chat',
-						]),
+						z
+							.enum([
+								'google-business-messages',
+								'tiktok-shop',
+								'aircall',
+								'api',
+								'chat',
+								'contact_form',
+								'email',
+								'facebook',
+								'facebook-mention',
+								'facebook-messenger',
+								'facebook-recommendations',
+								'help-center',
+								'instagram-ad-comment',
+								'instagram-comment',
+								'instagram-mention',
+								'instagram-direct-message',
+								'internal-note',
+								'phone',
+								'sms',
+								'twitter',
+								'twitter-direct-message',
+								'yotpo-review',
+								'whatsapp',
+								'custom-chat',
+							])
+							.or(z.string()),
 					)
-					.optional(),
-				auto_assign_to_teams: z.boolean().optional(),
-				unassign_on_reply: z.boolean().optional(),
-				unassign_on_user_unavailability: z.array(z.enum(['chat'])).optional(),
-				can_exceed_max_agent_capacity: z.boolean().optional(),
-				auto_assign_ticket_to_responding_agent: z.boolean().optional(),
+					.nullish(),
+				auto_assign_to_teams: z.boolean().nullish(),
+				unassign_on_reply: z.boolean().nullish(),
+				unassign_on_user_unavailability: z
+					.array(z.enum(['chat']).or(z.string()))
+					.nullish(),
+				can_exceed_max_agent_capacity: z.boolean().nullish(),
+				auto_assign_ticket_to_responding_agent: z.boolean().nullish(),
 			})
-			.strict(),
-		type: z.string(),
+			.passthrough()
+			.nullish(),
+		type: z.string().nullish(),
 	})
-	.strict();
+	.passthrough();
 const AccountSettingViewsOrderingTypedSchema = z
 	.object({
-		id: z.number().int().optional(),
+		id: z.number().int().nullish(),
 		data: z
 			.object({
-				views: z.record(z.string(), z.json()),
-				view_sections: z.record(z.string(), z.json()),
+				views: z.record(z.string(), z.json()).nullish(),
+				view_sections: z.record(z.string(), z.json()).nullish(),
 			})
-			.strict(),
-		type: z.string(),
+			.passthrough()
+			.nullish(),
+		type: z.string().nullish(),
 	})
-	.strict();
+	.passthrough();
 const AccountSettingAccessTypedSchema = z
 	.object({
-		id: z.number().int().optional(),
+		id: z.number().int().nullish(),
 		data: z
 			.object({
-				signup_mode: z.enum(['invite', 'allowed-domains']),
-				allowed_domains: z.array(z.string()).optional(),
-				google_sso_enabled: z.boolean().optional(),
-				office365_sso_enabled: z.boolean().optional(),
-				two_fa_enforced_datetime: z.string().nullable().optional(),
-				skip_2fa_after_sso_datetime: z.string().nullable().optional(),
-				sso_enforced_datetime: z.string().nullable().optional(),
+				signup_mode: z
+					.enum(['invite', 'allowed-domains'])
+					.or(z.string())
+					.nullish(),
+				allowed_domains: z.array(z.string()).nullish(),
+				google_sso_enabled: z.boolean().nullish(),
+				office365_sso_enabled: z.boolean().nullish(),
+				two_fa_enforced_datetime: z.string().nullish(),
+				skip_2fa_after_sso_datetime: z.string().nullish(),
+				sso_enforced_datetime: z.string().nullish(),
 				custom_sso_providers: z
 					.record(
 						z.string(),
 						z
 							.object({
-								name: z.string().min(1),
-								client_id: z.string().min(1),
-								client_secret: z.string().min(1),
-								server_metadata_url: z.string(),
+								name: z.string().min(1).nullish(),
+								client_id: z.string().min(1).nullish(),
+								client_secret: z.string().min(1).nullish(),
+								server_metadata_url: z.string().nullish(),
 							})
-							.strict(),
+							.passthrough(),
 					)
-					.optional(),
+					.nullish(),
 			})
-			.strict(),
-		type: z.string(),
+			.passthrough()
+			.nullish(),
+		type: z.string().nullish(),
 	})
-	.strict();
+	.passthrough();
 const AccountSettingViewsVisibilityTypedSchema = z
 	.object({
-		id: z.number().int().optional(),
+		id: z.number().int().nullish(),
 		data: z
 			.object({
-				hidden_views: z.array(z.number().int().min(1)),
+				hidden_views: z.array(z.number().int().min(1)).nullish(),
 			})
-			.strict(),
-		type: z.string(),
+			.passthrough()
+			.nullish(),
+		type: z.string().nullish(),
 	})
-	.strict();
+	.passthrough();
 const AccountSettingAgentsTableConfigTypedSchema = z
 	.object({
-		id: z.number().int().optional(),
+		id: z.number().int().nullish(),
 		data: z
 			.object({
-				active_view: z.string().max(64),
+				active_view: z.string().max(64).nullish(),
 				views: z
 					.array(
 						z
 							.object({
-								id: z.string().max(64),
-								name: z.string().min(0).max(256),
+								id: z.string().max(64).nullish(),
+								name: z.string().min(0).max(256).nullish(),
 								metrics: z
 									.array(
 										z
 											.object({
-												id: z.string().max(64),
-												visibility: z.boolean().nullable(),
+												id: z.string().max(64).nullish(),
+												visibility: z.boolean().nullish(),
 											})
-											.strict(),
+											.passthrough(),
 									)
-									.max(64),
-								rows: z.record(z.string(), z.json()).optional(),
+									.max(64)
+									.nullish(),
+								rows: z.record(z.string(), z.json()).nullish(),
 							})
-							.strict(),
+							.passthrough(),
 					)
-					.max(8),
+					.max(8)
+					.nullish(),
 			})
-			.strict(),
-		type: z.string(),
+			.passthrough()
+			.nullish(),
+		type: z.string().nullish(),
 	})
-	.strict();
+	.passthrough();
 const AccountSettingAgentsAvailabilityTableConfigTypedSchema = z
 	.object({
-		id: z.number().int().optional(),
+		id: z.number().int().nullish(),
 		data: z
 			.object({
-				active_view: z.string().max(64),
+				active_view: z.string().max(64).nullish(),
 				views: z
 					.array(
 						z
 							.object({
-								id: z.string().max(64),
-								name: z.string().min(0).max(256),
+								id: z.string().max(64).nullish(),
+								name: z.string().min(0).max(256).nullish(),
 								metrics: z
 									.array(
 										z
 											.object({
-												id: z.string().max(64),
-												visibility: z.boolean().nullable(),
+												id: z.string().max(64).nullish(),
+												visibility: z.boolean().nullish(),
 											})
-											.strict(),
+											.passthrough(),
 									)
-									.max(64),
-								rows: z.record(z.string(), z.json()).optional(),
+									.max(64)
+									.nullish(),
+								rows: z.record(z.string(), z.json()).nullish(),
 							})
-							.strict(),
+							.passthrough(),
 					)
-					.max(8),
+					.max(8)
+					.nullish(),
 			})
-			.strict(),
-		type: z.string(),
+			.passthrough()
+			.nullish(),
+		type: z.string().nullish(),
 	})
-	.strict();
+	.passthrough();
 const AccountSettingChannelsTableConfigTypedSchema = z
 	.object({
-		id: z.number().int().optional(),
+		id: z.number().int().nullish(),
 		data: z
 			.object({
-				active_view: z.string().max(64),
+				active_view: z.string().max(64).nullish(),
 				views: z
 					.array(
 						z
 							.object({
-								id: z.string().max(64),
-								name: z.string().min(0).max(256),
+								id: z.string().max(64).nullish(),
+								name: z.string().min(0).max(256).nullish(),
 								metrics: z
 									.array(
 										z
 											.object({
-												id: z.string().max(64),
-												visibility: z.boolean().nullable(),
+												id: z.string().max(64).nullish(),
+												visibility: z.boolean().nullish(),
 											})
-											.strict(),
+											.passthrough(),
 									)
-									.max(64),
-								rows: z.record(z.string(), z.json()).optional(),
+									.max(64)
+									.nullish(),
+								rows: z.record(z.string(), z.json()).nullish(),
 							})
-							.strict(),
+							.passthrough(),
 					)
-					.max(8),
+					.max(8)
+					.nullish(),
 			})
-			.strict(),
-		type: z.string(),
+			.passthrough()
+			.nullish(),
+		type: z.string().nullish(),
 	})
-	.strict();
+	.passthrough();
 const AccountSettingProductInsightsTableConfigTypedSchema = z
 	.object({
-		id: z.number().int().optional(),
+		id: z.number().int().nullish(),
 		data: z
 			.object({
-				active_view: z.string().max(64),
+				active_view: z.string().max(64).nullish(),
 				views: z
 					.array(
 						z
 							.object({
-								id: z.string().max(64),
-								name: z.string().min(0).max(256),
+								id: z.string().max(64).nullish(),
+								name: z.string().min(0).max(256).nullish(),
 								metrics: z
 									.array(
 										z
 											.object({
-												id: z.string().max(64),
-												visibility: z.boolean().nullable(),
+												id: z.string().max(64).nullish(),
+												visibility: z.boolean().nullish(),
 											})
-											.strict(),
+											.passthrough(),
 									)
-									.max(64),
-								rows: z.record(z.string(), z.json()).optional(),
+									.max(64)
+									.nullish(),
+								rows: z.record(z.string(), z.json()).nullish(),
 							})
-							.strict(),
+							.passthrough(),
 					)
-					.max(8),
+					.max(8)
+					.nullish(),
 			})
-			.strict(),
-		type: z.string(),
+			.passthrough()
+			.nullish(),
+		type: z.string().nullish(),
 	})
-	.strict();
+	.passthrough();
 const AccountSettingInTicketSuggestionTypedSchema = z
 	.object({
-		id: z.number().int().optional(),
+		id: z.number().int().nullish(),
 		data: z
 			.object({
-				is_demo_hidden: z.boolean().nullable(),
+				is_demo_hidden: z.boolean().nullish(),
 			})
-			.strict(),
-		type: z.string(),
+			.passthrough()
+			.nullish(),
+		type: z.string().nullish(),
 	})
-	.strict();
+	.passthrough();
 const AccountSettingAgentCostsTypedSchema = z
 	.object({
-		id: z.number().int().optional(),
+		id: z.number().int().nullish(),
 		data: z
 			.object({
-				agent_cost_type: z.enum(['yearly', 'hourly']),
-				agent_cost_per_ticket: z.number().min(0),
-				agent_ticket_per_hour: z.number().min(0).nullable().optional(),
+				agent_cost_type: z.enum(['yearly', 'hourly']).or(z.string()).nullish(),
+				agent_cost_per_ticket: z.number().min(0).nullish(),
+				agent_ticket_per_hour: z.number().min(0).nullish(),
 			})
-			.strict(),
-		type: z.string(),
+			.passthrough()
+			.nullish(),
+		type: z.string().nullish(),
 	})
-	.strict();
+	.passthrough();
 const AccountSettingLimitsTypedSchema = z
 	.object({
-		id: z.number().int().optional(),
+		id: z.number().int().nullish(),
 		data: z
 			.object({
-				max_integrations: z.number().int().min(0).optional(),
-				max_active_rules: z.number().int().min(0).optional(),
+				max_integrations: z.number().int().min(0).nullish(),
+				max_active_rules: z.number().int().min(0).nullish(),
 			})
-			.strict(),
-		type: z.string(),
+			.passthrough()
+			.nullish(),
+		type: z.string().nullish(),
 	})
-	.strict();
+	.passthrough();
 const AccountSettingDefaultIntegrationTypedSchema = z
 	.object({
-		id: z.number().int().optional(),
-		data: z.record(z.string(), z.json()),
-		type: z.string(),
+		id: z.number().int().nullish(),
+		data: z.record(z.string(), z.json()).nullish(),
+		type: z.string().nullish(),
 	})
-	.strict();
+	.passthrough();
 const AccountSettingBillingProductHardLimitsTypedSchema = z
 	.object({
-		id: z.number().int().optional(),
+		id: z.number().int().nullish(),
 		data: z
 			.object({
-				gaia: z.number().int().min(0).nullable(),
+				gaia: z.number().int().min(0).nullish(),
 			})
-			.strict(),
-		type: z.string(),
+			.passthrough()
+			.nullish(),
+		type: z.string().nullish(),
 	})
-	.strict();
+	.passthrough();
 const BooleanDropdownInputSettingsSchema = z
 	.object({
 		input_type: z.literal('dropdown'),
@@ -1013,12 +1062,27 @@ const BooleanDropdownInputSettingsSchema = z
 		default: z.boolean().optional(),
 	})
 	.strict();
+const BooleanDropdownInputSettingsOutputSchema = z
+	.object({
+		input_type: z.literal('dropdown'),
+		choices: z.array(z.boolean()).nullish(),
+		default: z.boolean().nullish(),
+	})
+	.passthrough();
 const BooleanDataTypeDefinitionSchema = z
 	.object({
 		data_type: z.literal('boolean'),
 		input_settings: z.union([BooleanDropdownInputSettingsSchema]),
 	})
 	.strict();
+const BooleanDataTypeDefinitionOutputSchema = z
+	.object({
+		data_type: z.literal('boolean'),
+		input_settings: z
+			.union([BooleanDropdownInputSettingsOutputSchema])
+			.nullish(),
+	})
+	.passthrough();
 const DropdownInputSettingsSettingsSchema = z
 	.object({
 		input_type: z.literal('dropdown'),
@@ -1026,7 +1090,15 @@ const DropdownInputSettingsSettingsSchema = z
 		default: z.string().optional(),
 	})
 	.strict();
+const DropdownInputSettingsSettingsOutputSchema = z
+	.object({
+		input_type: z.literal('dropdown'),
+		choices: z.array(z.string()).max(2000).nullish(),
+		default: z.string().nullish(),
+	})
+	.passthrough();
 const ManagedCustomerFieldTypeSchema = z.literal('customer_type');
+const ManagedCustomerFieldTypeOutputSchema = z.literal('customer_type');
 const NumberInputSettingsSchema = z
 	.object({
 		input_type: z.literal('input_number'),
@@ -1035,19 +1107,40 @@ const NumberInputSettingsSchema = z
 		max: z.union([z.number(), z.string()]).optional(),
 	})
 	.strict();
+const NumberInputSettingsOutputSchema = z
+	.object({
+		input_type: z.literal('input_number'),
+		placeholder: z.string().min(0).max(1024).nullish(),
+		min: z.union([z.number(), z.string()]).nullish(),
+		max: z.union([z.number(), z.string()]).nullish(),
+	})
+	.passthrough();
 const NumberDataTypeDefinitionSchema = z
 	.object({
 		data_type: z.literal('number'),
 		input_settings: z.union([NumberInputSettingsSchema]),
 	})
 	.strict();
+const NumberDataTypeDefinitionOutputSchema = z
+	.object({
+		data_type: z.literal('number'),
+		input_settings: z.union([NumberInputSettingsOutputSchema]).nullish(),
+	})
+	.passthrough();
 const ObjectTypeSchema = z.enum(['Ticket', 'Customer']);
+const ObjectTypeOutputSchema = z.enum(['Ticket', 'Customer']).or(z.string());
 const TextInputSettingsSchema = z
 	.object({
 		input_type: z.literal('input'),
 		placeholder: z.string().min(0).max(1024).optional(),
 	})
 	.strict();
+const TextInputSettingsOutputSchema = z
+	.object({
+		input_type: z.literal('input'),
+		placeholder: z.string().min(0).max(1024).nullish(),
+	})
+	.passthrough();
 const TextDataTypeDefinitionSchema = z
 	.object({
 		data_type: z.literal('text'),
@@ -1057,6 +1150,17 @@ const TextDataTypeDefinitionSchema = z
 		]),
 	})
 	.strict();
+const TextDataTypeDefinitionOutputSchema = z
+	.object({
+		data_type: z.literal('text'),
+		input_settings: z
+			.union([
+				TextInputSettingsOutputSchema,
+				DropdownInputSettingsSettingsOutputSchema,
+			])
+			.nullish(),
+	})
+	.passthrough();
 const ManagedTicketFieldTypeSchema = z.enum([
 	'contact_reason',
 	'product',
@@ -1069,7 +1173,24 @@ const ManagedTicketFieldTypeSchema = z.enum([
 	'managed_sentiment',
 	'call_status',
 ]);
+const ManagedTicketFieldTypeOutputSchema = z
+	.enum([
+		'contact_reason',
+		'product',
+		'resolution',
+		'ai_intent',
+		'ai_outcome',
+		'ai_sales',
+		'ai_discount',
+		'ai_journey',
+		'managed_sentiment',
+		'call_status',
+	])
+	.or(z.string());
 const RequirementTypeSchema = z.enum(['visible', 'required', 'conditional']);
+const RequirementTypeOutputSchema = z
+	.enum(['visible', 'required', 'conditional'])
+	.or(z.string());
 const CreateCustomFieldSchema = z
 	.object({
 		external_id: z.string().optional(),
@@ -1092,62 +1213,67 @@ const CreateCustomFieldSchema = z
 	.strict();
 const CustomFieldSchema = z
 	.object({
-		id: z.number().int(),
-		external_id: z.string().optional(),
-		object_type: ObjectTypeSchema,
-		label: z.string().min(0).max(255),
-		description: z.string().min(0).max(1024).optional(),
-		priority: z.number().int().min(0),
-		required: z.boolean(),
-		requirement_type: RequirementTypeSchema,
+		id: z.number().int().nullish(),
+		external_id: z.string().nullish(),
+		object_type: ObjectTypeOutputSchema.nullish(),
+		label: z.string().min(0).max(255).nullish(),
+		description: z.string().min(0).max(1024).nullish(),
+		priority: z.number().int().min(0).nullish(),
+		required: z.boolean().nullish(),
+		requirement_type: RequirementTypeOutputSchema.nullish(),
 		managed_type: z
-			.union([ManagedTicketFieldTypeSchema, ManagedCustomerFieldTypeSchema])
-			.optional(),
-		definition: z.union([
-			TextDataTypeDefinitionSchema,
-			NumberDataTypeDefinitionSchema,
-			BooleanDataTypeDefinitionSchema,
-		]),
-		created_datetime: z.string(),
-		updated_datetime: z.string(),
-		deactivated_datetime: z.string().optional(),
+			.union([
+				ManagedTicketFieldTypeOutputSchema,
+				ManagedCustomerFieldTypeOutputSchema,
+			])
+			.nullish(),
+		definition: z
+			.union([
+				TextDataTypeDefinitionOutputSchema,
+				NumberDataTypeDefinitionOutputSchema,
+				BooleanDataTypeDefinitionOutputSchema,
+			])
+			.nullish(),
+		created_datetime: z.string().nullish(),
+		updated_datetime: z.string().nullish(),
+		deactivated_datetime: z.string().nullish(),
 	})
-	.strict();
+	.passthrough();
 // Customer-channel request and ticket schemas document these contact properties.
 const CustomerChannelResponseSchema = z
 	.object({
-		id: z.number().int().optional(),
-		type: z.string().optional(),
-		address: z.string().optional(),
-		preferred: z.boolean().optional(),
-		created_datetime: z.string().nullable().optional(),
-		updated_datetime: z.string().nullable().optional(),
-		deleted_datetime: z.string().nullable().optional(),
+		id: z.number().int().nullish(),
+		type: z.string().nullish(),
+		address: z.string().nullish(),
+		preferred: z.boolean().nullish(),
+		created_datetime: z.string().nullish(),
+		updated_datetime: z.string().nullish(),
+		deleted_datetime: z.string().nullish(),
 		user: z
 			.object({
-				id: z.number().int().optional(),
-				name: z.string().nullable().optional(),
+				id: z.number().int().nullish(),
+				name: z.string().nullish(),
 			})
-			.strict()
-			.optional(),
+			.passthrough()
+			.nullish(),
 		customer: z
 			.object({
-				id: z.number().int().optional(),
-				name: z.string().nullable().optional(),
+				id: z.number().int().nullish(),
+				name: z.string().nullish(),
 			})
-			.strict()
-			.optional(),
+			.passthrough()
+			.nullish(),
 	})
-	.strict();
+	.passthrough();
 const CustomerSchema = z
 	.object({
-		id: z.number().int().optional(),
-		channels: z.array(CustomerChannelResponseSchema).optional(),
-		created_datetime: z.string().nullable().optional(),
-		email: z.string().email().nullable().optional(),
-		external_id: z.string().nullable().optional(),
-		firstname: z.string().optional(),
-		integrations: z.record(z.string(), z.json()).optional(),
+		id: z.number().int().nullish(),
+		channels: z.array(CustomerChannelResponseSchema).nullish(),
+		created_datetime: z.string().nullish(),
+		email: z.string().nullish(),
+		external_id: z.string().nullish(),
+		firstname: z.string().nullish(),
+		integrations: z.record(z.string(), z.json()).nullish(),
 		language: z
 			.enum([
 				'aa',
@@ -1336,10 +1462,11 @@ const CustomerSchema = z
 				'za',
 				'zu',
 			])
-			.optional(),
-		lastname: z.string().optional(),
-		name: z.string().nullable().optional(),
-		note: z.string().nullable().optional(),
+			.or(z.string())
+			.nullish(),
+		lastname: z.string().nullish(),
+		name: z.string().nullish(),
+		note: z.string().nullish(),
 		timezone: z
 			.enum([
 				'Africa/Abidjan',
@@ -1940,91 +2067,97 @@ const CustomerSchema = z
 				'WET',
 				'Zulu',
 			])
-			.optional(),
-		updated_datetime: z.string().nullable().optional(),
+			.or(z.string())
+			.nullish(),
+		updated_datetime: z.string().nullish(),
 	})
-	.strict();
+	.passthrough();
 const IntegrationSchema = z
 	.object({
-		id: z.number().int().optional(),
-		created_datetime: z.string().nullable().optional(),
-		deactivated_datetime: z.string().nullable().optional(),
-		description: z.string().nullable().nullable().optional(),
+		id: z.number().int().nullish(),
+		created_datetime: z.string().nullish(),
+		deactivated_datetime: z.string().nullish(),
+		description: z.string().nullish(),
 		http: z
 			.object({
-				form: z.null().optional(),
+				form: z.json().nullish(),
 				method: z
 					.enum(['GET', 'POST', 'PUT', 'DELETE', 'HEAD', 'PATCH'])
-					.optional(),
+					.or(z.string())
+					.nullish(),
 				request_content_type: z
 					.enum(['application/json', 'application/x-www-form-urlencoded'])
-					.optional(),
-				response_content_type: z.enum(['application/json']).optional(),
+					.or(z.string())
+					.nullish(),
+				response_content_type: z
+					.enum(['application/json'])
+					.or(z.string())
+					.nullish(),
 				triggers: z
 					.object({
-						'ticket-created': z.boolean().optional(),
-						'ticket-updated': z.boolean().optional(),
-						'ticket-message-created': z.boolean().optional(),
-						'ticket-self-unsnoozed': z.boolean().optional(),
-						'ticket-message-failed': z.boolean().optional(),
-						'ticket-assignment-updated': z.boolean().optional(),
-						'ticket-status-updated': z.boolean().optional(),
-						'ticket-handed-over': z.boolean().optional(),
+						'ticket-created': z.boolean().nullish(),
+						'ticket-updated': z.boolean().nullish(),
+						'ticket-message-created': z.boolean().nullish(),
+						'ticket-self-unsnoozed': z.boolean().nullish(),
+						'ticket-message-failed': z.boolean().nullish(),
+						'ticket-assignment-updated': z.boolean().nullish(),
+						'ticket-status-updated': z.boolean().nullish(),
+						'ticket-handed-over': z.boolean().nullish(),
 					})
-					.strict()
-					.optional(),
-				url: z.string(),
-				oauth2: z.null().optional(),
+					.passthrough()
+					.nullish(),
+				url: z.string().nullish(),
+				oauth2: z.json().nullish(),
 			})
-			.strict()
-			.optional(),
-		name: z.string(),
-		type: z.enum(['http']).optional(),
-		updated_datetime: z.string().nullable().optional(),
+			.passthrough()
+			.nullish(),
+		name: z.string().nullish(),
+		type: z.enum(['http']).or(z.string()).nullish(),
+		updated_datetime: z.string().nullish(),
 		user: z
 			.object({
-				id: z.number().int().optional(),
+				id: z.number().int().nullish(),
 			})
-			.strict()
-			.optional(),
-		uri: z.string().optional(),
-		application_id: z.string().nullable().optional(),
-		managed: z.boolean().optional(),
-		business_hours_id: z.number().int().nullable().optional(),
+			.passthrough()
+			.nullish(),
+		uri: z.string().nullish(),
+		application_id: z.string().nullish(),
+		managed: z.boolean().nullish(),
+		business_hours_id: z.number().int().nullish(),
 	})
-	.strict();
+	.passthrough();
 const CustomerResponseSchema = CustomerSchema.extend({
 	external_data: z.record(z.string(), z.json()).optional(),
 	ecommerce_data: z.record(z.string(), z.json()).optional(),
-}).strict();
+}).passthrough();
 const JobSchema = z
 	.object({
-		id: z.number().int().optional(),
-		cancel_requested_datetime: z.string().nullable().optional(),
-		cancelled_datetime: z.string().nullable().optional(),
-		created_datetime: z.string().nullable().optional(),
-		ended_datetime: z.string().nullable().optional(),
-		failed_datetime: z.string().nullable().optional(),
-		info: z.record(z.string(), z.json()).optional(),
-		locked_datetime: z.string().nullable().optional(),
-		meta: z.record(z.string(), z.json()).nullable().optional(),
+		id: z.number().int().nullish(),
+		cancel_requested_datetime: z.string().nullish(),
+		cancelled_datetime: z.string().nullish(),
+		created_datetime: z.string().nullish(),
+		ended_datetime: z.string().nullish(),
+		failed_datetime: z.string().nullish(),
+		info: z.record(z.string(), z.json()).nullish(),
+		locked_datetime: z.string().nullish(),
+		meta: z.record(z.string(), z.json()).nullish(),
 		params: z
 			.object({
-				apply_and_close: z.boolean().optional(),
-				end_datetime: z.string().nullable().optional(),
-				macro_id: z.number().int().optional(),
-				start_datetime: z.string().nullable().optional(),
-				ticket_ids: z.array(z.number().int()).optional(),
-				url: z.string().optional(),
-				updates: z.record(z.string(), z.json()).optional(),
-				view: z.record(z.string(), z.json()).optional(),
-				view_id: z.number().int().optional(),
-				context: z.record(z.string(), z.json()).optional(),
+				apply_and_close: z.boolean().nullish(),
+				end_datetime: z.string().nullish(),
+				macro_id: z.number().int().nullish(),
+				start_datetime: z.string().nullish(),
+				ticket_ids: z.array(z.number().int()).nullish(),
+				url: z.string().nullish(),
+				updates: z.record(z.string(), z.json()).nullish(),
+				view: z.record(z.string(), z.json()).nullish(),
+				view_id: z.number().int().nullish(),
+				context: z.record(z.string(), z.json()).nullish(),
 			})
-			.strict()
-			.optional(),
-		scheduled_datetime: z.string().nullable().optional(),
-		started_datetime: z.string().nullable().optional(),
+			.passthrough()
+			.nullish(),
+		scheduled_datetime: z.string().nullish(),
+		started_datetime: z.string().nullish(),
 		status: z
 			.enum([
 				'cancel_requested',
@@ -2036,7 +2169,8 @@ const JobSchema = z
 				'running',
 				'scheduled',
 			])
-			.optional(),
+			.or(z.string())
+			.nullish(),
 		type: z
 			.enum([
 				'applyMacro',
@@ -2048,11 +2182,12 @@ const JobSchema = z
 				'exportTicketDrilldown',
 				'exportConvertCampaignSalesDrilldown',
 			])
-			.optional(),
-		user_id: z.number().int().optional(),
-		uri: z.string().optional(),
+			.or(z.string())
+			.nullish(),
+		user_id: z.number().int().nullish(),
+		uri: z.string().nullish(),
 	})
-	.strict();
+	.passthrough();
 const MacroActionSchema = z
 	.object({
 		arguments: z.record(z.string(), z.json()),
@@ -2062,11 +2197,20 @@ const MacroActionSchema = z
 		type: z.enum(['system', 'user']).optional(),
 	})
 	.strict();
+const MacroActionOutputSchema = z
+	.object({
+		arguments: z.record(z.string(), z.json()).nullish(),
+		description: z.string().nullish(),
+		name: z.string().nullish(),
+		title: z.string().nullish(),
+		type: z.enum(['system', 'user']).or(z.string()).nullish(),
+	})
+	.passthrough();
 const MacroSchema = z
 	.object({
-		id: z.number().int().optional(),
-		external_id: z.string().nullable().optional(),
-		name: z.string().optional(),
+		id: z.number().int().nullish(),
+		external_id: z.string().nullish(),
+		name: z.string().nullish(),
 		intent: z
 			.enum([
 				'discount/request',
@@ -2094,16 +2238,17 @@ const MacroSchema = z
 				'subscription/cancel',
 				'subscription/change',
 			])
-			.optional(),
-		language: z.string().nullable().optional(),
-		usage: z.number().int().optional(),
-		actions: z.array(MacroActionSchema).optional(),
-		created_datetime: z.string().nullable().optional(),
-		updated_datetime: z.string().nullable().optional(),
-		archived_datetime: z.string().nullable().optional(),
-		uri: z.string().optional(),
+			.or(z.string())
+			.nullish(),
+		language: z.string().nullish(),
+		usage: z.number().int().nullish(),
+		actions: z.array(MacroActionOutputSchema).nullish(),
+		created_datetime: z.string().nullish(),
+		updated_datetime: z.string().nullish(),
+		archived_datetime: z.string().nullish(),
+		uri: z.string().nullish(),
 	})
-	.strict();
+	.passthrough();
 const MetricFeedbackDisagreementTypeSchema = z.enum([
 	'definition_unclear',
 	'formula_seems_wrong',
@@ -2119,17 +2264,17 @@ const MetricFeedbackRequestSchema = z
 	.strict();
 const MetricFeedbackResponseSchema = z
 	.object({
-		id: z.string(),
+		id: z.string().nullish(),
 	})
-	.strict();
+	.passthrough();
 const RuleSchema = z
 	.object({
-		id: z.number().int().optional(),
-		code: z.string().optional(),
-		code_ast: z.record(z.string(), z.json()).optional(),
-		created_datetime: z.string().optional(),
-		deactivated_datetime: z.string().nullable().optional(),
-		description: z.string().nullable().optional(),
+		id: z.number().int().nullish(),
+		code: z.string().nullish(),
+		code_ast: z.record(z.string(), z.json()).nullish(),
+		created_datetime: z.string().nullish(),
+		deactivated_datetime: z.string().nullish(),
+		description: z.string().nullish(),
 		event_types: z
 			.enum([
 				'ticket-created',
@@ -2139,68 +2284,69 @@ const RuleSchema = z
 				'ticket-self-unsnoozed',
 				'satisfaction-survey-responded',
 			])
-			.optional(),
-		name: z.string().optional(),
-		priority: z.number().int().optional(),
-		updated_datetime: z.string().optional(),
-		uri: z.string().optional(),
+			.or(z.string())
+			.nullish(),
+		name: z.string().nullish(),
+		priority: z.union([z.number().int(), z.string()]).nullish(),
+		updated_datetime: z.string().nullish(),
+		uri: z.string().nullish(),
 	})
-	.strict();
+	.passthrough();
 const SatisfactionSurveySchema = z
 	.object({
-		id: z.number().int().optional(),
-		body_text: z.string().max(1000).nullable().optional(),
-		created_datetime: z.string().nullable().optional(),
-		customer_id: z.number().int().optional(),
-		meta: z.record(z.string(), z.json()).nullable().optional(),
-		score: z.number().int().min(1).max(5).nullable().optional(),
-		scored_datetime: z.string().nullable().optional(),
-		sent_datetime: z.string().nullable().optional(),
-		should_send_datetime: z.string().nullable().optional(),
-		ticket_id: z.number().int().optional(),
-		uri: z.string().optional(),
+		id: z.number().int().nullish(),
+		body_text: z.string().max(1000).nullish(),
+		created_datetime: z.string().nullish(),
+		customer_id: z.number().int().nullish(),
+		meta: z.record(z.string(), z.json()).nullish(),
+		score: z.number().int().min(1).max(5).nullish(),
+		scored_datetime: z.string().nullish(),
+		sent_datetime: z.string().nullish(),
+		should_send_datetime: z.string().nullish(),
+		ticket_id: z.number().int().nullish(),
+		uri: z.string().nullish(),
 	})
-	.strict();
+	.passthrough();
 const TagDecorationSchema = z
 	.object({
-		color: z.string().optional(),
+		color: z.string().nullish(),
 	})
-	.strict();
+	.passthrough();
 const TagSchema = z
 	.object({
-		id: z.number().int(),
-		decoration: TagDecorationSchema,
-		description: z.string(),
-		name: z.string(),
-		usage: z.number().int(),
-		uri: z.string(),
-		created_datetime: z.string(),
-		deleted_datetime: z.string(),
+		id: z.number().int().nullish(),
+		decoration: TagDecorationSchema.nullish(),
+		description: z.string().nullish(),
+		name: z.string().nullish(),
+		usage: z.number().int().nullish(),
+		uri: z.string().nullish(),
+		created_datetime: z.string().nullish(),
+		deleted_datetime: z.string().nullish(),
 	})
-	.strict();
+	.passthrough();
 const TeamSchema = z
 	.object({
-		id: z.number().int().optional(),
-		uri: z.string().optional(),
-		name: z.string().optional(),
-		description: z.string().nullable().optional(),
-		default_email_integration_id: z.number().int().min(1).nullable().optional(),
-		decoration: z.record(z.string(), z.json()).nullable().optional(),
+		id: z.number().int().nullish(),
+		uri: z.string().nullish(),
+		name: z.string().nullish(),
+		description: z.string().nullish(),
+		default_email_integration_id: z.number().int().min(1).nullish(),
+		decoration: z.record(z.string(), z.json()).nullish(),
 		members: z
 			.array(
 				z
 					.object({
-						id: z.number().int().optional(),
-						name: z.string().nullable().optional(),
-						email: z.string().email().max(320).nullable().optional(),
-						meta: z.null().optional(),
+						id: z.number().int().nullish(),
+						name: z.string().nullish(),
+						email: z.string().max(320).nullish(),
+						meta: z.json().nullish(),
 					})
-					.strict(),
+					.passthrough(),
 			)
-			.optional(),
-		created_datetime: z.string().nullable().optional(),
+			.nullish(),
+		created_datetime: z.string().nullish(),
 	})
-	.strict();
+	.passthrough();
 const LegacyChannelSlugSchema = z.enum([
 	'aircall',
 	'api',
@@ -2224,40 +2370,67 @@ const LegacyChannelSlugSchema = z.enum([
 	'whatsapp',
 	'yotpo-review',
 ]);
-const TicketViaSchema = z.enum([
-	'aircall',
-	'api',
-	'chat',
-	'contact_form',
-	'email',
-	'facebook',
-	'facebook-mention',
-	'facebook-messenger',
-	'facebook-recommendations',
-	'form',
-	'gorgias_chat',
-	'help-center',
-	'helpdesk',
-	'instagram',
-	'instagram-ad-comment',
-	'instagram-comment',
-	'instagram-direct-message',
-	'instagram-mention',
-	'internal-note',
-	'offline_capture',
-	'phone',
-	'rule',
-	'self_service',
-	'shopify',
-	'sms',
-	'twilio',
-	'twitter',
-	'twitter-direct-message',
-	'whatsapp',
-	'yotpo',
-	'yotpo-review',
-	'zendesk',
-]);
+const LegacyChannelSlugOutputSchema = z
+	.enum([
+		'aircall',
+		'api',
+		'chat',
+		'contact_form',
+		'email',
+		'facebook',
+		'facebook-mention',
+		'facebook-messenger',
+		'facebook-recommendations',
+		'help-center',
+		'instagram-ad-comment',
+		'instagram-comment',
+		'instagram-direct-message',
+		'instagram-mention',
+		'internal-note',
+		'phone',
+		'sms',
+		'twitter',
+		'twitter-direct-message',
+		'whatsapp',
+		'yotpo-review',
+	])
+	.or(z.string());
+const TicketViaSchema = z
+	.enum([
+		'aircall',
+		'api',
+		'chat',
+		'contact_form',
+		'email',
+		'facebook',
+		'facebook-mention',
+		'facebook-messenger',
+		'facebook-recommendations',
+		'form',
+		'gorgias_chat',
+		'help-center',
+		'helpdesk',
+		'instagram',
+		'instagram-ad-comment',
+		'instagram-comment',
+		'instagram-direct-message',
+		'instagram-mention',
+		'internal-note',
+		'offline_capture',
+		'phone',
+		'rule',
+		'self_service',
+		'shopify',
+		'sms',
+		'twilio',
+		'twitter',
+		'twitter-direct-message',
+		'whatsapp',
+		'yotpo',
+		'yotpo-review',
+		'zendesk',
+	])
+	.or(z.string());
 const TicketMessageSourceTypeSchema = z.enum([
 	'aircall',
 	'api',
@@ -2311,123 +2484,123 @@ const TicketMessageSourceTypeSchema = z.enum([
 ]);
 const TicketMessageAttachmentSchema = z
 	.object({
-		url: z.string(),
-		name: z.string().optional(),
-		size: z.number().int().optional(),
-		content_type: z.string(),
-		public: z.boolean().optional(),
-		extra: z.record(z.string(), z.json()).optional(),
+		url: z.string().nullish(),
+		name: z.string().nullish(),
+		size: z.number().int().nullish(),
+		content_type: z.string().nullish(),
+		public: z.boolean().nullish(),
+		extra: z.record(z.string(), z.json()).nullish(),
 	})
-	.strict();
+	.passthrough();
 const TicketMessageAuthCustomerIdentityServiceSchema = z
 	.object({
-		id: z.string(),
-		name: z.string(),
+		id: z.string().nullish(),
+		name: z.string().nullish(),
 	})
-	.strict();
+	.passthrough();
 const TicketMessageAuthCustomerIdentitySchema = z
 	.object({
-		service: TicketMessageAuthCustomerIdentityServiceSchema,
-		identifier: z.string(),
+		service: TicketMessageAuthCustomerIdentityServiceSchema.nullish(),
+		identifier: z.string().nullish(),
 	})
-	.strict();
+	.passthrough();
 const TicketMessageIntentSchema = z
 	.object({
-		name: z.string(),
-		rejected: z.boolean(),
-		is_user_feedback: z.boolean(),
+		name: z.string().nullish(),
+		rejected: z.boolean().nullish(),
+		is_user_feedback: z.boolean().nullish(),
 	})
-	.strict();
+	.passthrough();
 const TicketMessageMacroSchema = z
 	.object({
-		id: z.number().int().gt(0),
+		id: z.number().int().gt(0).nullish(),
 	})
-	.strict();
+	.passthrough();
 const TicketMessageSourceAddressSchema = z
 	.object({
-		name: z.string().optional(),
-		address: z.string().optional(),
+		name: z.string().nullish(),
+		address: z.string().nullish(),
 	})
-	.strict();
+	.passthrough();
 const TicketMessageSourceSchema = z
 	.object({
-		type: z.string(),
-		to: z.array(TicketMessageSourceAddressSchema).optional(),
-		cc: z.array(TicketMessageSourceAddressSchema).optional(),
-		bcc: z.array(TicketMessageSourceAddressSchema).optional(),
-		from: TicketMessageSourceAddressSchema.optional(),
-		extra: z.record(z.string(), z.json()).optional(),
+		type: z.string().nullish(),
+		to: z.array(TicketMessageSourceAddressSchema).nullish(),
+		cc: z.array(TicketMessageSourceAddressSchema).nullish(),
+		bcc: z.array(TicketMessageSourceAddressSchema).nullish(),
+		from: TicketMessageSourceAddressSchema.nullish(),
+		extra: z.record(z.string(), z.json()).nullish(),
 	})
-	.strict();
+	.passthrough();
 const TicketMessageUserOrCustomerSchema = z
 	.object({
-		id: z.number().int(),
-		email: z.string(),
-		name: z.string(),
-		firstname: z.string(),
-		lastname: z.string(),
-		meta: z.record(z.string(), z.json()),
+		id: z.number().int().nullish(),
+		email: z.string().nullish(),
+		name: z.string().nullish(),
+		firstname: z.string().nullish(),
+		lastname: z.string().nullish(),
+		meta: z.record(z.string(), z.json()).nullish(),
 	})
-	.strict();
+	.passthrough();
 const TicketMessageRepliedByOrToSchema = z
 	.object({
-		integration_id: z.number().int(),
-		message_id: z.string(),
-		created_datetime: z.string(),
-		body_text: z.string(),
-		source: TicketMessageSourceSchema,
-		customer: TicketMessageUserOrCustomerSchema,
-		user: TicketMessageUserOrCustomerSchema,
+		integration_id: z.number().int().nullish(),
+		message_id: z.string().nullish(),
+		created_datetime: z.string().nullish(),
+		body_text: z.string().nullish(),
+		source: TicketMessageSourceSchema.nullish(),
+		customer: TicketMessageUserOrCustomerSchema.nullish(),
+		user: TicketMessageUserOrCustomerSchema.nullish(),
 	})
-	.strict();
+	.passthrough();
 const TicketMessageSendingErrorSchema = z
 	.object({
-		error: z.string(),
+		error: z.string().nullish(),
 	})
-	.strict();
+	.passthrough();
 const TicketMessageSchema = z
 	.object({
-		id: z.number().int(),
-		uri: z.string(),
-		message_id: z.string(),
-		ticket_id: z.number().int(),
-		external_id: z.string(),
-		public: z.boolean().optional(),
-		channel: z.union([LegacyChannelSlugSchema, z.string()]),
-		via: TicketViaSchema,
-		source: TicketMessageSourceSchema,
-		sender: TicketMessageUserOrCustomerSchema,
-		auth_customer_identity: TicketMessageAuthCustomerIdentitySchema,
-		integration_id: z.number().int(),
-		intents: z.array(TicketMessageIntentSchema),
-		rule_id: z.number().int(),
-		from_agent: z.boolean().nullable(),
-		receiver: TicketMessageUserOrCustomerSchema,
-		subject: z.string(),
-		body_text: z.string(),
-		body_html: z.string(),
-		body_url: z.string(),
-		stripped_text: z.string(),
-		stripped_html: z.string(),
-		stripped_signature: z.string(),
-		attachments: z.array(TicketMessageAttachmentSchema),
-		macros: z.array(TicketMessageMacroSchema).optional(),
-		actions: z.array(z.record(z.string(), z.json())),
-		headers: z.record(z.string(), z.json()).optional(),
-		imported: z.boolean(),
-		meta: z.record(z.string(), z.json()),
-		created_datetime: z.string(),
-		processed_datetime: z.string(),
-		deleted_datetime: z.string().optional(),
-		sent_datetime: z.string(),
-		failed_datetime: z.string(),
-		opened_datetime: z.string(),
-		last_sending_error: TicketMessageSendingErrorSchema,
-		is_retriable: z.boolean(),
-		replied_by: TicketMessageRepliedByOrToSchema.optional(),
-		replied_to: TicketMessageRepliedByOrToSchema.optional(),
+		id: z.number().int().nullish(),
+		uri: z.string().nullish(),
+		message_id: z.string().nullish(),
+		ticket_id: z.number().int().nullish(),
+		external_id: z.string().nullish(),
+		public: z.boolean().nullish(),
+		channel: z.union([LegacyChannelSlugOutputSchema, z.string()]).nullish(),
+		via: TicketViaSchema.nullish(),
+		source: TicketMessageSourceSchema.nullish(),
+		sender: TicketMessageUserOrCustomerSchema.nullish(),
+		auth_customer_identity: TicketMessageAuthCustomerIdentitySchema.nullish(),
+		integration_id: z.number().int().nullish(),
+		intents: z.array(TicketMessageIntentSchema).nullish(),
+		rule_id: z.number().int().nullish(),
+		from_agent: z.boolean().nullish(),
+		receiver: TicketMessageUserOrCustomerSchema.nullish(),
+		subject: z.string().nullish(),
+		body_text: z.string().nullish(),
+		body_html: z.string().nullish(),
+		body_url: z.string().nullish(),
+		stripped_text: z.string().nullish(),
+		stripped_html: z.string().nullish(),
+		stripped_signature: z.string().nullish(),
+		attachments: z.array(TicketMessageAttachmentSchema).nullish(),
+		macros: z.array(TicketMessageMacroSchema).nullish(),
+		actions: z.array(z.record(z.string(), z.json())).nullish(),
+		headers: z.record(z.string(), z.json()).nullish(),
+		imported: z.boolean().nullish(),
+		meta: z.record(z.string(), z.json()).nullish(),
+		created_datetime: z.string().nullish(),
+		processed_datetime: z.string().nullish(),
+		deleted_datetime: z.string().nullish(),
+		sent_datetime: z.string().nullish(),
+		failed_datetime: z.string().nullish(),
+		opened_datetime: z.string().nullish(),
+		last_sending_error: TicketMessageSendingErrorSchema.nullish(),
+		is_retriable: z.boolean().nullish(),
+		replied_by: TicketMessageRepliedByOrToSchema.nullish(),
+		replied_to: TicketMessageRepliedByOrToSchema.nullish(),
 	})
-	.strict();
+	.passthrough();
 const CreateMessageAttachmentSchema = z
 	.object({
 		url: z.string().url().min(1),
@@ -2595,6 +2768,7 @@ const CreateMessageSchema = z
 	})
 	.strict();
 const TicketStatusSchema = z.enum(['open', 'closed']);
+const TicketStatusOutputSchema = z.enum(['open', 'closed']).or(z.string());
 const CreateTicketAssigneeSchema = z
 	.object({
 		id: z.number().int().min(0).optional(),
@@ -2790,6 +2964,9 @@ const CreateTicketTagSchema = z
 	})
 	.strict();
 const TicketPrioritySchema = z.enum(['critical', 'high', 'normal', 'low']);
+const TicketPriorityOutputSchema = z
+	.enum(['critical', 'high', 'normal', 'low'])
+	.or(z.string());
 const CreateTicketSchema = z
 	.object({
 		assignee_team: CreateTicketAssigneeSchema.optional(),
@@ -2864,609 +3041,614 @@ const CreateTicketSchema = z
 		imported: z.boolean().optional(),
 	})
 	.strict();
-const CurrencySchema = z.enum([
-	'AFN',
-	'EUR',
-	'ALL',
-	'DZD',
-	'USD',
-	'AOA',
-	'XCD',
-	'ARS',
-	'AMD',
-	'AWG',
-	'AUD',
-	'AZN',
-	'BSD',
-	'BHD',
-	'BDT',
-	'BBD',
-	'BYN',
-	'BZD',
-	'XOF',
-	'BMD',
-	'INR',
-	'BTN',
-	'BOB',
-	'BOV',
-	'BAM',
-	'BWP',
-	'NOK',
-	'BRL',
-	'BND',
-	'BGN',
-	'BIF',
-	'CVE',
-	'KHR',
-	'XAF',
-	'CAD',
-	'KYD',
-	'CLP',
-	'CLF',
-	'CNY',
-	'COP',
-	'COU',
-	'KMF',
-	'CDF',
-	'NZD',
-	'CRC',
-	'HRK',
-	'CUP',
-	'CUC',
-	'ANG',
-	'CZK',
-	'DKK',
-	'DJF',
-	'DOP',
-	'EGP',
-	'SVC',
-	'ERN',
-	'SZL',
-	'ETB',
-	'FKP',
-	'FJD',
-	'XPF',
-	'GMD',
-	'GEL',
-	'GHS',
-	'GIP',
-	'GTQ',
-	'GBP',
-	'GNF',
-	'GYD',
-	'HTG',
-	'HNL',
-	'HKD',
-	'HUF',
-	'ISK',
-	'IDR',
-	'XDR',
-	'IRR',
-	'IQD',
-	'ILS',
-	'JMD',
-	'JPY',
-	'JOD',
-	'KZT',
-	'KES',
-	'KPW',
-	'KRW',
-	'KWD',
-	'KGS',
-	'LAK',
-	'LBP',
-	'LSL',
-	'ZAR',
-	'LRD',
-	'LYD',
-	'CHF',
-	'MOP',
-	'MKD',
-	'MGA',
-	'MWK',
-	'MYR',
-	'MVR',
-	'MRU',
-	'MUR',
-	'XUA',
-	'MXN',
-	'MXV',
-	'MDL',
-	'MNT',
-	'MAD',
-	'MZN',
-	'MMK',
-	'NAD',
-	'NPR',
-	'NIO',
-	'NGN',
-	'OMR',
-	'PKR',
-	'PAB',
-	'PGK',
-	'PYG',
-	'PEN',
-	'PHP',
-	'PLN',
-	'QAR',
-	'RON',
-	'RUB',
-	'RWF',
-	'SHP',
-	'WST',
-	'STN',
-	'SAR',
-	'RSD',
-	'SCR',
-	'SLL',
-	'SLE',
-	'SGD',
-	'XSU',
-	'SBD',
-	'SOS',
-	'SSP',
-	'LKR',
-	'SDG',
-	'SRD',
-	'SEK',
-	'CHE',
-	'CHW',
-	'SYP',
-	'TWD',
-	'TJS',
-	'TZS',
-	'THB',
-	'TOP',
-	'TTD',
-	'TND',
-	'TRY',
-	'TMT',
-	'UGX',
-	'UAH',
-	'AED',
-	'USN',
-	'UYU',
-	'UYI',
-	'UYW',
-	'UZS',
-	'VUV',
-	'VES',
-	'VED',
-	'VND',
-	'YER',
-	'ZMW',
-	'ZWL',
-	'XBA',
-	'XBB',
-	'XBC',
-	'XBD',
-	'XTS',
-	'XXX',
-	'XAU',
-	'XPD',
-	'XPT',
-	'XAG',
-]);
+const CurrencySchema = z
+	.enum([
+		'AFN',
+		'EUR',
+		'ALL',
+		'DZD',
+		'USD',
+		'AOA',
+		'XCD',
+		'ARS',
+		'AMD',
+		'AWG',
+		'AUD',
+		'AZN',
+		'BSD',
+		'BHD',
+		'BDT',
+		'BBD',
+		'BYN',
+		'BZD',
+		'XOF',
+		'BMD',
+		'INR',
+		'BTN',
+		'BOB',
+		'BOV',
+		'BAM',
+		'BWP',
+		'NOK',
+		'BRL',
+		'BND',
+		'BGN',
+		'BIF',
+		'CVE',
+		'KHR',
+		'XAF',
+		'CAD',
+		'KYD',
+		'CLP',
+		'CLF',
+		'CNY',
+		'COP',
+		'COU',
+		'KMF',
+		'CDF',
+		'NZD',
+		'CRC',
+		'HRK',
+		'CUP',
+		'CUC',
+		'ANG',
+		'CZK',
+		'DKK',
+		'DJF',
+		'DOP',
+		'EGP',
+		'SVC',
+		'ERN',
+		'SZL',
+		'ETB',
+		'FKP',
+		'FJD',
+		'XPF',
+		'GMD',
+		'GEL',
+		'GHS',
+		'GIP',
+		'GTQ',
+		'GBP',
+		'GNF',
+		'GYD',
+		'HTG',
+		'HNL',
+		'HKD',
+		'HUF',
+		'ISK',
+		'IDR',
+		'XDR',
+		'IRR',
+		'IQD',
+		'ILS',
+		'JMD',
+		'JPY',
+		'JOD',
+		'KZT',
+		'KES',
+		'KPW',
+		'KRW',
+		'KWD',
+		'KGS',
+		'LAK',
+		'LBP',
+		'LSL',
+		'ZAR',
+		'LRD',
+		'LYD',
+		'CHF',
+		'MOP',
+		'MKD',
+		'MGA',
+		'MWK',
+		'MYR',
+		'MVR',
+		'MRU',
+		'MUR',
+		'XUA',
+		'MXN',
+		'MXV',
+		'MDL',
+		'MNT',
+		'MAD',
+		'MZN',
+		'MMK',
+		'NAD',
+		'NPR',
+		'NIO',
+		'NGN',
+		'OMR',
+		'PKR',
+		'PAB',
+		'PGK',
+		'PYG',
+		'PEN',
+		'PHP',
+		'PLN',
+		'QAR',
+		'RON',
+		'RUB',
+		'RWF',
+		'SHP',
+		'WST',
+		'STN',
+		'SAR',
+		'RSD',
+		'SCR',
+		'SLL',
+		'SLE',
+		'SGD',
+		'XSU',
+		'SBD',
+		'SOS',
+		'SSP',
+		'LKR',
+		'SDG',
+		'SRD',
+		'SEK',
+		'CHE',
+		'CHW',
+		'SYP',
+		'TWD',
+		'TJS',
+		'TZS',
+		'THB',
+		'TOP',
+		'TTD',
+		'TND',
+		'TRY',
+		'TMT',
+		'UGX',
+		'UAH',
+		'AED',
+		'USN',
+		'UYU',
+		'UYI',
+		'UYW',
+		'UZS',
+		'VUV',
+		'VES',
+		'VED',
+		'VND',
+		'YER',
+		'ZMW',
+		'ZWL',
+		'XBA',
+		'XBB',
+		'XBC',
+		'XBD',
+		'XTS',
+		'XXX',
+		'XAU',
+		'XPD',
+		'XPT',
+		'XAG',
+	])
+	.or(z.string());
 const InputSettingsDropdown_boolSchema = z
 	.object({
 		input_type: z.literal('dropdown'),
-		choices: z.array(z.boolean()),
-		default: z.boolean().optional(),
+		choices: z.array(z.boolean()).nullish(),
+		default: z.boolean().nullish(),
 	})
-	.strict();
+	.passthrough();
 const DefinitionBooleanSchema = z
 	.object({
 		data_type: z.literal('boolean'),
-		input_settings: InputSettingsDropdown_boolSchema,
+		input_settings: InputSettingsDropdown_boolSchema.nullish(),
 	})
-	.strict();
+	.passthrough();
 const InputSettingsNumberSchema = z
 	.object({
 		input_type: z.literal('input_number'),
-		placeholder: z.string().optional(),
-		min: z.union([z.number(), z.string()]).optional(),
-		max: z.union([z.number(), z.string()]).optional(),
+		placeholder: z.string().nullish(),
+		min: z.union([z.number(), z.string()]).nullish(),
+		max: z.union([z.number(), z.string()]).nullish(),
 	})
-	.strict();
+	.passthrough();
 const DefinitionNumberSchema = z
 	.object({
 		data_type: z.literal('number'),
-		input_settings: InputSettingsNumberSchema,
+		input_settings: InputSettingsNumberSchema.nullish(),
 	})
-	.strict();
+	.passthrough();
 const InputSettingsDropdown_strSchema = z
 	.object({
 		input_type: z.literal('dropdown'),
-		choices: z.array(z.string()),
-		default: z.string().optional(),
+		choices: z.array(z.string()).nullish(),
+		default: z.string().nullish(),
 	})
-	.strict();
+	.passthrough();
 const InputSettingsTextSchema = z
 	.object({
 		input_type: z.literal('input'),
-		placeholder: z.string().optional(),
+		placeholder: z.string().nullish(),
 	})
-	.strict();
+	.passthrough();
 const DefinitionTextSchema = z
 	.object({
 		data_type: z.literal('text'),
-		input_settings: z.union([
-			InputSettingsTextSchema,
-			InputSettingsDropdown_strSchema,
-		]),
+		input_settings: z
+			.union([InputSettingsTextSchema, InputSettingsDropdown_strSchema])
+			.nullish(),
 	})
-	.strict();
-const DiscountTypeSchema = z.enum(['percentage', 'fixed_amount']);
-const EventObjectTypeSchema = z.enum([
-	'Account',
-	'AccountSetting',
-	'Customer',
-	'CustomField',
-	'CustomFieldCondition',
-	'CustomUserAvailabilityStatus',
-	'CustomerExternalData',
-	'Integration',
-	'Macro',
-	'Order',
-	'Role',
-	'Rule',
-	'SatisfactionSurvey',
-	'Shopper',
-	'ShopperAddress',
-	'Subscription',
-	'Tag',
-	'Team',
-	'TicketMessage',
-	'Ticket',
-	'User',
-	'UserSetting',
-	'View',
-	'Widget',
-]);
+	.passthrough();
+const DiscountTypeSchema = z
+	.enum(['percentage', 'fixed_amount'])
+	.or(z.string());
+const EventObjectTypeSchema = z
+	.enum([
+		'Account',
+		'AccountSetting',
+		'Customer',
+		'CustomField',
+		'CustomFieldCondition',
+		'CustomUserAvailabilityStatus',
+		'CustomerExternalData',
+		'Integration',
+		'Macro',
+		'Order',
+		'Role',
+		'Rule',
+		'SatisfactionSurvey',
+		'Shopper',
+		'ShopperAddress',
+		'Subscription',
+		'Tag',
+		'Team',
+		'TicketMessage',
+		'Ticket',
+		'User',
+		'UserSetting',
+		'View',
+		'Widget',
+	])
+	.or(z.string());
 const OrderLineSchema = z
 	.object({
-		id: z.number().int(),
-		title: z.string(),
-		taxable: z.boolean(),
-		requires_shipping: z.boolean(),
-		unit_price: z.union([z.number(), z.string()]),
-		discount_amount: z.union([z.number(), z.string()]),
-		discount_type: DiscountTypeSchema,
-		discount_reason: z.string(),
-		quantity: z.number().int(),
-		total_amount: z.union([z.number(), z.string()]),
-		product_options: z.record(z.string(), z.json()),
-		fulfilled_quantity: z.number().int(),
-		created_datetime: z.string(),
-		updated_datetime: z.string(),
-		deleted_datetime: z.string(),
+		id: z.number().int().nullish(),
+		title: z.string().nullish(),
+		taxable: z.boolean().nullish(),
+		requires_shipping: z.boolean().nullish(),
+		unit_price: z.union([z.number(), z.string()]).nullish(),
+		discount_amount: z.union([z.number(), z.string()]).nullish(),
+		discount_type: DiscountTypeSchema.nullish(),
+		discount_reason: z.string().nullish(),
+		quantity: z.number().int().nullish(),
+		total_amount: z.union([z.number(), z.string()]).nullish(),
+		product_options: z.record(z.string(), z.json()).nullish(),
+		fulfilled_quantity: z.number().int().nullish(),
+		created_datetime: z.string().nullish(),
+		updated_datetime: z.string().nullish(),
+		deleted_datetime: z.string().nullish(),
 	})
-	.strict();
-const PaymentStatusSchema = z.enum([
-	'refunded',
-	'partially_refunded',
-	'unpaid',
-	'voided',
-	'failed',
-	'manual_verification_required',
-	'customer_authentication_required',
-	'paid',
-	'declined',
-	'authorized',
-]);
+	.passthrough();
+const PaymentStatusSchema = z
+	.enum([
+		'refunded',
+		'partially_refunded',
+		'unpaid',
+		'voided',
+		'failed',
+		'manual_verification_required',
+		'customer_authentication_required',
+		'paid',
+		'declined',
+		'authorized',
+	])
+	.or(z.string());
 const ShopperAddressSchema = z
 	.object({
-		id: z.number().int(),
-		external_id: z.string(),
-		shopper_external_id: z.string(),
-		preferred: z.boolean(),
-		line_1: z.string(),
-		line_2: z.string(),
-		city: z.string(),
-		state: z.string(),
-		country: z.string(),
-		zip_code: z.string(),
-		first_name: z.string(),
-		last_name: z.string(),
-		phone_number: z.string(),
-		created_datetime: z.string(),
-		updated_datetime: z.string(),
-		deleted_datetime: z.string(),
+		id: z.number().int().nullish(),
+		external_id: z.string().nullish(),
+		shopper_external_id: z.string().nullish(),
+		preferred: z.boolean().nullish(),
+		line_1: z.string().nullish(),
+		line_2: z.string().nullish(),
+		city: z.string().nullish(),
+		state: z.string().nullish(),
+		country: z.string().nullish(),
+		zip_code: z.string().nullish(),
+		first_name: z.string().nullish(),
+		last_name: z.string().nullish(),
+		phone_number: z.string().nullish(),
+		created_datetime: z.string().nullish(),
+		updated_datetime: z.string().nullish(),
+		deleted_datetime: z.string().nullish(),
 	})
-	.strict();
-const StatusSchema = z.enum([
-	'partially_fulfilled',
-	'completed',
-	'canceled',
-	'on_hold',
-	'awaiting_fulfillment',
-	'awaiting_payment',
-	'scheduled',
-	'order_pending',
-]);
+	.passthrough();
+const StatusSchema = z
+	.enum([
+		'partially_fulfilled',
+		'completed',
+		'canceled',
+		'on_hold',
+		'awaiting_fulfillment',
+		'awaiting_payment',
+		'scheduled',
+		'order_pending',
+	])
+	.or(z.string());
 const OrderSchema = z
 	.object({
-		id: z.number().int(),
-		external_id: z.string(),
-		shopper_external_id: z.string(),
-		number: z.number().int(),
-		name: z.string(),
-		currency: CurrencySchema,
-		discount_codes: z.array(z.string()),
-		discount_amount: z.union([z.number(), z.string()]),
-		subtotal_amount: z.union([z.number(), z.string()]),
-		shipping_amount: z.union([z.number(), z.string()]),
-		tax_amount: z.union([z.number(), z.string()]),
-		total_amount: z.union([z.number(), z.string()]),
-		external_status: z.string(),
-		external_fulfillment_status: z.string(),
-		external_payment_status: z.string(),
-		status: StatusSchema,
-		payment_status: PaymentStatusSchema,
-		billing_address: ShopperAddressSchema,
-		shipping_address: ShopperAddressSchema,
-		line_items: z.array(OrderLineSchema),
-		created_datetime: z.string(),
-		updated_datetime: z.string(),
-		deleted_datetime: z.string(),
+		id: z.number().int().nullish(),
+		external_id: z.string().nullish(),
+		shopper_external_id: z.string().nullish(),
+		number: z.number().int().nullish(),
+		name: z.string().nullish(),
+		currency: CurrencySchema.nullish(),
+		discount_codes: z.array(z.string()).nullish(),
+		discount_amount: z.union([z.number(), z.string()]).nullish(),
+		subtotal_amount: z.union([z.number(), z.string()]).nullish(),
+		shipping_amount: z.union([z.number(), z.string()]).nullish(),
+		tax_amount: z.union([z.number(), z.string()]).nullish(),
+		total_amount: z.union([z.number(), z.string()]).nullish(),
+		external_status: z.string().nullish(),
+		external_fulfillment_status: z.string().nullish(),
+		external_payment_status: z.string().nullish(),
+		status: StatusSchema.nullish(),
+		payment_status: PaymentStatusSchema.nullish(),
+		billing_address: ShopperAddressSchema.nullish(),
+		shipping_address: ShopperAddressSchema.nullish(),
+		line_items: z.array(OrderLineSchema).nullish(),
+		created_datetime: z.string().nullish(),
+		updated_datetime: z.string().nullish(),
+		deleted_datetime: z.string().nullish(),
 	})
-	.strict();
-const ShopperStatusSchema = z.enum(['tax_exempt', 'veteran']);
+	.passthrough();
+const ShopperStatusSchema = z.enum(['tax_exempt', 'veteran']).or(z.string());
 const ShopperSchema = z
 	.object({
-		id: z.number().int(),
-		external_id: z.string(),
-		helpdesk_customer_id: z.number().int(),
-		email_address: z.string().email(),
-		phone_number: z.string(),
-		first_name: z.string(),
-		middle_name: z.string(),
-		last_name: z.string(),
-		birthdate: z.string(),
-		status: ShopperStatusSchema,
-		accepts_marketing_email: z.boolean(),
-		accepts_marketing_sms: z.boolean(),
-		created_datetime: z.string(),
-		updated_datetime: z.string(),
-		deleted_datetime: z.string(),
+		id: z.number().int().nullish(),
+		external_id: z.string().nullish(),
+		helpdesk_customer_id: z.number().int().nullish(),
+		email_address: z.string().nullish(),
+		phone_number: z.string().nullish(),
+		first_name: z.string().nullish(),
+		middle_name: z.string().nullish(),
+		last_name: z.string().nullish(),
+		birthdate: z.string().nullish(),
+		status: ShopperStatusSchema.nullish(),
+		accepts_marketing_email: z.boolean().nullish(),
+		accepts_marketing_sms: z.boolean().nullish(),
+		created_datetime: z.string().nullish(),
+		updated_datetime: z.string().nullish(),
+		deleted_datetime: z.string().nullish(),
 	})
-	.strict();
-const StoreTypeSchema = z.enum([
-	'bigcommerce',
-	'magento',
-	'shopify',
-	'woocommerce',
-]);
+	.passthrough();
+const StoreTypeSchema = z
+	.enum(['bigcommerce', 'magento', 'shopify', 'woocommerce'])
+	.or(z.string());
 const StoreSchema = z
 	.object({
-		id: z.number().int(),
-		currencies: z.array(CurrencySchema),
-		default_currency: CurrencySchema,
-		display_name: z.string(),
-		name: z.string(),
-		type: StoreTypeSchema,
-		url: z.string(),
-		helpdesk_integration_id: z.number().int(),
-		uuid: z.string(),
-		created_datetime: z.string(),
-		updated_datetime: z.string(),
-		deleted_datetime: z.string(),
+		id: z.number().int().nullish(),
+		currencies: z.array(CurrencySchema).nullish(),
+		default_currency: CurrencySchema.nullish(),
+		display_name: z.string().nullish(),
+		name: z.string().nullish(),
+		type: StoreTypeSchema.nullish(),
+		url: z.string().nullish(),
+		helpdesk_integration_id: z.number().int().nullish(),
+		uuid: z.string().nullish(),
+		created_datetime: z.string().nullish(),
+		updated_datetime: z.string().nullish(),
+		deleted_datetime: z.string().nullish(),
 	})
-	.strict();
+	.passthrough();
 const ShopperEcommerceDataSchema = z
 	.object({
-		store: StoreSchema,
-		shopper: ShopperSchema,
-		orders: z.array(OrderSchema),
-		addresses: z.array(ShopperAddressSchema),
+		store: StoreSchema.nullish(),
+		shopper: ShopperSchema.nullish(),
+		orders: z.array(OrderSchema).nullish(),
+		addresses: z.array(ShopperAddressSchema).nullish(),
 	})
-	.strict();
+	.passthrough();
 const TicketCustomFieldSchema = z
 	.object({
-		id: z.number().int().gt(0),
-		external_id: z.string().optional(),
-		object_type: EventObjectTypeSchema,
-		label: z.string(),
-		description: z.string().optional(),
-		priority: z.number().int(),
-		required: z.boolean(),
-		requirement_type: RequirementTypeSchema,
-		managed_type: ManagedTicketFieldTypeSchema.optional(),
-		definition: z.union([
-			DefinitionNumberSchema,
-			DefinitionTextSchema,
-			DefinitionBooleanSchema,
-		]),
-		created_datetime: z.string(),
-		updated_datetime: z.string().optional(),
-		deactivated_datetime: z.string().optional(),
+		id: z.number().int().gt(0).nullish(),
+		external_id: z.string().nullish(),
+		object_type: EventObjectTypeSchema.nullish(),
+		label: z.string().nullish(),
+		description: z.string().nullish(),
+		priority: z.number().int().nullish(),
+		required: z.boolean().nullish(),
+		requirement_type: RequirementTypeOutputSchema.nullish(),
+		managed_type: ManagedTicketFieldTypeOutputSchema.nullish(),
+		definition: z
+			.union([
+				DefinitionNumberSchema,
+				DefinitionTextSchema,
+				DefinitionBooleanSchema,
+			])
+			.nullish(),
+		created_datetime: z.string().nullish(),
+		updated_datetime: z.string().nullish(),
+		deactivated_datetime: z.string().nullish(),
 	})
-	.strict();
+	.passthrough();
 const TicketCustomFieldValueSchema = z
 	.object({
-		field: TicketCustomFieldSchema.optional(),
-		id: z.number().int().optional(),
-		prediction: z.record(z.string(), z.json()).optional(),
-		value: z.record(z.string(), z.json()),
+		field: TicketCustomFieldSchema.nullish(),
+		id: z.number().int().nullish(),
+		prediction: z.record(z.string(), z.json()).nullish(),
+		value: z.record(z.string(), z.json()).nullish(),
 	})
-	.strict();
+	.passthrough();
 const TicketCustomerChannelCustomerSchema = z
 	.object({
-		id: z.number().int(),
-		name: z.string(),
+		id: z.number().int().nullish(),
+		name: z.string().nullish(),
 	})
-	.strict();
+	.passthrough();
 const TicketCustomerChannelSchema = z
 	.object({
-		id: z.number().int(),
-		type: z.string(),
-		address: z.string(),
-		preferred: z.boolean().optional(),
-		created_datetime: z.string(),
-		updated_datetime: z.string(),
-		deleted_datetime: z.string(),
-		user: TicketCustomerChannelCustomerSchema,
-		customer: TicketCustomerChannelCustomerSchema,
+		id: z.number().int().nullish(),
+		type: z.string().nullish(),
+		address: z.string().nullish(),
+		preferred: z.boolean().nullish(),
+		created_datetime: z.string().nullish(),
+		updated_datetime: z.string().nullish(),
+		deleted_datetime: z.string().nullish(),
+		user: TicketCustomerChannelCustomerSchema.nullish(),
+		customer: TicketCustomerChannelCustomerSchema.nullish(),
 	})
-	.strict();
+	.passthrough();
 const TicketCustomerSchema = z
 	.object({
-		id: z.number().int(),
-		email: z.string(),
-		name: z.string(),
-		firstname: z.string(),
-		lastname: z.string(),
-		meta: z.record(z.string(), z.json()),
-		channels: z.array(TicketCustomerChannelSchema),
-		data: z.record(z.string(), z.json()),
-		customer: z.record(z.string(), z.json()),
-		integrations: z.record(z.string(), z.json()),
-		external_id: z.string(),
-		note: z.string(),
+		id: z.number().int().nullish(),
+		email: z.string().nullish(),
+		name: z.string().nullish(),
+		firstname: z.string().nullish(),
+		lastname: z.string().nullish(),
+		meta: z.record(z.string(), z.json()).nullish(),
+		channels: z.array(TicketCustomerChannelSchema).nullish(),
+		data: z.record(z.string(), z.json()).nullish(),
+		customer: z.record(z.string(), z.json()).nullish(),
+		integrations: z.record(z.string(), z.json()).nullish(),
+		external_id: z.string().nullish(),
+		note: z.string().nullish(),
 		external_data: z
 			.record(z.string(), z.record(z.string(), z.json()))
-			.optional(),
-		ecommerce_data: z.record(z.string(), ShopperEcommerceDataSchema).optional(),
+			.nullish(),
+		ecommerce_data: z.record(z.string(), ShopperEcommerceDataSchema).nullish(),
 	})
-	.strict();
+	.passthrough();
 const TicketEventUserSchema = z
 	.object({
-		id: z.number().int(),
-		firstname: z.string(),
-		lastname: z.string(),
-		name: z.string(),
-		email: z.string(),
+		id: z.number().int().nullish(),
+		firstname: z.string().nullish(),
+		lastname: z.string().nullish(),
+		name: z.string().nullish(),
+		email: z.string().nullish(),
 	})
-	.strict();
+	.passthrough();
 const TicketEventSchema = z
 	.object({
-		id: z.number().int(),
-		type: z.string(),
-		user: TicketEventUserSchema,
-		data: z.record(z.string(), z.json()),
-		created_datetime: z.string(),
+		id: z.number().int().nullish(),
+		type: z.string().nullish(),
+		user: TicketEventUserSchema.nullish(),
+		data: z.record(z.string(), z.json()).nullish(),
+		created_datetime: z.string().nullish(),
 	})
-	.strict();
+	.passthrough();
 const TicketMetaSchema = z.record(z.string(), z.json());
 const TicketReplyOptionIntegrationSchema = z
 	.object({
-		id: z.number().int(),
-		name: z.string(),
-		address: z.string(),
+		id: z.number().int().nullish(),
+		name: z.string().nullish(),
+		address: z.string().nullish(),
 	})
-	.strict();
+	.passthrough();
 const TicketReplyOptionSchema = z
 	.object({
-		answerable: z.boolean(),
-		reason: z.string().optional(),
-		integrations: z.array(TicketReplyOptionIntegrationSchema).optional(),
+		answerable: z.boolean().nullish(),
+		reason: z.string().nullish(),
+		integrations: z.array(TicketReplyOptionIntegrationSchema).nullish(),
 	})
-	.strict();
+	.passthrough();
 const TicketSatisfactionSurveySchema = z
 	.object({
-		id: z.number().int(),
-		customer_id: z.number().int(),
-		ticket_id: z.number().int(),
-		sent_datetime: z.string(),
-		scored_datetime: z.string(),
-		should_send_datetime: z.string(),
-		created_datetime: z.string(),
-		score: z.number().int().min(1).max(5),
-		body_text: z.string().max(1000),
-		meta: z.record(z.string(), z.json()),
+		id: z.number().int().nullish(),
+		customer_id: z.number().int().nullish(),
+		ticket_id: z.number().int().nullish(),
+		sent_datetime: z.string().nullish(),
+		scored_datetime: z.string().nullish(),
+		should_send_datetime: z.string().nullish(),
+		created_datetime: z.string().nullish(),
+		score: z.number().int().min(1).max(5).nullish(),
+		body_text: z.string().max(1000).nullish(),
+		meta: z.record(z.string(), z.json()).nullish(),
 	})
-	.strict();
+	.passthrough();
 const TicketSummarySchema = z
 	.object({
-		content: z.string(),
-		created_datetime: z.string(),
-		updated_datetime: z.string(),
-		triggered_by: z.number().int(),
+		content: z.string().nullish(),
+		created_datetime: z.string().nullish(),
+		updated_datetime: z.string().nullish(),
+		triggered_by: z.number().int().nullish(),
 	})
-	.strict();
+	.passthrough();
 const TicketTagDecorationSchema = z
 	.object({
-		color: z.string().optional(),
+		color: z.string().nullish(),
 	})
-	.strict();
+	.passthrough();
 const TicketTagSchema = z
 	.object({
-		id: z.number().int(),
-		name: z.string(),
-		decoration: TicketTagDecorationSchema,
+		id: z.number().int().nullish(),
+		name: z.string().nullish(),
+		decoration: TicketTagDecorationSchema.nullish(),
 	})
-	.strict();
+	.passthrough();
 const TicketUserSchema = z
 	.object({
-		id: z.number().int(),
-		email: z.string(),
-		name: z.string(),
-		firstname: z.string(),
-		lastname: z.string(),
-		meta: z.record(z.string(), z.json()),
-		bio: z.string(),
+		id: z.number().int().nullish(),
+		email: z.string().nullish(),
+		name: z.string().nullish(),
+		firstname: z.string().nullish(),
+		lastname: z.string().nullish(),
+		meta: z.record(z.string(), z.json()).nullish(),
+		bio: z.string().nullish(),
 	})
-	.strict();
+	.passthrough();
 // Ticket object docs and ticket route examples document null assignments and lifecycle dates.
 const TicketSchema = z
 	.object({
-		id: z.number().int(),
-		uri: z.string(),
-		external_id: z.string().nullable(),
-		events: z.array(TicketEventSchema),
-		status: TicketStatusSchema.optional(),
-		channel: z.union([LegacyChannelSlugSchema, z.string()]),
-		via: TicketViaSchema,
-		from_agent: z.boolean().nullable(),
-		spam: z.boolean(),
-		imported: z.boolean().nullable(),
-		customer: TicketCustomerSchema,
-		assignee_user: TicketUserSchema.nullable().optional(),
-		language: z.string().nullable(),
-		subject: z.string().nullable(),
-		summary: TicketSummarySchema.nullable().optional(),
-		meta: TicketMetaSchema.nullable(),
-		tags: z.array(TicketTagSchema),
-		custom_fields: z
-			.record(z.string(), TicketCustomFieldValueSchema)
-			.nullable()
-			.optional(),
-		messages: z.array(TicketMessageSchema),
-		created_datetime: z.string(),
-		processed_datetime: z.string().nullable(),
-		opened_datetime: z.string().nullable(),
-		last_received_message_datetime: z.string().nullable(),
-		last_message_datetime: z.string().nullable(),
-		updated_datetime: z.string().nullable(),
-		closed_datetime: z.string().nullable(),
-		trashed_datetime: z.string().nullable(),
-		snooze_datetime: z.string().nullable(),
-		satisfaction_survey: TicketSatisfactionSurveySchema.nullable(),
-		reply_options: z.record(z.string(), TicketReplyOptionSchema),
-		is_unread: z.boolean(),
+		id: z.number().int().nullish(),
+		uri: z.string().nullish(),
+		external_id: z.string().nullish(),
+		events: z.array(TicketEventSchema).nullish(),
+		status: TicketStatusOutputSchema.nullish(),
+		channel: z.union([LegacyChannelSlugOutputSchema, z.string()]).nullish(),
+		via: TicketViaSchema.nullish(),
+		from_agent: z.boolean().nullish(),
+		spam: z.boolean().nullish(),
+		imported: z.boolean().nullish(),
+		customer: TicketCustomerSchema.nullish(),
+		assignee_user: TicketUserSchema.nullish(),
+		language: z.string().nullish(),
+		subject: z.string().nullish(),
+		summary: TicketSummarySchema.nullish(),
+		meta: TicketMetaSchema.nullish(),
+		tags: z.array(TicketTagSchema).nullish(),
+		custom_fields: z.record(z.string(), TicketCustomFieldValueSchema).nullish(),
+		messages: z.array(TicketMessageSchema).nullish(),
+		created_datetime: z.string().nullish(),
+		processed_datetime: z.string().nullish(),
+		opened_datetime: z.string().nullish(),
+		last_received_message_datetime: z.string().nullish(),
+		last_message_datetime: z.string().nullish(),
+		updated_datetime: z.string().nullish(),
+		closed_datetime: z.string().nullish(),
+		trashed_datetime: z.string().nullish(),
+		snooze_datetime: z.string().nullish(),
+		satisfaction_survey: TicketSatisfactionSurveySchema.nullish(),
+		reply_options: z.record(z.string(), TicketReplyOptionSchema).nullish(),
+		is_unread: z.boolean().nullish(),
 	})
-	.strict();
+	.passthrough();
 const UserSchema = z
 	.object({
-		id: z.number().int().optional(),
-		active: z.boolean().optional(),
-		bio: z.string().optional(),
-		created_datetime: z.string().optional(),
-		country: z.string().optional(),
-		deactivated_datetime: z.string().optional(),
-		email: z.string().email().optional(),
-		external_id: z.string().optional(),
-		firstname: z.string().optional(),
-		lastname: z.string().optional(),
-		language: z.string().optional(),
+		id: z.number().int().nullish(),
+		active: z.boolean().nullish(),
+		bio: z.string().nullish(),
+		created_datetime: z.string().nullish(),
+		country: z.string().nullish(),
+		deactivated_datetime: z.string().nullish(),
+		email: z.string().nullish(),
+		external_id: z.string().nullish(),
+		firstname: z.string().nullish(),
+		lastname: z.string().nullish(),
+		language: z.string().nullish(),
 		meta: z
 			.object({
-				sso: z.enum(['google', 'office365']).optional(),
-				profile_picture_url: z.string().url().nullable().optional(),
+				sso: z.enum(['google', 'office365']).or(z.string()).nullish(),
+				profile_picture_url: z.string().nullish(),
 			})
-			.strict()
-			.optional(),
-		name: z.string().optional(),
+			.passthrough()
+			.nullish(),
+		name: z.string().nullish(),
 		role: z
 			.object({
 				name: z
@@ -3479,20 +3661,26 @@ const UserSchema = z
 						'lite-agent',
 						'observer-agent',
 					])
-					.optional(),
+					.or(z.string())
+					.nullish(),
 			})
-			.strict()
-			.optional(),
-		timezone: z.string().optional(),
-		updated_datetime: z.string().optional(),
-		client_id: z.string().optional(),
+			.passthrough()
+			.nullish(),
+		timezone: z.string().nullish(),
+		updated_datetime: z.string().nullish(),
+		client_id: z.string().nullish(),
 	})
-	.strict();
+	.passthrough();
 const ViewDecorationSchema = z
 	.object({
 		emoji: z.string().optional(),
 	})
 	.strict();
+const ViewDecorationOutputSchema = z
+	.object({
+		emoji: z.string().nullish(),
+	})
+	.passthrough();
 const ViewFieldSchema = z.enum([
 	'id',
 	'details',
@@ -3515,8 +3703,38 @@ const ViewFieldSchema = z.enum([
 	'subject',
 	'priority',
 ]);
+const ViewFieldOutputSchema = z
+	.enum([
+		'id',
+		'details',
+		'tags',
+		'customer',
+		'last_message',
+		'name',
+		'email',
+		'created',
+		'updated',
+		'assignee',
+		'assignee_team',
+		'channel',
+		'closed',
+		'language',
+		'last_received_message',
+		'integrations',
+		'snooze',
+		'status',
+		'subject',
+		'priority',
+	])
+	.or(z.string());
 const ViewTypeSchema = z.enum(['ticket-list', 'customer-list']);
+const ViewTypeOutputSchema = z
+	.enum(['ticket-list', 'customer-list'])
+	.or(z.string());
 const ViewVisibilitySchema = z.enum(['public', 'shared', 'private']);
+const ViewVisibilityOutputSchema = z
+	.enum(['public', 'shared', 'private'])
+	.or(z.string());
 const ViewCreateSchema = z
 	.object({
 		decoration: ViewDecorationSchema.optional(),
@@ -3534,49 +3752,49 @@ const ViewCreateSchema = z
 	.strict();
 const ViewSharedWithTeamSchema = z
 	.object({
-		id: z.number().int(),
-		name: z.string(),
-		decoration: z.record(z.string(), z.json()).optional(),
+		id: z.number().int().nullish(),
+		name: z.string().nullish(),
+		decoration: z.record(z.string(), z.json()).nullish(),
 	})
-	.strict();
+	.passthrough();
 const ViewSharedWithUserSchema = z
 	.object({
-		id: z.number().int(),
-		name: z.string(),
-		meta: z.record(z.string(), z.json()).optional(),
+		id: z.number().int().nullish(),
+		name: z.string().nullish(),
+		meta: z.record(z.string(), z.json()).nullish(),
 	})
-	.strict();
+	.passthrough();
 const ViewSchema = z
 	.object({
-		id: z.number().int(),
-		category: z.string().optional(),
-		created_datetime: z.string().optional(),
-		deactivated_datetime: z.string().optional(),
-		decoration: ViewDecorationSchema.optional(),
-		fields: z.array(ViewFieldSchema).optional(),
-		filters: z.string().optional(),
-		name: z.string().optional(),
-		order_by: z.string().optional(),
-		order_dir: z.enum(['asc', 'desc']).optional(),
-		search: z.string().optional(),
-		shared_with_teams: z.array(ViewSharedWithTeamSchema).max(100).optional(),
-		shared_with_users: z.array(ViewSharedWithUserSchema).max(100).optional(),
-		slug: z.string().optional(),
-		type: ViewTypeSchema.optional(),
-		uri: z.string(),
-		visibility: ViewVisibilitySchema.optional(),
+		id: z.number().int().nullish(),
+		category: z.string().nullish(),
+		created_datetime: z.string().nullish(),
+		deactivated_datetime: z.string().nullish(),
+		decoration: ViewDecorationOutputSchema.nullish(),
+		fields: z.array(ViewFieldOutputSchema).nullish(),
+		filters: z.string().nullish(),
+		name: z.string().nullish(),
+		order_by: z.string().nullish(),
+		order_dir: z.enum(['asc', 'desc']).or(z.string()).nullish(),
+		search: z.string().nullish(),
+		shared_with_teams: z.array(ViewSharedWithTeamSchema).max(100).nullish(),
+		shared_with_users: z.array(ViewSharedWithUserSchema).max(100).nullish(),
+		slug: z.string().nullish(),
+		type: ViewTypeOutputSchema.nullish(),
+		uri: z.string().nullish(),
+		visibility: ViewVisibilityOutputSchema.nullish(),
 	})
-	.strict();
+	.passthrough();
 const WidgetSchema = z
 	.object({
-		id: z.number().int().optional(),
-		context: z.enum(['ticket', 'customer', 'user']).optional(),
-		created_datetime: z.string().optional(),
-		deactivated_datetime: z.string().nullable().optional(),
-		integration_id: z.number().int().min(0).nullable().optional(),
-		app_id: z.string().nullable().optional(),
-		order: z.number().int().min(0).optional(),
-		template: z.record(z.string(), z.json()).optional(),
+		id: z.number().int().nullish(),
+		context: z.enum(['ticket', 'customer', 'user']).or(z.string()).nullish(),
+		created_datetime: z.string().nullish(),
+		deactivated_datetime: z.string().nullish(),
+		integration_id: z.number().int().min(0).nullish(),
+		app_id: z.string().nullish(),
+		order: z.number().int().min(0).nullish(),
+		template: z.record(z.string(), z.json()).nullish(),
 		type: z
 			.enum([
 				'bigcommerce',
@@ -3593,37 +3811,38 @@ const WidgetSchema = z
 				'stripe',
 				'woocommerce',
 			])
-			.optional(),
-		updated_datetime: z.string().optional(),
-		uri: z.string().optional(),
+			.or(z.string())
+			.nullish(),
+		updated_datetime: z.string().nullish(),
+		uri: z.string().nullish(),
 	})
-	.strict();
+	.passthrough();
 const AccountSchema = z
 	.object({
-		created_datetime: z.string().optional(),
-		deactivated_datetime: z.string().nullable().optional(),
-		domain: z.string().optional(),
+		created_datetime: z.string().nullish(),
+		deactivated_datetime: z.string().nullish(),
+		domain: z.string().nullish(),
 		settings: z
 			.array(
 				z
 					.object({
-						id: z.number().int().optional(),
-						data: z.record(z.string(), z.json()).optional(),
-						type: z.string(),
+						id: z.number().int().nullish(),
+						data: z.record(z.string(), z.json()).nullish(),
+						type: z.string().nullish(),
 					})
-					.strict(),
+					.passthrough(),
 			)
-			.optional(),
-		status: z.record(z.string(), z.json()).optional(),
+			.nullish(),
+		status: z.record(z.string(), z.json()).nullish(),
 	})
-	.strict();
+	.passthrough();
 const EventSchema = z
 	.object({
-		id: z.number().int().optional(),
-		context: z.string().nullable().optional(),
-		created_datetime: z.string().optional(),
-		data: z.record(z.string(), z.json()).optional(),
-		object_id: z.number().int().optional(),
+		id: z.number().int().nullish(),
+		context: z.string().nullish(),
+		created_datetime: z.string().nullish(),
+		data: z.record(z.string(), z.json()).nullish(),
+		object_id: z.number().int().nullish(),
 		object_type: z
 			.enum([
 				'Account',
@@ -3651,265 +3870,276 @@ const EventSchema = z
 				'View',
 				'Widget',
 			])
-			.optional(),
-		type: z.string().optional(),
-		user_id: z.number().int().optional(),
-		uri: z.string().optional(),
+			.or(z.string())
+			.nullish(),
+		type: z.string().nullish(),
+		user_id: z.number().int().nullish(),
+		uri: z.string().nullish(),
 	})
-	.strict();
+	.passthrough();
 const IntegrationDetailSchema = z
 	.object({
-		id: z.number().int().optional(),
-		created_datetime: z.string().nullable().optional(),
-		deactivated_datetime: z.string().nullable().optional(),
-		description: z.string().nullable().nullable().optional(),
+		id: z.number().int().nullish(),
+		created_datetime: z.string().nullish(),
+		deactivated_datetime: z.string().nullish(),
+		description: z.string().nullish(),
 		http: z
 			.object({
-				form: z.null().optional(),
+				form: z.json().nullish(),
 				method: z
 					.enum(['GET', 'POST', 'PUT', 'DELETE', 'HEAD', 'PATCH'])
-					.optional(),
+					.or(z.string())
+					.nullish(),
 				request_content_type: z
 					.enum(['application/json', 'application/x-www-form-urlencoded'])
-					.optional(),
-				response_content_type: z.enum(['application/json']).optional(),
+					.or(z.string())
+					.nullish(),
+				response_content_type: z
+					.enum(['application/json'])
+					.or(z.string())
+					.nullish(),
 				triggers: z
 					.object({
-						'ticket-created': z.boolean().optional(),
-						'ticket-updated': z.boolean().optional(),
-						'ticket-message-created': z.boolean().optional(),
-						'ticket-self-unsnoozed': z.boolean().optional(),
-						'ticket-message-failed': z.boolean().optional(),
-						'ticket-assignment-updated': z.boolean().optional(),
-						'ticket-status-updated': z.boolean().optional(),
-						'ticket-handed-over': z.boolean().optional(),
+						'ticket-created': z.boolean().nullish(),
+						'ticket-updated': z.boolean().nullish(),
+						'ticket-message-created': z.boolean().nullish(),
+						'ticket-self-unsnoozed': z.boolean().nullish(),
+						'ticket-message-failed': z.boolean().nullish(),
+						'ticket-assignment-updated': z.boolean().nullish(),
+						'ticket-status-updated': z.boolean().nullish(),
+						'ticket-handed-over': z.boolean().nullish(),
 					})
-					.strict()
-					.optional(),
-				url: z.string(),
-				oauth2: z.null().optional(),
+					.passthrough()
+					.nullish(),
+				url: z.string().nullish(),
+				oauth2: z.json().nullish(),
 			})
-			.strict()
-			.optional(),
-		name: z.string(),
-		type: z.enum(['http']).optional(),
-		updated_datetime: z.string().nullable().optional(),
+			.passthrough()
+			.nullish(),
+		name: z.string().nullish(),
+		type: z.enum(['http']).or(z.string()).nullish(),
+		updated_datetime: z.string().nullish(),
 		user: z
 			.object({
-				id: z.number().int().optional(),
+				id: z.number().int().nullish(),
 			})
-			.strict()
-			.optional(),
-		uri: z.string().optional(),
-		application_id: z.string().nullable().optional(),
-		managed: z.boolean().optional(),
-		business_hours_id: z.number().int().nullable().optional(),
-		product_review_provider_integrations: z.array(IntegrationSchema).optional(),
-		shopify_integration: IntegrationSchema.optional(),
+			.passthrough()
+			.nullish(),
+		uri: z.string().nullish(),
+		application_id: z.string().nullish(),
+		managed: z.boolean().nullish(),
+		business_hours_id: z.number().int().nullish(),
+		product_review_provider_integrations: z.array(IntegrationSchema).nullish(),
+		shopify_integration: IntegrationSchema.nullish(),
 	})
-	.strict();
+	.passthrough();
 const StatisticSchema = z
 	.object({
-		data: z.record(z.string(), z.json()).optional(),
+		data: z.record(z.string(), z.json()).nullish(),
 		meta: z
 			.object({
-				end_datetime: z.string(),
-				previous_end_datetime: z.string().optional(),
-				previous_start_datetime: z.string().optional(),
-				start_datetime: z.string(),
+				end_datetime: z.string().nullish(),
+				previous_end_datetime: z.string().nullish(),
+				previous_start_datetime: z.string().nullish(),
+				start_datetime: z.string().nullish(),
 			})
-			.strict()
-			.optional(),
+			.passthrough()
+			.nullish(),
 	})
-	.strict();
+	.passthrough();
 const MetricCardApiFilterSchema = z
 	.object({
-		member: z.string(),
-		values: z.array(z.string()),
+		member: z.string().nullish(),
+		values: z.array(z.string()).nullish(),
 	})
-	.strict();
+	.passthrough();
 const MetricCardApiMappingSchema = z
 	.object({
-		scope: z.string(),
-		measures: z.array(z.string()).optional(),
-		dimensions: z.array(z.string()).optional(),
-		filters: z.array(MetricCardApiFilterSchema).optional(),
+		scope: z.string().nullish(),
+		measures: z.array(z.string()).nullish(),
+		dimensions: z.array(z.string()).nullish(),
+		filters: z.array(MetricCardApiFilterSchema).nullish(),
 	})
-	.strict();
+	.passthrough();
 const MetricCardPublicSchema = z
 	.object({
-		definition: z.string(),
-		formula: z.string(),
-		computation_logic: z.array(z.string()),
+		definition: z.string().nullish(),
+		formula: z.string().nullish(),
+		computation_logic: z.array(z.string()).nullish(),
 	})
-	.strict();
+	.passthrough();
 const MetricCardRefSchema = z
 	.object({
-		slug: z.string(),
-		url: z.string(),
+		slug: z.string().nullish(),
+		url: z.string().nullish(),
 	})
-	.strict();
-const MetricCardSlugEnumSchema = z.enum([
-	'abandoned-calls',
-	'accuracy',
-	'achievement-rate',
-	'agents-offline',
-	'agents-online',
-	'ai-agent-automation-rate',
-	'ai-agent-average-csat',
-	'ai-agent-closed-tickets',
-	'all-used-tags-all',
-	'all-used-tags-all-created',
-	'all-used-values',
-	'all-used-values-created',
-	'article-views',
-	'assigned-open-tickets',
-	'automated-interactions',
-	'available-time',
-	'average-csat',
-	'average-discount-amount',
-	'average-first-response-time',
-	'average-human-response-time-after-ai-handoff',
-	'average-order-value',
-	'average-resolution-time',
-	'average-survey-score',
-	'average-talk-time',
-	'average-ticket-handle-time',
-	'average-wait-time',
-	'brand-voice',
-	'buy-through-rate',
-	'call-wrap-up-time',
-	'callback-requests',
-	'calls-in-queue',
-	'calls-with-achieved-slas',
-	'calls-with-breached-slas',
-	'cancelled-calls',
-	'click-through-rate',
-	'closed-tickets',
-	'closed-tickets-per-hour',
-	'comment-highlights',
-	'communication-skills',
-	'contribution-to-total-sales',
-	'conversion-rate',
-	'cost-saved',
-	'coverage-rate',
-	'created-tickets',
-	'decrease-in-frt',
-	'decrease-in-resolution-time',
-	'discount-codes-applied',
-	'discount-usage',
-	'discounts-offered',
-	'efficiency',
-	'first-response-time',
-	'handover-interactions',
-	'human-response-time-after-ai-handoff',
-	'inbound-answered',
-	'inbound-answered-per-agent',
-	'inbound-calls',
-	'inbound-declined',
-	'inbound-transferred',
-	'internal-compliance',
-	'language-proficiency',
-	'live-messages-sent',
-	'live-online-status',
-	'live-open-tickets',
-	'live-tickets-closed',
-	'live-tickets-created',
-	'live-tickets-replied',
-	'macro-share-of-total',
-	'macro-total-tickets',
-	'macro-trend',
-	'median-purchase-time',
-	'median-response-time',
-	'messages-per-ticket',
-	'messages-received',
-	'messages-sent',
-	'messages-sent-per-hour',
-	'messages-sent-per-macro',
-	'missed-calls',
-	'no-result-searches',
-	'no-search-results-search-count',
-	'on-a-call-time',
-	'one-touch-tickets',
-	'online-time',
-	'open-tickets',
-	'orders-influenced',
-	'outbound-calls',
-	'overall-automation-rate',
-	'percent-abandoned-calls',
-	'percent-callback-requests',
-	'percent-cancelled-calls',
-	'percent-missed-calls',
-	'percent-one-touch-tickets',
-	'percent-sla-achievement-rate',
-	'percent-zero-touch-tickets',
-	'percentage-of-closed-tickets',
-	'percentage-of-created-tickets',
-	'performance-per-article-views',
-	'product-recommendations',
-	'resolution-completeness',
-	'resolution-time',
-	'response-rate',
-	'revenue-influenced',
-	'revenue-per-interaction',
-	'reviewed-tickets',
-	'satisfaction-score',
-	'search-results',
-	'search-terms-with-results-articles-clicked',
-	'search-terms-with-results-click-through-rate',
-	'search-terms-with-results-search-count',
-	'searches',
-	'success-rate',
-	'surveys-answered',
-	'surveys-sent',
-	'ticket-attribute-intents',
-	'ticket-attribute-share-of-total',
-	'ticket-attribute-tickets',
-	'ticket-attribute-trend',
-	'ticket-handle-time-per-agent',
-	'tickets-replied',
-	'tickets-replied-per-hour',
-	'tickets-with-achieved-slas',
-	'tickets-with-breached-slas',
-	'time-saved-by-agent',
-	'top-performer-frt',
-	'top-performers-closed-tickets',
-	'top-performers-csat',
-	'top-performers-resolution-time',
-	'top-used-tags-all',
-	'top-used-tags-all-created',
-	'top-used-tags-all-created-trend',
-	'top-used-tags-all-trend',
-	'top-used-values',
-	'top-used-values-created',
-	'top-used-values-created-trend',
-	'top-used-values-trend',
-	'total-calls',
-	'total-sales',
-	'total-time',
-	'unanswered-calls',
-	'unassigned-open-tickets',
-	'unavailable-time',
-	'wait-time-per-call',
-	'zero-touch-tickets',
-]);
+	.passthrough();
+const MetricCardSlugEnumSchema = z
+	.enum([
+		'abandoned-calls',
+		'accuracy',
+		'achievement-rate',
+		'agents-offline',
+		'agents-online',
+		'ai-agent-automation-rate',
+		'ai-agent-average-csat',
+		'ai-agent-closed-tickets',
+		'all-used-tags-all',
+		'all-used-tags-all-created',
+		'all-used-values',
+		'all-used-values-created',
+		'article-views',
+		'assigned-open-tickets',
+		'automated-interactions',
+		'available-time',
+		'average-csat',
+		'average-discount-amount',
+		'average-first-response-time',
+		'average-human-response-time-after-ai-handoff',
+		'average-order-value',
+		'average-resolution-time',
+		'average-survey-score',
+		'average-talk-time',
+		'average-ticket-handle-time',
+		'average-wait-time',
+		'brand-voice',
+		'buy-through-rate',
+		'call-wrap-up-time',
+		'callback-requests',
+		'calls-in-queue',
+		'calls-with-achieved-slas',
+		'calls-with-breached-slas',
+		'cancelled-calls',
+		'click-through-rate',
+		'closed-tickets',
+		'closed-tickets-per-hour',
+		'comment-highlights',
+		'communication-skills',
+		'contribution-to-total-sales',
+		'conversion-rate',
+		'cost-saved',
+		'coverage-rate',
+		'created-tickets',
+		'decrease-in-frt',
+		'decrease-in-resolution-time',
+		'discount-codes-applied',
+		'discount-usage',
+		'discounts-offered',
+		'efficiency',
+		'first-response-time',
+		'handover-interactions',
+		'human-response-time-after-ai-handoff',
+		'inbound-answered',
+		'inbound-answered-per-agent',
+		'inbound-calls',
+		'inbound-declined',
+		'inbound-transferred',
+		'internal-compliance',
+		'language-proficiency',
+		'live-messages-sent',
+		'live-online-status',
+		'live-open-tickets',
+		'live-tickets-closed',
+		'live-tickets-created',
+		'live-tickets-replied',
+		'macro-share-of-total',
+		'macro-total-tickets',
+		'macro-trend',
+		'median-purchase-time',
+		'median-response-time',
+		'messages-per-ticket',
+		'messages-received',
+		'messages-sent',
+		'messages-sent-per-hour',
+		'messages-sent-per-macro',
+		'missed-calls',
+		'no-result-searches',
+		'no-search-results-search-count',
+		'on-a-call-time',
+		'one-touch-tickets',
+		'online-time',
+		'open-tickets',
+		'orders-influenced',
+		'outbound-calls',
+		'overall-automation-rate',
+		'percent-abandoned-calls',
+		'percent-callback-requests',
+		'percent-cancelled-calls',
+		'percent-missed-calls',
+		'percent-one-touch-tickets',
+		'percent-sla-achievement-rate',
+		'percent-zero-touch-tickets',
+		'percentage-of-closed-tickets',
+		'percentage-of-created-tickets',
+		'performance-per-article-views',
+		'product-recommendations',
+		'resolution-completeness',
+		'resolution-time',
+		'response-rate',
+		'revenue-influenced',
+		'revenue-per-interaction',
+		'reviewed-tickets',
+		'satisfaction-score',
+		'search-results',
+		'search-terms-with-results-articles-clicked',
+		'search-terms-with-results-click-through-rate',
+		'search-terms-with-results-search-count',
+		'searches',
+		'success-rate',
+		'surveys-answered',
+		'surveys-sent',
+		'ticket-attribute-intents',
+		'ticket-attribute-share-of-total',
+		'ticket-attribute-tickets',
+		'ticket-attribute-trend',
+		'ticket-handle-time-per-agent',
+		'tickets-replied',
+		'tickets-replied-per-hour',
+		'tickets-with-achieved-slas',
+		'tickets-with-breached-slas',
+		'time-saved-by-agent',
+		'top-performer-frt',
+		'top-performers-closed-tickets',
+		'top-performers-csat',
+		'top-performers-resolution-time',
+		'top-used-tags-all',
+		'top-used-tags-all-created',
+		'top-used-tags-all-created-trend',
+		'top-used-tags-all-trend',
+		'top-used-values',
+		'top-used-values-created',
+		'top-used-values-created-trend',
+		'top-used-values-trend',
+		'total-calls',
+		'total-sales',
+		'total-time',
+		'unanswered-calls',
+		'unassigned-open-tickets',
+		'unavailable-time',
+		'wait-time-per-call',
+		'zero-touch-tickets',
+	])
+	.or(z.string());
 const MetricCardStatusEnumSchema = z.enum(['published', 'deprecated']);
+const MetricCardStatusEnumOutputSchema = z
+	.enum(['published', 'deprecated'])
+	.or(z.string());
 const MetricCardSchema = z
 	.object({
-		slug: MetricCardSlugEnumSchema,
-		category: z.string(),
-		title: z.string(),
-		status: MetricCardStatusEnumSchema,
-		definition_revised_at: z.string(),
-		public: MetricCardPublicSchema,
-		api: MetricCardApiMappingSchema.optional(),
-		aliases: z.array(z.string()),
-		related: z.array(MetricCardRefSchema),
-		replaces: z.array(MetricCardRefSchema),
-		used_in_reports: z.array(z.string()),
-		used_in_reports_links: z.array(z.string()).optional(),
+		slug: MetricCardSlugEnumSchema.nullish(),
+		category: z.string().nullish(),
+		title: z.string().nullish(),
+		status: MetricCardStatusEnumOutputSchema.nullish(),
+		definition_revised_at: z.string().nullish(),
+		public: MetricCardPublicSchema.nullish(),
+		api: MetricCardApiMappingSchema.nullish(),
+		aliases: z.array(z.string()).nullish(),
+		related: z.array(MetricCardRefSchema).nullish(),
+		replaces: z.array(MetricCardRefSchema).nullish(),
+		used_in_reports: z.array(z.string()).nullish(),
+		used_in_reports_links: z.array(z.string()).nullish(),
 	})
-	.strict();
+	.passthrough();
 const ReportingStatsOperatorsEnumSchema = z.enum([
 	'one-of',
 	'not-one-of',
@@ -7099,91 +7329,93 @@ const ReportingStatsSchema = z
 		]),
 	})
 	.strict();
-const ReportingStatsScopesEnumSchema = z.enum([
-	'tickets-closed',
-	'tickets-created',
-	'tickets-open',
-	'tickets-replied',
-	'one-touch-tickets',
-	'zero-touch-tickets',
-	'satisfaction-surveys',
-	'satisfaction-surveys-v2',
-	'resolution-time',
-	'messages-sent',
-	'first-response-time',
-	'human-first-response-time',
-	'response-time',
-	'messages-per-ticket',
-	'ticket-handle-time',
-	'online-time',
-	'tags',
-	'auto-qa',
-	'messages-received',
-	'messages-sent-per-macro',
-	'ticket-macro-usage',
-	'automation-rate',
-	'workload-tickets',
-	'automated-interactions',
-	'ticket-fields',
-	'voice-calls',
-	'voice-agent-events',
-	'ticket-sla',
-	'knowledge-insights',
-	'voice-calls-summary',
-	'voice-queue-exposure',
-	'user-availability-tracking',
-	'convert-campaign-events',
-	'convert-order-conversion',
-	'convert-campaign-order-events',
-	'help-center',
-	'ai-sales-agent-orders',
-	'ai-sales-agent-conversations',
-	'overall-automation-rate',
-	'ai-agent-automated-interactions',
-	'overall-automated-interactions',
-	'handover-interactions',
-	'ai-sales-agent-orders-performance',
-	'ai-sales-agent-discounts',
-	'ai-sales-agent-activity',
-	'ai-sales-agent-buy-through-rate',
-	'ai-sales-agent-conversion-rate',
-	'ai-sales-agent-contribution-to-total-sales',
-	'ai-agent-coverage-rate',
-	'ai-agent-success-rate',
-	'ai-agent-handover-rate',
-	'ai-agent-funnel',
-	'overall-time-saved-by-agent',
-	'ai-agent-time-saved',
-	'ai-agent-tickets-closed',
-	'ai-agent-ticket-fields',
-	'overall-decrease-in-resolution-time',
-	'ai-agent-decrease-in-resolution-time',
-	'flow-dataset',
-	'ai-agent-csat',
-	'overall-decrease-in-first-response-time',
-	'ai-agent-decrease-in-first-response-time',
-	'revenue',
-	'ai-influenced-orders-lookup',
-	'ticket-status-breakdown',
-	'gaia-current-billing-usage',
-	'billing-usage',
-	'live-chat-summary',
-	'live-ticket-summary',
-]);
+const ReportingStatsScopesEnumSchema = z
+	.enum([
+		'tickets-closed',
+		'tickets-created',
+		'tickets-open',
+		'tickets-replied',
+		'one-touch-tickets',
+		'zero-touch-tickets',
+		'satisfaction-surveys',
+		'satisfaction-surveys-v2',
+		'resolution-time',
+		'messages-sent',
+		'first-response-time',
+		'human-first-response-time',
+		'response-time',
+		'messages-per-ticket',
+		'ticket-handle-time',
+		'online-time',
+		'tags',
+		'auto-qa',
+		'messages-received',
+		'messages-sent-per-macro',
+		'ticket-macro-usage',
+		'automation-rate',
+		'workload-tickets',
+		'automated-interactions',
+		'ticket-fields',
+		'voice-calls',
+		'voice-agent-events',
+		'ticket-sla',
+		'knowledge-insights',
+		'voice-calls-summary',
+		'voice-queue-exposure',
+		'user-availability-tracking',
+		'convert-campaign-events',
+		'convert-order-conversion',
+		'convert-campaign-order-events',
+		'help-center',
+		'ai-sales-agent-orders',
+		'ai-sales-agent-conversations',
+		'overall-automation-rate',
+		'ai-agent-automated-interactions',
+		'overall-automated-interactions',
+		'handover-interactions',
+		'ai-sales-agent-orders-performance',
+		'ai-sales-agent-discounts',
+		'ai-sales-agent-activity',
+		'ai-sales-agent-buy-through-rate',
+		'ai-sales-agent-conversion-rate',
+		'ai-sales-agent-contribution-to-total-sales',
+		'ai-agent-coverage-rate',
+		'ai-agent-success-rate',
+		'ai-agent-handover-rate',
+		'ai-agent-funnel',
+		'overall-time-saved-by-agent',
+		'ai-agent-time-saved',
+		'ai-agent-tickets-closed',
+		'ai-agent-ticket-fields',
+		'overall-decrease-in-resolution-time',
+		'ai-agent-decrease-in-resolution-time',
+		'flow-dataset',
+		'ai-agent-csat',
+		'overall-decrease-in-first-response-time',
+		'ai-agent-decrease-in-first-response-time',
+		'revenue',
+		'ai-influenced-orders-lookup',
+		'ticket-status-breakdown',
+		'gaia-current-billing-usage',
+		'billing-usage',
+		'live-chat-summary',
+		'live-ticket-summary',
+	])
+	.or(z.string());
 const AnalyticsReportingMetaSchema = z
 	.object({
-		scope: ReportingStatsScopesEnumSchema,
-		prev_cursor: z.string(),
-		next_cursor: z.string(),
-		total: z.number().int(),
-		offset: z.number().int(),
-		limit: z.number().int(),
+		scope: ReportingStatsScopesEnumSchema.nullish(),
+		prev_cursor: z.string().nullish(),
+		next_cursor: z.string().nullish(),
+		total: z.number().int().nullish(),
+		offset: z.number().int().nullish(),
+		limit: z.number().int().nullish(),
 	})
-	.strict();
+	.passthrough();
 const AnalyticsReportingSchema = z
 	.object({
-		object: z.string(),
-		uri: z.string(),
+		object: z.string().nullish(),
+		uri: z.string().nullish(),
 		data: z
 			.array(
 				z.record(
@@ -7197,14 +7429,15 @@ const AnalyticsReportingSchema = z
 					]),
 				),
 			)
-			.max(10000),
-		meta: AnalyticsReportingMetaSchema,
+			.max(10000)
+			.nullish(),
+		meta: AnalyticsReportingMetaSchema.nullish(),
 	})
-	.strict();
+	.passthrough();
 const TicketExtraAttributeSchema = z.literal('custom_fields');
 const VoiceCallEventSchema = z
 	.object({
-		id: z.number().int().optional(),
+		id: z.number().int().nullish(),
 		type: z
 			.enum([
 				'phone-call-answered',
@@ -7241,27 +7474,28 @@ const VoiceCallEventSchema = z
 				'monitoring-ended',
 				'monitoring-updated',
 			])
-			.optional(),
-		account_id: z.number().int().optional(),
-		call_id: z.number().int().optional(),
-		user_id: z.number().int().optional(),
-		customer_id: z.number().int().optional(),
-		created_datetime: z.string().optional(),
-		meta: z.record(z.string(), z.json()).optional(),
+			.or(z.string())
+			.nullish(),
+		account_id: z.number().int().nullish(),
+		call_id: z.number().int().nullish(),
+		user_id: z.number().int().nullish(),
+		customer_id: z.number().int().nullish(),
+		created_datetime: z.string().nullish(),
+		meta: z.union([z.record(z.string(), z.json()), z.string()]).nullish(),
 	})
-	.strict();
+	.passthrough();
 const VoiceCallRecordingSchema = z
 	.object({
-		id: z.number().int().optional(),
-		call_id: z.number().int().optional(),
-		external_id: z.string().optional(),
-		url: z.string().optional(),
-		duration: z.number().int().optional(),
-		type: z.enum(['call-recording', 'voicemail']).optional(),
-		created_datetime: z.string().optional(),
-		deleted_datetime: z.string().optional(),
-		deleted_by_user_id: z.number().int().optional(),
-		error_code: z.enum(['RECORDING_IS_PRIVATE']).optional(),
+		id: z.number().int().nullish(),
+		call_id: z.number().int().nullish(),
+		external_id: z.string().nullish(),
+		url: z.string().nullish(),
+		duration: z.number().int().nullish(),
+		type: z.enum(['call-recording', 'voicemail']).or(z.string()).nullish(),
+		created_datetime: z.string().nullish(),
+		deleted_datetime: z.string().nullish(),
+		deleted_by_user_id: z.number().int().nullish(),
+		error_code: z.enum(['RECORDING_IS_PRIVATE']).or(z.string()).nullish(),
 		transcription_status: z
 			.union([
 				z.literal('requested'),
@@ -7272,59 +7506,62 @@ const VoiceCallRecordingSchema = z
 				z.literal(null),
 				z.literal('low_quality_transcription'),
 			])
-			.optional(),
+			.nullish(),
 	})
-	.strict();
+	.passthrough();
 const VoiceCallSchema = z
 	.object({
-		id: z.number().int(),
-		integration_id: z.number().int(),
-		ticket_id: z.number().int().optional(),
-		phone_number_id: z.number().int().optional(),
-		external_id: z.string(),
-		provider: z.string(),
-		status: z.enum([
-			'answered',
-			'connected',
-			'in-progress',
-			'initiated',
-			'queued',
-			'ringing',
-			'ending',
-			'busy',
-			'canceled',
-			'completed',
-			'failed',
-			'no-answer',
-			'missed',
-		]),
-		direction: z.enum(['inbound', 'outbound']),
-		phone_number_source: z.string().optional(),
-		country_source: z.string().optional(),
-		phone_number_destination: z.string().optional(),
-		country_destination: z.string().optional(),
-		duration: z.number().int().optional(),
-		started_datetime: z.string().optional(),
-		created_datetime: z.string(),
-		updated_datetime: z.string().optional(),
-		initiated_by_agent_id: z.number().int().optional(),
-		last_answered_by_agent_id: z.number().int().optional(),
-		customer_id: z.number().int().optional(),
-		last_rang_agent_id: z.number().int().optional(),
-		has_voicemail: z.boolean().optional(),
-		has_call_recording: z.boolean().optional(),
+		id: z.number().int().nullish(),
+		integration_id: z.number().int().nullish(),
+		ticket_id: z.number().int().nullish(),
+		phone_number_id: z.number().int().nullish(),
+		external_id: z.string().nullish(),
+		provider: z.string().nullish(),
+		status: z
+			.enum([
+				'answered',
+				'connected',
+				'in-progress',
+				'initiated',
+				'queued',
+				'ringing',
+				'ending',
+				'busy',
+				'canceled',
+				'completed',
+				'failed',
+				'no-answer',
+				'missed',
+			])
+			.or(z.string())
+			.nullish(),
+		direction: z.enum(['inbound', 'outbound']).or(z.string()).nullish(),
+		phone_number_source: z.string().nullish(),
+		country_source: z.string().nullish(),
+		phone_number_destination: z.string().nullish(),
+		country_destination: z.string().nullish(),
+		duration: z.number().int().nullish(),
+		started_datetime: z.string().nullish(),
+		created_datetime: z.string().nullish(),
+		updated_datetime: z.string().nullish(),
+		initiated_by_agent_id: z.number().int().nullish(),
+		last_answered_by_agent_id: z.number().int().nullish(),
+		customer_id: z.number().int().nullish(),
+		last_rang_agent_id: z.number().int().nullish(),
+		has_voicemail: z.boolean().nullish(),
+		has_call_recording: z.boolean().nullish(),
 		summaries: z
 			.array(
 				z
 					.object({
-						id: z.number().int(),
-						recording_id: z.number().int(),
-						summary: z.string(),
-						created_datetime: z.string(),
+						id: z.number().int().nullish(),
+						recording_id: z.number().int().nullish(),
+						summary: z.string().nullish(),
+						created_datetime: z.string().nullish(),
 					})
-					.strict(),
+					.passthrough(),
 			)
-			.optional(),
+			.nullish(),
 		termination_status: z
 			.enum([
 				'answered',
@@ -7333,160 +7570,165 @@ const VoiceCallSchema = z
 				'abandoned',
 				'callback-requested',
 			])
-			.optional(),
-		queue_id: z.number().int().optional(),
-		status_in_queue: z.string().optional(),
-		answered_by_external_number: z.string().optional(),
-		answered_by_external_customer_id: z.number().int().optional(),
-		monitoring_status: z.enum(['listening', 'whispering', 'none']).optional(),
-		last_monitoring_agent_id: z.number().int().nullable().optional(),
+			.or(z.string())
+			.nullish(),
+		queue_id: z.number().int().nullish(),
+		status_in_queue: z.string().nullish(),
+		answered_by_external_number: z.string().nullish(),
+		answered_by_external_customer_id: z.number().int().nullish(),
+		monitoring_status: z
+			.enum(['listening', 'whispering', 'none'])
+			.or(z.string())
+			.nullish(),
+		last_monitoring_agent_id: z.number().int().nullish(),
 	})
-	.strict();
+	.passthrough();
 const CursorPaginationMetaSchema = z
 	.object({
 		prev_cursor: z.string().nullish(),
 		next_cursor: z.string().nullish(),
-		total_resources: z.number().int(),
+		total_resources: z.number().int().nullish(),
 	})
-	.strict();
+	.passthrough();
 const CustomerCustomFieldSchema = z
 	.object({
-		id: z.number().int(),
-		external_id: z.string(),
-		object_type: ObjectTypeSchema,
-		label: z.string().min(0).max(255),
-		description: z.string().min(0).max(1024),
-		priority: z.number().int().min(0),
-		required: z.boolean(),
-		managed_type: ManagedCustomerFieldTypeSchema,
-		definition: z.union([
-			TextDataTypeDefinitionSchema,
-			NumberDataTypeDefinitionSchema,
-			BooleanDataTypeDefinitionSchema,
-		]),
-		created_datetime: z.string(),
-		updated_datetime: z.string(),
-		deactivated_datetime: z.string(),
+		id: z.number().int().nullish(),
+		external_id: z.string().nullish(),
+		object_type: ObjectTypeOutputSchema.nullish(),
+		label: z.string().min(0).max(255).nullish(),
+		description: z.string().min(0).max(1024).nullish(),
+		priority: z.number().int().min(0).nullish(),
+		required: z.boolean().nullish(),
+		managed_type: ManagedCustomerFieldTypeOutputSchema.nullish(),
+		definition: z
+			.union([
+				TextDataTypeDefinitionOutputSchema,
+				NumberDataTypeDefinitionOutputSchema,
+				BooleanDataTypeDefinitionOutputSchema,
+			])
+			.nullish(),
+		created_datetime: z.string().nullish(),
+		updated_datetime: z.string().nullish(),
+		deactivated_datetime: z.string().nullish(),
 	})
-	.strict();
+	.passthrough();
 const CustomerCustomFieldWithValueSchema = z
 	.object({
-		field: CustomerCustomFieldSchema,
-		value: z.record(z.string(), z.json()),
+		field: CustomerCustomFieldSchema.nullish(),
+		value: z.record(z.string(), z.json()).nullish(),
 	})
-	.strict();
+	.passthrough();
 const TicketTeamSchema = z
 	.object({
-		id: z.number().int(),
-		name: z.string(),
-		decoration: z.record(z.string(), z.json()),
+		id: z.number().int().nullish(),
+		name: z.string().nullish(),
+		decoration: z.record(z.string(), z.json()).nullish(),
 	})
-	.strict();
-const IntegrationTypeSchema = z.enum([
-	'aircall',
-	'alloy',
-	'app',
-	'bigcommerce',
-	'ecom',
-	'email',
-	'facebook',
-	'gmail',
-	'gorgias_chat',
-	'http',
-	'klaviyo',
-	'magento2',
-	'outlook',
-	'phone',
-	'recharge',
-	'self_service',
-	'shopify',
-	'smile',
-	'smooch',
-	'smooch_inside',
-	'sms',
-	'twitter',
-	'whatsapp',
-	'yotpo',
-	'zendesk',
-]);
+	.passthrough();
+const IntegrationTypeSchema = z
+	.enum([
+		'aircall',
+		'alloy',
+		'app',
+		'bigcommerce',
+		'ecom',
+		'email',
+		'facebook',
+		'gmail',
+		'gorgias_chat',
+		'http',
+		'klaviyo',
+		'magento2',
+		'outlook',
+		'phone',
+		'recharge',
+		'self_service',
+		'shopify',
+		'smile',
+		'smooch',
+		'smooch_inside',
+		'sms',
+		'twitter',
+		'whatsapp',
+		'yotpo',
+		'zendesk',
+	])
+	.or(z.string());
 const TicketCompactCustomerSchema = z
 	.object({
-		id: z.number().int(),
-		email: z.string(),
-		name: z.string(),
-		firstname: z.string(),
-		lastname: z.string(),
-		meta: z.record(z.string(), z.json()),
+		id: z.number().int().nullish(),
+		email: z.string().nullish(),
+		name: z.string().nullish(),
+		firstname: z.string().nullish(),
+		lastname: z.string().nullish(),
+		meta: z.record(z.string(), z.json()).nullish(),
 	})
-	.strict();
+	.passthrough();
 const TicketCompactIntegrationSchema = z
 	.object({
-		name: z.string(),
-		address: z.string(),
-		type: IntegrationTypeSchema,
+		name: z.string().nullish(),
+		address: z.string().nullish(),
+		type: IntegrationTypeSchema.nullish(),
 	})
-	.strict();
+	.passthrough();
 // Ticket compact objects share the documented nullable assignment and lifecycle fields.
 const TicketCompactSchema = z
 	.object({
-		id: z.number().int(),
-		uri: z.string(),
-		external_id: z.string().nullable(),
-		language: z.string().nullable(),
-		status: TicketStatusSchema.optional(),
-		priority: TicketPrioritySchema.optional(),
-		channel: z.union([LegacyChannelSlugSchema, z.string()]),
-		via: TicketViaSchema,
-		from_agent: z.boolean().nullable(),
-		customer: TicketCompactCustomerSchema,
-		assignee_user: TicketUserSchema.nullable().optional(),
-		assignee_team: TicketTeamSchema.nullable().optional(),
-		subject: z.string().nullable(),
-		summary: TicketSummarySchema.nullable().optional(),
-		excerpt: z.string(),
-		integrations: z.array(TicketCompactIntegrationSchema),
-		meta: TicketMetaSchema.nullable(),
-		tags: z.array(TicketTagSchema),
-		messages_count: z.number().int(),
-		is_unread: z.boolean(),
-		spam: z.boolean(),
-		created_datetime: z.string(),
-		opened_datetime: z.string().nullable(),
-		last_received_message_datetime: z.string().nullable(),
-		last_message_datetime: z.string().nullable(),
-		last_sent_message_not_delivered: z.boolean().nullable(),
-		updated_datetime: z.string().nullable(),
-		closed_datetime: z.string().nullable(),
-		snooze_datetime: z.string().nullable(),
-		trashed_datetime: z.string().nullable(),
-		custom_fields: z
-			.record(z.string(), TicketCustomFieldValueSchema)
-			.nullable()
-			.optional(),
+		id: z.number().int().nullish(),
+		uri: z.string().nullish(),
+		external_id: z.string().nullish(),
+		language: z.string().nullish(),
+		status: TicketStatusOutputSchema.nullish(),
+		priority: TicketPriorityOutputSchema.nullish(),
+		channel: z.union([LegacyChannelSlugOutputSchema, z.string()]).nullish(),
+		via: TicketViaSchema.nullish(),
+		from_agent: z.boolean().nullish(),
+		customer: TicketCompactCustomerSchema.nullish(),
+		assignee_user: TicketUserSchema.nullish(),
+		assignee_team: TicketTeamSchema.nullish(),
+		subject: z.string().nullish(),
+		summary: TicketSummarySchema.nullish(),
+		excerpt: z.string().nullish(),
+		integrations: z.array(TicketCompactIntegrationSchema).nullish(),
+		meta: TicketMetaSchema.nullish(),
+		tags: z.array(TicketTagSchema).nullish(),
+		messages_count: z.number().int().nullish(),
+		is_unread: z.boolean().nullish(),
+		spam: z.boolean().nullish(),
+		created_datetime: z.string().nullish(),
+		opened_datetime: z.string().nullish(),
+		last_received_message_datetime: z.string().nullish(),
+		last_message_datetime: z.string().nullish(),
+		last_sent_message_not_delivered: z.boolean().nullish(),
+		updated_datetime: z.string().nullish(),
+		closed_datetime: z.string().nullish(),
+		snooze_datetime: z.string().nullish(),
+		trashed_datetime: z.string().nullish(),
+		custom_fields: z.record(z.string(), TicketCustomFieldValueSchema).nullish(),
 	})
-	.strict();
+	.passthrough();
 const ViewItemsListRespMetaSchema = z
 	.object({
-		current_cursor: z.string().optional(),
-		next_items: z.string().url().optional(),
-		prev_items: z.string().url().optional(),
+		current_cursor: z.string().nullish(),
+		next_items: z.string().nullish(),
+		prev_items: z.string().nullish(),
 	})
-	.strict();
+	.passthrough();
 const ViewCategorySchema = z.enum(['system', 'user']);
 const FileSchema = z
 	.object({
-		content_type: z.string().optional(),
-		name: z.string().optional(),
-		size: z.number().int().optional(),
-		url: z.string().url().optional(),
+		content_type: z.string().nullish(),
+		name: z.string().nullish(),
+		size: z.union([z.number(), z.string()]).nullish(),
+		url: z.string().nullish(),
 	})
-	.strict();
+	.passthrough();
 const MetricCardIncludeEnumSchema = z.literal('deprecated');
 const MetricCardListSchema = z
 	.object({
-		data: z.array(MetricCardSchema),
+		data: z.array(MetricCardSchema).nullish(),
 	})
-	.strict();
+	.passthrough();
 const UpdateCustomFieldSchema = z
 	.object({
 		external_id: z.string().optional(),
@@ -8061,11 +8303,11 @@ export const GorgiasComponents = {
 export const GorgiasBinaryOutputSchema = z
 	.object({
 		kind: z.literal('binary'),
-		contentType: z.string(),
-		base64: z.string(),
-		sizeBytes: z.number().int().nonnegative(),
+		contentType: z.string().nullish(),
+		base64: z.string().nullish(),
+		sizeBytes: z.number().int().nonnegative().nullish(),
 	})
-	.strict();
+	.passthrough();
 
 export const GorgiasEndpointInputSchemas = {
 	'account.createAccountSetting': z
@@ -14778,29 +15020,31 @@ export const GorgiasEndpointOutputSchemas = {
 	'account.getAccount': AccountSchema,
 	'account.listAccountSettings': z
 		.object({
-			data: z.array(
-				z.union([
-					AccountSettingSatisfactionSurveysTypedSchema,
-					AccountSettingAutoMergeTypedSchema,
-					AccountSettingAutoSplitTypedSchema,
-					AccountSettingBusinessHoursTypedSchema,
-					AccountSettingTicketAssignmentTypedSchema,
-					AccountSettingViewsOrderingTypedSchema,
-					AccountSettingAccessTypedSchema,
-					AccountSettingViewsVisibilityTypedSchema,
-					AccountSettingAgentsTableConfigTypedSchema,
-					AccountSettingAgentsAvailabilityTableConfigTypedSchema,
-					AccountSettingChannelsTableConfigTypedSchema,
-					AccountSettingProductInsightsTableConfigTypedSchema,
-					AccountSettingInTicketSuggestionTypedSchema,
-					AccountSettingAgentCostsTypedSchema,
-					AccountSettingLimitsTypedSchema,
-					AccountSettingDefaultIntegrationTypedSchema,
-					AccountSettingBillingProductHardLimitsTypedSchema,
-				]),
-			),
+			data: z
+				.array(
+					z.union([
+						AccountSettingSatisfactionSurveysTypedSchema,
+						AccountSettingAutoMergeTypedSchema,
+						AccountSettingAutoSplitTypedSchema,
+						AccountSettingBusinessHoursTypedSchema,
+						AccountSettingTicketAssignmentTypedSchema,
+						AccountSettingViewsOrderingTypedSchema,
+						AccountSettingAccessTypedSchema,
+						AccountSettingViewsVisibilityTypedSchema,
+						AccountSettingAgentsTableConfigTypedSchema,
+						AccountSettingAgentsAvailabilityTableConfigTypedSchema,
+						AccountSettingChannelsTableConfigTypedSchema,
+						AccountSettingProductInsightsTableConfigTypedSchema,
+						AccountSettingInTicketSuggestionTypedSchema,
+						AccountSettingAgentCostsTypedSchema,
+						AccountSettingLimitsTypedSchema,
+						AccountSettingDefaultIntegrationTypedSchema,
+						AccountSettingBillingProductHardLimitsTypedSchema,
+					]),
+				)
+				.nullish(),
 		})
-		.strict(),
+		.passthrough(),
 	'account.updateAccountSetting': z.union([
 		AccountSettingSatisfactionSurveysTypedSchema,
 		AccountSettingAutoMergeTypedSchema,
@@ -14822,14 +15066,7 @@ export const GorgiasEndpointOutputSchemas = {
 	]),
 	'customFields.createCustomField': CustomFieldSchema,
 	'customFields.getCustomField': CustomFieldSchema,
-	'customFields.listCustomFields': z
-		.object({
-			object: z.string(),
-			uri: z.string(),
-			data: z.array(CustomFieldSchema),
-			meta: CursorPaginationMetaSchema,
-		})
-		.strict(),
+	'customFields.listCustomFields': gorgiasListSchema(CustomFieldSchema),
 	'customFields.updateCustomField': CustomFieldSchema,
 	'customFields.updateCustomFields': z.array(CustomFieldSchema),
 	'customers.createCustomer': CustomerSchema,
@@ -14840,14 +15077,14 @@ export const GorgiasEndpointOutputSchemas = {
 	'customers.listCustomerCustomFieldsValues': z.array(
 		CustomerCustomFieldWithValueSchema,
 	),
-	'customers.listCustomers': z.array(
+	'customers.listCustomers': gorgiasListSchema(
 		z
 			.object({
-				id: z.number().int().optional(),
-				created_datetime: z.string().nullable().optional(),
-				email: z.string().email().nullable().optional(),
-				external_id: z.string().nullable().optional(),
-				firstname: z.string().optional(),
+				id: z.number().int().nullish(),
+				created_datetime: z.string().nullish(),
+				email: z.string().nullish(),
+				external_id: z.string().nullish(),
+				firstname: z.string().nullish(),
 				language: z
 					.enum([
 						'aa',
@@ -15036,9 +15273,10 @@ export const GorgiasEndpointOutputSchemas = {
 						'za',
 						'zu',
 					])
-					.optional(),
-				lastname: z.string().optional(),
-				name: z.string().nullable().optional(),
+					.or(z.string())
+					.nullish(),
+				lastname: z.string().nullish(),
+				name: z.string().nullish(),
 				timezone: z
 					.enum([
 						'Africa/Abidjan',
@@ -15639,10 +15877,11 @@ export const GorgiasEndpointOutputSchemas = {
 						'WET',
 						'Zulu',
 					])
-					.optional(),
-				updated_datetime: z.string().nullable().optional(),
+					.or(z.string())
+					.nullish(),
+				updated_datetime: z.string().nullish(),
 			})
-			.strict(),
+			.passthrough(),
 	),
 	'customers.mergeCustomers': CustomerResponseSchema,
 	'customers.updateCustomer': CustomerSchema,
@@ -15653,47 +15892,25 @@ export const GorgiasEndpointOutputSchemas = {
 	),
 	'customers.updateCustomerData': z.void(),
 	'events.getEvent': EventSchema,
-	'events.listEvents': z.array(EventSchema),
+	'events.listEvents': gorgiasListSchema(EventSchema),
 	'files.uploadFiles': z.array(FileSchema),
 	'files.downloadFile': GorgiasBinaryOutputSchema,
 	'integrations.createIntegration': IntegrationSchema,
 	'integrations.deleteIntegration': z.void(),
 	'integrations.getIntegration': IntegrationDetailSchema,
-	'integrations.listIntegrations': z
-		.object({
-			meta: z
-				.object({
-					next_cursor: z.string().nullable(),
-					prev_cursor: z.string().nullable(),
-				})
-				.strict(),
-			object: z.record(z.string(), z.json()),
-			uri: z.string().url(),
-			data: z.array(IntegrationSchema),
-		})
-		.strict(),
+	'integrations.listIntegrations': gorgiasListSchema(IntegrationSchema),
 	'integrations.updateIntegration': IntegrationSchema,
 	'jobs.cancelJob': z.void(),
 	'jobs.createJob': JobSchema,
 	'jobs.getJob': JobSchema,
-	'jobs.listJobs': z
-		.object({
-			data: z.array(JobSchema),
-			meta: z
-				.object({
-					next_cursor: z.string().optional(),
-					prev_cursor: z.string().optional(),
-				})
-				.strict(),
-		})
-		.strict(),
+	'jobs.listJobs': gorgiasListSchema(JobSchema),
 	'jobs.updateJob': JobSchema,
 	'macros.bulkArchiveMacros': ArchiveMacrosAsUserResultSchema,
 	'macros.bulkUnarchiveMacros': UnarchiveMacrosAsUserResultSchema,
 	'macros.createMacro': MacroSchema,
 	'macros.deleteMacro': z.void(),
 	'macros.getMacro': MacroSchema,
-	'macros.listMacros': z.array(MacroSchema),
+	'macros.listMacros': gorgiasListSchema(MacroSchema),
 	'macros.updateMacro': MacroSchema,
 	'metricCards.createMetricCardFeedback': MetricFeedbackResponseSchema,
 	'metricCards.getMetricCard': MetricCardSchema,
@@ -15702,12 +15919,12 @@ export const GorgiasEndpointOutputSchemas = {
 	'rules.createRule': RuleSchema,
 	'rules.deleteRule': z.void(),
 	'rules.getRule': RuleSchema,
-	'rules.listRules': z.array(RuleSchema),
+	'rules.listRules': gorgiasListSchema(RuleSchema),
 	'rules.updateRule': RuleSchema,
 	'rules.updateRulesPriorities': z.array(RuleSchema),
 	'satisfactionSurveys.createSatisfactionSurvey': SatisfactionSurveySchema,
 	'satisfactionSurveys.getSatisfactionSurvey': SatisfactionSurveySchema,
-	'satisfactionSurveys.listSatisfactionSurveys': z.array(
+	'satisfactionSurveys.listSatisfactionSurveys': gorgiasListSchema(
 		SatisfactionSurveySchema,
 	),
 	'satisfactionSurveys.updateSatisfactionSurvey': SatisfactionSurveySchema,
@@ -15718,40 +15935,19 @@ export const GorgiasEndpointOutputSchemas = {
 	'tags.deleteTag': z.void(),
 	'tags.deleteTags': z.void(),
 	'tags.getTag': TagSchema,
-	'tags.listTags': z
-		.object({
-			object: z.string(),
-			uri: z.string(),
-			data: z.array(TagSchema),
-			meta: CursorPaginationMetaSchema,
-		})
-		.strict(),
+	'tags.listTags': gorgiasListSchema(TagSchema),
 	'tags.mergeTags': TagSchema,
 	'tags.updateTag': TagSchema,
 	'teams.createTeam': TeamSchema,
 	'teams.deleteTeam': z.void(),
 	'teams.getTeam': TeamSchema,
-	'teams.listTeams': z.array(TeamSchema),
+	'teams.listTeams': gorgiasListSchema(TeamSchema),
 	'teams.updateTeam': TeamSchema,
 	'ticketMessages.createTicketMessage': TicketMessageSchema,
 	'ticketMessages.deleteTicketMessage': z.void(),
 	'ticketMessages.getTicketMessage': TicketMessageSchema,
-	'ticketMessages.listMessages': z
-		.object({
-			object: z.string(),
-			uri: z.string(),
-			data: z.array(TicketMessageSchema),
-			meta: CursorPaginationMetaSchema,
-		})
-		.strict(),
-	'ticketMessages.listTicketMessages': z
-		.object({
-			object: z.string(),
-			uri: z.string(),
-			data: z.array(TicketMessageSchema),
-			meta: CursorPaginationMetaSchema,
-		})
-		.strict(),
+	'ticketMessages.listMessages': gorgiasListSchema(TicketMessageSchema),
+	'ticketMessages.listTicketMessages': gorgiasListSchema(TicketMessageSchema),
 	'ticketMessages.updateTicketMessage': TicketMessageSchema,
 	'tickets.createTicket': TicketSchema,
 	'tickets.createTicketTags': z.void(),
@@ -15763,30 +15959,23 @@ export const GorgiasEndpointOutputSchemas = {
 	'tickets.listTicketTags': z.array(
 		z
 			.object({
-				id: z.number().int().optional(),
-				created_datetime: z.string().optional(),
+				id: z.number().int().nullish(),
+				created_datetime: z.string().nullish(),
 				decoration: z
 					.object({
-						color: z.string(),
+						color: z.string().nullish(),
 					})
-					.strict()
-					.optional(),
-				deleted_datetime: z.string().optional(),
-				description: z.string().optional(),
-				name: z.string().optional(),
-				usage: z.number().int().optional(),
-				uri: z.string().optional(),
+					.passthrough()
+					.nullish(),
+				deleted_datetime: z.string().nullish(),
+				description: z.string().nullish(),
+				name: z.string().nullish(),
+				usage: z.number().int().nullish(),
+				uri: z.string().nullish(),
 			})
-			.strict(),
+			.passthrough(),
 	),
-	'tickets.listTickets': z
-		.object({
-			object: z.string(),
-			uri: z.string(),
-			data: z.array(TicketCompactSchema),
-			meta: CursorPaginationMetaSchema,
-		})
-		.strict(),
+	'tickets.listTickets': gorgiasListSchema(TicketCompactSchema),
 	'tickets.updateTicket': TicketSchema,
 	'tickets.updateTicketCustomField': TicketCustomFieldValueSchema,
 	'tickets.updateTicketCustomFields': z.array(TicketCustomFieldValueSchema),
@@ -15794,7 +15983,7 @@ export const GorgiasEndpointOutputSchemas = {
 	'users.createUser': UserSchema,
 	'users.deleteUser': z.void(),
 	'users.getUser': UserSchema,
-	'users.listUsers': z.array(UserSchema),
+	'users.listUsers': gorgiasListSchema(UserSchema),
 	'users.updateUser': UserSchema,
 	'views.createView': ViewSchema,
 	'views.deleteView': z.void(),
@@ -15805,91 +15994,82 @@ export const GorgiasEndpointOutputSchemas = {
 				.array(
 					z
 						.object({
-							id: z.number().int().optional(),
-							uri: z.string().optional(),
-							external_id: z.string().nullable().optional(),
-							language: z.string().nullable().optional(),
-							status: z.string().optional(),
-							priority: z.string().optional(),
-							channel: z.string().optional(),
-							via: z.string().optional(),
-							from_agent: z.boolean().optional(),
+							id: z.number().int().nullish(),
+							uri: z.string().nullish(),
+							external_id: z.string().nullish(),
+							language: z.string().nullish(),
+							status: z.string().nullish(),
+							priority: z.string().nullish(),
+							channel: z.string().nullish(),
+							via: z.string().nullish(),
+							from_agent: z.boolean().nullish(),
 							customer: z
 								.object({
-									id: z.number().int().optional(),
-									email: z.string().email().max(320).nullable().optional(),
-									name: z.string().nullable().optional(),
-									firstname: z.string().optional(),
-									lastname: z.string().optional(),
-									meta: z.null().optional(),
+									id: z.number().int().nullish(),
+									email: z.string().max(320).nullish(),
+									name: z.string().nullish(),
+									firstname: z.string().nullish(),
+									lastname: z.string().nullish(),
+									meta: z.json().nullish(),
 								})
-								.strict(),
+								.passthrough()
+								.nullish(),
 							assignee_user: z
 								.object({
-									id: z.number().int().optional(),
-									email: z.string().email().max(320).nullable().optional(),
-									name: z.string().nullable().optional(),
-									firstname: z.string().optional(),
-									lastname: z.string().optional(),
-									meta: z.null().optional(),
-									bio: z.string().nullable().optional(),
+									id: z.number().int().nullish(),
+									email: z.string().max(320).nullish(),
+									name: z.string().nullish(),
+									firstname: z.string().nullish(),
+									lastname: z.string().nullish(),
+									meta: z.json().nullish(),
+									bio: z.string().nullish(),
 								})
-								.strict()
-								.optional(),
+								.passthrough()
+								.nullish(),
 							assignee_team: z
 								.object({
-									id: z.number().int().optional(),
-									name: z.string(),
-									decoration: z.null().optional(),
+									id: z.number().int().nullish(),
+									name: z.string().nullish(),
+									decoration: z.json().nullish(),
 								})
-								.strict()
-								.optional(),
-							subject: z.string().nullable().optional(),
-							excerpt: z.string().optional(),
-							integrations: z.array(z.record(z.string(), z.json())).optional(),
-							meta: z.null().optional(),
+								.passthrough()
+								.nullish(),
+							subject: z.string().nullish(),
+							excerpt: z.string().nullish(),
+							integrations: z.array(z.record(z.string(), z.json())).nullish(),
+							meta: z.json().nullish(),
 							tags: z
 								.array(
 									z
 										.object({
-											id: z.number().int().optional(),
-											name: z.string().max(256),
-											uri: z.string().optional(),
-											decoration: z.null().optional(),
+											id: z.number().int().nullish(),
+											name: z.string().max(256).nullish(),
+											uri: z.string().nullish(),
+											decoration: z.json().nullish(),
 										})
-										.strict(),
+										.passthrough(),
 								)
-								.optional(),
-							messages_count: z.number().int().optional(),
-							is_unread: z.boolean().optional(),
-							spam: z.boolean().nullable().optional(),
-							created_datetime: z.string().nullable().optional(),
-							opened_datetime: z.string().nullable().optional(),
-							last_received_message_datetime: z.string().nullable().optional(),
-							last_message_datetime: z.string().nullable().optional(),
-							updated_datetime: z.string().nullable().optional(),
-							closed_datetime: z.string().nullable().optional(),
-							snooze_datetime: z.string().nullable().optional(),
-							trashed_datetime: z.string().nullable().optional(),
-							last_sent_message_not_delivered: z
-								.boolean()
-								.nullable()
-								.optional(),
+								.nullish(),
+							messages_count: z.number().int().nullish(),
+							is_unread: z.boolean().nullish(),
+							spam: z.boolean().nullish(),
+							created_datetime: z.string().nullish(),
+							opened_datetime: z.string().nullish(),
+							last_received_message_datetime: z.string().nullish(),
+							last_message_datetime: z.string().nullish(),
+							updated_datetime: z.string().nullish(),
+							closed_datetime: z.string().nullish(),
+							snooze_datetime: z.string().nullish(),
+							trashed_datetime: z.string().nullish(),
+							last_sent_message_not_delivered: z.boolean().nullish(),
 						})
-						.strict(),
+						.passthrough(),
 				)
-				.optional(),
-			meta: ViewItemsListRespMetaSchema.optional(),
+				.nullish(),
+			meta: ViewItemsListRespMetaSchema.nullish(),
 		})
-		.strict(),
-	'views.listViews': z
-		.object({
-			object: z.string(),
-			uri: z.string(),
-			data: z.array(ViewSchema),
-			meta: CursorPaginationMetaSchema,
-		})
-		.strict(),
+		.passthrough(),
+	'views.listViews': gorgiasListSchema(ViewSchema),
 	'views.updateView': ViewSchema,
 	'views.updateViewItems': z
 		.object({
@@ -15897,108 +16077,95 @@ export const GorgiasEndpointOutputSchemas = {
 				.array(
 					z
 						.object({
-							id: z.number().int().optional(),
-							uri: z.string().optional(),
-							external_id: z.string().nullable().optional(),
-							language: z.string().nullable().optional(),
-							status: z.string().optional(),
-							priority: z.string().optional(),
-							channel: z.string().optional(),
-							via: z.string().optional(),
-							from_agent: z.boolean().optional(),
+							id: z.number().int().nullish(),
+							uri: z.string().nullish(),
+							external_id: z.string().nullish(),
+							language: z.string().nullish(),
+							status: z.string().nullish(),
+							priority: z.string().nullish(),
+							channel: z.string().nullish(),
+							via: z.string().nullish(),
+							from_agent: z.boolean().nullish(),
 							customer: z
 								.object({
-									id: z.number().int().optional(),
-									email: z.string().email().max(320).nullable().optional(),
-									name: z.string().nullable().optional(),
-									firstname: z.string().optional(),
-									lastname: z.string().optional(),
-									meta: z.null().optional(),
+									id: z.number().int().nullish(),
+									email: z.string().max(320).nullish(),
+									name: z.string().nullish(),
+									firstname: z.string().nullish(),
+									lastname: z.string().nullish(),
+									meta: z.json().nullish(),
 								})
-								.strict(),
+								.passthrough()
+								.nullish(),
 							assignee_user: z
 								.object({
-									id: z.number().int().optional(),
-									email: z.string().email().max(320).nullable().optional(),
-									name: z.string().nullable().optional(),
-									firstname: z.string().optional(),
-									lastname: z.string().optional(),
-									meta: z.null().optional(),
-									bio: z.string().nullable().optional(),
+									id: z.number().int().nullish(),
+									email: z.string().max(320).nullish(),
+									name: z.string().nullish(),
+									firstname: z.string().nullish(),
+									lastname: z.string().nullish(),
+									meta: z.json().nullish(),
+									bio: z.string().nullish(),
 								})
-								.strict()
-								.optional(),
+								.passthrough()
+								.nullish(),
 							assignee_team: z
 								.object({
-									id: z.number().int().optional(),
-									name: z.string(),
-									decoration: z.null().optional(),
+									id: z.number().int().nullish(),
+									name: z.string().nullish(),
+									decoration: z.json().nullish(),
 								})
-								.strict()
-								.optional(),
-							subject: z.string().nullable().optional(),
-							excerpt: z.string().optional(),
-							integrations: z.array(z.record(z.string(), z.json())).optional(),
-							meta: z.null().optional(),
+								.passthrough()
+								.nullish(),
+							subject: z.string().nullish(),
+							excerpt: z.string().nullish(),
+							integrations: z.array(z.record(z.string(), z.json())).nullish(),
+							meta: z.json().nullish(),
 							tags: z
 								.array(
 									z
 										.object({
-											id: z.number().int().optional(),
-											name: z.string().max(256),
-											uri: z.string().optional(),
-											decoration: z.null().optional(),
+											id: z.number().int().nullish(),
+											name: z.string().max(256).nullish(),
+											uri: z.string().nullish(),
+											decoration: z.json().nullish(),
 										})
-										.strict(),
+										.passthrough(),
 								)
-								.optional(),
-							messages_count: z.number().int().optional(),
-							is_unread: z.boolean().optional(),
-							spam: z.boolean().nullable().optional(),
-							created_datetime: z.string().nullable().optional(),
-							opened_datetime: z.string().nullable().optional(),
-							last_received_message_datetime: z.string().nullable().optional(),
-							last_message_datetime: z.string().nullable().optional(),
-							updated_datetime: z.string().nullable().optional(),
-							closed_datetime: z.string().nullable().optional(),
-							snooze_datetime: z.string().nullable().optional(),
-							trashed_datetime: z.string().nullable().optional(),
-							last_sent_message_not_delivered: z
-								.boolean()
-								.nullable()
-								.optional(),
+								.nullish(),
+							messages_count: z.number().int().nullish(),
+							is_unread: z.boolean().nullish(),
+							spam: z.boolean().nullish(),
+							created_datetime: z.string().nullish(),
+							opened_datetime: z.string().nullish(),
+							last_received_message_datetime: z.string().nullish(),
+							last_message_datetime: z.string().nullish(),
+							updated_datetime: z.string().nullish(),
+							closed_datetime: z.string().nullish(),
+							snooze_datetime: z.string().nullish(),
+							trashed_datetime: z.string().nullish(),
+							last_sent_message_not_delivered: z.boolean().nullish(),
 						})
-						.strict(),
+						.passthrough(),
 				)
-				.optional(),
-			meta: ViewItemsListRespMetaSchema.optional(),
+				.nullish(),
+			meta: ViewItemsListRespMetaSchema.nullish(),
 		})
-		.strict(),
+		.passthrough(),
 	'voiceCallEvents.getVoiceCallEvent': VoiceCallEventSchema,
-	'voiceCallEvents.listVoiceCallEvents': z.array(VoiceCallEventSchema),
+	'voiceCallEvents.listVoiceCallEvents':
+		gorgiasListSchema(VoiceCallEventSchema),
 	'voiceCallRecordings.deleteVoiceCallRecording': z.void(),
 	'voiceCallRecordings.getVoiceCallRecording': VoiceCallRecordingSchema,
-	'voiceCallRecordings.listVoiceCallRecordings': z.array(
+	'voiceCallRecordings.listVoiceCallRecordings': gorgiasListSchema(
 		VoiceCallRecordingSchema,
 	),
 	'voiceCalls.getVoiceCall': VoiceCallSchema,
-	'voiceCalls.listVoiceCalls': z
-		.object({
-			meta: z
-				.object({
-					next_cursor: z.string().nullable(),
-					prev_cursor: z.string().nullable(),
-				})
-				.strict(),
-			object: z.record(z.string(), z.json()),
-			uri: z.string().url(),
-			data: z.array(VoiceCallSchema),
-		})
-		.strict(),
+	'voiceCalls.listVoiceCalls': gorgiasListSchema(VoiceCallSchema),
 	'widgets.createWidget': WidgetSchema,
 	'widgets.deleteWidget': z.void(),
 	'widgets.getWidget': WidgetSchema,
-	'widgets.listWidgets': z.array(WidgetSchema),
+	'widgets.listWidgets': gorgiasListSchema(WidgetSchema),
 	'widgets.updateWidget': WidgetSchema,
 } as const;
 

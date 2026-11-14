@@ -1,0 +1,99 @@
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { gorgiasEndpointSchemas } from './index';
+
+type OperationKey = keyof typeof gorgiasEndpointSchemas;
+
+// `unknown` because the fixture holds raw example responses copied from the Gorgias reference.
+const referenceResponses: Record<string, unknown> = JSON.parse(
+	readFileSync(join(__dirname, 'reference-responses.json'), 'utf8'),
+);
+
+// Cursor-paginated lists. Gorgias wraps them in { data, object, uri, meta }
+// (https://developers.gorgias.com/reference/pagination), even where a reference
+// page shows only the bare array of items.
+const paginatedLists: OperationKey[] = [
+	'customers.listCustomers',
+	'events.listEvents',
+	'macros.listMacros',
+	'rules.listRules',
+	'satisfactionSurveys.listSatisfactionSurveys',
+	'teams.listTeams',
+	'users.listUsers',
+	'voiceCallEvents.listVoiceCallEvents',
+	'voiceCallRecordings.listVoiceCallRecordings',
+	'widgets.listWidgets',
+	'customFields.listCustomFields',
+	'integrations.listIntegrations',
+	'jobs.listJobs',
+	'tags.listTags',
+	'tickets.listTickets',
+	'ticketMessages.listMessages',
+	'ticketMessages.listTicketMessages',
+	'views.listViews',
+	'voiceCalls.listVoiceCalls',
+];
+
+function isOperationKey(key: string): key is OperationKey {
+	return key in gorgiasEndpointSchemas;
+}
+
+// `unknown` because the envelope wraps whichever item type the operation lists.
+function envelope(data: unknown, uri: string) {
+	return {
+		data,
+		object: 'list',
+		uri,
+		meta: { prev_cursor: null, next_cursor: 'WyJuZXh0IiwgMjksIDkyOV0=' },
+	};
+}
+
+describe('Gorgias response schemas', () => {
+	it.each(Object.entries(referenceResponses))(
+		'%s parses the example response from the Gorgias reference',
+		(key, example) => {
+			if (!isOperationKey(key)) throw new Error(`Unknown operation ${key}`);
+			const response =
+				paginatedLists.includes(key) && Array.isArray(example)
+					? envelope(example, '/api/example')
+					: example;
+			const result = gorgiasEndpointSchemas[key].output.safeParse(response);
+			expect(result.error?.issues ?? []).toEqual([]);
+		},
+	);
+
+	it.each(paginatedLists)(
+		'%s parses the paginated list envelope with a relative uri',
+		(key) => {
+			const result = gorgiasEndpointSchemas[key].output.safeParse(
+				envelope([], '/api/example?limit=30'),
+			);
+			expect(result.error?.issues ?? []).toEqual([]);
+			expect(result.data).toMatchObject({
+				meta: { next_cursor: 'WyJuZXh0IiwgMjksIDkyOV0=' },
+			});
+		},
+	);
+
+	it('keeps a ticket readable when Gorgias adds fields or enum values', () => {
+		const ticket = {
+			id: 1,
+			status: 'pending-review',
+			channel: 'tiktok-shop-new',
+			via: 'api',
+			created_datetime: '2019-11-16T15:59:41.966927',
+			undocumented_field: { nested: true },
+		};
+		const result =
+			gorgiasEndpointSchemas['tickets.getTicket'].output.safeParse(ticket);
+		expect(result.error?.issues ?? []).toEqual([]);
+	});
+
+	it('still rejects unknown input fields', () => {
+		const result = gorgiasEndpointSchemas['tickets.getTicket'].input.safeParse({
+			path: { id: 1 },
+			unexpected: true,
+		});
+		expect(result.success).toBe(false);
+	});
+});
