@@ -301,6 +301,8 @@ export async function makeGorgiasRequest(
 		TIMEOUT: 20_000,
 		USERNAME: credentials.email,
 		PASSWORD: credentials.password,
+		// Core defaults to encodeURI, which leaves `/` in string path values (metric card slugs).
+		ENCODE_PATH: encodeURIComponent,
 	};
 	const path = readSection(input, 'path');
 	const query = readSection(input, 'query');

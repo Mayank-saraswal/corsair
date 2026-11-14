@@ -66,6 +66,18 @@ describe('Gorgias client', () => {
 		);
 	});
 
+	it('encodes slashes in string path values such as metric card slugs', async () => {
+		mockedRequest.mockResolvedValue({});
+		const definition = gorgiasOperationDefinitions.metricCards.getMetricCard;
+
+		await makeGorgiasRequest(buildContext(), definition, {
+			path: { slug: '../tickets/1' },
+		});
+
+		const config = mockedRequest.mock.calls[0]?.[0];
+		expect(config?.ENCODE_PATH?.('../tickets/1')).toBe('..%2Ftickets%2F1');
+	});
+
 	it('fails with AuthMissingError when the private-app key is empty', async () => {
 		await expect(
 			makeGorgiasRequest(
