@@ -74,7 +74,9 @@ describe('makeHelpwiseRequest', () => {
 		});
 
 		expect(mockRequest).toHaveBeenCalledTimes(1);
-		const [config, reqOpts] = mockRequest.mock.calls[0];
+		const call = mockRequest.mock.calls[0];
+		expect(call).toBeDefined();
+		const [config, reqOpts] = call as NonNullable<typeof call>;
 		expect(config).toMatchObject({
 			BASE: HELPWISE_API_BASE,
 			USERNAME: 'my_key',
@@ -99,7 +101,9 @@ describe('makeHelpwiseRequest', () => {
 		});
 
 		expect(mockRequest).toHaveBeenCalledTimes(1);
-		const [config, reqOpts] = mockRequest.mock.calls[0];
+		const call = mockRequest.mock.calls[0];
+		expect(call).toBeDefined();
+		const [config, reqOpts] = call as NonNullable<typeof call>;
 		expect(config.BASE).toBe(HELPWISE_APP_BASE);
 		expect(reqOpts).toMatchObject({
 			method: 'POST',

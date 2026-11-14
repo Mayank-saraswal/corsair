@@ -8,8 +8,7 @@ import {
 } from './types';
 
 export const list: HelpwiseEndpoint<'inboxes.list'> = async (ctx, input) => {
-	const parsedInput =
-		HelpwiseEndpointInputSchemas['inboxes.list'].parse(input);
+	const parsedInput = HelpwiseEndpointInputSchemas['inboxes.list'].parse(input);
 	const response = await makeHelpwiseRequest<InboxesListResponse>(
 		'/dev-apis/mailboxes/list',
 		ctx.key,
@@ -19,8 +18,7 @@ export const list: HelpwiseEndpoint<'inboxes.list'> = async (ctx, input) => {
 			body: parsedInput,
 		},
 	);
-	const parsed =
-		HelpwiseEndpointOutputSchemas['inboxes.list'].parse(response);
+	const parsed = HelpwiseEndpointOutputSchemas['inboxes.list'].parse(response);
 	await logEventFromContext(
 		ctx,
 		'helpwise.inboxes.list',

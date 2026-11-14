@@ -18,12 +18,11 @@ import {
 const rawKey = process.env.HELPWISE_API_KEY ?? '';
 const rawSecret = process.env.HELPWISE_API_SECRET ?? '';
 
-const liveKey =
-	rawKey.includes(':')
-		? rawKey
-		: rawKey && rawSecret
-			? `${rawKey}:${rawSecret}`
-			: '';
+const liveKey = rawKey.includes(':')
+	? rawKey
+	: rawKey && rawSecret
+		? `${rawKey}:${rawSecret}`
+		: '';
 
 const describeLive = liveKey.length > 0 ? describe : describe.skip;
 

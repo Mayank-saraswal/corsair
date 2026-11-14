@@ -36,10 +36,9 @@ export const close: HelpwiseEndpoint<'conversations.close'> = async (
 	return parsed;
 };
 
-export const moveToInbox: HelpwiseEndpoint<'conversations.moveToInbox'> = async (
-	ctx,
-	input,
-) => {
+export const moveToInbox: HelpwiseEndpoint<
+	'conversations.moveToInbox'
+> = async (ctx, input) => {
 	const parsedInput =
 		HelpwiseEndpointInputSchemas['conversations.moveToInbox'].parse(input);
 	const response = await makeHelpwiseRequest<StandardActionResponse>(
@@ -111,28 +110,29 @@ export const trash: HelpwiseEndpoint<'conversations.trash'> = async (
 	return parsed;
 };
 
-export const deleteConversation: HelpwiseEndpoint<'conversations.delete'> =
-	async (ctx, input) => {
-		const parsedInput =
-			HelpwiseEndpointInputSchemas['conversations.delete'].parse(input);
-		const response = await makeHelpwiseRequest<StandardActionResponse>(
-			'/conversations/action/delete',
-			ctx.key,
-			{
-				method: 'PUT',
-				body: parsedInput,
-			},
-		);
-		const parsed =
-			HelpwiseEndpointOutputSchemas['conversations.delete'].parse(response);
-		await logEventFromContext(
-			ctx,
-			'helpwise.conversations.delete',
-			{ count: parsedInput.ids.length },
-			'completed',
-		);
-		return parsed;
-	};
+export const deleteConversation: HelpwiseEndpoint<
+	'conversations.delete'
+> = async (ctx, input) => {
+	const parsedInput =
+		HelpwiseEndpointInputSchemas['conversations.delete'].parse(input);
+	const response = await makeHelpwiseRequest<StandardActionResponse>(
+		'/conversations/action/delete',
+		ctx.key,
+		{
+			method: 'PUT',
+			body: parsedInput,
+		},
+	);
+	const parsed =
+		HelpwiseEndpointOutputSchemas['conversations.delete'].parse(response);
+	await logEventFromContext(
+		ctx,
+		'helpwise.conversations.delete',
+		{ count: parsedInput.ids.length },
+		'completed',
+	);
+	return parsed;
+};
 
 export const list: HelpwiseEndpoint<'conversations.list'> = async (
 	ctx,

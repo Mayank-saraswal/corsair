@@ -35,14 +35,12 @@ describe('Helpwise schema metadata and registration', () => {
 
 describe('Helpwise conversation schemas', () => {
 	it('validates action inputs and responses', () => {
-		const actionSchema =
-			HelpwiseEndpointInputSchemas['conversations.close'];
+		const actionSchema = HelpwiseEndpointInputSchemas['conversations.close'];
 		expect(actionSchema.safeParse({ ids: [123, 456] }).success).toBe(true);
 		expect(actionSchema.safeParse({ ids: [] }).success).toBe(false);
 		expect(actionSchema.safeParse({}).success).toBe(false);
 
-		const responseSchema =
-			HelpwiseEndpointOutputSchemas['conversations.close'];
+		const responseSchema = HelpwiseEndpointOutputSchemas['conversations.close'];
 		expect(
 			responseSchema.safeParse({
 				status: 'success',
@@ -52,8 +50,7 @@ describe('Helpwise conversation schemas', () => {
 	});
 
 	it('validates conversation list input and response', () => {
-		const inputSchema =
-			HelpwiseEndpointInputSchemas['conversations.list'];
+		const inputSchema = HelpwiseEndpointInputSchemas['conversations.list'];
 		expect(
 			inputSchema.safeParse({
 				inboxIds: [100],
@@ -63,8 +60,7 @@ describe('Helpwise conversation schemas', () => {
 		).toBe(true);
 		expect(inputSchema.safeParse({ limit: 150 }).success).toBe(false);
 
-		const responseSchema =
-			HelpwiseEndpointOutputSchemas['conversations.list'];
+		const responseSchema = HelpwiseEndpointOutputSchemas['conversations.list'];
 		expect(
 			responseSchema.safeParse({
 				nextPageToken: 'next',
@@ -80,15 +76,13 @@ describe('Helpwise conversation schemas', () => {
 	});
 
 	it('validates conversation get input and response', () => {
-		const inputSchema =
-			HelpwiseEndpointInputSchemas['conversations.get'];
+		const inputSchema = HelpwiseEndpointInputSchemas['conversations.get'];
 		expect(
 			inputSchema.safeParse({ inboxId: 10, conversationId: 20 }).success,
 		).toBe(true);
 		expect(inputSchema.safeParse({ inboxId: 10 }).success).toBe(false);
 
-		const responseSchema =
-			HelpwiseEndpointOutputSchemas['conversations.get'];
+		const responseSchema = HelpwiseEndpointOutputSchemas['conversations.get'];
 		expect(
 			responseSchema.safeParse({
 				id: 20,
@@ -99,8 +93,7 @@ describe('Helpwise conversation schemas', () => {
 	});
 
 	it('validates conversation assign input', () => {
-		const inputSchema =
-			HelpwiseEndpointInputSchemas['conversations.assign'];
+		const inputSchema = HelpwiseEndpointInputSchemas['conversations.assign'];
 		expect(
 			inputSchema.safeParse({
 				mailbox_id: 1,
@@ -136,8 +129,7 @@ describe('Helpwise messages schemas', () => {
 			}).success,
 		).toBe(false);
 
-		const responseSchema =
-			HelpwiseEndpointOutputSchemas['messages.sendEmail'];
+		const responseSchema = HelpwiseEndpointOutputSchemas['messages.sendEmail'];
 		expect(
 			responseSchema.safeParse({
 				status: 'success',

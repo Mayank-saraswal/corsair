@@ -355,10 +355,14 @@ describe('Contacts endpoints', () => {
 		});
 		const result = await Contacts.list(ctx, { limit: 10, offset: 20 });
 		expect(result.results).toHaveLength(1);
-		expect(mockedRequest).toHaveBeenCalledWith('/contacts', 'test_key:test_secret', {
-			method: 'GET',
-			query: { limit: 10, offset: 20 },
-		});
+		expect(mockedRequest).toHaveBeenCalledWith(
+			'/contacts',
+			'test_key:test_secret',
+			{
+				method: 'GET',
+				query: { limit: 10, offset: 20 },
+			},
+		);
 	});
 
 	it('get calls GET /contacts/:contactId', async () => {
@@ -428,9 +432,13 @@ describe('Tags endpoints', () => {
 		mockedRequest.mockResolvedValue([{ id: 1, name: 'Billing' }]);
 		const result = await Tags.list(ctx, {});
 		expect(result).toHaveLength(1);
-		expect(mockedRequest).toHaveBeenCalledWith('/tags', 'test_key:test_secret', {
-			method: 'GET',
-		});
+		expect(mockedRequest).toHaveBeenCalledWith(
+			'/tags',
+			'test_key:test_secret',
+			{
+				method: 'GET',
+			},
+		);
 	});
 
 	it('get calls GET /tags/:tagId', async () => {

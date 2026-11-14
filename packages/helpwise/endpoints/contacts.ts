@@ -29,8 +29,7 @@ export const list: HelpwiseEndpoint<'contacts.list'> = async (ctx, input) => {
 			query,
 		},
 	);
-	const parsed =
-		HelpwiseEndpointOutputSchemas['contacts.list'].parse(response);
+	const parsed = HelpwiseEndpointOutputSchemas['contacts.list'].parse(response);
 	await logEventFromContext(
 		ctx,
 		'helpwise.contacts.list',

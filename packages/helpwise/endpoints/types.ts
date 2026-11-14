@@ -24,9 +24,7 @@ export type StandardActionResponse = z.infer<
 
 export const ConversationsActionInputSchema = z
 	.object({
-		ids: z
-			.array(z.number())
-			.min(1, 'At least one conversation id is required'),
+		ids: z.array(z.number()).min(1, 'At least one conversation id is required'),
 	})
 	.strict();
 export type ConversationsActionInput = z.infer<

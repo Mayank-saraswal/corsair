@@ -66,8 +66,9 @@ export type HelpwiseKeyBuilderContext = KeyBuilderContext<
 	typeof helpwiseAuthConfig
 >;
 
-export type HelpwiseBoundEndpoints =
-	BindEndpoints<typeof helpwiseEndpointsNested>;
+export type HelpwiseBoundEndpoints = BindEndpoints<
+	typeof helpwiseEndpointsNested
+>;
 
 export type HelpwiseEndpoint<K extends keyof HelpwiseEndpointOutputs> =
 	CorsairEndpoint<

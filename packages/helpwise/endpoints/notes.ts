@@ -8,8 +8,7 @@ import {
 } from './types';
 
 export const create: HelpwiseEndpoint<'notes.create'> = async (ctx, input) => {
-	const parsedInput =
-		HelpwiseEndpointInputSchemas['notes.create'].parse(input);
+	const parsedInput = HelpwiseEndpointInputSchemas['notes.create'].parse(input);
 	const response = await makeHelpwiseRequest<NotesCreateResponse>(
 		'/dev-apis/notes/add',
 		ctx.key,
@@ -19,8 +18,7 @@ export const create: HelpwiseEndpoint<'notes.create'> = async (ctx, input) => {
 			body: parsedInput,
 		},
 	);
-	const parsed =
-		HelpwiseEndpointOutputSchemas['notes.create'].parse(response);
+	const parsed = HelpwiseEndpointOutputSchemas['notes.create'].parse(response);
 	await logEventFromContext(
 		ctx,
 		'helpwise.notes.create',

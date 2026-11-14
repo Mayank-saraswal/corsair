@@ -159,30 +159,28 @@ export const listByInbox: HelpwiseEndpoint<'customFields.listByInbox'> = async (
 	return parsed;
 };
 
-export const updateByInbox: HelpwiseEndpoint<'customFields.updateByInbox'> =
-	async (ctx, input) => {
-		const parsedInput =
-			HelpwiseEndpointInputSchemas['customFields.updateByInbox'].parse(input);
-		const { inboxId, ...body } = parsedInput;
+export const updateByInbox: HelpwiseEndpoint<
+	'customFields.updateByInbox'
+> = async (ctx, input) => {
+	const parsedInput =
+		HelpwiseEndpointInputSchemas['customFields.updateByInbox'].parse(input);
+	const { inboxId, ...body } = parsedInput;
 
-		const response =
-			await makeHelpwiseRequest<CustomFieldsUpdateByInboxResponse>(
-				`/customFields/inbox/${encodeURIComponent(inboxId)}`,
-				ctx.key,
-				{
-					method: 'PUT',
-					body,
-				},
-			);
-		const parsed =
-			HelpwiseEndpointOutputSchemas['customFields.updateByInbox'].parse(
-				response,
-			);
-		await logEventFromContext(
-			ctx,
-			'helpwise.customFields.updateByInbox',
-			{ inboxId },
-			'completed',
-		);
-		return parsed;
-	};
+	const response = await makeHelpwiseRequest<CustomFieldsUpdateByInboxResponse>(
+		`/customFields/inbox/${encodeURIComponent(inboxId)}`,
+		ctx.key,
+		{
+			method: 'PUT',
+			body,
+		},
+	);
+	const parsed =
+		HelpwiseEndpointOutputSchemas['customFields.updateByInbox'].parse(response);
+	await logEventFromContext(
+		ctx,
+		'helpwise.customFields.updateByInbox',
+		{ inboxId },
+		'completed',
+	);
+	return parsed;
+};
