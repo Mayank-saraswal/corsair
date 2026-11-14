@@ -313,6 +313,7 @@ export const BaseProviders = [
 	'harvest',
 	'hashnode',
 	'here',
+	'hex',
 	'heygen',
 	'heyy',
 	'higgsfield',
@@ -887,6 +888,7 @@ export const ProviderDisplayNames = {
 	harvest: 'Harvest',
 	hashnode: 'Hashnode',
 	here: 'HERE',
+	hex: 'Hex',
 	heygen: 'HeyGen',
 	heyy: 'Heyy',
 	higgsfield: 'Higgsfield',
@@ -1468,6 +1470,7 @@ export type AllProviders =
 	| 'harvest'
 	| 'hashnode'
 	| 'here'
+	| 'hex'
 	| 'heygen'
 	| 'heyy'
 	| 'higgsfield'
