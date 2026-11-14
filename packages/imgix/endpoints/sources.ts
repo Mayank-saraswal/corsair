@@ -56,6 +56,7 @@ export const list: ImgixEndpoints['sources.list'] = async (ctx, input) => {
 export const create: ImgixEndpoints['sources.create'] = async (ctx, input) => {
 	const parsedInput = ImgixEndpointInputSchemas['sources.create'].parse(input);
 
+	// `unknown` because deployment attributes vary across provider parameters
 	const deployment: Record<string, unknown> = {
 		type: parsedInput.deployment_type,
 	};
@@ -160,11 +161,13 @@ export const get: ImgixEndpoints['sources.get'] = async (ctx, input) => {
 export const update: ImgixEndpoints['sources.update'] = async (ctx, input) => {
 	const parsedInput = ImgixEndpointInputSchemas['sources.update'].parse(input);
 
+	// `unknown` because update attributes vary across provider parameters
 	const attributes: Record<string, unknown> = {};
 	if (parsedInput.name !== undefined) attributes.name = parsedInput.name;
 	if (parsedInput.enabled !== undefined)
 		attributes.enabled = parsedInput.enabled;
 
+	// `unknown` because deployment attributes vary across provider parameters
 	const deployment: Record<string, unknown> = {};
 	if (parsedInput.default_params !== undefined)
 		deployment.default_params = parsedInput.default_params;

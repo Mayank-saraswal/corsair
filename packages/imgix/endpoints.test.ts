@@ -26,12 +26,28 @@ jest.mock('corsair/core', () => {
 const mockedRequest = jest.mocked(makeImgixRequest);
 const mockedLogEvent = jest.mocked(logEventFromContext);
 
-// Mock ImgixContext fixture
-const mockCtx = {
-	key: 'test-imgix-api-key',
-	tenantId: 'tenant-123',
-	environment: 'test',
-} as unknown as ImgixContext;
+type Ctx = Parameters<typeof Sources.list>[0];
+
+function buildCtx(): Ctx {
+	const ctx: ImgixContext = {
+		endpoints: {},
+		$getAccountId: () => Promise.resolve('test-account'),
+		key: 'test-imgix-api-key',
+		options: {},
+		keys: {
+			get_dek: () => Promise.resolve('test-dek'),
+			issue_new_dek: () => Promise.resolve('test-dek'),
+			get_api_key: () => Promise.resolve('test-imgix-api-key'),
+			set_api_key: () => Promise.resolve(),
+			get_webhook_signature: () => Promise.resolve(null),
+			set_webhook_signature: () => Promise.resolve(),
+		},
+		db: {},
+	};
+	return ctx;
+}
+
+const mockCtx = buildCtx();
 
 beforeEach(() => {
 	mockedRequest.mockReset();

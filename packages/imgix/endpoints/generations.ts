@@ -16,6 +16,7 @@ export const createVideo: ImgixEndpoints['generations.createVideo'] = async (
 	const parsedInput =
 		ImgixEndpointInputSchemas['generations.createVideo'].parse(input);
 
+	// `unknown` because payload attributes vary across provider parameters
 	const body: Record<string, unknown> = {
 		prompt: parsedInput.prompt,
 		source: parsedInput.source,
@@ -115,6 +116,7 @@ export const overrideAltText: ImgixEndpoints['generations.overrideAltText'] =
 		const parsedInput =
 			ImgixEndpointInputSchemas['generations.overrideAltText'].parse(input);
 
+		// `unknown` because payload attributes vary across provider parameters
 		const body: Record<string, unknown> = {
 			alt_text: parsedInput.alt_text,
 		};

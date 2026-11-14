@@ -7,6 +7,7 @@ import { ImgixEndpointInputSchemas, ImgixEndpointOutputSchemas } from './types';
 export const create: ImgixEndpoints['purges.create'] = async (ctx, input) => {
 	const parsedInput = ImgixEndpointInputSchemas['purges.create'].parse(input);
 
+	// `unknown` because payload attributes vary across provider parameters
 	const attributes: Record<string, unknown> = {
 		url: parsedInput.url,
 	};

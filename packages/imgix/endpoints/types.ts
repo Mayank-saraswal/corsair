@@ -285,6 +285,7 @@ export const AssetsAddFromOriginOutputSchema = z
 			.object({
 				id: z.string().optional(),
 				type: z.string().optional(),
+				// `unknown` because add response attributes can vary
 				attributes: z.record(z.string(), z.unknown()).optional(),
 			})
 			.passthrough()
@@ -386,6 +387,7 @@ export const UploadSessionsCloseOutputSchema = z
 			.object({
 				id: z.string().optional(),
 				type: z.string().optional(),
+				// `unknown` because add response attributes can vary
 				attributes: z.record(z.string(), z.unknown()).optional(),
 			})
 			.passthrough()
@@ -408,6 +410,7 @@ export const UploadSessionsCancelOutputSchema = z
 			.object({
 				id: z.string().optional(),
 				type: z.string().optional(),
+				// `unknown` because add response attributes can vary
 				attributes: z.record(z.string(), z.unknown()).optional(),
 			})
 			.passthrough()
