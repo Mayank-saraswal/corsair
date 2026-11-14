@@ -13,10 +13,10 @@ pnpm add @corsair-dev/teamwork
 ```ts
 import { teamwork } from '@corsair-dev/teamwork';
 
-const plugin = teamwork({ siteName: 'acme' });
+const plugin = teamwork();
 ```
 
-Set the tenant API key through Corsair's API-key credential flow. Teamwork uses HTTP Basic authentication with the API key as the username and an empty password, over HTTPS. Set `siteName` to the tenant's Teamwork.com subdomain; a full `.teamwork.com` hostname is also accepted. This plugin does not accept a custom API host.
+Store the Teamwork API key and that tenant's site subdomain as `tenant_external_id` through Corsair's API-key credential flow. Teamwork uses HTTP Basic authentication with the API key as the username and an empty password, over HTTPS. The optional `siteName` plugin option is a global override intended for a single Teamwork site; full `.teamwork.com` hostnames are also accepted. Custom API hosts are not supported.
 
 ## Operation input shape
 
@@ -234,7 +234,7 @@ The package covers these resource tags: Boards (10), Comments (10), Companies (1
 | `v1_delete_projects_updates_updateid_json` | destructive | `DELETE /projects/updates/{updateId}.json` | Delete a Project Update | [v1 OpenAPI](https://apidocs.teamwork.com/api/oas/download?slug=teamwork&api_version=v1) |
 | `v1_put_projects_projectid_update_request_json` | write | `PUT /projects/{projectId}/update/request.json` | Requesting a Project Update from a Project Owner | [v1 OpenAPI](https://apidocs.teamwork.com/api/oas/download?slug=teamwork&api_version=v1) |
 | `v1_post_projects_projectid_people_personid_json` | write | `POST /projects/{projectId}/people/{personId}.json` | Add a New User to a Project | [v1 OpenAPI](https://apidocs.teamwork.com/api/oas/download?slug=teamwork&api_version=v1) |
-| `v1_put_projects_projectid_people_personid_json` | write | `PUT /projects/{projectId}/people/{personId}.json` | Remove a User from a Project | [v1 OpenAPI](https://apidocs.teamwork.com/api/oas/download?slug=teamwork&api_version=v1) |
+| `v1_put_projects_projectid_people_personid_json` | destructive | `PUT /projects/{projectId}/people/{personId}.json` | Remove a User from a Project | [v1 OpenAPI](https://apidocs.teamwork.com/api/oas/download?slug=teamwork&api_version=v1) |
 | `v1_get_projects_projectid_people_personid_json` | read | `GET /projects/{projectId}/people/{personId}.json` | Get a Users Permissions on a Project | [v1 OpenAPI](https://apidocs.teamwork.com/api/oas/download?slug=teamwork&api_version=v1) |
 | `v1_get_projects_id_roles_json` | read | `GET /projects/{id}/roles.json` | List Roles on a Project | [v1 OpenAPI](https://apidocs.teamwork.com/api/oas/download?slug=teamwork&api_version=v1) |
 | `v1_get_roles_id_json` | read | `GET /roles/{id}.json` | Get an Individual Role | [v1 OpenAPI](https://apidocs.teamwork.com/api/oas/download?slug=teamwork&api_version=v1) |
@@ -295,7 +295,7 @@ The package covers these resource tags: Boards (10), Comments (10), Companies (1
 | `v3_get_projects_api_v3_companies_companyid_json` | read | `GET /projects/api/v3/companies/{companyId}.json` | Get a specific company. | [v3 OpenAPI](https://apidocs.teamwork.com/api/oas/download?slug=teamwork&api_version=v3) |
 | `v3_patch_projects_api_v3_companies_companyid_json` | write | `PATCH /projects/api/v3/companies/{companyId}.json` | Update an existing company. | [v3 OpenAPI](https://apidocs.teamwork.com/api/oas/download?slug=teamwork&api_version=v3) |
 | `v3_patch_projects_api_v3_companies_companyid_rates_json` | write | `PATCH /projects/api/v3/companies/{companyId}/rates.json` | Set client rates for a company. | [v3 OpenAPI](https://apidocs.teamwork.com/api/oas/download?slug=teamwork&api_version=v3) |
-| `v3_post_projects_api_v3_companies_id_convert_currency_json` | write | `POST /projects/api/v3/companies/{id}/convert-currency.json` | Convert a company's currency | [v3 OpenAPI](https://apidocs.teamwork.com/api/oas/download?slug=teamwork&api_version=v3) |
+| `v3_post_projects_api_v3_companies_id_convert_currency_json` | destructive | `POST /projects/api/v3/companies/{id}/convert-currency.json` | Convert a company's currency | [v3 OpenAPI](https://apidocs.teamwork.com/api/oas/download?slug=teamwork&api_version=v3) |
 | `v3_post_projects_api_v3_companies_id_domains_json` | write | `POST /projects/api/v3/companies/{id}/domains.json` | Create a new company domains. | [v3 OpenAPI](https://apidocs.teamwork.com/api/oas/download?slug=teamwork&api_version=v3) |
 | `v3_get_projects_api_v3_files_fileid_project_json` | read | `GET /projects/api/v3/files/{fileId}/project.json` | Get the parent project for a specific file. | [v3 OpenAPI](https://apidocs.teamwork.com/api/oas/download?slug=teamwork&api_version=v3) |
 | `v3_get_projects_api_v3_links_linkid_comments_json` | read | `GET /projects/api/v3/links/{linkId}/comments.json` | Get a list of comments for a link item | [v3 OpenAPI](https://apidocs.teamwork.com/api/oas/download?slug=teamwork&api_version=v3) |

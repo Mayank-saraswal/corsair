@@ -76,6 +76,30 @@ describe('Teamwork OpenAPI contract schemas', () => {
 		);
 	});
 
+	it('validates documented numeric maps without allowing unrelated body fields', () => {
+		const ratesSchema =
+			teamworkInputSchemas[
+				'v3_patch_projects_api_v3_companies_companyid_rates_json'
+			];
+		expect(
+			ratesSchema?.safeParse({
+				path: { companyId: 123 },
+				query: {},
+				body: { clientRateByRoleId: { '123': 100 } },
+			}).success,
+		).toBe(true);
+		expect(
+			ratesSchema?.safeParse({
+				path: { companyId: 123 },
+				query: {},
+				body: {
+					clientRateByRoleId: { '123': 100 },
+					undocumented: true,
+				},
+			}).success,
+		).toBe(false);
+	});
+
 	it.each(teamworkOperations)(
 		'$id rejects extra input properties and malformed output',
 		(operation) => {

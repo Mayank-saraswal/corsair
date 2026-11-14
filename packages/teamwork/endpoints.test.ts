@@ -1,7 +1,7 @@
 import { logEventFromContext } from 'corsair/core';
 import * as client from './client';
 import { teamworkInputSchemas } from './endpoints/openapi-schema';
-import { teamworkOperationsNested } from './endpoints/operations';
+import { teamworkOperationsById } from './endpoints/operations';
 import { teamworkDefinitions, teamworkOperations } from './endpoints/types';
 import type { TeamworkContext } from './index';
 import { teamwork } from './index';
@@ -110,17 +110,19 @@ function makeInput(
 	return input;
 }
 
-function buildContext(): TeamworkContext {
+function buildContext(siteName?: string): TeamworkContext {
 	return {
 		endpoints: {},
 		$getAccountId: () => Promise.resolve('teamwork-test-account'),
 		key: 'test-key',
-		options: { siteName: 'teamwork-test' },
+		options: siteName ? { siteName } : {},
 		keys: {
 			get_dek: () => Promise.resolve('test-dek'),
 			issue_new_dek: () => Promise.resolve('test-dek'),
 			get_api_key: () => Promise.resolve('test-key'),
+			get_tenant_external_id: () => Promise.resolve('teamwork-test'),
 			set_api_key: () => Promise.resolve(),
+			set_tenant_external_id: () => Promise.resolve(),
 			get_webhook_signature: () => Promise.resolve(null),
 			set_webhook_signature: () => Promise.resolve(),
 		},
@@ -140,7 +142,7 @@ describe('documented operation routes', () => {
 	it.each(teamworkOperations)(
 		'$id calls its documented HTTP route',
 		async (operation) => {
-			const endpoint = teamworkOperationsNested[operation.id];
+			const endpoint = teamworkOperationsById[operation.id];
 			if (!endpoint)
 				throw new Error('Registered Teamwork operation is missing');
 			const input = makeInput(operation);
@@ -151,7 +153,15 @@ describe('documented operation routes', () => {
 					.join(', ');
 				throw new Error(`Invalid fixture for ${operation.id}: ${paths}`);
 			}
-			await endpoint(ctx, input).catch(() => undefined);
+			const response =
+				operation.response === null
+					? undefined
+					: makeValue(
+							operation.response,
+							teamworkDefinitions[operation.version] ?? {},
+						);
+			mockedRequest.mockResolvedValue(response);
+			await expect(endpoint(ctx, input)).resolves.toEqual(response);
 			expect(mockedRequest).toHaveBeenCalledWith({
 				apiKey: 'test-key',
 				siteName: 'teamwork-test',
@@ -162,19 +172,47 @@ describe('documented operation routes', () => {
 				query: input.query,
 				body: input.body,
 			});
-			expect(mockedLogEvent).not.toHaveBeenCalledWith(
-				expect.anything(),
-				expect.anything(),
-				expect.objectContaining(input),
-				expect.anything(),
+			expect(mockedLogEvent).toHaveBeenCalledWith(
+				ctx,
+				'teamwork.operation',
+				{ operationId: operation.id },
+				'completed',
 			);
+			const loggedPayload = mockedLogEvent.mock.calls[0]?.[2];
+			expect(JSON.stringify(loggedPayload)).not.toContain('test-key');
 		},
 	);
+
+	it('uses tenant-scoped site metadata unless the global siteName override is set', async () => {
+		const operation = teamworkOperations.find(
+			(item) => item.id === 'v3_get_projects_api_v3_projects_json',
+		);
+		if (!operation) throw new Error('Projects list operation is missing');
+		const endpoint = teamworkOperationsById[operation.id];
+		if (!endpoint) throw new Error('Projects list endpoint is missing');
+		const input = makeInput(operation);
+		mockedRequest.mockResolvedValue(
+			makeValue(
+				operation.response,
+				teamworkDefinitions[operation.version] ?? {},
+			),
+		);
+
+		await endpoint(buildContext(), input);
+		expect(mockedRequest).toHaveBeenLastCalledWith(
+			expect.objectContaining({ siteName: 'teamwork-test' }),
+		);
+
+		await endpoint(buildContext('override-site'), input);
+		expect(mockedRequest).toHaveBeenLastCalledWith(
+			expect.objectContaining({ siteName: 'override-site' }),
+		);
+	});
 
 	it.each(teamworkOperations)(
 		'$id rejects undocumented input before network I/O',
 		async (operation) => {
-			const endpoint = teamworkOperationsNested[operation.id];
+			const endpoint = teamworkOperationsById[operation.id];
 			if (!endpoint)
 				throw new Error('Registered Teamwork operation is missing');
 			await expect(endpoint(ctx, { unexpected: 'rejected' })).rejects.toThrow(
@@ -188,5 +226,15 @@ describe('documented operation routes', () => {
 		const plugin = teamwork({ siteName: 'teamwork-test' });
 		expect(plugin.authConfig?.api_key?.account).toEqual(['tenant_external_id']);
 		expect(plugin.webhooks).toEqual({});
+		const operationIds = teamworkOperations
+			.map((operation) => operation.id)
+			.sort();
+		expect(Object.keys(plugin.endpointSchemas ?? {}).sort()).toEqual(
+			operationIds,
+		);
+		expect(Object.keys(plugin.endpointMeta ?? {}).sort()).toEqual(operationIds);
+		expect(plugin.endpointMeta?.['v1_delete_projects_id_json']?.riskLevel).toBe(
+			'destructive',
+		);
 	});
 });

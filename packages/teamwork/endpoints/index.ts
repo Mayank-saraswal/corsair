@@ -1,12 +1,13 @@
 export { teamworkInputSchemas, teamworkOutputSchemas } from './openapi-schema';
-export { teamworkOperationsNested } from './operations';
 export type {
 	TeamworkEndpointInput,
 	TeamworkEndpointInputs,
 	TeamworkEndpointOutput,
 	TeamworkEndpointOutputs,
-	TeamworkOperationDefinition,
-} from './types';
+	TeamworkOperationId,
+} from './operation-types';
+export { teamworkOperationsNested } from './operations';
+export type { TeamworkOperationDefinition } from './types';
 export {
 	teamworkDefinitions,
 	teamworkOperations,

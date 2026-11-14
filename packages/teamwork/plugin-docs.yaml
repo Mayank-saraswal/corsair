@@ -1,6 +1,6 @@
 displayName: Teamwork
 description: Teamwork.com project management operations for projects, tasks, people, time tracking, and collaboration resources.
-overviewNote: "Teamwork requires the tenant site subdomain as the plugin option siteName; provide the API key through Corsair credentials before calling authenticated endpoints."
+overviewNote: "Store each tenant's Teamwork site subdomain as tenant_external_id with its API key. The optional siteName plugin option is a global single-site override."
 apiExamples:
   v1_get_projects_json:
     args: {"path":{},"query":{}}
@@ -485,7 +485,7 @@ apiExamples:
   v3_get_projects_api_v3_companies_json:
     args: {"path":{},"query":{}}
   v3_post_projects_api_v3_companies_json:
-    args: {"path":{},"query":{},"body":{"company":{"clientManagedBy":1,"customFields":{"Values":[{"customfieldId":1,"value":null,"countryCode":"Teamwork API value","currencySymbol":"Teamwork API value","urlTextToDisplay":"https://acme.invalid/resource"}]}},"companyOptions":{},"tags":[{}]}}
+    args: {"path":{},"query":{},"body":{"company":{"clientManagedBy":1,"customFields":{"Values":[{"customfieldId":1,"value":null,"countryCode":"Teamwork API value","currencySymbol":"Teamwork API value","urlTextToDisplay":"Teamwork API value"}]}},"companyOptions":{},"tags":[{}]}}
   v3_delete_projects_api_v3_companies_domains_id_json:
     args: {"path":{"id":1},"query":{}}
   v3_patch_projects_api_v3_companies_domains_id_json:
@@ -497,7 +497,7 @@ apiExamples:
   v3_get_projects_api_v3_companies_companyid_json:
     args: {"path":{"companyId":1},"query":{}}
   v3_patch_projects_api_v3_companies_companyid_json:
-    args: {"path":{"companyId":1},"query":{},"body":{"company":{"clientManagedBy":1,"customFields":{"Values":[{"customfieldId":1,"value":null,"countryCode":"Teamwork API value","currencySymbol":"Teamwork API value","urlTextToDisplay":"https://acme.invalid/resource"}]}},"companyOptions":{},"tags":[{}]}}
+    args: {"path":{"companyId":1},"query":{},"body":{"company":{"clientManagedBy":1,"customFields":{"Values":[{"customfieldId":1,"value":null,"countryCode":"Teamwork API value","currencySymbol":"Teamwork API value","urlTextToDisplay":"Teamwork API value"}]}},"companyOptions":{},"tags":[{}]}}
   v3_patch_projects_api_v3_companies_companyid_rates_json:
     args: {"path":{"companyId":1},"query":{},"body":{"clientRateByRoleId":{}}}
   v3_post_projects_api_v3_companies_id_convert_currency_json:
@@ -517,7 +517,7 @@ apiExamples:
   v3_get_projects_api_v3_me_personaltasks_json:
     args: {"path":{},"query":{}}
   v3_post_projects_api_v3_me_personaltasks_json:
-    args: {"path":{},"query":{},"body":{"task":{"startAt":"2026-01-15T12:00:00Z","startDate":"2026-01-15","dueAt":"2026-01-15T12:00:00Z","dueDate":"2026-01-15","originalDueDate":"2026-01-15","priority":{"Value":"Teamwork API value","Null":true,"Set":true},"customFields":{"Values":[{"customfieldId":1,"value":null,"countryCode":"Teamwork API value","currencySymbol":"Teamwork API value","urlTextToDisplay":"https://acme.invalid/resource"}]}},"taskOptions":{"notify":true,"everyoneMustDo":true,"isTemplate":true,"parseInlineTags":true,"appendAssignees":true,"checkInvalidusers":true,"pushSubtasks":true,"pushDependents":true},"tags":[{}],"attachments":{},"attachmentOptions":{},"predecessors":[{"id":1,"type":"Teamwork API value"}],"workflows":{}}}
+    args: {"path":{},"query":{},"body":{"task":{"startAt":"2026-01-15T12:00:00Z","startDate":"2026-01-15","dueAt":"2026-01-15T12:00:00Z","dueDate":"2026-01-15","originalDueDate":"2026-01-15","priority":{"Value":"Teamwork API value","Null":true,"Set":true},"customFields":{"Values":[{"customfieldId":1,"value":null,"countryCode":"Teamwork API value","currencySymbol":"Teamwork API value","urlTextToDisplay":"Teamwork API value"}]}},"taskOptions":{"notify":true,"everyoneMustDo":true,"isTemplate":true,"parseInlineTags":true,"appendAssignees":true,"checkInvalidusers":true,"pushSubtasks":true,"pushDependents":true},"tags":[{}],"attachments":{},"attachmentOptions":{},"predecessors":[{"id":1,"type":"Teamwork API value"}],"workflows":{}}}
   v3_get_projects_api_v3_me_personaltasks_id_json:
     args: {"path":{"id":1},"query":{}}
   v3_get_projects_api_v3_me_timers_json:
@@ -651,7 +651,7 @@ apiExamples:
   v3_get_projects_api_v3_taskgroups_taskgroupid_tasks_json:
     args: {"path":{"taskgroupId":1},"query":{}}
   v3_post_projects_api_v3_taskgroups_taskgroupid_tasks_json:
-    args: {"path":{"taskgroupId":1},"query":{},"body":{"task":{"startAt":"2026-01-15T12:00:00Z","startDate":"2026-01-15","dueAt":"2026-01-15T12:00:00Z","dueDate":"2026-01-15","originalDueDate":"2026-01-15","priority":{"Value":"Teamwork API value","Null":true,"Set":true},"customFields":{"Values":[{"customfieldId":1,"value":null,"countryCode":"Teamwork API value","currencySymbol":"Teamwork API value","urlTextToDisplay":"https://acme.invalid/resource"}]}},"taskOptions":{"notify":true,"everyoneMustDo":true,"isTemplate":true,"parseInlineTags":true,"appendAssignees":true,"checkInvalidusers":true,"pushSubtasks":true,"pushDependents":true},"tags":[{}],"attachments":{},"attachmentOptions":{},"predecessors":[{"id":1,"type":"Teamwork API value"}],"workflows":{}}}
+    args: {"path":{"taskgroupId":1},"query":{},"body":{"task":{"startAt":"2026-01-15T12:00:00Z","startDate":"2026-01-15","dueAt":"2026-01-15T12:00:00Z","dueDate":"2026-01-15","originalDueDate":"2026-01-15","priority":{"Value":"Teamwork API value","Null":true,"Set":true},"customFields":{"Values":[{"customfieldId":1,"value":null,"countryCode":"Teamwork API value","currencySymbol":"Teamwork API value","urlTextToDisplay":"Teamwork API value"}]}},"taskOptions":{"notify":true,"everyoneMustDo":true,"isTemplate":true,"parseInlineTags":true,"appendAssignees":true,"checkInvalidusers":true,"pushSubtasks":true,"pushDependents":true},"tags":[{}],"attachments":{},"attachmentOptions":{},"predecessors":[{"id":1,"type":"Teamwork API value"}],"workflows":{}}}
   v3_get_projects_api_v3_tasklists_json:
     args: {"path":{},"query":{}}
   v3_get_projects_api_v3_tasklists_templates_json:
@@ -665,7 +665,7 @@ apiExamples:
   v3_get_projects_api_v3_tasklists_tasklistid_tasks_json:
     args: {"path":{"tasklistId":1},"query":{}}
   v3_post_projects_api_v3_tasklists_tasklistid_tasks_json:
-    args: {"path":{"tasklistId":1},"query":{},"body":{"task":{"startAt":"2026-01-15T12:00:00Z","startDate":"2026-01-15","dueAt":"2026-01-15T12:00:00Z","dueDate":"2026-01-15","originalDueDate":"2026-01-15","priority":{"Value":"Teamwork API value","Null":true,"Set":true},"customFields":{"Values":[{"customfieldId":1,"value":null,"countryCode":"Teamwork API value","currencySymbol":"Teamwork API value","urlTextToDisplay":"https://acme.invalid/resource"}]}},"taskOptions":{"notify":true,"everyoneMustDo":true,"isTemplate":true,"parseInlineTags":true,"appendAssignees":true,"checkInvalidusers":true,"pushSubtasks":true,"pushDependents":true},"tags":[{}],"attachments":{},"attachmentOptions":{},"predecessors":[{"id":1,"type":"Teamwork API value"}],"workflows":{}}}
+    args: {"path":{"tasklistId":1},"query":{},"body":{"task":{"startAt":"2026-01-15T12:00:00Z","startDate":"2026-01-15","dueAt":"2026-01-15T12:00:00Z","dueDate":"2026-01-15","originalDueDate":"2026-01-15","priority":{"Value":"Teamwork API value","Null":true,"Set":true},"customFields":{"Values":[{"customfieldId":1,"value":null,"countryCode":"Teamwork API value","currencySymbol":"Teamwork API value","urlTextToDisplay":"Teamwork API value"}]}},"taskOptions":{"notify":true,"everyoneMustDo":true,"isTemplate":true,"parseInlineTags":true,"appendAssignees":true,"checkInvalidusers":true,"pushSubtasks":true,"pushDependents":true},"tags":[{}],"attachments":{},"attachmentOptions":{},"predecessors":[{"id":1,"type":"Teamwork API value"}],"workflows":{}}}
   v3_get_projects_api_v3_tasklists_tasklistid_time_total_json:
     args: {"path":{"tasklistId":1},"query":{}}
   v3_get_projects_api_v3_tasks_json:
@@ -681,9 +681,9 @@ apiExamples:
   v3_get_projects_api_v3_tasks_taskid_json:
     args: {"path":{"taskId":1},"query":{}}
   v3_patch_projects_api_v3_tasks_taskid_json:
-    args: {"path":{"taskId":1},"query":{},"body":{"task":{"startAt":"2026-01-15T12:00:00Z","startDate":"2026-01-15","dueAt":"2026-01-15T12:00:00Z","dueDate":"2026-01-15","originalDueDate":"2026-01-15","priority":{"Value":"Teamwork API value","Null":true,"Set":true},"customFields":{"Values":[{"customfieldId":1,"value":null,"countryCode":"Teamwork API value","currencySymbol":"Teamwork API value","urlTextToDisplay":"https://acme.invalid/resource"}]}},"taskOptions":{"notify":true,"everyoneMustDo":true,"isTemplate":true,"parseInlineTags":true,"appendAssignees":true,"checkInvalidusers":true,"pushSubtasks":true,"pushDependents":true},"tags":[{}],"attachments":{},"attachmentOptions":{},"predecessors":[{"id":1,"type":"Teamwork API value"}],"workflows":{}}}
+    args: {"path":{"taskId":1},"query":{},"body":{"task":{"startAt":"2026-01-15T12:00:00Z","startDate":"2026-01-15","dueAt":"2026-01-15T12:00:00Z","dueDate":"2026-01-15","originalDueDate":"2026-01-15","priority":{"Value":"Teamwork API value","Null":true,"Set":true},"customFields":{"Values":[{"customfieldId":1,"value":null,"countryCode":"Teamwork API value","currencySymbol":"Teamwork API value","urlTextToDisplay":"Teamwork API value"}]}},"taskOptions":{"notify":true,"everyoneMustDo":true,"isTemplate":true,"parseInlineTags":true,"appendAssignees":true,"checkInvalidusers":true,"pushSubtasks":true,"pushDependents":true},"tags":[{}],"attachments":{},"attachmentOptions":{},"predecessors":[{"id":1,"type":"Teamwork API value"}],"workflows":{}}}
   v3_put_projects_api_v3_tasks_taskid_json:
-    args: {"path":{"taskId":1},"query":{},"body":{"task":{"startAt":"2026-01-15T12:00:00Z","startDate":"2026-01-15","dueAt":"2026-01-15T12:00:00Z","dueDate":"2026-01-15","originalDueDate":"2026-01-15","priority":{"Value":"Teamwork API value","Null":true,"Set":true},"customFields":{"Values":[{"customfieldId":1,"value":null,"countryCode":"Teamwork API value","currencySymbol":"Teamwork API value","urlTextToDisplay":"https://acme.invalid/resource"}]}},"taskOptions":{"notify":true,"everyoneMustDo":true,"isTemplate":true,"parseInlineTags":true,"appendAssignees":true,"checkInvalidusers":true,"pushSubtasks":true,"pushDependents":true},"tags":[{}],"attachments":{},"attachmentOptions":{},"predecessors":[{"id":1,"type":"Teamwork API value"}],"workflows":{}}}
+    args: {"path":{"taskId":1},"query":{},"body":{"task":{"startAt":"2026-01-15T12:00:00Z","startDate":"2026-01-15","dueAt":"2026-01-15T12:00:00Z","dueDate":"2026-01-15","originalDueDate":"2026-01-15","priority":{"Value":"Teamwork API value","Null":true,"Set":true},"customFields":{"Values":[{"customfieldId":1,"value":null,"countryCode":"Teamwork API value","currencySymbol":"Teamwork API value","urlTextToDisplay":"Teamwork API value"}]}},"taskOptions":{"notify":true,"everyoneMustDo":true,"isTemplate":true,"parseInlineTags":true,"appendAssignees":true,"checkInvalidusers":true,"pushSubtasks":true,"pushDependents":true},"tags":[{}],"attachments":{},"attachmentOptions":{},"predecessors":[{"id":1,"type":"Teamwork API value"}],"workflows":{}}}
   v3_get_projects_api_v3_tasks_taskid_project_json:
     args: {"path":{"taskId":1},"query":{}}
   v3_post_projects_api_v3_tasks_taskid_reminders_json:
@@ -695,7 +695,7 @@ apiExamples:
   v3_get_projects_api_v3_tasks_taskid_subtasks_json:
     args: {"path":{"taskId":1},"query":{}}
   v3_post_projects_api_v3_tasks_taskid_subtasks_json:
-    args: {"path":{"taskId":1},"query":{},"body":{"task":{"startAt":"2026-01-15T12:00:00Z","startDate":"2026-01-15","dueAt":"2026-01-15T12:00:00Z","dueDate":"2026-01-15","originalDueDate":"2026-01-15","priority":{"Value":"Teamwork API value","Null":true,"Set":true},"customFields":{"Values":[{"customfieldId":1,"value":null,"countryCode":"Teamwork API value","currencySymbol":"Teamwork API value","urlTextToDisplay":"https://acme.invalid/resource"}]}},"taskOptions":{"notify":true,"everyoneMustDo":true,"isTemplate":true,"parseInlineTags":true,"appendAssignees":true,"checkInvalidusers":true,"pushSubtasks":true,"pushDependents":true},"tags":[{}],"attachments":{},"attachmentOptions":{},"predecessors":[{"id":1,"type":"Teamwork API value"}],"workflows":{}}}
+    args: {"path":{"taskId":1},"query":{},"body":{"task":{"startAt":"2026-01-15T12:00:00Z","startDate":"2026-01-15","dueAt":"2026-01-15T12:00:00Z","dueDate":"2026-01-15","originalDueDate":"2026-01-15","priority":{"Value":"Teamwork API value","Null":true,"Set":true},"customFields":{"Values":[{"customfieldId":1,"value":null,"countryCode":"Teamwork API value","currencySymbol":"Teamwork API value","urlTextToDisplay":"Teamwork API value"}]}},"taskOptions":{"notify":true,"everyoneMustDo":true,"isTemplate":true,"parseInlineTags":true,"appendAssignees":true,"checkInvalidusers":true,"pushSubtasks":true,"pushDependents":true},"tags":[{}],"attachments":{},"attachmentOptions":{},"predecessors":[{"id":1,"type":"Teamwork API value"}],"workflows":{}}}
   v3_get_projects_api_v3_tasks_taskid_time_json:
     args: {"path":{"taskId":1},"query":{}}
   v3_post_projects_api_v3_tasks_taskid_time_json:

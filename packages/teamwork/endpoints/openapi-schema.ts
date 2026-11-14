@@ -2,8 +2,8 @@ import { z } from 'zod';
 import type {
 	TeamworkOpenApiSchema,
 	TeamworkOperationDefinition,
-} from './types';
-import { teamworkDefinitions, teamworkOperations } from './types';
+} from './manifest';
+import { teamworkDefinitions, teamworkOperations } from './manifest';
 
 // `unknown` is necessary because raw OpenAPI documents contain arbitrary provider schema keywords.
 type OpenApiDocument = Record<string, unknown>;
@@ -122,9 +122,7 @@ function schemaFromOpenApi(
 				: propertySchema.optional();
 		}
 		const objectSchema = z.object(shape);
-		if (strictRequests || value.additionalProperties === false) {
-			schema = objectSchema.strict();
-		} else if (isRecord(value.additionalProperties)) {
+		if (isRecord(value.additionalProperties)) {
 			schema = objectSchema.catchall(
 				schemaFromOpenApi(
 					value.additionalProperties,
@@ -133,7 +131,13 @@ function schemaFromOpenApi(
 					cache,
 				),
 			);
+		} else if (strictRequests && value.additionalProperties === true) {
+			// `unknown` is necessary because OpenAPI explicitly permits arbitrary JSON map values here.
+			schema = objectSchema.catchall(z.unknown());
+		} else if (strictRequests || value.additionalProperties === false) {
+			schema = objectSchema.strict();
 		} else {
+			// OpenAPI defaults additionalProperties to true for response objects, so preserve provider extensions.
 			schema = objectSchema.passthrough();
 		}
 	} else {
