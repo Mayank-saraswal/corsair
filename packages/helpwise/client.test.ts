@@ -163,7 +163,7 @@ describe('real transport execution', () => {
 		let capturedAuthHeader: string | undefined;
 
 		global.fetch = jest.fn(
-			async (_url: RequestInfo | URL, init?: RequestInit) => {
+			async (_url: Parameters<typeof fetch>[0], init?: RequestInit) => {
 				const headers = new Headers(init?.headers);
 				capturedAuthHeader = headers.get('authorization') ?? undefined;
 				return new Response(JSON.stringify({ status: 'rate_limited' }), {
