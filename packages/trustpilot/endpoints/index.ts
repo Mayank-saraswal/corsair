@@ -1,7 +1,10 @@
-import { get as exampleGet } from './example';
-
-export const Example = {
-	get: exampleGet,
-};
-
+export {
+	BusinessUnits,
+	ConsumerProfiles,
+	Consumers,
+	DataSolutions,
+	Invitations,
+	ProductReviews,
+	Reviews,
+} from './api';
 export * from './types';

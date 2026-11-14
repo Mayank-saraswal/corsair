@@ -1,9 +1,1 @@
-import { z } from 'zod';
-
-// TODO: Define your database entities here
-// export const TrustpilotExample = z.object({
-// 	id: z.string(),
-// 	name: z.string(),
-// 	created_at: z.coerce.date().nullable().optional(),
-// });
-// export type TrustpilotExample = z.infer<typeof TrustpilotExample>;
+// Trustpilot records are read and returned through API endpoints; this plugin stores no provider data locally.
