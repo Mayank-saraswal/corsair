@@ -651,6 +651,7 @@ describe('signerProfiles, applications, seal, logCapsules, bareSignatures & user
 			expires_in: 3600,
 		});
 		const token = await BareSignaturesEndpoints.getProofToken(ctx, {
+			grant_type: 'authorization_code',
 			appEnv: 'DEVELOPMENT',
 			client_id: 'cid',
 			client_secret: 'csec',

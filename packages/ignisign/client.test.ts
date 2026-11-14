@@ -265,6 +265,8 @@ describe('real-transport rate-limit handling', () => {
 				BASE: 'https://api.ignisign.io',
 				VERSION: '4.0.0',
 				HEADERS: {},
+				WITH_CREDENTIALS: false,
+				CREDENTIALS: 'omit' as const,
 			},
 			{
 				method: 'GET',

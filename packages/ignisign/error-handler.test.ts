@@ -29,9 +29,9 @@ describe('Ignisign errorHandlers', () => {
 	it('routes 429 to RATE_LIMIT_ERROR with zero retries so transport owns backoff', async () => {
 		const error = apiError(429, 'Too Many Requests', 2000);
 		expect(route(error)).toBe('RATE_LIMIT_ERROR');
-		await expect(
-			errorHandlers.RATE_LIMIT_ERROR.handler(error),
-		).resolves.toEqual({ maxRetries: 0 });
+		await expect(errorHandlers.RATE_LIMIT_ERROR.handler()).resolves.toEqual({
+			maxRetries: 0,
+		});
 	});
 
 	it('routes textual rate limit error messages when status is absent', () => {
@@ -97,7 +97,7 @@ describe('Ignisign errorHandlers', () => {
 			},
 		});
 
-		const handlerKeys = Object.keys(plugin.errorHandlers);
+		const handlerKeys = Object.keys(plugin.errorHandlers ?? {});
 		expect(handlerKeys[0]).toBe('CUSTOM_HANDLER');
 		expect(handlerKeys[handlerKeys.length - 1]).toBe('DEFAULT');
 	});
