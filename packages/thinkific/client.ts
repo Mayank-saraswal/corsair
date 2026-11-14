@@ -1,65 +1,110 @@
-import type { ApiRequestOptions } from 'corsair/http';
-import type { OpenAPIConfig } from 'corsair/http';
+import { AuthMissingError } from 'corsair/core';
+import type {
+	ApiRequestOptions,
+	ApiResult,
+	OpenAPIConfig,
+	RateLimitConfig,
+} from 'corsair/http';
 import { ApiError, request } from 'corsair/http';
 
-export class ThinkificAPIError extends Error {
-	constructor(
-		message: string,
-		public readonly code?: string,
-	) {
-		super(message);
-		this.name = 'ThinkificAPIError';
-	}
-}
+export const THINKIFIC_API_BASE = 'https://api.thinkific.com/api/public/v1';
 
-// TODO: Update with your API base URL
-const THINKIFIC_API_BASE = 'https://api.example.com';
+export const THINKIFIC_RATE_LIMIT_CONFIG = {
+	enabled: true,
+	maxRetries: 3,
+	initialRetryDelay: 1000,
+	backoffMultiplier: 2,
+	headerNames: {
+		retryAfter: 'Retry-After',
+		resetTime: 'RateLimit-Reset',
+	},
+} satisfies RateLimitConfig;
 
-export async function makeThinkificRequest<T>(
+export type ThinkificHttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
+
+export type ThinkificQuery = Record<
+	string,
+	string | number | boolean | undefined
+>;
+
+// `unknown` because the provider response remains untrusted until the operation output schema parses it.
+export async function makeThinkificRequest(
 	endpoint: string,
-	apiKey: string,
+	apiKey: string | undefined,
+	subdomain: string | undefined,
 	options: {
-		method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
-		body?: Record<string, unknown>;
-		query?: Record<string, string | number | boolean | undefined>;
-	} = {},
-): Promise<T> {
-	const { method = 'GET', body, query } = options;
+		method: ThinkificHttpMethod;
+		query?: ThinkificQuery;
+		// `unknown` because endpoint request bodies have distinct Zod-inferred shapes and are validated before transport.
+		body?: unknown;
+	},
+): Promise<unknown> {
+	if (!apiKey) {
+		throw new AuthMissingError('thinkific', 'api_key');
+	}
+	if (!subdomain?.trim()) {
+		throw new AuthMissingError('thinkific', 'api_key');
+	}
 
 	const config: OpenAPIConfig = {
 		BASE: THINKIFIC_API_BASE,
-		VERSION: '1.0.0',
+		VERSION: 'v1',
 		WITH_CREDENTIALS: false,
 		CREDENTIALS: 'omit',
-		TOKEN: apiKey,
 		HEADERS: {
 			'Content-Type': 'application/json',
-			// TODO: Add authentication headers
-			// 'Authorization': \`Bearer \${apiKey}\`
+			'X-Auth-API-Key': apiKey,
+			'X-Auth-Subdomain': subdomain.trim(),
 		},
 	};
 
 	const requestOptions: ApiRequestOptions = {
-		method,
+		method: options.method,
 		url: endpoint,
-		body:
-			method === 'POST' || method === 'PUT' || method === 'PATCH'
-				? body
-				: undefined,
+		body: options.body,
 		mediaType: 'application/json; charset=utf-8',
-		query: method === 'GET' ? query : undefined,
+		query: options.query,
 	};
 
 	try {
-		return await request<T>(config, requestOptions);
-	} catch (error) {
-		// Rethrow core's ApiError as is: its status and retryAfter are what the
-		// error handlers match (429 retries) and what core reads to refresh an
-		// OAuth token after a 401. Wrapping it in a new error loses both.
-		if (error instanceof ApiError) throw error;
-		if (error instanceof Error) {
-			throw new ThinkificAPIError(error.message);
+		// `unknown` because the shared transport returns unvalidated provider JSON.
+		return await request<unknown>(config, requestOptions, {
+			rateLimitConfig: THINKIFIC_RATE_LIMIT_CONFIG,
+		});
+	} catch (error: unknown) {
+		// `unknown` because transport failures are not guaranteed to be Error instances.
+		if (error instanceof ApiError) {
+			const sanitizedRequest: ApiRequestOptions = {
+				...error.request,
+				url: '/thinkific/request',
+				path: undefined,
+				query: undefined,
+				cookies: undefined,
+				headers: undefined,
+				formData: undefined,
+				body: undefined,
+			};
+			const sanitizedResponse: ApiResult = {
+				url: '/thinkific/request',
+				ok: false,
+				status: error.status,
+				statusText: error.statusText,
+				body: undefined,
+			};
+
+			throw new ApiError(
+				sanitizedRequest,
+				sanitizedResponse,
+				`Thinkific API request failed with status ${error.status}`,
+				{
+					retryAfter: error.retryAfter,
+					rateLimitReset: error.rateLimitReset,
+					rateLimitRemaining: error.rateLimitRemaining,
+					rateLimitLimit: error.rateLimitLimit,
+				},
+			);
 		}
-		throw new ThinkificAPIError('Unknown error');
+
+		throw new Error('Thinkific API request failed');
 	}
 }

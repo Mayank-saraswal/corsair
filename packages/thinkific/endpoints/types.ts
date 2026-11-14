@@ -1,29 +1,25 @@
-import { z } from 'zod';
+import type { z } from 'zod';
+import type {
+	ThinkificOperationInputSchemas,
+	ThinkificOperationOutputSchemas,
+} from './schemas';
 
-const ExampleGetInputSchema = z.object({
-	id: z.string(),
-});
+export {
+	ThinkificOperationInputSchemas as ThinkificEndpointInputSchemas,
+	ThinkificOperationOutputSchemas as ThinkificEndpointOutputSchemas,
+} from './schemas';
 
-export type ExampleGetInput = z.infer<typeof ExampleGetInputSchema>;
-
-const ExampleGetResponseSchema = z.object({
-	id: z.string(),
-});
-
-export type ExampleGetResponse = z.infer<typeof ExampleGetResponseSchema>;
-
-export type ThinkificEndpointInputs = {
-	exampleGet: ExampleGetInput;
+export type ThinkificOperationInputs = {
+	[K in keyof typeof ThinkificOperationInputSchemas]: z.input<
+		(typeof ThinkificOperationInputSchemas)[K]
+	>;
 };
 
-export type ThinkificEndpointOutputs = {
-	exampleGet: ExampleGetResponse;
+export type ThinkificOperationOutputs = {
+	[K in keyof typeof ThinkificOperationOutputSchemas]: z.output<
+		(typeof ThinkificOperationOutputSchemas)[K]
+	>;
 };
 
-export const ThinkificEndpointInputSchemas = {
-	exampleGet: ExampleGetInputSchema,
-} as const;
-
-export const ThinkificEndpointOutputSchemas = {
-	exampleGet: ExampleGetResponseSchema,
-} as const;
+export type ThinkificEndpointInputs = ThinkificOperationInputs;
+export type ThinkificEndpointOutputs = ThinkificOperationOutputs;

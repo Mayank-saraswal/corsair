@@ -1,7 +1,7 @@
 {
   "name": "@corsair-dev/thinkific",
   "version": "0.1.0",
-  "description": "Thinkific plugin for Corsair",
+  "description": "Thinkific Admin API v1 integration for Corsair",
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -14,9 +14,10 @@
     }
   },
   "scripts": {
-    "build": "rm -rf dist && tsc --build --force && tsup",
+    "build": "tsup && tsc --build --force",
     "typecheck": "tsc --noEmit",
-    "test": "jest"
+    "test": "jest",
+    "test:live": "jest --testPathIgnorePatterns=/node_modules/ --testPathPattern=api\\.test\\.ts"
   },
   "peerDependencies": {
     "corsair": ">=0.1.0",
@@ -36,9 +37,15 @@
     "thinkific",
     "plugin"
   ],
-  "author": "",
+  "author": "Corsair (https://corsair.dev)",
   "license": "Apache-2.0",
   "files": [
     "dist"
-  ]
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/corsairdev/corsair.git",
+    "directory": "packages/thinkific"
+  },
+  "homepage": "https://docs.corsair.dev/plugins/thinkific"
 }
