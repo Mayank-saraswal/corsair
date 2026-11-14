@@ -12,7 +12,7 @@ examples:
 overviewNote: |
   Interzoid provides AI and algorithmic data matching keys (SimKeys), standardization, enrichment, and validation APIs.
   An Interzoid API key (license) is required for authenticated operations.
-  Each API call consumes credits based on account balance.
+  Every API call consumes credits: standard calls generally cost one credit, while premium APIs and selected AI models can cost multiple credits. Review Interzoid's pricing and model-credit documentation before choosing paid operations.
 apiExamples:
   matching.getCompanyMatchAdvanced:
     args:

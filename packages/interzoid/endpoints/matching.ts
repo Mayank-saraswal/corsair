@@ -78,16 +78,13 @@ export const Matching = {
 				ctx.key,
 				{
 					method: 'GET',
-					query: validatedInput as Record<
-						string,
-						string | number | boolean | undefined
-					>,
+					query: validatedInput,
 				},
 			);
 		const parsed = GetCompanyMatchAdvancedOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_getCompanyMatchAdvanced', {
 			endpoint: '/getcompanymatchadvanced',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},
@@ -101,16 +98,13 @@ export const Matching = {
 			ctx.key,
 			{
 				method: 'GET',
-				query: validatedInput as Record<
-					string,
-					string | number | boolean | undefined
-				>,
+				query: validatedInput,
 			},
 		);
 		const parsed = GetFullNameMatchOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_getFullNameMatch', {
 			endpoint: '/getfullnamematch',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},
@@ -125,16 +119,13 @@ export const Matching = {
 				ctx.key,
 				{
 					method: 'GET',
-					query: validatedInput as Record<
-						string,
-						string | number | boolean | undefined
-					>,
+					query: validatedInput,
 				},
 			);
 		const parsed = GetAddressMatchAdvancedOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_getAddressMatchAdvanced', {
 			endpoint: '/getaddressmatchadvanced',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},
@@ -149,16 +140,13 @@ export const Matching = {
 				ctx.key,
 				{
 					method: 'GET',
-					query: validatedInput as Record<
-						string,
-						string | number | boolean | undefined
-					>,
+					query: validatedInput,
 				},
 			);
 		const parsed = GetAddressAndFullNameMatchOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_getAddressAndFullNameMatch', {
 			endpoint: '/getaddressandfullnamematch',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},
@@ -173,16 +161,13 @@ export const Matching = {
 				ctx.key,
 				{
 					method: 'GET',
-					query: validatedInput as Record<
-						string,
-						string | number | boolean | undefined
-					>,
+					query: validatedInput,
 				},
 			);
 		const parsed = GetCompanyAndAddressMatchOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_getCompanyAndAddressMatch', {
 			endpoint: '/getcompanyandaddressmatch',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},
@@ -197,16 +182,13 @@ export const Matching = {
 				ctx.key,
 				{
 					method: 'GET',
-					query: validatedInput as Record<
-						string,
-						string | number | boolean | undefined
-					>,
+					query: validatedInput,
 				},
 			);
 		const parsed = GetCompanyAndFullNameMatchOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_getCompanyAndFullNameMatch', {
 			endpoint: '/getcompanyandfullnamematch',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},
@@ -220,16 +202,13 @@ export const Matching = {
 			ctx.key,
 			{
 				method: 'GET',
-				query: validatedInput as Record<
-					string,
-					string | number | boolean | undefined
-				>,
+				query: validatedInput,
 			},
 		);
 		const parsed = GetGlobalAddressMatchOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_getGlobalAddressMatch', {
 			endpoint: '/getglobaladdressmatch',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},
@@ -243,16 +222,13 @@ export const Matching = {
 			ctx.key,
 			{
 				method: 'GET',
-				query: validatedInput as Record<
-					string,
-					string | number | boolean | undefined
-				>,
+				query: validatedInput,
 			},
 		);
 		const parsed = GetProductMatchOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_getProductMatch', {
 			endpoint: '/getproductmatch',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},
@@ -266,16 +242,13 @@ export const Matching = {
 			ctx.key,
 			{
 				method: 'GET',
-				query: validatedInput as Record<
-					string,
-					string | number | boolean | undefined
-				>,
+				query: validatedInput,
 			},
 		);
 		const parsed = GetOrgMatchScoreOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_getOrgMatchScore', {
 			endpoint: '/getorgmatchscore',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},
@@ -289,16 +262,13 @@ export const Matching = {
 			ctx.key,
 			{
 				method: 'GET',
-				query: validatedInput as Record<
-					string,
-					string | number | boolean | undefined
-				>,
+				query: validatedInput,
 			},
 		);
 		const parsed = GetFullNameMatchScoreOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_getFullNameMatchScore', {
 			endpoint: '/getfullnamematchscore',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},
@@ -312,16 +282,13 @@ export const Matching = {
 			ctx.key,
 			{
 				method: 'GET',
-				query: validatedInput as Record<
-					string,
-					string | number | boolean | undefined
-				>,
+				query: validatedInput,
 			},
 		);
 		const parsed = GetCompanyMatchOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_getCompanyMatch', {
 			endpoint: '/getcompanymatch',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},
@@ -335,16 +302,13 @@ export const Matching = {
 			ctx.key,
 			{
 				method: 'GET',
-				query: validatedInput as Record<
-					string,
-					string | number | boolean | undefined
-				>,
+				query: validatedInput,
 			},
 		);
 		const parsed = GetAddressMatchOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_getAddressMatch', {
 			endpoint: '/getaddressmatch',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},
@@ -359,16 +323,13 @@ export const Matching = {
 				ctx.key,
 				{
 					method: 'GET',
-					query: validatedInput as Record<
-						string,
-						string | number | boolean | undefined
-					>,
+					query: validatedInput,
 				},
 			);
 		const parsed = GetFullNameParsedMatchOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_getFullNameParsedMatch', {
 			endpoint: '/getfullnameparsedmatch',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},
@@ -382,16 +343,13 @@ export const Matching = {
 			ctx.key,
 			{
 				method: 'GET',
-				query: validatedInput as Record<
-					string,
-					string | number | boolean | undefined
-				>,
+				query: validatedInput,
 			},
 		);
 		const parsed = GetCityMatchOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_getCityMatch', {
 			endpoint: '/getcitymatch',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},
@@ -405,16 +363,13 @@ export const Matching = {
 			ctx.key,
 			{
 				method: 'GET',
-				query: validatedInput as Record<
-					string,
-					string | number | boolean | undefined
-				>,
+				query: validatedInput,
 			},
 		);
 		const parsed = GetCountryMatchOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_getCountryMatch', {
 			endpoint: '/getcountrymatch',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},

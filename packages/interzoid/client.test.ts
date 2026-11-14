@@ -1,5 +1,5 @@
 import { AuthMissingError } from 'corsair/core';
-import type { OpenAPIConfig } from 'corsair/http';
+import type { OpenAPIConfig, RateLimitConfig } from 'corsair/http';
 import { ApiError, request } from 'corsair/http';
 import {
 	INTERZOID_API_BASE,
@@ -133,31 +133,28 @@ describe('makeInterzoidRequest', () => {
 	});
 
 	it('real transport extracts Retry-After from 429 response via actual request', async () => {
-		const actualRequest = (
-			jest.requireActual('corsair/http') as {
-				request: <T>(
-					config: OpenAPIConfig,
-					options: { method: string; url: string },
-				) => Promise<T>;
-			}
-		).request;
+		const actualRequest =
+			jest.requireActual<typeof import('corsair/http')>('corsair/http').request;
+		const rateLimitConfig: RateLimitConfig = {
+			enabled: true,
+			maxRetries: 0,
+			initialRetryDelay: 0,
+			backoffMultiplier: 1,
+			headerNames: { retryAfter: 'retry-after' },
+		};
 
 		const originalFetch = global.fetch;
 		try {
-			global.fetch = jest.fn().mockResolvedValue({
-				ok: false,
-				status: 429,
-				statusText: 'Too Many Requests',
-				headers: new Headers({
-					'content-type': 'application/json',
-					'retry-after': '4',
+			global.fetch = jest.fn().mockResolvedValue(
+				new Response('{"Code":"429","Message":"Too Many Requests"}', {
+					status: 429,
+					statusText: 'Too Many Requests',
+					headers: {
+						'content-type': 'application/json',
+						'retry-after': '4',
+					},
 				}),
-				json: async () => ({
-					Code: '429',
-					Message: 'Too Many Requests',
-				}),
-				text: async () => '{"Code":"429","Message":"Too Many Requests"}',
-			} as Response);
+			);
 
 			const config: OpenAPIConfig = {
 				BASE: INTERZOID_API_BASE,
@@ -168,11 +165,16 @@ describe('makeInterzoidRequest', () => {
 			};
 
 			// `unknown` because a rejection value has no static type; assertions below narrow it.
-			const caught: unknown = await actualRequest(config, {
-				method: 'GET',
-				url: '/getremainingcredits',
-			}).catch((e: unknown) => e);
+			const caught: unknown = await actualRequest(
+				config,
+				{
+					method: 'GET',
+					url: '/getremainingcredits',
+				},
+				{ rateLimitConfig },
+			).catch((e: unknown) => e);
 
+			expect(global.fetch).toHaveBeenCalledTimes(1);
 			expect(caught).toBeInstanceOf(ApiError);
 			if (caught instanceof ApiError) {
 				expect(caught.status).toBe(429);

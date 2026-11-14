@@ -73,16 +73,13 @@ export const Utilities = {
 			ctx.key,
 			{
 				method: 'GET',
-				query: validatedInput as Record<
-					string,
-					string | number | boolean | undefined
-				>,
+				query: validatedInput,
 			},
 		);
 		const parsed = GetEntityTypeOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_getEntityType', {
 			endpoint: '/getentitytype',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},
@@ -96,16 +93,13 @@ export const Utilities = {
 			ctx.key,
 			{
 				method: 'GET',
-				query: validatedInput as Record<
-					string,
-					string | number | boolean | undefined
-				>,
+				query: validatedInput,
 			},
 		);
 		const parsed = GetGenderOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_getGender', {
 			endpoint: '/getgender',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},
@@ -119,16 +113,13 @@ export const Utilities = {
 			ctx.key,
 			{
 				method: 'GET',
-				query: validatedInput as Record<
-					string,
-					string | number | boolean | undefined
-				>,
+				query: validatedInput,
 			},
 		);
 		const parsed = GetNameOriginOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_getNameOrigin', {
 			endpoint: '/getnameorigin',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},
@@ -142,16 +133,13 @@ export const Utilities = {
 			ctx.key,
 			{
 				method: 'GET',
-				query: validatedInput as Record<
-					string,
-					string | number | boolean | undefined
-				>,
+				query: validatedInput,
 			},
 		);
 		const parsed = IdentifyLanguageOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_identifyLanguage', {
 			endpoint: '/identifylanguage',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},
@@ -165,16 +153,13 @@ export const Utilities = {
 			ctx.key,
 			{
 				method: 'GET',
-				query: validatedInput as Record<
-					string,
-					string | number | boolean | undefined
-				>,
+				query: validatedInput,
 			},
 		);
 		const parsed = TranslateToEnglishOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_translateToEnglish', {
 			endpoint: '/translatetoenglish',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},
@@ -188,16 +173,13 @@ export const Utilities = {
 			ctx.key,
 			{
 				method: 'GET',
-				query: validatedInput as Record<
-					string,
-					string | number | boolean | undefined
-				>,
+				query: validatedInput,
 			},
 		);
 		const parsed = TranslateToAnyOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_translateToAny', {
 			endpoint: '/translatetoany',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},
@@ -211,16 +193,13 @@ export const Utilities = {
 			ctx.key,
 			{
 				method: 'GET',
-				query: validatedInput as Record<
-					string,
-					string | number | boolean | undefined
-				>,
+				query: validatedInput,
 			},
 		);
 		const parsed = GetGlobalLatencyOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_getGlobalLatency', {
 			endpoint: '/globallatency',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},
@@ -234,16 +213,13 @@ export const Utilities = {
 			ctx.key,
 			{
 				method: 'GET',
-				query: validatedInput as Record<
-					string,
-					string | number | boolean | undefined
-				>,
+				query: validatedInput,
 			},
 		);
 		const parsed = GetGlobalPageLoadOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_getGlobalPageLoad', {
 			endpoint: '/globalpageload',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},
@@ -257,16 +233,13 @@ export const Utilities = {
 			ctx.key,
 			{
 				method: 'GET',
-				query: validatedInput as Record<
-					string,
-					string | number | boolean | undefined
-				>,
+				query: validatedInput,
 			},
 		);
 		const parsed = GetCurrencyRateOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_getCurrencyRate', {
 			endpoint: '/getcurrencyrate',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},
@@ -280,16 +253,13 @@ export const Utilities = {
 			ctx.key,
 			{
 				method: 'GET',
-				query: validatedInput as Record<
-					string,
-					string | number | boolean | undefined
-				>,
+				query: validatedInput,
 			},
 		);
 		const parsed = ConvertCurrencyOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_convertCurrency', {
 			endpoint: '/convertcurrency',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},
@@ -303,16 +273,13 @@ export const Utilities = {
 			ctx.key,
 			{
 				method: 'GET',
-				query: validatedInput as Record<
-					string,
-					string | number | boolean | undefined
-				>,
+				query: validatedInput,
 			},
 		);
 		const parsed = GetWeatherZipCodeOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_getWeatherZipCode', {
 			endpoint: '/getweatherzipcode',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},
@@ -326,16 +293,13 @@ export const Utilities = {
 			ctx.key,
 			{
 				method: 'GET',
-				query: validatedInput as Record<
-					string,
-					string | number | boolean | undefined
-				>,
+				query: validatedInput,
 			},
 		);
 		const parsed = GetGlobalWeatherOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_getGlobalWeather', {
 			endpoint: '/getglobalweather',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},
@@ -349,16 +313,13 @@ export const Utilities = {
 			ctx.key,
 			{
 				method: 'GET',
-				query: validatedInput as Record<
-					string,
-					string | number | boolean | undefined
-				>,
+				query: validatedInput,
 			},
 		);
 		const parsed = GetGlobalTimeOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_getGlobalTime', {
 			endpoint: '/getglobaltime',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},
@@ -377,7 +338,7 @@ export const Utilities = {
 		const parsed = GetRemainingCreditsOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_getRemainingCredits', {
 			endpoint: '/getremainingcredits',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},

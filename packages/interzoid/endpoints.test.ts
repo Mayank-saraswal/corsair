@@ -25,7 +25,7 @@ jest.mock('corsair/core', () => {
 const mockedMakeRequest = jest.mocked(makeInterzoidRequest);
 const mockedLogEvent = jest.mocked(logEventFromContext);
 
-// Context with minimal properties needed for endpoint execution
+// This narrow assertion is safe because these endpoint functions only read `key` from context.
 const mockContext = {
 	key: 'test-api-license-key',
 } as InterzoidContext;
@@ -58,7 +58,11 @@ describe('Interzoid Endpoints', () => {
 					}),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({
+				SimKey: 'mock_simkey_123',
+				Code: 'Success',
+				Credits: 100,
+			});
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_getCompanyMatchAdvanced',
@@ -98,7 +102,7 @@ describe('Interzoid Endpoints', () => {
 					query: expect.objectContaining({ fullname: 'James Kelly' }),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({ Code: 'Success' });
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_getFullNameMatch',
@@ -141,7 +145,7 @@ describe('Interzoid Endpoints', () => {
 					}),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({ Code: 'Success' });
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_getAddressMatchAdvanced',
@@ -185,7 +189,7 @@ describe('Interzoid Endpoints', () => {
 					}),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({ Code: 'Success' });
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_getAddressAndFullNameMatch',
@@ -229,7 +233,7 @@ describe('Interzoid Endpoints', () => {
 					}),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({ Code: 'Success' });
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_getCompanyAndAddressMatch',
@@ -273,7 +277,7 @@ describe('Interzoid Endpoints', () => {
 					}),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({ Code: 'Success' });
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_getCompanyAndFullNameMatch',
@@ -315,7 +319,7 @@ describe('Interzoid Endpoints', () => {
 					}),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({ Code: 'Success' });
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_getGlobalAddressMatch',
@@ -357,7 +361,7 @@ describe('Interzoid Endpoints', () => {
 					}),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({ Code: 'Success' });
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_getProductMatch',
@@ -401,7 +405,7 @@ describe('Interzoid Endpoints', () => {
 					}),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({ Code: 'Success' });
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_getOrgMatchScore',
@@ -445,7 +449,7 @@ describe('Interzoid Endpoints', () => {
 					}),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({ Code: 'Success' });
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_getFullNameMatchScore',
@@ -487,7 +491,7 @@ describe('Interzoid Endpoints', () => {
 					}),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({ Code: 'Success' });
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_getCompanyMatch',
@@ -526,7 +530,7 @@ describe('Interzoid Endpoints', () => {
 					query: expect.objectContaining({ address: '500 Oak Drive' }),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({ Code: 'Success' });
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_getAddressMatch',
@@ -569,7 +573,7 @@ describe('Interzoid Endpoints', () => {
 					}),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({ Code: 'Success' });
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_getFullNameParsedMatch',
@@ -609,7 +613,7 @@ describe('Interzoid Endpoints', () => {
 					query: expect.objectContaining({ city: 'San Francisco' }),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({ Code: 'Success' });
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_getCityMatch',
@@ -648,7 +652,7 @@ describe('Interzoid Endpoints', () => {
 					query: expect.objectContaining({ country: 'United States' }),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({ Code: 'Success' });
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_getCountryMatch',
@@ -687,7 +691,7 @@ describe('Interzoid Endpoints', () => {
 					query: expect.objectContaining({ org: 'b.o.a.' }),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({ Code: 'Success' });
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_getOrgStandard',
@@ -712,6 +716,7 @@ describe('Interzoid Endpoints', () => {
 	describe('standardization.getCountryStandard', () => {
 		it('executes successfully and parses response', async () => {
 			mockedMakeRequest.mockResolvedValueOnce({
+				CountryStandard: 'Germany',
 				Code: 'Success',
 				Credits: 100,
 			});
@@ -726,7 +731,10 @@ describe('Interzoid Endpoints', () => {
 					query: expect.objectContaining({ country: 'Deutschland' }),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({
+				CountryStandard: 'Germany',
+				Code: 'Success',
+			});
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_getCountryStandard',
@@ -751,6 +759,14 @@ describe('Interzoid Endpoints', () => {
 	describe('standardization.getCountryInfo', () => {
 		it('executes successfully and parses response', async () => {
 			mockedMakeRequest.mockResolvedValueOnce({
+				CountryStandard: 'France',
+				TwoLetterCode: 'FR',
+				ThreeLetterCode: 'FRA',
+				ThreeDigitCode: '250',
+				CurrencyCode: 'EUR',
+				CurrencyName: 'Euro',
+				CurrencySymbol: '€',
+				CallingCode: '33',
 				Code: 'Success',
 				Credits: 100,
 			});
@@ -765,7 +781,14 @@ describe('Interzoid Endpoints', () => {
 					query: expect.objectContaining({ country: 'France' }),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({
+				CountryStandard: 'France',
+				TwoLetterCode: 'FR',
+				ThreeLetterCode: 'FRA',
+				CurrencyCode: 'EUR',
+				CallingCode: '33',
+				Code: 'Success',
+			});
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_getCountryInfo',
@@ -790,6 +813,8 @@ describe('Interzoid Endpoints', () => {
 	describe('standardization.getStateAbbreviation', () => {
 		it('executes successfully and parses response', async () => {
 			mockedMakeRequest.mockResolvedValueOnce({
+				State: 'California',
+				Abbreviation: 'CA',
 				Code: 'Success',
 				Credits: 100,
 			});
@@ -804,7 +829,11 @@ describe('Interzoid Endpoints', () => {
 					query: expect.objectContaining({ state: 'California' }),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({
+				State: 'California',
+				Abbreviation: 'CA',
+				Code: 'Success',
+			});
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_getStateAbbreviation',
@@ -829,6 +858,7 @@ describe('Interzoid Endpoints', () => {
 	describe('standardization.getCityStandard', () => {
 		it('executes successfully and parses response', async () => {
 			mockedMakeRequest.mockResolvedValueOnce({
+				CityStandard: 'New York',
 				Code: 'Success',
 				Credits: 100,
 			});
@@ -843,7 +873,10 @@ describe('Interzoid Endpoints', () => {
 					query: expect.objectContaining({ city: 'NYC' }),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({
+				CityStandard: 'New York',
+				Code: 'Success',
+			});
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_getCityStandard',
@@ -882,7 +915,7 @@ describe('Interzoid Endpoints', () => {
 					query: expect.objectContaining({ lookup: 'Apple' }),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({ Code: 'Success' });
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_getOfficialName',
@@ -907,6 +940,9 @@ describe('Interzoid Endpoints', () => {
 	describe('intelligence.getBusinessInfo', () => {
 		it('executes successfully and parses response', async () => {
 			mockedMakeRequest.mockResolvedValueOnce({
+				CompanyName: 'Cisco Systems, Inc.',
+				CompanyURL: 'https://www.cisco.com',
+				CompanyLocation: 'San Jose, California',
 				Code: 'Success',
 				Credits: 100,
 			});
@@ -921,7 +957,12 @@ describe('Interzoid Endpoints', () => {
 					query: expect.objectContaining({ lookup: 'Cisco' }),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({
+				CompanyName: 'Cisco Systems, Inc.',
+				CompanyURL: 'https://www.cisco.com',
+				CompanyLocation: 'San Jose, California',
+				Code: 'Success',
+			});
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_getBusinessInfo',
@@ -959,7 +1000,7 @@ describe('Interzoid Endpoints', () => {
 					query: expect.objectContaining({ lookup: 'Informatica' }),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({ Code: 'Success' });
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_getParentCompanyInfo',
@@ -998,7 +1039,7 @@ describe('Interzoid Endpoints', () => {
 					query: expect.objectContaining({ lookup: 'Amazon Web Services CEO' }),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({ Code: 'Success' });
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_getExecutiveProfile',
@@ -1037,7 +1078,7 @@ describe('Interzoid Endpoints', () => {
 					query: expect.objectContaining({ lookup: 'Microsoft' }),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({ Code: 'Success' });
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_getBusinessInfoDomain',
@@ -1076,7 +1117,7 @@ describe('Interzoid Endpoints', () => {
 					query: expect.objectContaining({ lookup: 'Microsoft' }),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({ Code: 'Success' });
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_getBusinessInfoName',
@@ -1116,7 +1157,7 @@ describe('Interzoid Endpoints', () => {
 					query: expect.objectContaining({ lookup: 'Microsoft Corporation' }),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({ Code: 'Success' });
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_getCompanyVerification',
@@ -1155,7 +1196,7 @@ describe('Interzoid Endpoints', () => {
 					query: expect.objectContaining({ lookup: 'NVDA' }),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({ Code: 'Success' });
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_getStockInfo',
@@ -1193,7 +1234,7 @@ describe('Interzoid Endpoints', () => {
 					query: expect.objectContaining({ lookup: 'Oracle Corporation' }),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({ Code: 'Success' });
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_getIndustryCodes',
@@ -1231,7 +1272,7 @@ describe('Interzoid Endpoints', () => {
 					query: expect.objectContaining({ lookup: 'Safeway Inc.' }),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({ Code: 'Success' });
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_getSicCodes',
@@ -1271,7 +1312,7 @@ describe('Interzoid Endpoints', () => {
 					}),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({ Code: 'Success' });
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_getUniversityInfo',
@@ -1312,7 +1353,7 @@ describe('Interzoid Endpoints', () => {
 					}),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({ Code: 'Success' });
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_getProductRecallInfo',
@@ -1351,7 +1392,7 @@ describe('Interzoid Endpoints', () => {
 					query: expect.objectContaining({ lookup: 'shopify.com' }),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({ Code: 'Success' });
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_getTechStack',
@@ -1389,7 +1430,7 @@ describe('Interzoid Endpoints', () => {
 					query: expect.objectContaining({ lookup: 'Databricks' }),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({ Code: 'Success' });
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_getCompetitorAnalysis',
@@ -1428,7 +1469,7 @@ describe('Interzoid Endpoints', () => {
 					query: expect.objectContaining({ lookup: 'SpaceX' }),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({ Code: 'Success' });
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_getBuyingSignals',
@@ -1467,7 +1508,7 @@ describe('Interzoid Endpoints', () => {
 					query: expect.objectContaining({ lookup: 'Anthropic' }),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({ Code: 'Success' });
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_getPrivateCompanyDealIntel',
@@ -1508,7 +1549,7 @@ describe('Interzoid Endpoints', () => {
 					}),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({ Code: 'Success' });
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_getNearestCoffeeShops',
@@ -1547,7 +1588,7 @@ describe('Interzoid Endpoints', () => {
 					query: expect.objectContaining({ lookup: 'San Francisco 49ers' }),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({ Code: 'Success' });
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_getUserXHandle',
@@ -1585,7 +1626,7 @@ describe('Interzoid Endpoints', () => {
 					query: expect.objectContaining({ handle: 'lexfridman' }),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({ Code: 'Success' });
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_getXUserProfile',
@@ -1623,7 +1664,7 @@ describe('Interzoid Endpoints', () => {
 					query: expect.objectContaining({ handle: 'Google' }),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({ Code: 'Success' });
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_getXLast3',
@@ -1661,7 +1702,7 @@ describe('Interzoid Endpoints', () => {
 					query: expect.objectContaining({ lookup: 'Microsoft' }),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({ Code: 'Success' });
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_getEsgProfile',
@@ -1699,7 +1740,7 @@ describe('Interzoid Endpoints', () => {
 					query: expect.objectContaining({ lookup: 'Lockheed Martin' }),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({ Code: 'Success' });
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_getGovContracts',
@@ -1737,7 +1778,7 @@ describe('Interzoid Endpoints', () => {
 					query: expect.objectContaining({ lookup: 'Amazon' }),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({ Code: 'Success' });
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_getFacilitiesProfile',
@@ -1778,7 +1819,7 @@ describe('Interzoid Endpoints', () => {
 					}),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({ Code: 'Success' });
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_getBuildingProfile',
@@ -1819,7 +1860,7 @@ describe('Interzoid Endpoints', () => {
 					}),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({ Code: 'Success' });
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_getPropertyHistory',
@@ -1858,7 +1899,7 @@ describe('Interzoid Endpoints', () => {
 					query: expect.objectContaining({ lookup: 'Beverly Hills, CA' }),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({ Code: 'Success' });
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_getSalesUseTaxRates',
@@ -1897,7 +1938,7 @@ describe('Interzoid Endpoints', () => {
 					query: expect.objectContaining({ lookup: 'New York, NY' }),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({ Code: 'Success' });
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_getIrsPerDiemRates',
@@ -1936,7 +1977,7 @@ describe('Interzoid Endpoints', () => {
 					query: expect.objectContaining({ lookup: 'Germany' }),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({ Code: 'Success' });
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_getEuVatRates',
@@ -1980,7 +2021,7 @@ describe('Interzoid Endpoints', () => {
 					}),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({ Code: 'Success' });
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_getCustomsDutyRates',
@@ -2019,7 +2060,7 @@ describe('Interzoid Endpoints', () => {
 					query: expect.objectContaining({ lookup: 'State of California' }),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({ Code: 'Success' });
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_getMuniIssuerProfile',
@@ -2063,7 +2104,7 @@ describe('Interzoid Endpoints', () => {
 					}),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({ Code: 'Success' });
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_getCustomData',
@@ -2089,6 +2130,10 @@ describe('Interzoid Endpoints', () => {
 	describe('validation.getEmailInfo', () => {
 		it('executes successfully and parses response', async () => {
 			mockedMakeRequest.mockResolvedValueOnce({
+				Email: 'info@example.com',
+				Response: 'Valid',
+				Domain: 'example.com',
+				IsDisposable: 'No',
 				Code: 'Success',
 				Credits: 100,
 			});
@@ -2103,7 +2148,13 @@ describe('Interzoid Endpoints', () => {
 					query: expect.objectContaining({ email: 'info@example.com' }),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({
+				Email: 'info@example.com',
+				Response: 'Valid',
+				Domain: 'example.com',
+				IsDisposable: 'No',
+				Code: 'Success',
+			});
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_getEmailInfo',
@@ -2142,7 +2193,7 @@ describe('Interzoid Endpoints', () => {
 					query: expect.objectContaining({ lookup: 'contact@example.com' }),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({ Code: 'Success' });
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_getEmailTrustScore',
@@ -2180,7 +2231,7 @@ describe('Interzoid Endpoints', () => {
 					query: expect.objectContaining({ email: 'user@example.com' }),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({ Code: 'Success' });
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_getEmailDomainType',
@@ -2218,7 +2269,7 @@ describe('Interzoid Endpoints', () => {
 					query: expect.objectContaining({ lookup: '8.8.8.8' }),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({ Code: 'Success' });
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_getIpProfile',
@@ -2256,7 +2307,7 @@ describe('Interzoid Endpoints', () => {
 					query: expect.objectContaining({ lookup: '+16502530000' }),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({ Code: 'Success' });
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_getPhoneProfile',
@@ -2294,7 +2345,7 @@ describe('Interzoid Endpoints', () => {
 					query: expect.objectContaining({ intlnumber: '+442071838750' }),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({ Code: 'Success' });
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_getGlobalNumberInfo',
@@ -2333,7 +2384,7 @@ describe('Interzoid Endpoints', () => {
 					query: expect.objectContaining({ number: '415-555-1234' }),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({ Code: 'Success' });
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_getAreaCodeFromNumber',
@@ -2372,7 +2423,7 @@ describe('Interzoid Endpoints', () => {
 					query: expect.objectContaining({ areacode: '415' }),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({ Code: 'Success' });
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_getAreaCode',
@@ -2410,7 +2461,7 @@ describe('Interzoid Endpoints', () => {
 					query: expect.objectContaining({ zip: '94105' }),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({ Code: 'Success' });
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_getZipCodeInfo',
@@ -2450,7 +2501,7 @@ describe('Interzoid Endpoints', () => {
 					}),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({ Code: 'Success' });
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_addressParse',
@@ -2488,7 +2539,7 @@ describe('Interzoid Endpoints', () => {
 					query: expect.objectContaining({ text: 'Argentina' }),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({ Code: 'Success' });
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_getEntityType',
@@ -2524,7 +2575,7 @@ describe('Interzoid Endpoints', () => {
 					query: expect.objectContaining({ name: 'Pierre' }),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({ Code: 'Success' });
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_getGender',
@@ -2562,7 +2613,7 @@ describe('Interzoid Endpoints', () => {
 					query: expect.objectContaining({ name: 'Pierre' }),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({ Code: 'Success' });
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_getNameOrigin',
@@ -2586,6 +2637,7 @@ describe('Interzoid Endpoints', () => {
 	describe('utilities.identifyLanguage', () => {
 		it('executes successfully and parses response', async () => {
 			mockedMakeRequest.mockResolvedValueOnce({
+				Language: 'French',
 				Code: 'Success',
 				Credits: 100,
 			});
@@ -2602,7 +2654,10 @@ describe('Interzoid Endpoints', () => {
 					}),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({
+				Language: 'French',
+				Code: 'Success',
+			});
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_identifyLanguage',
@@ -2640,7 +2695,7 @@ describe('Interzoid Endpoints', () => {
 					query: expect.objectContaining({ text: 'Bonjour' }),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({ Code: 'Success' });
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_translateToEnglish',
@@ -2679,7 +2734,7 @@ describe('Interzoid Endpoints', () => {
 					query: expect.objectContaining({ text: 'Hello', to: 'French' }),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({ Code: 'Success' });
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_translateToAny',
@@ -2722,7 +2777,7 @@ describe('Interzoid Endpoints', () => {
 					}),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({ Code: 'Success' });
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_getGlobalLatency',
@@ -2765,7 +2820,7 @@ describe('Interzoid Endpoints', () => {
 					}),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({ Code: 'Success' });
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_getGlobalPageLoad',
@@ -2804,7 +2859,7 @@ describe('Interzoid Endpoints', () => {
 					query: expect.objectContaining({ symbol: 'EUR' }),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({ Code: 'Success' });
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_getCurrencyRate',
@@ -2848,7 +2903,7 @@ describe('Interzoid Endpoints', () => {
 					}),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({ Code: 'Success' });
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_convertCurrency',
@@ -2888,7 +2943,7 @@ describe('Interzoid Endpoints', () => {
 					query: expect.objectContaining({ zip: '94105' }),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({ Code: 'Success' });
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_getWeatherZipCode',
@@ -2926,7 +2981,7 @@ describe('Interzoid Endpoints', () => {
 					query: expect.objectContaining({ location: 'Madrid' }),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({ Code: 'Success' });
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_getGlobalWeather',
@@ -2964,7 +3019,7 @@ describe('Interzoid Endpoints', () => {
 					query: expect.objectContaining({ locale: 'Tokyo' }),
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({ Code: 'Success' });
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_getGlobalTime',
@@ -2999,7 +3054,7 @@ describe('Interzoid Endpoints', () => {
 					method: 'GET',
 				}),
 			);
-			expect(result).toBeDefined();
+			expect(result).toMatchObject({ Code: 'Success' });
 			expect(mockedLogEvent).toHaveBeenCalledWith(
 				mockContext,
 				'interzoid_getRemainingCredits',

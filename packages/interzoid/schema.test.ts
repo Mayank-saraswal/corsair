@@ -9,9 +9,7 @@ describe('Interzoid Schemas', () => {
 		const plugin = interzoid();
 		const registeredKeys: string[] = [];
 
-		for (const [groupKey, groupEndpoints] of Object.entries(
-			plugin.endpoints as object,
-		)) {
+		for (const [groupKey, groupEndpoints] of Object.entries(plugin.endpoints)) {
 			if (typeof groupEndpoints === 'object' && groupEndpoints !== null) {
 				for (const opKey of Object.keys(groupEndpoints)) {
 					registeredKeys.push(`${groupKey}.${opKey}`);
@@ -29,6 +27,16 @@ describe('Interzoid Schemas', () => {
 		expect(schemaKeys).toEqual(registeredKeys);
 		expect(metaKeys).toEqual(registeredKeys);
 	});
+
+	it('requires approval for every credit-consuming API operation', () => {
+		const plugin = interzoid();
+		const endpointMeta = plugin.endpointMeta ?? {};
+
+		for (const metadata of Object.values(endpointMeta)) {
+			expect(metadata.riskLevel).toBe('destructive');
+		}
+	});
+
 	describe('getCompanyMatchAdvanced', () => {
 		it('validates valid input and output', () => {
 			const parsedInput =

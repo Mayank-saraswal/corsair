@@ -57,16 +57,13 @@ export const Validation = {
 			ctx.key,
 			{
 				method: 'GET',
-				query: validatedInput as Record<
-					string,
-					string | number | boolean | undefined
-				>,
+				query: validatedInput,
 			},
 		);
 		const parsed = GetEmailInfoOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_getEmailInfo', {
 			endpoint: '/getemailinfo',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},
@@ -80,16 +77,13 @@ export const Validation = {
 			ctx.key,
 			{
 				method: 'GET',
-				query: validatedInput as Record<
-					string,
-					string | number | boolean | undefined
-				>,
+				query: validatedInput,
 			},
 		);
 		const parsed = GetEmailTrustScoreOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_getEmailTrustScore', {
 			endpoint: '/emailtrustscore',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},
@@ -103,16 +97,13 @@ export const Validation = {
 			ctx.key,
 			{
 				method: 'GET',
-				query: validatedInput as Record<
-					string,
-					string | number | boolean | undefined
-				>,
+				query: validatedInput,
 			},
 		);
 		const parsed = GetEmailDomainTypeOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_getEmailDomainType', {
 			endpoint: '/getemaildomaintype',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},
@@ -126,16 +117,13 @@ export const Validation = {
 			ctx.key,
 			{
 				method: 'GET',
-				query: validatedInput as Record<
-					string,
-					string | number | boolean | undefined
-				>,
+				query: validatedInput,
 			},
 		);
 		const parsed = GetIpProfileOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_getIpProfile', {
 			endpoint: '/getipprofile',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},
@@ -149,16 +137,13 @@ export const Validation = {
 			ctx.key,
 			{
 				method: 'GET',
-				query: validatedInput as Record<
-					string,
-					string | number | boolean | undefined
-				>,
+				query: validatedInput,
 			},
 		);
 		const parsed = GetPhoneProfileOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_getPhoneProfile', {
 			endpoint: '/getphoneprofile',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},
@@ -172,16 +157,13 @@ export const Validation = {
 			ctx.key,
 			{
 				method: 'GET',
-				query: validatedInput as Record<
-					string,
-					string | number | boolean | undefined
-				>,
+				query: validatedInput,
 			},
 		);
 		const parsed = GetGlobalNumberInfoOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_getGlobalNumberInfo', {
 			endpoint: '/getglobalnumberinfo',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},
@@ -195,16 +177,13 @@ export const Validation = {
 			ctx.key,
 			{
 				method: 'GET',
-				query: validatedInput as Record<
-					string,
-					string | number | boolean | undefined
-				>,
+				query: validatedInput,
 			},
 		);
 		const parsed = GetAreaCodeFromNumberOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_getAreaCodeFromNumber', {
 			endpoint: '/getareacodefromnumber',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},
@@ -218,16 +197,13 @@ export const Validation = {
 			ctx.key,
 			{
 				method: 'GET',
-				query: validatedInput as Record<
-					string,
-					string | number | boolean | undefined
-				>,
+				query: validatedInput,
 			},
 		);
 		const parsed = GetAreaCodeOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_getAreaCode', {
 			endpoint: '/getareacode',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},
@@ -241,16 +217,13 @@ export const Validation = {
 			ctx.key,
 			{
 				method: 'GET',
-				query: validatedInput as Record<
-					string,
-					string | number | boolean | undefined
-				>,
+				query: validatedInput,
 			},
 		);
 		const parsed = GetZipCodeInfoOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_getZipCodeInfo', {
 			endpoint: '/getzipcodeinfo',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},
@@ -264,16 +237,13 @@ export const Validation = {
 			ctx.key,
 			{
 				method: 'GET',
-				query: validatedInput as Record<
-					string,
-					string | number | boolean | undefined
-				>,
+				query: validatedInput,
 			},
 		);
 		const parsed = AddressParseOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_addressParse', {
 			endpoint: '/addressparse',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},

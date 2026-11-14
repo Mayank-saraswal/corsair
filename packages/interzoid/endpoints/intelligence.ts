@@ -137,16 +137,13 @@ export const Intelligence = {
 			ctx.key,
 			{
 				method: 'GET',
-				query: validatedInput as Record<
-					string,
-					string | number | boolean | undefined
-				>,
+				query: validatedInput,
 			},
 		);
 		const parsed = GetBusinessInfoOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_getBusinessInfo', {
 			endpoint: '/getbusinessinfo',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},
@@ -160,16 +157,13 @@ export const Intelligence = {
 			ctx.key,
 			{
 				method: 'GET',
-				query: validatedInput as Record<
-					string,
-					string | number | boolean | undefined
-				>,
+				query: validatedInput,
 			},
 		);
 		const parsed = GetParentCompanyInfoOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_getParentCompanyInfo', {
 			endpoint: '/getparentcompanyinfo',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},
@@ -183,16 +177,13 @@ export const Intelligence = {
 			ctx.key,
 			{
 				method: 'GET',
-				query: validatedInput as Record<
-					string,
-					string | number | boolean | undefined
-				>,
+				query: validatedInput,
 			},
 		);
 		const parsed = GetExecutiveProfileOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_getExecutiveProfile', {
 			endpoint: '/getexecutiveprofile',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},
@@ -206,16 +197,13 @@ export const Intelligence = {
 			ctx.key,
 			{
 				method: 'GET',
-				query: validatedInput as Record<
-					string,
-					string | number | boolean | undefined
-				>,
+				query: validatedInput,
 			},
 		);
 		const parsed = GetBusinessInfoDomainOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_getBusinessInfoDomain', {
 			endpoint: '/getbusinessinfodomain',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},
@@ -229,16 +217,13 @@ export const Intelligence = {
 			ctx.key,
 			{
 				method: 'GET',
-				query: validatedInput as Record<
-					string,
-					string | number | boolean | undefined
-				>,
+				query: validatedInput,
 			},
 		);
 		const parsed = GetBusinessInfoNameOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_getBusinessInfoName', {
 			endpoint: '/getbusinessinfoname',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},
@@ -253,16 +238,13 @@ export const Intelligence = {
 				ctx.key,
 				{
 					method: 'GET',
-					query: validatedInput as Record<
-						string,
-						string | number | boolean | undefined
-					>,
+					query: validatedInput,
 				},
 			);
 		const parsed = GetCompanyVerificationOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_getCompanyVerification', {
 			endpoint: '/getcompanyverification',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},
@@ -276,16 +258,13 @@ export const Intelligence = {
 			ctx.key,
 			{
 				method: 'GET',
-				query: validatedInput as Record<
-					string,
-					string | number | boolean | undefined
-				>,
+				query: validatedInput,
 			},
 		);
 		const parsed = GetStockInfoOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_getStockInfo', {
 			endpoint: '/getstockinfo',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},
@@ -299,16 +278,13 @@ export const Intelligence = {
 			ctx.key,
 			{
 				method: 'GET',
-				query: validatedInput as Record<
-					string,
-					string | number | boolean | undefined
-				>,
+				query: validatedInput,
 			},
 		);
 		const parsed = GetIndustryCodesOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_getIndustryCodes', {
 			endpoint: '/getindustrycodes',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},
@@ -322,16 +298,13 @@ export const Intelligence = {
 			ctx.key,
 			{
 				method: 'GET',
-				query: validatedInput as Record<
-					string,
-					string | number | boolean | undefined
-				>,
+				query: validatedInput,
 			},
 		);
 		const parsed = GetSicCodesOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_getSicCodes', {
 			endpoint: '/getsiccodes',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},
@@ -345,16 +318,13 @@ export const Intelligence = {
 			ctx.key,
 			{
 				method: 'GET',
-				query: validatedInput as Record<
-					string,
-					string | number | boolean | undefined
-				>,
+				query: validatedInput,
 			},
 		);
 		const parsed = GetUniversityInfoOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_getUniversityInfo', {
 			endpoint: '/getuniversityinfo',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},
@@ -368,16 +338,13 @@ export const Intelligence = {
 			ctx.key,
 			{
 				method: 'GET',
-				query: validatedInput as Record<
-					string,
-					string | number | boolean | undefined
-				>,
+				query: validatedInput,
 			},
 		);
 		const parsed = GetProductRecallInfoOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_getProductRecallInfo', {
 			endpoint: '/getproductrecallinfo',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},
@@ -391,16 +358,13 @@ export const Intelligence = {
 			ctx.key,
 			{
 				method: 'GET',
-				query: validatedInput as Record<
-					string,
-					string | number | boolean | undefined
-				>,
+				query: validatedInput,
 			},
 		);
 		const parsed = GetTechStackOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_getTechStack', {
 			endpoint: '/gettechstack',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},
@@ -414,16 +378,13 @@ export const Intelligence = {
 			ctx.key,
 			{
 				method: 'GET',
-				query: validatedInput as Record<
-					string,
-					string | number | boolean | undefined
-				>,
+				query: validatedInput,
 			},
 		);
 		const parsed = GetCompetitorAnalysisOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_getCompetitorAnalysis', {
 			endpoint: '/getcompetitoranalysis',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},
@@ -437,16 +398,13 @@ export const Intelligence = {
 			ctx.key,
 			{
 				method: 'GET',
-				query: validatedInput as Record<
-					string,
-					string | number | boolean | undefined
-				>,
+				query: validatedInput,
 			},
 		);
 		const parsed = GetBuyingSignalsOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_getBuyingSignals', {
 			endpoint: '/getbuyingsignals',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},
@@ -461,16 +419,13 @@ export const Intelligence = {
 				ctx.key,
 				{
 					method: 'GET',
-					query: validatedInput as Record<
-						string,
-						string | number | boolean | undefined
-					>,
+					query: validatedInput,
 				},
 			);
 		const parsed = GetPrivateCompanyDealIntelOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_getPrivateCompanyDealIntel', {
 			endpoint: '/getprivatecompanydealintel',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},
@@ -484,16 +439,13 @@ export const Intelligence = {
 			ctx.key,
 			{
 				method: 'GET',
-				query: validatedInput as Record<
-					string,
-					string | number | boolean | undefined
-				>,
+				query: validatedInput,
 			},
 		);
 		const parsed = GetNearestCoffeeShopsOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_getNearestCoffeeShops', {
 			endpoint: '/getnearestcoffeeshops',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},
@@ -507,16 +459,13 @@ export const Intelligence = {
 			ctx.key,
 			{
 				method: 'GET',
-				query: validatedInput as Record<
-					string,
-					string | number | boolean | undefined
-				>,
+				query: validatedInput,
 			},
 		);
 		const parsed = GetUserXHandleOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_getUserXHandle', {
 			endpoint: '/getuserxhandle',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},
@@ -530,16 +479,13 @@ export const Intelligence = {
 			ctx.key,
 			{
 				method: 'GET',
-				query: validatedInput as Record<
-					string,
-					string | number | boolean | undefined
-				>,
+				query: validatedInput,
 			},
 		);
 		const parsed = GetXUserProfileOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_getXUserProfile', {
 			endpoint: '/getxuserprofile',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},
@@ -553,16 +499,13 @@ export const Intelligence = {
 			ctx.key,
 			{
 				method: 'GET',
-				query: validatedInput as Record<
-					string,
-					string | number | boolean | undefined
-				>,
+				query: validatedInput,
 			},
 		);
 		const parsed = GetXLast3OutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_getXLast3', {
 			endpoint: '/getxlast3',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},
@@ -576,16 +519,13 @@ export const Intelligence = {
 			ctx.key,
 			{
 				method: 'GET',
-				query: validatedInput as Record<
-					string,
-					string | number | boolean | undefined
-				>,
+				query: validatedInput,
 			},
 		);
 		const parsed = GetEsgProfileOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_getEsgProfile', {
 			endpoint: '/getesgprofile',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},
@@ -599,16 +539,13 @@ export const Intelligence = {
 			ctx.key,
 			{
 				method: 'GET',
-				query: validatedInput as Record<
-					string,
-					string | number | boolean | undefined
-				>,
+				query: validatedInput,
 			},
 		);
 		const parsed = GetGovContractsOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_getGovContracts', {
 			endpoint: '/getgovcontracts',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},
@@ -622,16 +559,13 @@ export const Intelligence = {
 			ctx.key,
 			{
 				method: 'GET',
-				query: validatedInput as Record<
-					string,
-					string | number | boolean | undefined
-				>,
+				query: validatedInput,
 			},
 		);
 		const parsed = GetFacilitiesProfileOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_getFacilitiesProfile', {
 			endpoint: '/getfacilitiesprofile',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},
@@ -645,16 +579,13 @@ export const Intelligence = {
 			ctx.key,
 			{
 				method: 'GET',
-				query: validatedInput as Record<
-					string,
-					string | number | boolean | undefined
-				>,
+				query: validatedInput,
 			},
 		);
 		const parsed = GetBuildingProfileOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_getBuildingProfile', {
 			endpoint: '/getbuildingprofile',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},
@@ -668,16 +599,13 @@ export const Intelligence = {
 			ctx.key,
 			{
 				method: 'GET',
-				query: validatedInput as Record<
-					string,
-					string | number | boolean | undefined
-				>,
+				query: validatedInput,
 			},
 		);
 		const parsed = GetPropertyHistoryOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_getPropertyHistory', {
 			endpoint: '/getpropertyhistory',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},
@@ -691,16 +619,13 @@ export const Intelligence = {
 			ctx.key,
 			{
 				method: 'GET',
-				query: validatedInput as Record<
-					string,
-					string | number | boolean | undefined
-				>,
+				query: validatedInput,
 			},
 		);
 		const parsed = GetSalesUseTaxRatesOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_getSalesUseTaxRates', {
 			endpoint: '/getsalesusetaxrates',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},
@@ -714,16 +639,13 @@ export const Intelligence = {
 			ctx.key,
 			{
 				method: 'GET',
-				query: validatedInput as Record<
-					string,
-					string | number | boolean | undefined
-				>,
+				query: validatedInput,
 			},
 		);
 		const parsed = GetIrsPerDiemRatesOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_getIrsPerDiemRates', {
 			endpoint: '/getirsperdiemrates',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},
@@ -737,16 +659,13 @@ export const Intelligence = {
 			ctx.key,
 			{
 				method: 'GET',
-				query: validatedInput as Record<
-					string,
-					string | number | boolean | undefined
-				>,
+				query: validatedInput,
 			},
 		);
 		const parsed = GetEuVatRatesOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_getEuVatRates', {
 			endpoint: '/geteuvatrates',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},
@@ -760,16 +679,13 @@ export const Intelligence = {
 			ctx.key,
 			{
 				method: 'GET',
-				query: validatedInput as Record<
-					string,
-					string | number | boolean | undefined
-				>,
+				query: validatedInput,
 			},
 		);
 		const parsed = GetCustomsDutyRatesOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_getCustomsDutyRates', {
 			endpoint: '/getcustomsdutyrates',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},
@@ -783,16 +699,13 @@ export const Intelligence = {
 			ctx.key,
 			{
 				method: 'GET',
-				query: validatedInput as Record<
-					string,
-					string | number | boolean | undefined
-				>,
+				query: validatedInput,
 			},
 		);
 		const parsed = GetMuniIssuerProfileOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_getMuniIssuerProfile', {
 			endpoint: '/getmuniissuerprofile',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},
@@ -806,16 +719,13 @@ export const Intelligence = {
 			ctx.key,
 			{
 				method: 'GET',
-				query: validatedInput as Record<
-					string,
-					string | number | boolean | undefined
-				>,
+				query: validatedInput,
 			},
 		);
 		const parsed = GetCustomDataOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_getCustomData', {
 			endpoint: '/getcustom',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},

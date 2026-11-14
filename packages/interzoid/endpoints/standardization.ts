@@ -41,16 +41,13 @@ export const Standardization = {
 			ctx.key,
 			{
 				method: 'GET',
-				query: validatedInput as Record<
-					string,
-					string | number | boolean | undefined
-				>,
+				query: validatedInput,
 			},
 		);
 		const parsed = GetOrgStandardOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_getOrgStandard', {
 			endpoint: '/getorgstandard',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},
@@ -64,16 +61,13 @@ export const Standardization = {
 			ctx.key,
 			{
 				method: 'GET',
-				query: validatedInput as Record<
-					string,
-					string | number | boolean | undefined
-				>,
+				query: validatedInput,
 			},
 		);
 		const parsed = GetCountryStandardOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_getCountryStandard', {
 			endpoint: '/getcountrystandard',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},
@@ -87,16 +81,13 @@ export const Standardization = {
 			ctx.key,
 			{
 				method: 'GET',
-				query: validatedInput as Record<
-					string,
-					string | number | boolean | undefined
-				>,
+				query: validatedInput,
 			},
 		);
 		const parsed = GetCountryInfoOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_getCountryInfo', {
 			endpoint: '/getcountryinfo',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},
@@ -110,16 +101,13 @@ export const Standardization = {
 			ctx.key,
 			{
 				method: 'GET',
-				query: validatedInput as Record<
-					string,
-					string | number | boolean | undefined
-				>,
+				query: validatedInput,
 			},
 		);
 		const parsed = GetStateAbbreviationOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_getStateAbbreviation', {
 			endpoint: '/getstateabbreviation',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},
@@ -133,16 +121,13 @@ export const Standardization = {
 			ctx.key,
 			{
 				method: 'GET',
-				query: validatedInput as Record<
-					string,
-					string | number | boolean | undefined
-				>,
+				query: validatedInput,
 			},
 		);
 		const parsed = GetCityStandardOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_getCityStandard', {
 			endpoint: '/getcitystandard',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},
@@ -156,16 +141,13 @@ export const Standardization = {
 			ctx.key,
 			{
 				method: 'GET',
-				query: validatedInput as Record<
-					string,
-					string | number | boolean | undefined
-				>,
+				query: validatedInput,
 			},
 		);
 		const parsed = GetOfficialNameOutputSchema.parse(rawResponse);
 		logEventFromContext(ctx, 'interzoid_getOfficialName', {
 			endpoint: '/getofficialname',
-			status: (parsed as { Code?: string }).Code ?? 'Success',
+			status: typeof parsed.Code === 'string' ? parsed.Code : 'Success',
 		});
 		return parsed;
 	},

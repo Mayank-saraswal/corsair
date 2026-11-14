@@ -533,363 +533,363 @@ const defaultAuthType: AuthTypes = 'api_key' as const;
 
 const interzoidEndpointMeta = {
 	'matching.getCompanyMatchAdvanced': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description:
 			'Generate an AI-powered similarity key for a company or organization name to identify duplicates',
 	},
 	'matching.getFullNameMatch': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description:
 			'Generate an AI-powered similarity key for an individual full name to identify duplicates',
 	},
 	'matching.getAddressMatchAdvanced': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description:
 			'Generate an AI-powered similarity key for a street address to identify duplicates',
 	},
 	'matching.getAddressAndFullNameMatch': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description:
 			'Generate a composite similarity key based on both address and full name',
 	},
 	'matching.getCompanyAndAddressMatch': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description:
 			'Generate a composite similarity key based on both company name and street address',
 	},
 	'matching.getCompanyAndFullNameMatch': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description:
 			'Generate a composite similarity key based on both company name and individual full name',
 	},
 	'matching.getGlobalAddressMatch': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description:
 			'Generate an AI-powered similarity key for global addresses worldwide',
 	},
 	'matching.getProductMatch': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description:
 			'Generate an AI-powered similarity key for product names to detect duplicate items',
 	},
 	'matching.getOrgMatchScore': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description:
 			'Calculate a match similarity score between two organization names (0-100)',
 	},
 	'matching.getFullNameMatchScore': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description:
 			'Calculate a match similarity score between two individual names (0-100)',
 	},
 	'matching.getCompanyMatch': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description:
 			'Generate a standard similarity key for company name matching and deduplication',
 	},
 	'matching.getAddressMatch': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description:
 			'Generate a standard similarity key for street address matching and deduplication',
 	},
 	'matching.getFullNameParsedMatch': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description: 'Generate a similarity key from separate first and last names',
 	},
 	'matching.getCityMatch': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description:
 			'Generate a similarity key for city name matching and deduplication',
 	},
 	'matching.getCountryMatch': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description:
 			'Generate a similarity key for country name matching and deduplication',
 	},
 	'standardization.getOrgStandard': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description:
 			'Standardize an organization name to its canonical English form',
 	},
 	'standardization.getCountryStandard': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description: 'Standardize a country name or alias to canonical form',
 	},
 	'standardization.getCountryInfo': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description:
 			'Get standardized country metadata including ISO codes, currency, and calling code',
 	},
 	'standardization.getStateAbbreviation': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description:
 			'Standardize a US state or Canadian province name into its two-letter abbreviation',
 	},
 	'standardization.getCityStandard': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description: 'Standardize a city name to its canonical form',
 	},
 	'standardization.getOfficialName': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description:
 			'Resolve commercial or colloquial brand name into official legal entity registration',
 	},
 	'intelligence.getBusinessInfo': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description:
 			'Retrieve comprehensive business intelligence and firmographic profile',
 	},
 	'intelligence.getParentCompanyInfo': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description:
 			'Retrieve corporate ownership and ultimate parent company intelligence',
 	},
 	'intelligence.getExecutiveProfile': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description:
 			'Retrieve executive profile details based on company name and title',
 	},
 	'intelligence.getBusinessInfoDomain': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description:
 			'Resolve company name, ticker, or brand into primary internet domain',
 	},
 	'intelligence.getBusinessInfoName': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description: 'Resolve domain or brand name into standard company name',
 	},
 	'intelligence.getCompanyVerification': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description:
 			'Verify the legitimacy, existence, and reputability of a company',
 	},
 	'intelligence.getStockInfo': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description:
 			'Retrieve financial stock metrics, market cap, and analyst consensus for a ticker',
 	},
 	'intelligence.getIndustryCodes': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description:
 			'Retrieve NAICS and SIC industry classification codes for a company',
 	},
 	'intelligence.getSicCodes': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description:
 			'Retrieve primary and secondary SIC codes with SEC filing provenance',
 	},
 	'intelligence.getUniversityInfo': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description:
 			'Retrieve comprehensive higher education profile and statistics for a university',
 	},
 	'intelligence.getProductRecallInfo': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description:
 			'Retrieve consumer safety recall intelligence for products and brands',
 	},
 	'intelligence.getTechStack': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description:
 			'Retrieve technology stack and web infrastructure detected for a domain',
 	},
 	'intelligence.getCompetitorAnalysis': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description:
 			'Retrieve structured competitive intelligence, advantages, and market dynamics',
 	},
 	'intelligence.getBuyingSignals': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description:
 			'Retrieve real-time B2B purchase intent signals and expansion indicators',
 	},
 	'intelligence.getPrivateCompanyDealIntel': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description:
 			'Retrieve venture capital and private equity deal intelligence for private firms',
 	},
 	'intelligence.getNearestCoffeeShops': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description: 'Find nearest coffee shops and proximity data for a location',
 	},
 	'intelligence.getUserXHandle': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description: 'Lookup X/Twitter handle for a person, company, or team',
 	},
 	'intelligence.getXUserProfile': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description:
 			'Retrieve public profile statistics and bio for an X/Twitter handle',
 	},
 	'intelligence.getXLast3': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description: 'Retrieve the latest three posts from an X/Twitter account',
 	},
 	'intelligence.getEsgProfile': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description:
 			'Retrieve ESG, carbon scope emissions, and corporate sustainability intelligence',
 	},
 	'intelligence.getGovContracts': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description:
 			'Retrieve US federal government contracting intelligence and major awards',
 	},
 	'intelligence.getFacilitiesProfile': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description:
 			'Retrieve corporate facilities and real estate portfolio intelligence',
 	},
 	'intelligence.getBuildingProfile': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description:
 			'Retrieve commercial building intelligence, class, square footage, and tenants',
 	},
 	'intelligence.getPropertyHistory': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description:
 			'Retrieve historical real estate property sales, deeds, and mortgages',
 	},
 	'intelligence.getSalesUseTaxRates': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description:
 			'Retrieve US sales and use tax rates by address, zip code, or city',
 	},
 	'intelligence.getIrsPerDiemRates': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description:
 			'Retrieve official IRS per diem reimbursement rates for travel',
 	},
 	'intelligence.getEuVatRates': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description:
 			'Retrieve European VAT tax rates, standard/reduced categories, and thresholds',
 	},
 	'intelligence.getCustomsDutyRates': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description:
 			'Retrieve international customs duty rates based on origin, destination, and HS code',
 	},
 	'intelligence.getMuniIssuerProfile': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description:
 			'Retrieve municipal bond issuer profiles and credit diligence intelligence',
 	},
 	'intelligence.getCustomData': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description:
 			'Query custom AI-powered dataset attributes specified by topic and requested columns',
 	},
 	'validation.getEmailInfo': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description:
 			'Validate and enrich an email address with deliverability and demographic details',
 	},
 	'validation.getEmailTrustScore': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description: 'Compute a trust and quality score for an email address',
 	},
 	'validation.getEmailDomainType': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description:
 			'Classify email domain into Business, Government, Education, Generic, or Disposable',
 	},
 	'validation.getIpProfile': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description:
 			'Retrieve IP intelligence, geolocation, ASN, and reputation profile',
 	},
 	'validation.getPhoneProfile': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description:
 			'Retrieve phone number intelligence, carrier, time zone, and risk assessment',
 	},
 	'validation.getGlobalNumberInfo': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description:
 			'Retrieve demographic and geographic information for an international phone number',
 	},
 	'validation.getAreaCodeFromNumber': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description:
 			'Extract area code and locale information from a telephone number',
 	},
 	'validation.getAreaCode': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description:
 			'Retrieve geographic locale and city for a telephone area code',
 	},
 	'validation.getZipCodeInfo': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description:
 			'Retrieve detailed demographics, city, state, and geographic data for a US ZIP code',
 	},
 	'validation.addressParse': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description:
 			'Parse a free-form address string into structured postal components',
 	},
 	'utilities.getEntityType': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description:
 			'Classify text into entity type (Location, Organization, Individual, or Text)',
 	},
 	'utilities.getGender': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description: 'Infer the likely gender from an individual first name',
 	},
 	'utilities.getNameOrigin': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description:
 			'Infer the likely geographic country or region of origin from a personal name',
 	},
 	'utilities.identifyLanguage': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description: 'Detect the natural language of a text string',
 	},
 	'utilities.translateToEnglish': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description: 'Translate non-English text to English',
 	},
 	'utilities.translateToAny': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description:
 			'Translate text from any language into a specified target language',
 	},
 	'utilities.getGlobalLatency': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description:
 			'Measure website or API URL latency from a specified worldwide location',
 	},
 	'utilities.getGlobalPageLoad': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description:
 			'Measure browser page load performance from a specified global geography',
 	},
 	'utilities.getCurrencyRate': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description:
 			'Retrieve live USD foreign exchange rate for a currency symbol',
 	},
 	'utilities.convertCurrency': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description: 'Convert an amount from one foreign currency into another',
 	},
 	'utilities.getWeatherZipCode': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description: 'Retrieve current live weather conditions for a US ZIP code',
 	},
 	'utilities.getGlobalWeather': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description:
 			'Retrieve current weather conditions for worldwide city locations',
 	},
 	'utilities.getGlobalTime': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description: 'Retrieve current date and time for a global city or locale',
 	},
 	'utilities.getRemainingCredits': {
-		riskLevel: 'read',
+		riskLevel: 'destructive',
 		description:
 			'Retrieve the remaining API credits balance for the active API license key',
 	},

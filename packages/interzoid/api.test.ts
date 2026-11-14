@@ -4,14 +4,8 @@
 //   INTERZOID_API_KEY=... pnpm test:live
 //
 import { makeInterzoidRequest } from './client';
-import type {
-	GetCurrencyRateOutput,
-	GetRemainingCreditsOutput,
-} from './endpoints/types';
-import {
-	GetCurrencyRateOutputSchema,
-	GetRemainingCreditsOutputSchema,
-} from './endpoints/types';
+import type { GetRemainingCreditsOutput } from './endpoints/types';
+import { GetRemainingCreditsOutputSchema } from './endpoints/types';
 
 const LIVE_KEY = process.env.INTERZOID_API_KEY ?? '';
 if (LIVE_KEY.length === 0) {
@@ -31,20 +25,5 @@ describeLive('Interzoid live API smoke test (env-gated)', () => {
 		const parsed = GetRemainingCreditsOutputSchema.parse(res);
 		expect(parsed).toBeDefined();
 		expect(parsed.Code).toBeDefined();
-	});
-
-	it('GET /getcurrencyrate retrieves foreign exchange rate for EUR', async () => {
-		const res = await makeInterzoidRequest<GetCurrencyRateOutput>(
-			'/getcurrencyrate',
-			LIVE_KEY,
-			{
-				method: 'GET',
-				query: { symbol: 'EUR' },
-			},
-		);
-
-		const parsed = GetCurrencyRateOutputSchema.parse(res);
-		expect(parsed).toBeDefined();
-		expect(parsed.Symbol).toBe('EUR');
 	});
 });
