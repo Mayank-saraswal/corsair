@@ -20,6 +20,16 @@ export type TeamworkOperationEndpoint<Id extends TeamworkOperationId> =
 		TeamworkEndpointOutputs[Id]
 	>;
 
+export async function resolveTeamworkSiteName(
+	siteNameOverride: string | undefined,
+	keys: Pick<TeamworkContext['keys'], 'get_tenant_external_id'> | undefined,
+): Promise<string> {
+	const siteName =
+		siteNameOverride ?? (await keys?.get_tenant_external_id()) ?? '';
+	if (!siteName) throw new Error('A Teamwork site name is required');
+	return siteName;
+}
+
 function findOperation(id: TeamworkOperationId): TeamworkOperationDefinition {
 	const operation = teamworkOperations.find((candidate) => candidate.id === id);
 	if (!operation) throw new Error('Teamwork operation is unavailable');
@@ -40,10 +50,13 @@ export function createTeamworkOperationEndpoint<Id extends TeamworkOperationId>(
 			throw new Error('Invalid Teamwork endpoint input');
 		}
 
-		const tenantSiteName = await ctx.keys.get_tenant_external_id();
+		const siteName = await resolveTeamworkSiteName(
+			ctx.options.siteName,
+			ctx.keys,
+		);
 		const response = await makeTeamworkRequest({
 			apiKey: ctx.key,
-			siteName: ctx.options.siteName ?? tenantSiteName ?? '',
+			siteName,
 			version: operation.version,
 			method: operation.method,
 			path: operation.path,
@@ -1237,6 +1250,7 @@ export const teamworkOperationsNested = {
 	[Id in TeamworkOperationId]: TeamworkOperationEndpoint<Id>;
 };
 
+// `unknown` is necessary for tests to look up manifest-driven IDs dynamically; the public nested endpoint tree above retains exact per-operation inputs and outputs.
 export const teamworkOperationsById: Record<
 	string,
 	CorsairEndpoint<TeamworkContext, Record<string, unknown>, unknown>

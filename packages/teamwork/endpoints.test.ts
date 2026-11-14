@@ -1,7 +1,10 @@
 import { logEventFromContext } from 'corsair/core';
 import * as client from './client';
 import { teamworkInputSchemas } from './endpoints/openapi-schema';
-import { teamworkOperationsById } from './endpoints/operations';
+import {
+	resolveTeamworkSiteName,
+	teamworkOperationsById,
+} from './endpoints/operations';
 import { teamworkDefinitions, teamworkOperations } from './endpoints/types';
 import type { TeamworkContext } from './index';
 import { teamwork } from './index';
@@ -235,6 +238,15 @@ describe('documented operation routes', () => {
 		expect(Object.keys(plugin.endpointMeta ?? {}).sort()).toEqual(operationIds);
 		expect(plugin.endpointMeta?.['v1_delete_projects_id_json']?.riskLevel).toBe(
 			'destructive',
+		);
+	});
+
+	it('supports direct API-key use without stored tenant metadata when overridden', async () => {
+		await expect(
+			resolveTeamworkSiteName('single-site', undefined),
+		).resolves.toBe('single-site');
+		await expect(resolveTeamworkSiteName(undefined, undefined)).rejects.toThrow(
+			'A Teamwork site name is required',
 		);
 	});
 });
