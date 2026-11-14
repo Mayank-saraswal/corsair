@@ -1,7 +1,10 @@
-import { get as exampleGet } from './example';
-
-export const Example = {
-	get: exampleGet,
-};
-
-export * from './types';
+export * as Contacts from './contacts';
+export * as Conversations from './conversations';
+export * as CustomFields from './custom-fields';
+export * as Inboxes from './inboxes';
+export * as Messages from './messages';
+export * as Notes from './notes';
+export * as Reports from './reports';
+export * as Tags from './tags';
+export * as Users from './users';
+export * as Whatsapp from './whatsapp';
