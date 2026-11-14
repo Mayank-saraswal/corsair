@@ -24,7 +24,7 @@ export type ImgixRequest = {
 	method?: 'GET' | 'POST' | 'PATCH' | 'DELETE' | 'PUT';
 	path: string;
 	query?: ImgixQuery;
-	// `unknown` because request body may be arbitrary JSON payload or Buffer for uploads
+	// `unknown` because request body may be arbitrary JSON payload or Blob for uploads
 	body?: unknown;
 	headers?: Record<string, string>;
 };
