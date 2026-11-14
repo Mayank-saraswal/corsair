@@ -1,5 +1,9 @@
 import { z } from 'zod';
-import { TEAMWORK_OPENAPI_MANIFEST } from '../openapi-manifest';
+import teamworkOpenApiV1 from '../openapi-manifest-v1.json';
+import teamworkOpenApiV2 from '../openapi-manifest-v2.json';
+import teamworkOpenApiV3Definitions from '../openapi-manifest-v3-definitions.json';
+import teamworkOpenApiV3Operations1 from '../openapi-manifest-v3-operations-1.json';
+import teamworkOpenApiV3Operations2 from '../openapi-manifest-v3-operations-2.json';
 
 // `unknown` is necessary because OpenAPI schemas contain provider-defined JSON Schema keywords.
 const OpenApiSchemaDocument = z.record(z.string(), z.unknown());
@@ -46,8 +50,20 @@ const ManifestSchema = z.object({
 	),
 });
 
-// `unknown` is necessary because JSON.parse returns untrusted data; ManifestSchema validates it.
-const parsedManifestInput: unknown = JSON.parse(TEAMWORK_OPENAPI_MANIFEST);
+// `unknown` is necessary because the imported provider contracts are validated at runtime by ManifestSchema.
+const parsedManifestInput: unknown = {
+	operations: [
+		...teamworkOpenApiV1.operations,
+		...teamworkOpenApiV2.operations,
+		...teamworkOpenApiV3Operations1.operations,
+		...teamworkOpenApiV3Operations2.operations,
+	],
+	definitions: {
+		v1: teamworkOpenApiV1.definitions,
+		v2: teamworkOpenApiV2.definitions,
+		v3: teamworkOpenApiV3Definitions.definitions,
+	},
+};
 const parsedManifest = ManifestSchema.parse(parsedManifestInput);
 
 export type TeamworkOperationDefinition = z.infer<typeof OperationSchema>;

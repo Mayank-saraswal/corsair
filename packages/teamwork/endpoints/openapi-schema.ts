@@ -217,4 +217,41 @@ export const teamworkOutputSchemas = Object.fromEntries(
 	]),
 );
 
+export function teamworkOutputSchemaFor(
+	operation: TeamworkOperationDefinition,
+	query: Record<string, unknown>,
+): z.ZodType {
+	const selectedProjectFields = query['fields[projects]'];
+	if (
+		!Array.isArray(selectedProjectFields) ||
+		selectedProjectFields.length === 0
+	) {
+		return teamworkOutputSchemas[operation.id] ?? z.never();
+	}
+	const baseDefinitions = teamworkDefinitions[operation.version] ?? {};
+	const projectSchema = baseDefinitions['view.ProjectV205'];
+	if (!isRecord(projectSchema)) {
+		return teamworkOutputSchemas[operation.id] ?? z.never();
+	}
+	const properties = projectSchema.properties;
+	if (!isRecord(properties))
+		return teamworkOutputSchemas[operation.id] ?? z.never();
+	const selectedFields = selectedProjectFields.filter(
+		(name): name is string => typeof name === 'string' && name in properties,
+	);
+	if (selectedFields.length === 0) {
+		return teamworkOutputSchemas[operation.id] ?? z.never();
+	}
+	const definitions = {
+		...baseDefinitions,
+		'view.ProjectV205': {
+			...projectSchema,
+			required: selectedFields,
+		},
+	};
+	return operation.response === null
+		? z.undefined()
+		: schemaFromOpenApi(operation.response, definitions, false, new Map());
+}
+
 export type { TeamworkOperationDefinition };

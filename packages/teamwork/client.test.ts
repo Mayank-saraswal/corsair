@@ -46,6 +46,41 @@ describe('Teamwork HTTP client', () => {
 		);
 	});
 
+	it('encodes comma-separated array filters as one query value on the wire', async () => {
+		const originalFetch = global.fetch;
+		const fetchMock = jest.fn().mockResolvedValue(
+			new Response('{}', {
+				status: 200,
+				headers: { 'Content-Type': 'application/json' },
+			}),
+		);
+		global.fetch = fetchMock;
+		try {
+			const actualHttp =
+				jest.requireActual<typeof import('corsair/http')>('corsair/http');
+			await actualHttp.request(
+				{
+					BASE: 'https://acme.teamwork.com',
+					VERSION: 'v3',
+					WITH_CREDENTIALS: false,
+					CREDENTIALS: 'omit',
+				},
+				{
+					method: 'GET',
+					url: '/projects/api/v3/projects.json',
+					query: { projectIds: '1,2' },
+				},
+			);
+		} finally {
+			global.fetch = originalFetch;
+		}
+		const requestUrl = fetchMock.mock.calls[0]?.[0];
+		expect(requestUrl).toBeDefined();
+		expect(new URL(String(requestUrl)).searchParams.get('projectIds')).toBe(
+			'1,2',
+		);
+	});
+
 	it('rejects empty credentials and invalid site names before transport', async () => {
 		await expect(
 			client.makeTeamworkRequest({

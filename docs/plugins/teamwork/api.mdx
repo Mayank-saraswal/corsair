@@ -1879,7 +1879,7 @@ Get available People for a Calendar Event
 ```ts
 await corsair.teamwork.api.v1_get_calendarevents_eventid_availablepeople_json({
 	path: { eventId: '1' },
-	query: { privacy: 'Teamwork API value' },
+	query: { privacy: 'private' },
 });
 ```
 
@@ -1952,7 +1952,7 @@ Get Reactions on a specific Comment
 ```ts
 await corsair.teamwork.api.v1_get_comments_commentid_reactions_json({
 	path: { commentId: '1' },
-	query: { reactionType: 'Teamwork API value' },
+	query: { reactionType: 'like' },
 });
 ```
 
@@ -9886,7 +9886,7 @@ Get Reactions to a Project Update
 ```ts
 await corsair.teamwork.api.v1_get_projects_updates_updateid_reactions_json({
 	path: { updateId: '1' },
-	query: { getReactions: 'Teamwork API value' },
+	query: { getReactions: 'true' },
 });
 ```
 
@@ -9978,7 +9978,7 @@ Retrieving Recent Comments
 
 ```ts
 await corsair.teamwork.api.v1_get_resource_resourceid_comments_json({
-	path: { resource: 'Teamwork API value', resourceId: '1' },
+	path: { resource: 'tasks', resourceId: '1' },
 	query: {},
 });
 ```
@@ -15283,7 +15283,7 @@ Creating a Comment
 
 ```ts
 await corsair.teamwork.api.v1_post_resource_resourceid_comments_json({
-	path: { resource: 'Teamwork API value', resourceId: '1' },
+	path: { resource: 'tasks', resourceId: '1' },
 	query: {},
 });
 ```
@@ -18358,7 +18358,7 @@ Unreacting to a Comment/Message/ProjectUpdate
 
 ```ts
 await corsair.teamwork.api.v1_put_resource_id_unreact_json({
-	path: { resource: 'Teamwork API value', id: '1' },
+	path: { resource: 'tasks', id: '1' },
 	query: {},
 });
 ```
@@ -42169,7 +42169,7 @@ Get time report by type
 
 ```ts
 await corsair.teamwork.api.v3_get_projects_api_v3_time_report_type_json({
-	path: { type: 'Teamwork API value' },
+	path: { type: 'project' },
 	query: {},
 });
 ```
@@ -43300,9 +43300,9 @@ await corsair.teamwork.api.v3_patch_projects_api_v3_companies_companyid_json({
 				Values: [{
 					customfieldId: 1,
 					value: null,
-					countryCode: 'Teamwork API value',
-					currencySymbol: 'Teamwork API value',
-					urlTextToDisplay: 'Teamwork API value',
+					countryCode: 'US',
+					currencySymbol: '$',
+					urlTextToDisplay: 'View details',
 				}],
 			},
 		},
@@ -43715,7 +43715,7 @@ await corsair.teamwork.api.v3_patch_projects_api_v3_companies_domains_id_json({
 	path: { id: 1 },
 	query: {},
 	body: {
-		companyDomain: { domain: 'Teamwork API value', companyId: 1 },
+		companyDomain: { domain: 'acme.example', companyId: 1 },
 	},
 });
 ```
@@ -44159,14 +44159,14 @@ await corsair.teamwork.api.v3_patch_projects_api_v3_tasks_taskid_json({
 			dueAt: '2026-01-15T12:00:00Z',
 			dueDate: '2026-01-15',
 			originalDueDate: '2026-01-15',
-			priority: { Value: 'Teamwork API value', Null: true, Set: true },
+			priority: { Value: 'medium', Null: true, Set: true },
 			customFields: {
 				Values: [{
 					customfieldId: 1,
 					value: null,
-					countryCode: 'Teamwork API value',
-					currencySymbol: 'Teamwork API value',
-					urlTextToDisplay: 'Teamwork API value',
+					countryCode: 'US',
+					currencySymbol: '$',
+					urlTextToDisplay: 'View details',
 				}],
 			},
 		},
@@ -44183,7 +44183,7 @@ await corsair.teamwork.api.v3_patch_projects_api_v3_tasks_taskid_json({
 		tags: [{}],
 		attachments: {},
 		attachmentOptions: {},
-		predecessors: [{ id: 1, type: 'Teamwork API value' }],
+		predecessors: [{ id: 1, type: 'tasks' }],
 		workflows: {},
 	},
 });
@@ -44792,7 +44792,7 @@ await corsair.teamwork.api.v3_patch_projects_api_v3_tasks_taskid_reminders_remin
 			userIds: [1],
 			teamIds: [1],
 			remindAt: {},
-			type: 'Teamwork API value',
+			type: 'email',
 			isRelative: true,
 			relativeNumberDays: 1,
 		},
@@ -45504,7 +45504,7 @@ await corsair.teamwork.api.v3_post_projects_api_v3_companies_id_domains_json({
 	path: { id: 1 },
 	query: {},
 	body: {
-		companyDomains: [{ domain: 'Teamwork API value', companyId: 1 }],
+		companyDomains: [{ domain: 'acme.example', companyId: 1 }],
 	},
 });
 ```
@@ -45625,9 +45625,9 @@ await corsair.teamwork.api.v3_post_projects_api_v3_companies_json({
 				Values: [{
 					customfieldId: 1,
 					value: null,
-					countryCode: 'Teamwork API value',
-					currencySymbol: 'Teamwork API value',
-					urlTextToDisplay: 'Teamwork API value',
+					countryCode: 'US',
+					currencySymbol: '$',
+					urlTextToDisplay: 'View details',
 				}],
 			},
 		},
@@ -46229,14 +46229,14 @@ await corsair.teamwork.api.v3_post_projects_api_v3_me_personaltasks_json({
 			dueAt: '2026-01-15T12:00:00Z',
 			dueDate: '2026-01-15',
 			originalDueDate: '2026-01-15',
-			priority: { Value: 'Teamwork API value', Null: true, Set: true },
+			priority: { Value: 'medium', Null: true, Set: true },
 			customFields: {
 				Values: [{
 					customfieldId: 1,
 					value: null,
-					countryCode: 'Teamwork API value',
-					currencySymbol: 'Teamwork API value',
-					urlTextToDisplay: 'Teamwork API value',
+					countryCode: 'US',
+					currencySymbol: '$',
+					urlTextToDisplay: 'View details',
 				}],
 			},
 		},
@@ -46253,7 +46253,7 @@ await corsair.teamwork.api.v3_post_projects_api_v3_me_personaltasks_json({
 		tags: [{}],
 		attachments: {},
 		attachmentOptions: {},
-		predecessors: [{ id: 1, type: 'Teamwork API value' }],
+		predecessors: [{ id: 1, type: 'tasks' }],
 		workflows: {},
 	},
 });
@@ -47627,14 +47627,14 @@ await corsair.teamwork.api.v3_post_projects_api_v3_taskgroups_taskgroupid_tasks_
 			dueAt: '2026-01-15T12:00:00Z',
 			dueDate: '2026-01-15',
 			originalDueDate: '2026-01-15',
-			priority: { Value: 'Teamwork API value', Null: true, Set: true },
+			priority: { Value: 'medium', Null: true, Set: true },
 			customFields: {
 				Values: [{
 					customfieldId: 1,
 					value: null,
-					countryCode: 'Teamwork API value',
-					currencySymbol: 'Teamwork API value',
-					urlTextToDisplay: 'Teamwork API value',
+					countryCode: 'US',
+					currencySymbol: '$',
+					urlTextToDisplay: 'View details',
 				}],
 			},
 		},
@@ -47651,7 +47651,7 @@ await corsair.teamwork.api.v3_post_projects_api_v3_taskgroups_taskgroupid_tasks_
 		tags: [{}],
 		attachments: {},
 		attachmentOptions: {},
-		predecessors: [{ id: 1, type: 'Teamwork API value' }],
+		predecessors: [{ id: 1, type: 'tasks' }],
 		workflows: {},
 	},
 });
@@ -48262,14 +48262,14 @@ await corsair.teamwork.api.v3_post_projects_api_v3_tasklists_tasklistid_tasks_js
 			dueAt: '2026-01-15T12:00:00Z',
 			dueDate: '2026-01-15',
 			originalDueDate: '2026-01-15',
-			priority: { Value: 'Teamwork API value', Null: true, Set: true },
+			priority: { Value: 'medium', Null: true, Set: true },
 			customFields: {
 				Values: [{
 					customfieldId: 1,
 					value: null,
-					countryCode: 'Teamwork API value',
-					currencySymbol: 'Teamwork API value',
-					urlTextToDisplay: 'Teamwork API value',
+					countryCode: 'US',
+					currencySymbol: '$',
+					urlTextToDisplay: 'View details',
 				}],
 			},
 		},
@@ -48286,7 +48286,7 @@ await corsair.teamwork.api.v3_post_projects_api_v3_tasklists_tasklistid_tasks_js
 		tags: [{}],
 		attachments: {},
 		attachmentOptions: {},
-		predecessors: [{ id: 1, type: 'Teamwork API value' }],
+		predecessors: [{ id: 1, type: 'tasks' }],
 		workflows: {},
 	},
 });
@@ -48895,7 +48895,7 @@ await corsair.teamwork.api.v3_post_projects_api_v3_tasks_taskid_reminders_json({
 			userIds: [1],
 			teamIds: [1],
 			remindAt: {},
-			type: 'Teamwork API value',
+			type: 'email',
 			isRelative: true,
 			relativeNumberDays: 1,
 		},
@@ -49028,14 +49028,14 @@ await corsair.teamwork.api.v3_post_projects_api_v3_tasks_taskid_subtasks_json({
 			dueAt: '2026-01-15T12:00:00Z',
 			dueDate: '2026-01-15',
 			originalDueDate: '2026-01-15',
-			priority: { Value: 'Teamwork API value', Null: true, Set: true },
+			priority: { Value: 'medium', Null: true, Set: true },
 			customFields: {
 				Values: [{
 					customfieldId: 1,
 					value: null,
-					countryCode: 'Teamwork API value',
-					currencySymbol: 'Teamwork API value',
-					urlTextToDisplay: 'Teamwork API value',
+					countryCode: 'US',
+					currencySymbol: '$',
+					urlTextToDisplay: 'View details',
 				}],
 			},
 		},
@@ -49052,7 +49052,7 @@ await corsair.teamwork.api.v3_post_projects_api_v3_tasks_taskid_subtasks_json({
 		tags: [{}],
 		attachments: {},
 		attachmentOptions: {},
-		predecessors: [{ id: 1, type: 'Teamwork API value' }],
+		predecessors: [{ id: 1, type: 'tasks' }],
 		workflows: {},
 	},
 });
@@ -50982,14 +50982,14 @@ await corsair.teamwork.api.v3_put_projects_api_v3_tasks_taskid_json({
 			dueAt: '2026-01-15T12:00:00Z',
 			dueDate: '2026-01-15',
 			originalDueDate: '2026-01-15',
-			priority: { Value: 'Teamwork API value', Null: true, Set: true },
+			priority: { Value: 'medium', Null: true, Set: true },
 			customFields: {
 				Values: [{
 					customfieldId: 1,
 					value: null,
-					countryCode: 'Teamwork API value',
-					currencySymbol: 'Teamwork API value',
-					urlTextToDisplay: 'Teamwork API value',
+					countryCode: 'US',
+					currencySymbol: '$',
+					urlTextToDisplay: 'View details',
 				}],
 			},
 		},
@@ -51006,7 +51006,7 @@ await corsair.teamwork.api.v3_put_projects_api_v3_tasks_taskid_json({
 		tags: [{}],
 		attachments: {},
 		attachmentOptions: {},
-		predecessors: [{ id: 1, type: 'Teamwork API value' }],
+		predecessors: [{ id: 1, type: 'tasks' }],
 		workflows: {},
 	},
 });

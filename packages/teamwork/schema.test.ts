@@ -1,7 +1,9 @@
 import {
 	teamworkInputSchemas,
+	teamworkOutputSchemaFor,
 	teamworkOutputSchemas,
 } from './endpoints/openapi-schema';
+import { TEAMWORK_OPERATION_IDS } from './endpoints/operation-types';
 import { teamworkDefinitions, teamworkOperations } from './endpoints/types';
 import { TeamworkSchema } from './schema';
 
@@ -73,6 +75,34 @@ describe('Teamwork OpenAPI contract schemas', () => {
 		);
 		expect(Object.keys(teamworkOutputSchemas).sort()).toEqual(
 			teamworkOperations.map((operation) => operation.id).sort(),
+		);
+	});
+
+	it('keeps the typed operation ID list in sync with the provider manifest', () => {
+		expect([...TEAMWORK_OPERATION_IDS]).toEqual(
+			teamworkOperations.map((operation) => operation.id),
+		);
+	});
+
+	it('allows project response fields omitted by fields[projects] selection', () => {
+		const operation = teamworkOperations.find(
+			(item) => item.id === 'v3_get_projects_api_v3_projects_json',
+		);
+		if (!operation) throw new Error('Projects list operation is missing');
+		const response = sampleValue(
+			operation.response,
+			teamworkDefinitions[operation.version] ?? {},
+		);
+		if (!isRecord(response) || !Array.isArray(response.projects)) {
+			throw new Error('Projects response fixture is malformed');
+		}
+		response.projects = [{ id: 1 }];
+		const schema = teamworkOutputSchemaFor(operation, {
+			'fields[projects]': ['id'],
+		});
+		expect(schema.safeParse(response).success).toBe(true);
+		expect(schema.safeParse({ ...response, projects: [{}] }).success).toBe(
+			false,
 		);
 	});
 

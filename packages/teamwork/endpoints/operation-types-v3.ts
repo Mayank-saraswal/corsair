@@ -2107,137 +2107,144 @@ type TeamworkV3Output_view_ProjectUpdate = {
 	text: string;
 	updatedAt: string;
 } & Record<string, TeamworkJsonValue>;
-type TeamworkV3Output_view_ProjectV205 = {
-	activePages: {
-		billing?: boolean;
-		board?: boolean;
-		comments?: boolean;
-		files?: boolean;
-		finance?: boolean;
-		forms?: boolean;
-		gantt?: boolean;
-		links?: boolean;
-		list?: boolean;
-		messages?: boolean;
-		milestones?: boolean;
-		notebooks?: boolean;
-		proofs?: boolean;
-		riskRegister?: boolean;
-		schedule?: boolean;
-		table?: boolean;
-		tasks?: boolean;
-		tickets?: boolean;
-		time?: boolean;
-		timeline?: boolean;
-	} & Record<string, TeamworkJsonValue>;
-	allowNotifyAnyone: boolean;
-	announcement: string;
-	archivedAt?: string;
-	archivedBy?: number;
-	budgetCount: number;
-	category?: TeamworkV3Output_view_Relationship;
-	categoryId?: number;
-	company: {
+type TeamworkV3SelectedFields<T> = T extends Array<infer Item>
+	? Array<TeamworkV3SelectedFields<Item>>
+	: T extends object
+		? { [Key in keyof T]?: TeamworkV3SelectedFields<T[Key]> }
+		: T;
+type TeamworkV3Output_view_ProjectV205 = TeamworkV3SelectedFields<
+	{
+		activePages: {
+			billing?: boolean;
+			board?: boolean;
+			comments?: boolean;
+			files?: boolean;
+			finance?: boolean;
+			forms?: boolean;
+			gantt?: boolean;
+			links?: boolean;
+			list?: boolean;
+			messages?: boolean;
+			milestones?: boolean;
+			notebooks?: boolean;
+			proofs?: boolean;
+			riskRegister?: boolean;
+			schedule?: boolean;
+			table?: boolean;
+			tasks?: boolean;
+			tickets?: boolean;
+			time?: boolean;
+			timeline?: boolean;
+		} & Record<string, TeamworkJsonValue>;
+		allowNotifyAnyone: boolean;
+		announcement: string;
+		archivedAt?: string;
+		archivedBy?: number;
+		budgetCount: number;
+		category?: TeamworkV3Output_view_Relationship;
+		categoryId?: number;
+		company: {
+			id: number;
+			meta?: { name: string } & Record<string, TeamworkJsonValue>;
+			type: string;
+		} & Record<string, TeamworkJsonValue>;
+		companyId: number;
+		completedAt?: string;
+		completedBy?: number;
+		createdAt?: string;
+		createdBy?: number;
+		customFieldValueIds: Array<number>;
+		customfieldValues: Array<TeamworkV3Output_view_Relationship>;
+		defaultPrivacy: 'open' | 'owner company' | 'custom';
+		deletedAt?: string;
+		deletedBy?: number;
+		directFileUploadsEnabled: boolean;
+		endAt?: string;
+		endDate?: string;
+		financialBudget?: TeamworkV3Output_view_Relationship;
+		financialBudgetId?: number;
+		harvestTimersEnabled: boolean;
 		id: number;
-		meta?: { name: string } & Record<string, TeamworkJsonValue>;
-		type: string;
-	} & Record<string, TeamworkJsonValue>;
-	companyId: number;
-	completedAt?: string;
-	completedBy?: number;
-	createdAt?: string;
-	createdBy?: number;
-	customFieldValueIds: Array<number>;
-	customfieldValues: Array<TeamworkV3Output_view_Relationship>;
-	defaultPrivacy: 'open' | 'owner company' | 'custom';
-	deletedAt?: string;
-	deletedBy?: number;
-	directFileUploadsEnabled: boolean;
-	endAt?: string;
-	endDate?: string;
-	financialBudget?: TeamworkV3Output_view_Relationship;
-	financialBudgetId?: number;
-	harvestTimersEnabled: boolean;
-	id: number;
-	integrations: {
-		googleDrive?: {
-			access?: string;
-			enabled?: boolean;
-			folder?: string;
-			folderName?: string;
+		integrations: {
+			googleDrive?: {
+				access?: string;
+				enabled?: boolean;
+				folder?: string;
+				folderName?: string;
+			} & Record<string, TeamworkJsonValue>;
+			oneDriveBusiness?: {
+				account?: string;
+				enabled?: boolean;
+				folder?: string;
+				folderName?: string;
+			} & Record<string, TeamworkJsonValue>;
+			sharepoint?: {
+				account?: string;
+				enabled?: boolean;
+				folder?: string;
+				folderName?: string;
+			} & Record<string, TeamworkJsonValue>;
+			xero?: {
+				baseCurrency?: string;
+				connected?: boolean;
+				countryCode?: string;
+				enabled?: boolean;
+				organisation?: string;
+			} & Record<string, TeamworkJsonValue>;
 		} & Record<string, TeamworkJsonValue>;
-		oneDriveBusiness?: {
-			account?: string;
-			enabled?: boolean;
-			folder?: string;
-			folderName?: string;
-		} & Record<string, TeamworkJsonValue>;
-		sharepoint?: {
-			account?: string;
-			enabled?: boolean;
-			folder?: string;
-			folderName?: string;
-		} & Record<string, TeamworkJsonValue>;
-		xero?: {
-			baseCurrency?: string;
-			connected?: boolean;
-			countryCode?: string;
-			enabled?: boolean;
-			organisation?: string;
-		} & Record<string, TeamworkJsonValue>;
-	} & Record<string, TeamworkJsonValue>;
-	isBillable: boolean;
-	isOnBoardingProject: boolean;
-	isProjectAdmin?: boolean;
-	isSampleProject: boolean;
-	isStarred?: boolean;
-	lastWorkedOn?: string;
-	latestActivity?: TeamworkV3Output_view_Relationship;
-	logo: string;
-	logoColor?: string;
-	logoIcon?: string;
-	minMaxAvailableDates?: TeamworkV3Output_view_ProjectMinMaxAvailableDates;
-	name: string;
-	notifyCommentIncludeCreator: boolean;
-	notifyEveryone: boolean;
-	notifyTaskAssignee: boolean;
-	overviewStartPage: string;
-	ownedBy?: number;
-	ownerId?: number;
-	portfolioCards?: Array<TeamworkV3Output_view_Relationship>;
-	privacyEnabled: boolean;
-	projectNumber?: string;
-	projectNumberCounter?: number;
-	projectOwner?: TeamworkV3Output_view_Relationship;
-	projectOwnerId?: number;
-	replyByEmailEnabled: boolean;
-	showAnnouncement: boolean;
-	skipWeekends: boolean;
-	startAt?: string;
-	startDate?: string;
-	startPage: string;
-	status: 'active' | 'inactive' | 'deleted';
-	subStatus: 'current' | 'upcoming' | 'late' | 'completed';
-	tagIds: Array<number>;
-	tags: Array<TeamworkV3Output_view_Relationship>;
-	tasksStartPage: string;
-	timeBudget?: TeamworkV3Output_view_Relationship;
-	timeBudgetId?: number;
-	timelogRequiresTask: boolean;
-	type:
-		| 'normal'
-		| 'tasklists-template'
-		| 'projects-template'
-		| 'personal'
-		| 'tentative';
-	update?: TeamworkV3Output_view_Relationship;
-	updateId?: number;
-	updatedAt?: string;
-	updatedBy?: number;
-	users?: Array<TeamworkV3Output_view_Relationship>;
-	workflowIds: Array<number>;
-	workflows?: Array<TeamworkV3Output_view_Relationship>;
-} & Record<string, TeamworkJsonValue>;
+		isBillable: boolean;
+		isOnBoardingProject: boolean;
+		isProjectAdmin?: boolean;
+		isSampleProject: boolean;
+		isStarred?: boolean;
+		lastWorkedOn?: string;
+		latestActivity?: TeamworkV3Output_view_Relationship;
+		logo: string;
+		logoColor?: string;
+		logoIcon?: string;
+		minMaxAvailableDates?: TeamworkV3Output_view_ProjectMinMaxAvailableDates;
+		name: string;
+		notifyCommentIncludeCreator: boolean;
+		notifyEveryone: boolean;
+		notifyTaskAssignee: boolean;
+		overviewStartPage: string;
+		ownedBy?: number;
+		ownerId?: number;
+		portfolioCards?: Array<TeamworkV3Output_view_Relationship>;
+		privacyEnabled: boolean;
+		projectNumber?: string;
+		projectNumberCounter?: number;
+		projectOwner?: TeamworkV3Output_view_Relationship;
+		projectOwnerId?: number;
+		replyByEmailEnabled: boolean;
+		showAnnouncement: boolean;
+		skipWeekends: boolean;
+		startAt?: string;
+		startDate?: string;
+		startPage: string;
+		status: 'active' | 'inactive' | 'deleted';
+		subStatus: 'current' | 'upcoming' | 'late' | 'completed';
+		tagIds: Array<number>;
+		tags: Array<TeamworkV3Output_view_Relationship>;
+		tasksStartPage: string;
+		timeBudget?: TeamworkV3Output_view_Relationship;
+		timeBudgetId?: number;
+		timelogRequiresTask: boolean;
+		type:
+			| 'normal'
+			| 'tasklists-template'
+			| 'projects-template'
+			| 'personal'
+			| 'tentative';
+		update?: TeamworkV3Output_view_Relationship;
+		updateId?: number;
+		updatedAt?: string;
+		updatedBy?: number;
+		users?: Array<TeamworkV3Output_view_Relationship>;
+		workflowIds: Array<number>;
+		workflows?: Array<TeamworkV3Output_view_Relationship>;
+	} & Record<string, TeamworkJsonValue>
+>;
 type TeamworkV3Output_view_ProjectsUserMeta = { hasProjects: boolean } & Record<
 	string,
 	TeamworkJsonValue
