@@ -38,6 +38,8 @@ The official docs recommend V3 where available. The integration includes documen
 
 V3 requests expose the documented `page` and `pageSize` query fields (50 default, usually up to 500 records per page). V3 list responses retain Teamwork's `meta.page` fields, including `pageOffset`, `pageSize`, and `hasMore`. The provider documents a 50,000-record request cap and recommends `updatedAfter` for continuation on large task/time collections. V1 pagination uses `page`/`pageSize`; Teamwork documents `x-page`, `x-pages`, and `x-records` response headers, which Corsair's current JSON transport does not expose.
 
+Array query parameters follow the collection format in the OpenAPI contract; Swagger's default CSV format is serialized as comma-separated values, while explicitly documented `multi` parameters remain repeated keys.
+
 Teamwork's published API guide and OpenAPI documents do not specify a numeric rate quota or a documented rate-limit window. Corsair's HTTP transport handles HTTP 429 responses and honors `Retry-After`; plugin handlers do not add a second retry loop. Writes are not retried on server or network failures.
 
 ## API operation inventory

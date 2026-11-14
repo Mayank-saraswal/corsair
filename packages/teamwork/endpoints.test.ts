@@ -3,6 +3,7 @@ import * as client from './client';
 import { teamworkInputSchemas } from './endpoints/openapi-schema';
 import {
 	resolveTeamworkSiteName,
+	serializeTeamworkQuery,
 	teamworkOperationsById,
 } from './endpoints/operations';
 import { teamworkDefinitions, teamworkOperations } from './endpoints/types';
@@ -172,7 +173,10 @@ describe('documented operation routes', () => {
 				method: operation.method,
 				path: operation.path,
 				pathParameters: input.path,
-				query: input.query,
+				query: serializeTeamworkQuery(
+					operation,
+					isRecord(input.query) ? input.query : {},
+				),
 				body: input.body,
 			});
 			expect(mockedLogEvent).toHaveBeenCalledWith(
@@ -209,6 +213,38 @@ describe('documented operation routes', () => {
 		await endpoint(buildContext('override-site'), input);
 		expect(mockedRequest).toHaveBeenLastCalledWith(
 			expect.objectContaining({ siteName: 'override-site' }),
+		);
+	});
+
+	it('uses documented CSV encoding for array query parameters', async () => {
+		const operation = teamworkOperations.find(
+			(item) => item.id === 'v2_get_projects_api_v2_tasklists_id_taskids_json',
+		);
+		if (!operation) throw new Error('Task IDs operation is missing');
+		const endpoint = teamworkOperationsById[operation.id];
+		if (!endpoint) throw new Error('Task IDs endpoint is missing');
+		const input = {
+			path: { id: 123 },
+			query: {
+				filterText: ['alpha', 'beta'],
+				responsiblePartyIds: [2, 3],
+			},
+		};
+		mockedRequest.mockResolvedValue(
+			makeValue(
+				operation.response,
+				teamworkDefinitions[operation.version] ?? {},
+			),
+		);
+
+		await endpoint(ctx, input);
+		expect(mockedRequest).toHaveBeenLastCalledWith(
+			expect.objectContaining({
+				query: {
+					filterText: 'alpha,beta',
+					responsiblePartyIds: '2,3',
+				},
+			}),
 		);
 	});
 

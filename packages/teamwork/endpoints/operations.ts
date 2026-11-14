@@ -36,6 +36,38 @@ function findOperation(id: TeamworkOperationId): TeamworkOperationDefinition {
 	return operation;
 }
 
+// `unknown` is necessary because each OpenAPI query parameter has its own scalar or array value type.
+export function serializeTeamworkQuery(
+	operation: TeamworkOperationDefinition,
+	query: Record<string, unknown>,
+): Record<string, unknown> {
+	const serialized = { ...query };
+	for (const parameter of operation.parameters) {
+		if (parameter.in !== 'query' || parameter.type !== 'array') continue;
+		const value = serialized[parameter.name];
+		if (!Array.isArray(value) || parameter.collectionFormat === 'multi')
+			continue;
+		const collectionFormat = parameter.collectionFormat ?? 'csv';
+		const separator =
+			collectionFormat === 'csv'
+				? ','
+				: collectionFormat === 'ssv'
+					? ' '
+					: collectionFormat === 'tsv'
+						? '\t'
+						: collectionFormat === 'pipes'
+							? '|'
+							: undefined;
+		if (separator === undefined) {
+			throw new Error('Unsupported Teamwork query collection format');
+		}
+		serialized[parameter.name] = value
+			.map((item) => String(item))
+			.join(separator);
+	}
+	return serialized;
+}
+
 export function createTeamworkOperationEndpoint<Id extends TeamworkOperationId>(
 	id: Id,
 ): TeamworkOperationEndpoint<Id> {
@@ -61,7 +93,7 @@ export function createTeamworkOperationEndpoint<Id extends TeamworkOperationId>(
 			method: operation.method,
 			path: operation.path,
 			pathParameters: input.path ?? {},
-			query: input.query ?? {},
+			query: serializeTeamworkQuery(operation, input.query ?? {}),
 			body: input.body,
 		});
 
