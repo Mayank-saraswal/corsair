@@ -98,7 +98,17 @@ function makeFormData(
 		) {
 			formData.append(key, String(value));
 		} else if (value !== null && value !== undefined) {
-			formData.append(key, JSON.stringify(value));
+			// Freshdesk reads multipart objects as bracketed parts, e.g.
+			// fields[name]=0 for imports and custom_fields[cf_x]=y for tickets.
+			for (const [nestedKey, nestedValue] of Object.entries(value)) {
+				if (nestedValue === null || nestedValue === undefined) continue;
+				formData.append(
+					`${key}[${nestedKey}]`,
+					typeof nestedValue === 'object'
+						? JSON.stringify(nestedValue)
+						: String(nestedValue),
+				);
+			}
 		}
 	}
 	for (const attachment of attachments ?? []) {
