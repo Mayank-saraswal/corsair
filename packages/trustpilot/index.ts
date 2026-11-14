@@ -618,18 +618,39 @@ export function trustpilot<const T extends TrustpilotPluginOptions>(
 			}
 			const token =
 				ctx.authType === 'oauth_2'
-					? await getOAuthAccessToken(ctx, {
-							plugin: 'trustpilot',
-							tokenUrl:
-								'https://api.trustpilot.com/v1/oauth/oauth-business-users-for-applications/accesstoken',
-							tokenAuthMethod: 'basic',
-							bodyFormat: 'form',
-						})
+					? await resolveTrustpilotOAuthToken(ctx)
 					: undefined;
 			if (token) return token;
 			throw new AuthMissingError('trustpilot', 'oauth_2');
 		},
 	} satisfies InternalTrustpilotPlugin;
+}
+
+async function resolveTrustpilotOAuthToken(
+	ctx: TrustpilotKeyBuilderContext & { authType: 'oauth_2' },
+): Promise<string> {
+	const credentials = await ctx.keys.get_integration_credentials();
+	if (!credentials.client_secret && !ctx.hub) {
+		const [accessToken, expiresAt] = await Promise.all([
+			ctx.keys.get_access_token(),
+			ctx.keys.get_expires_at(),
+		]);
+		const expiresAtSeconds = expiresAt ? Number(expiresAt) : undefined;
+		const tokenIsFresh =
+			Boolean(accessToken) &&
+			(expiresAtSeconds === undefined ||
+				(Number.isFinite(expiresAtSeconds) &&
+					expiresAtSeconds > Math.floor(Date.now() / 1000) + 300));
+		if (tokenIsFresh && accessToken) return accessToken;
+		throw new AuthMissingError('trustpilot', 'oauth_2');
+	}
+	return getOAuthAccessToken(ctx, {
+		plugin: 'trustpilot',
+		tokenUrl:
+			'https://api.trustpilot.com/v1/oauth/oauth-business-users-for-applications/accesstoken',
+		tokenAuthMethod: 'basic',
+		bodyFormat: 'form',
+	});
 }
 
 export type { TrustpilotCredential, TrustpilotHost } from './client';

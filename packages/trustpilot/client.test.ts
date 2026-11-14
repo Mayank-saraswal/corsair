@@ -133,9 +133,11 @@ describe('Trustpilot HTTP client', () => {
 		}
 	});
 
-	it('refreshes an expired authorization-code access token before a private call', async () => {
+	it('refreshes OAuth-code tokens and accepts fresh externally managed client-credentials tokens', async () => {
 		let accessToken = 'expired-access-token';
 		let refreshToken = 'valid-refresh-token';
+		let clientSecret: string | null = 'trustpilot-client-secret';
+		let expiresAt = '1';
 		const keys = {
 			get_dek: async () => 'dek',
 			issue_new_dek: async () => 'dek',
@@ -149,15 +151,17 @@ describe('Trustpilot HTTP client', () => {
 			set_refresh_token: async (value: string | null) => {
 				refreshToken = value ?? '';
 			},
-			get_expires_at: async () => '1',
-			set_expires_at: async (_value: string | null) => undefined,
+			get_expires_at: async () => expiresAt,
+			set_expires_at: async (value: string | null) => {
+				expiresAt = value ?? '';
+			},
 			get_scope: async () => null,
 			set_scope: async (_value: string | null) => undefined,
 			get_webhook_signature: async () => null,
 			set_webhook_signature: async (_value: string | null) => undefined,
 			get_integration_credentials: async () => ({
 				client_id: 'trustpilot-client-id',
-				client_secret: 'trustpilot-client-secret',
+				client_secret: clientSecret,
 				redirect_url: 'https://app.example.invalid/callback',
 			}),
 		};
@@ -195,5 +199,21 @@ describe('Trustpilot HTTP client', () => {
 		expect(String(fetchMock.mock.calls[0]?.[1]?.body)).toContain(
 			'grant_type=refresh_token',
 		);
+
+		clientSecret = null;
+		accessToken = 'externally-renewed-access-token';
+		expiresAt = String(Math.floor(Date.now() / 1000) + 3600);
+		fetchMock.mockClear();
+		expect(await keyBuilder(context, 'endpoint')).toBe(
+			'externally-renewed-access-token',
+		);
+		expect(fetchMock).not.toHaveBeenCalled();
+
+		accessToken = 'expired-external-access-token';
+		expiresAt = '1';
+		await expect(keyBuilder(context, 'endpoint')).rejects.toBeInstanceOf(
+			AuthMissingError,
+		);
+		expect(fetchMock).not.toHaveBeenCalled();
 	});
 });
