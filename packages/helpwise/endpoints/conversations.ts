@@ -1,5 +1,5 @@
 import { logEventFromContext } from 'corsair/core';
-import type { HelpwiseContext, HelpwiseEndpoint } from '..';
+import type { HelpwiseEndpoint } from '..';
 import { HELPWISE_APP_BASE, makeHelpwiseRequest } from '../client';
 import type {
 	ConversationsGetResponse,

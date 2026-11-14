@@ -1,12 +1,12 @@
 import {
-	helpwiseEndpointMeta,
-	helpwiseEndpointsNested,
-	helpwiseEndpointSchemas,
-} from './index';
-import {
 	HelpwiseEndpointInputSchemas,
 	HelpwiseEndpointOutputSchemas,
 } from './endpoints/types';
+import {
+	helpwiseEndpointMeta,
+	helpwiseEndpointSchemas,
+	helpwiseEndpointsNested,
+} from './index';
 import { HelpwiseSchema } from './schema';
 import { helpwiseEntities } from './schema/database';
 
