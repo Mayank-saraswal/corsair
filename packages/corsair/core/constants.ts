@@ -159,9 +159,12 @@ export const BaseProviders = [
 	'cloro',
 	'close',
 	'cloudcart',
+	'cloudconvert',
 	'cloudflare',
 	'cloudflareapikey',
+	'cloudflarebrowserrendering',
 	'cloudinary',
+	'cloudlayer',
 	'coassemble',
 	'coda',
 	'codacy',
@@ -173,6 +176,7 @@ export const BaseProviders = [
 	'coinmarketcap',
 	'collegefootballdata',
 	'commcare',
+	'companyenrich',
 	'composio',
 	'confluence',
 	'connecteam',
@@ -180,6 +184,7 @@ export const BaseProviders = [
 	'contentfulgraphql',
 	'contextdev',
 	'contextsevenmcp',
+	'conversiontools',
 	'convex',
 	'convoloai',
 	'cosmic',
@@ -190,6 +195,7 @@ export const BaseProviders = [
 	'cursor',
 	'customerio',
 	'customgpt',
+	'customjs',
 	'cuttly',
 	'dadataru',
 	'daffy',
@@ -200,6 +206,7 @@ export const BaseProviders = [
 	'datarobot',
 	'deepseek',
 	'demio',
+	'deployhq',
 	'desktime',
 	'devinmcp',
 	'diffbot',
@@ -209,6 +216,7 @@ export const BaseProviders = [
 	'dockerhub',
 	'docmosis',
 	'docsumo',
+	'documenso',
 	'docupost',
 	'docusign',
 	'dodopayments',
@@ -220,15 +228,19 @@ export const BaseProviders = [
 	'dropboxsign',
 	'dropcontact',
 	'dynapictures',
+	'e2b',
 	'elevenlabs',
 	'emailoctopus',
 	'emelia',
+	'encodian',
+	'endorsal',
 	'enginemailer',
 	'enigma',
 	'epicgames',
 	'esignatures',
 	'esputnik',
 	'eventbrite',
+	'eventee',
 	'eventzilla',
 	'everhour',
 	'exa',
@@ -238,12 +250,14 @@ export const BaseProviders = [
 	'facebook',
 	'fal',
 	'faraday',
+	'felt',
 	'fidel',
 	'figma',
 	'filevine',
 	'filloutforms',
 	'finage',
 	'finerworks',
+	'finmei',
 	'fireberry',
 	'firecrawl',
 	'fireflies',
@@ -251,11 +265,17 @@ export const BaseProviders = [
 	'flexisign',
 	'flutterwave',
 	'fluxguard',
+	'folk',
 	'followupboss',
 	'formbricks',
 	'foursquare',
 	'fundable',
 	'gemini',
+	'gamma',
+	'genderapi',
+	'genderapiio',
+	'genderize',
+	'geoapify',
 	'giphy',
 	'github',
 	'gitlab',
@@ -306,11 +326,17 @@ export const BaseProviders = [
 	'jira',
 	'kaggle',
 	'keenable',
+	'keyword',
 	'kibana',
+	'kickbox',
+	'kit',
 	'klaviyo',
 	'klazify',
 	'kling',
 	'knack',
+	'kofi',
+	'kontentai',
+	'krakenio',
 	'leexi',
 	'leiga',
 	'lemonsqueezy',
@@ -695,9 +721,12 @@ export const ProviderDisplayNames = {
 	cloro: 'cloro',
 	close: 'Close',
 	cloudcart: 'CloudCart',
+	cloudconvert: 'CloudConvert',
 	cloudflare: 'Cloudflare',
 	cloudflareapikey: 'Cloudflare API Key',
+	cloudflarebrowserrendering: 'Cloudflare Browser Run',
 	cloudinary: 'Cloudinary',
+	cloudlayer: 'Cloudlayer',
 	coassemble: 'Coassemble',
 	coda: 'Coda',
 	codacy: 'Codacy',
@@ -709,6 +738,7 @@ export const ProviderDisplayNames = {
 	coinmarketcap: 'CoinMarketCap',
 	collegefootballdata: 'College Football Data',
 	commcare: 'CommCare',
+	companyenrich: 'CompanyEnrich',
 	composio: 'Composio',
 	confluence: 'Confluence',
 	connecteam: 'Connecteam',
@@ -716,6 +746,7 @@ export const ProviderDisplayNames = {
 	contentfulgraphql: 'Contentful GraphQL',
 	contextdev: 'Context.dev',
 	contextsevenmcp: 'Context7',
+	conversiontools: 'Conversion Tools',
 	convex: 'Convex',
 	convoloai: 'ConvoloAi',
 	cosmic: 'Cosmic',
@@ -726,6 +757,7 @@ export const ProviderDisplayNames = {
 	cursor: 'Cursor',
 	customerio: 'Customer.io',
 	customgpt: 'CustomGPT',
+	customjs: 'CustomJS',
 	cuttly: 'Cutt.ly',
 	dadataru: 'Dadataru',
 	daffy: 'Daffy',
@@ -736,6 +768,7 @@ export const ProviderDisplayNames = {
 	datarobot: 'DataRobot',
 	deepseek: 'DeepSeek',
 	demio: 'Demio',
+	deployhq: 'DeployHQ',
 	desktime: 'DeskTime',
 	devinmcp: 'Devin MCP',
 	diffbot: 'Diffbot',
@@ -745,6 +778,7 @@ export const ProviderDisplayNames = {
 	dockerhub: 'Docker Hub',
 	docmosis: 'Docmosis',
 	docsumo: 'Docsumo',
+	documenso: 'Documenso',
 	docupost: 'Docupost',
 	docusign: 'DocuSign',
 	dodopayments: 'Dodo Payments',
@@ -756,15 +790,19 @@ export const ProviderDisplayNames = {
 	dropboxsign: 'Dropbox Sign',
 	dropcontact: 'Dropcontact',
 	dynapictures: 'Dynapictures',
+	e2b: 'E2B',
 	elevenlabs: 'ElevenLabs',
 	emailoctopus: 'EmailOctopus',
 	emelia: 'Emelia',
+	encodian: 'Encodian',
+	endorsal: 'Endorsal',
 	enginemailer: 'Enginemailer',
 	enigma: 'Enigma',
 	epicgames: 'Epic Games',
 	esignatures: 'eSignatures',
 	esputnik: 'eSputnik',
 	eventbrite: 'Eventbrite',
+	eventee: 'Eventee',
 	eventzilla: 'Eventzilla',
 	everhour: 'Everhour',
 	exa: 'Exa',
@@ -774,12 +812,14 @@ export const ProviderDisplayNames = {
 	facebook: 'Facebook',
 	fal: 'fal',
 	faraday: 'Faraday',
+	felt: 'Felt',
 	fidel: 'Fidel',
 	figma: 'Figma',
 	filevine: 'Filevine',
 	filloutforms: 'FilloutForms',
 	finage: 'Finage',
 	finerworks: 'FinerWorks',
+	finmei: 'Finmei',
 	fireberry: 'Fireberry',
 	firecrawl: 'Firecrawl',
 	fireflies: 'Fireflies',
@@ -787,11 +827,17 @@ export const ProviderDisplayNames = {
 	flexisign: 'Flexisign',
 	flutterwave: 'Flutterwave',
 	fluxguard: 'Fluxguard',
+	folk: 'Folk',
 	followupboss: 'Follow Up Boss',
 	formbricks: 'Formbricks',
 	foursquare: 'Foursquare',
 	fundable: 'Fundable',
 	gemini: 'Gemini',
+	gamma: 'Gamma',
+	genderapi: 'Gender API',
+	genderapiio: 'GenderAPI.io',
+	genderize: 'Genderize',
+	geoapify: 'Geoapify',
 	giphy: 'Giphy',
 	github: 'GitHub',
 	gitlab: 'GitLab',
@@ -842,11 +888,17 @@ export const ProviderDisplayNames = {
 	jira: 'Jira',
 	kaggle: 'Kaggle',
 	keenable: 'Keenable',
+	keyword: 'Keyword',
 	kibana: 'Kibana',
+	kickbox: 'Kickbox',
+	kit: 'Kit',
 	klaviyo: 'Klaviyo',
 	klazify: 'Klazify',
 	kling: 'Kling',
 	knack: 'Knack',
+	kofi: 'Ko-fi',
+	kontentai: 'Kontent.ai',
+	krakenio: 'Kraken.io',
 	leexi: 'Leexi',
 	leiga: 'Leiga',
 	lemonsqueezy: 'Lemon Squeezy',
@@ -1238,9 +1290,12 @@ export type AllProviders =
 	| 'cloro'
 	| 'close'
 	| 'cloudcart'
+	| 'cloudconvert'
 	| 'cloudflare'
 	| 'cloudflareapikey'
+	| 'cloudflarebrowserrendering'
 	| 'cloudinary'
+	| 'cloudlayer'
 	| 'coassemble'
 	| 'coda'
 	| 'codacy'
@@ -1252,6 +1307,7 @@ export type AllProviders =
 	| 'coinmarketcap'
 	| 'collegefootballdata'
 	| 'commcare'
+	| 'companyenrich'
 	| 'composio'
 	| 'confluence'
 	| 'connecteam'
@@ -1259,6 +1315,7 @@ export type AllProviders =
 	| 'contentfulgraphql'
 	| 'contextdev'
 	| 'contextsevenmcp'
+	| 'conversiontools'
 	| 'convex'
 	| 'convoloai'
 	| 'cosmic'
@@ -1269,6 +1326,7 @@ export type AllProviders =
 	| 'cursor'
 	| 'customerio'
 	| 'customgpt'
+	| 'customjs'
 	| 'cuttly'
 	| 'dadataru'
 	| 'daffy'
@@ -1279,6 +1337,7 @@ export type AllProviders =
 	| 'datarobot'
 	| 'deepseek'
 	| 'demio'
+	| 'deployhq'
 	| 'desktime'
 	| 'devinmcp'
 	| 'diffbot'
@@ -1288,6 +1347,7 @@ export type AllProviders =
 	| 'dockerhub'
 	| 'docmosis'
 	| 'docsumo'
+	| 'documenso'
 	| 'docupost'
 	| 'docusign'
 	| 'dodopayments'
@@ -1299,15 +1359,19 @@ export type AllProviders =
 	| 'dropboxsign'
 	| 'dropcontact'
 	| 'dynapictures'
+	| 'e2b'
 	| 'elevenlabs'
 	| 'emailoctopus'
 	| 'emelia'
+	| 'encodian'
+	| 'endorsal'
 	| 'enginemailer'
 	| 'enigma'
 	| 'epicgames'
 	| 'esignatures'
 	| 'esputnik'
 	| 'eventbrite'
+	| 'eventee'
 	| 'eventzilla'
 	| 'everhour'
 	| 'exa'
@@ -1317,12 +1381,14 @@ export type AllProviders =
 	| 'facebook'
 	| 'fal'
 	| 'faraday'
+	| 'felt'
 	| 'fidel'
 	| 'figma'
 	| 'filevine'
 	| 'filloutforms'
 	| 'finage'
 	| 'finerworks'
+	| 'finmei'
 	| 'fireberry'
 	| 'firecrawl'
 	| 'fireflies'
@@ -1330,11 +1396,17 @@ export type AllProviders =
 	| 'flexisign'
 	| 'flutterwave'
 	| 'fluxguard'
+	| 'folk'
 	| 'followupboss'
 	| 'formbricks'
 	| 'foursquare'
 	| 'fundable'
 	| 'gemini'
+	| 'gamma'
+	| 'genderapi'
+	| 'genderapiio'
+	| 'genderize'
+	| 'geoapify'
 	| 'giphy'
 	| 'github'
 	| 'gitlab'
@@ -1385,11 +1457,17 @@ export type AllProviders =
 	| 'jira'
 	| 'kaggle'
 	| 'keenable'
+	| 'keyword'
 	| 'kibana'
+	| 'kickbox'
+	| 'kit'
 	| 'klaviyo'
 	| 'klazify'
 	| 'kling'
 	| 'knack'
+	| 'kofi'
+	| 'kontentai'
+	| 'krakenio'
 	| 'leexi'
 	| 'leiga'
 	| 'lemonsqueezy'
