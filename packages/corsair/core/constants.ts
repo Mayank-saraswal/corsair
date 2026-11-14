@@ -312,6 +312,7 @@ export const BaseProviders = [
 	'happyscribe',
 	'harvest',
 	'hashnode',
+	'helpwise',
 	'here',
 	'heygen',
 	'heyy',
@@ -886,6 +887,7 @@ export const ProviderDisplayNames = {
 	happyscribe: 'Happy Scribe',
 	harvest: 'Harvest',
 	hashnode: 'Hashnode',
+	helpwise: 'Helpwise',
 	here: 'HERE',
 	heygen: 'HeyGen',
 	heyy: 'Heyy',
@@ -1467,6 +1469,7 @@ export type AllProviders =
 	| 'happyscribe'
 	| 'harvest'
 	| 'hashnode'
+	| 'helpwise'
 	| 'here'
 	| 'heygen'
 	| 'heyy'
