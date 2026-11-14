@@ -1,7 +1,8 @@
-import { get as exampleGet } from './example';
+import * as Assets from './assets';
+import * as Generations from './generations';
+import * as Purges from './purges';
+import * as Reports from './reports';
+import * as Sources from './sources';
+import * as UploadSessions from './upload-sessions';
 
-export const Example = {
-	get: exampleGet,
-};
-
-export * from './types';
+export { Assets, Generations, Purges, Reports, Sources, UploadSessions };

@@ -1,0 +1,208 @@
+import { logEventFromContext } from 'corsair/core';
+import type { ImgixEndpoints } from '..';
+import { makeImgixRequest } from '../client';
+import type {
+	SourcesCreateOutput,
+	SourcesGetOutput,
+	SourcesListOutput,
+	SourcesUpdateOutput,
+} from './types';
+import { ImgixEndpointInputSchemas, ImgixEndpointOutputSchemas } from './types';
+
+export const list: ImgixEndpoints['sources.list'] = async (ctx, input) => {
+	const parsedInput = ImgixEndpointInputSchemas['sources.list'].parse(input);
+
+	const query: Record<string, string | number | boolean | undefined> = {};
+	if (parsedInput.filter_name !== undefined) {
+		query['filter[name]'] = parsedInput.filter_name;
+	}
+	if (parsedInput.filter_deployment_type !== undefined) {
+		query['filter[deployment.type]'] = parsedInput.filter_deployment_type;
+	}
+	if (parsedInput.filter_enabled !== undefined) {
+		query['filter[enabled]'] = parsedInput.filter_enabled;
+	}
+	if (parsedInput.sort !== undefined) {
+		query.sort = parsedInput.sort;
+	}
+	if (parsedInput.fields !== undefined) {
+		query['fields[sources]'] = parsedInput.fields;
+	}
+	if (parsedInput.page_number !== undefined) {
+		query['page[number]'] = parsedInput.page_number;
+	}
+	if (parsedInput.page_size !== undefined) {
+		query['page[size]'] = parsedInput.page_size;
+	}
+
+	const response = await makeImgixRequest<SourcesListOutput>(ctx.key, {
+		method: 'GET',
+		path: 'sources',
+		query,
+	});
+
+	const parsed = ImgixEndpointOutputSchemas['sources.list'].parse(response);
+
+	await logEventFromContext(
+		ctx,
+		'imgix.sources.list',
+		{ count: parsed.data.length },
+		'completed',
+	);
+
+	return parsed;
+};
+
+export const create: ImgixEndpoints['sources.create'] = async (ctx, input) => {
+	const parsedInput = ImgixEndpointInputSchemas['sources.create'].parse(input);
+
+	const deployment: Record<string, unknown> = {
+		type: parsedInput.deployment_type,
+	};
+	if (parsedInput.s3_bucket !== undefined)
+		deployment.s3_bucket = parsedInput.s3_bucket;
+	if (parsedInput.s3_prefix !== undefined)
+		deployment.s3_prefix = parsedInput.s3_prefix;
+	if (parsedInput.s3_access_key !== undefined)
+		deployment.s3_access_key = parsedInput.s3_access_key;
+	if (parsedInput.s3_secret_key !== undefined)
+		deployment.s3_secret_key = parsedInput.s3_secret_key;
+	if (parsedInput.webfolder_base_url !== undefined)
+		deployment.webfolder_base_url = parsedInput.webfolder_base_url;
+	if (parsedInput.gcs_bucket !== undefined)
+		deployment.gcs_bucket = parsedInput.gcs_bucket;
+	if (parsedInput.gcs_prefix !== undefined)
+		deployment.gcs_prefix = parsedInput.gcs_prefix;
+	if (parsedInput.gcs_project_id !== undefined)
+		deployment.gcs_project_id = parsedInput.gcs_project_id;
+	if (parsedInput.gcs_client_email !== undefined)
+		deployment.gcs_client_email = parsedInput.gcs_client_email;
+	if (parsedInput.gcs_private_key !== undefined)
+		deployment.gcs_private_key = parsedInput.gcs_private_key;
+	if (parsedInput.azure_account_name !== undefined)
+		deployment.azure_account_name = parsedInput.azure_account_name;
+	if (parsedInput.azure_container_name !== undefined)
+		deployment.azure_container_name = parsedInput.azure_container_name;
+	if (parsedInput.azure_access_key !== undefined)
+		deployment.azure_access_key = parsedInput.azure_access_key;
+	if (parsedInput.webproxy_base_url !== undefined)
+		deployment.webproxy_base_url = parsedInput.webproxy_base_url;
+	if (parsedInput.imgix_subdomains !== undefined)
+		deployment.imgix_subdomains = parsedInput.imgix_subdomains;
+	if (parsedInput.custom_domains !== undefined)
+		deployment.custom_domains = parsedInput.custom_domains;
+	if (parsedInput.default_params !== undefined)
+		deployment.default_params = parsedInput.default_params;
+	if (parsedInput.secure_url_token !== undefined)
+		deployment.secure_url_token = parsedInput.secure_url_token;
+	if (parsedInput.cache_ttl_value !== undefined)
+		deployment.cache_ttl_value = parsedInput.cache_ttl_value;
+	if (parsedInput.cache_ttl_error !== undefined)
+		deployment.cache_ttl_error = parsedInput.cache_ttl_error;
+
+	const body = {
+		data: {
+			type: 'sources',
+			attributes: {
+				name: parsedInput.name,
+				deployment,
+			},
+		},
+		jsonapi: {
+			version: '1.0',
+		},
+	};
+
+	const response = await makeImgixRequest<SourcesCreateOutput>(ctx.key, {
+		method: 'POST',
+		path: 'sources',
+		body,
+	});
+
+	const parsed = ImgixEndpointOutputSchemas['sources.create'].parse(response);
+
+	await logEventFromContext(
+		ctx,
+		'imgix.sources.create',
+		{ source_id: parsed.data.id, deployment_type: parsedInput.deployment_type },
+		'completed',
+	);
+
+	return parsed;
+};
+
+export const get: ImgixEndpoints['sources.get'] = async (ctx, input) => {
+	const parsedInput = ImgixEndpointInputSchemas['sources.get'].parse(input);
+
+	const query: Record<string, string | number | boolean | undefined> = {};
+	if (parsedInput.fields !== undefined) {
+		query['fields[sources]'] = parsedInput.fields;
+	}
+
+	const response = await makeImgixRequest<SourcesGetOutput>(ctx.key, {
+		method: 'GET',
+		path: `sources/${encodeURIComponent(parsedInput.source_id)}`,
+		query,
+	});
+
+	const parsed = ImgixEndpointOutputSchemas['sources.get'].parse(response);
+
+	await logEventFromContext(
+		ctx,
+		'imgix.sources.get',
+		{ source_id: parsed.data.id },
+		'completed',
+	);
+
+	return parsed;
+};
+
+export const update: ImgixEndpoints['sources.update'] = async (ctx, input) => {
+	const parsedInput = ImgixEndpointInputSchemas['sources.update'].parse(input);
+
+	const attributes: Record<string, unknown> = {};
+	if (parsedInput.name !== undefined) attributes.name = parsedInput.name;
+	if (parsedInput.enabled !== undefined)
+		attributes.enabled = parsedInput.enabled;
+
+	const deployment: Record<string, unknown> = {};
+	if (parsedInput.default_params !== undefined)
+		deployment.default_params = parsedInput.default_params;
+	if (parsedInput.custom_domains !== undefined)
+		deployment.custom_domains = parsedInput.custom_domains;
+	if (parsedInput.cache_ttl_value !== undefined)
+		deployment.cache_ttl_value = parsedInput.cache_ttl_value;
+	if (parsedInput.cache_ttl_error !== undefined)
+		deployment.cache_ttl_error = parsedInput.cache_ttl_error;
+	if (parsedInput.secure_url_token !== undefined)
+		deployment.secure_url_token = parsedInput.secure_url_token;
+
+	if (Object.keys(deployment).length > 0) {
+		attributes.deployment = deployment;
+	}
+
+	const body = {
+		data: {
+			id: parsedInput.source_id,
+			type: 'sources',
+			attributes,
+		},
+	};
+
+	const response = await makeImgixRequest<SourcesUpdateOutput>(ctx.key, {
+		method: 'PATCH',
+		path: `sources/${encodeURIComponent(parsedInput.source_id)}`,
+		body,
+	});
+
+	const parsed = ImgixEndpointOutputSchemas['sources.update'].parse(response);
+
+	await logEventFromContext(
+		ctx,
+		'imgix.sources.update',
+		{ source_id: parsed.data.id },
+		'completed',
+	);
+
+	return parsed;
+};

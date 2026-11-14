@@ -1,0 +1,163 @@
+import { logEventFromContext } from 'corsair/core';
+import type { ImgixEndpoints } from '..';
+import { makeImgixRequest } from '../client';
+import type {
+	AssetsAddFromOriginOutput,
+	AssetsGetOutput,
+	AssetsListOutput,
+	AssetsUpdateOutput,
+	AssetsUploadOutput,
+} from './types';
+import { ImgixEndpointInputSchemas, ImgixEndpointOutputSchemas } from './types';
+
+// Helper to encode origin paths preserving slashes
+function encodePath(originPath: string): string {
+	return originPath
+		.split('/')
+		.map((part) => encodeURIComponent(part))
+		.join('/');
+}
+
+export const list: ImgixEndpoints['assets.list'] = async (ctx, input) => {
+	const parsedInput = ImgixEndpointInputSchemas['assets.list'].parse(input);
+
+	const query: Record<string, string | number | boolean | undefined> = {};
+	if (parsedInput.filter !== undefined) query.filter = parsedInput.filter;
+	if (parsedInput.sort !== undefined) query.sort = parsedInput.sort;
+	if (parsedInput.fields !== undefined) query.fields = parsedInput.fields;
+	if (parsedInput.page_cursor !== undefined)
+		query['page[cursor]'] = parsedInput.page_cursor;
+	if (parsedInput.page_number !== undefined)
+		query['page[number]'] = parsedInput.page_number;
+	if (parsedInput.page_size !== undefined)
+		query['page[size]'] = parsedInput.page_size;
+
+	const response = await makeImgixRequest<AssetsListOutput>(ctx.key, {
+		method: 'GET',
+		path: `assets/${encodeURIComponent(parsedInput.source_id)}`,
+		query,
+	});
+
+	const parsed = ImgixEndpointOutputSchemas['assets.list'].parse(response);
+
+	await logEventFromContext(
+		ctx,
+		'imgix.assets.list',
+		{ source_id: parsedInput.source_id, count: parsed.data.length },
+		'completed',
+	);
+
+	return parsed;
+};
+
+export const get: ImgixEndpoints['assets.get'] = async (ctx, input) => {
+	const parsedInput = ImgixEndpointInputSchemas['assets.get'].parse(input);
+
+	const query: Record<string, string | number | boolean | undefined> = {};
+	if (parsedInput.fields !== undefined) query.fields = parsedInput.fields;
+
+	const response = await makeImgixRequest<AssetsGetOutput>(ctx.key, {
+		method: 'GET',
+		path: `assets/${encodeURIComponent(parsedInput.source_id)}/${encodePath(parsedInput.origin_path)}`,
+		query,
+	});
+
+	const parsed = ImgixEndpointOutputSchemas['assets.get'].parse(response);
+
+	await logEventFromContext(
+		ctx,
+		'imgix.assets.get',
+		{ source_id: parsedInput.source_id, id: parsed.data.id },
+		'completed',
+	);
+
+	return parsed;
+};
+
+export const update: ImgixEndpoints['assets.update'] = async (ctx, input) => {
+	const parsedInput = ImgixEndpointInputSchemas['assets.update'].parse(input);
+
+	const body = {
+		data: {
+			id: `${parsedInput.source_id}/${parsedInput.origin_path}`,
+			type: 'assets',
+			attributes: {
+				custom_fields: parsedInput.custom_fields,
+			},
+		},
+	};
+
+	const response = await makeImgixRequest<AssetsUpdateOutput>(ctx.key, {
+		method: 'PATCH',
+		path: `sources/${encodeURIComponent(parsedInput.source_id)}/assets/${encodePath(parsedInput.origin_path)}`,
+		body,
+	});
+
+	const parsed = ImgixEndpointOutputSchemas['assets.update'].parse(response);
+
+	await logEventFromContext(
+		ctx,
+		'imgix.assets.update',
+		{ source_id: parsedInput.source_id, id: parsed.data.id },
+		'completed',
+	);
+
+	return parsed;
+};
+
+export const addFromOrigin: ImgixEndpoints['assets.addFromOrigin'] = async (
+	ctx,
+	input,
+) => {
+	const parsedInput =
+		ImgixEndpointInputSchemas['assets.addFromOrigin'].parse(input);
+
+	const response = await makeImgixRequest<AssetsAddFromOriginOutput>(ctx.key, {
+		method: 'POST',
+		path: `sources/${encodeURIComponent(parsedInput.source_id)}/assets/add/${encodePath(parsedInput.origin_path)}`,
+	});
+
+	const parsed =
+		ImgixEndpointOutputSchemas['assets.addFromOrigin'].parse(response);
+
+	await logEventFromContext(
+		ctx,
+		'imgix.assets.addFromOrigin',
+		{ source_id: parsedInput.source_id },
+		'completed',
+	);
+
+	return parsed;
+};
+
+export const upload: ImgixEndpoints['assets.upload'] = async (ctx, input) => {
+	const parsedInput = ImgixEndpointInputSchemas['assets.upload'].parse(input);
+
+	const query: Record<string, string | number | boolean | undefined> = {};
+	if (parsedInput.overwrite !== undefined) {
+		query.overwrite = parsedInput.overwrite;
+	}
+
+	const buffer = Buffer.from(parsedInput.content_base64, 'base64');
+
+	const response = await makeImgixRequest<AssetsUploadOutput>(ctx.key, {
+		method: 'POST',
+		path: `sources/${encodeURIComponent(parsedInput.source_id)}/upload/${encodePath(parsedInput.origin_path)}`,
+		query,
+		body: buffer,
+		headers: {
+			'Content-Type': 'application/octet-stream',
+		},
+	});
+
+	const parsed = ImgixEndpointOutputSchemas['assets.upload'].parse(response);
+
+	await logEventFromContext(
+		ctx,
+		'imgix.assets.upload',
+		{ source_id: parsedInput.source_id, byteCount: buffer.length },
+		'completed',
+	);
+
+	return parsed;
+};
