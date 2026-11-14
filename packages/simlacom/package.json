@@ -1,7 +1,7 @@
 {
   "name": "@corsair-dev/simlacom",
   "version": "0.1.0",
-  "description": "SimlaCom plugin for Corsair",
+  "description": "Simla.com REST API v5 integration for Corsair",
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -16,7 +16,8 @@
   "scripts": {
     "build": "rm -rf dist && tsc --build --force && tsup",
     "typecheck": "tsc --noEmit",
-    "test": "jest"
+    "test": "jest --runInBand",
+    "test:live": "jest --testPathIgnorePatterns=/node_modules/ --testPathPattern=api\\.test\\.ts"
   },
   "peerDependencies": {
     "corsair": ">=0.1.0",
@@ -36,7 +37,13 @@
     "simlacom",
     "plugin"
   ],
-  "author": "",
+  "author": "Corsair (https://corsair.dev)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/corsairdev/corsair.git",
+    "directory": "packages/simlacom"
+  },
+  "homepage": "https://docs.corsair.dev/plugins/simlacom",
   "license": "Apache-2.0",
   "files": [
     "dist"

@@ -1,29 +1,31 @@
-import { z } from 'zod';
+import { operationData } from '../operation-data';
+import type { JsonSchema, SimlaComOperation } from './operation-types';
 
-const ExampleGetInputSchema = z.object({
-	id: z.string(),
-});
+export type {
+	JsonSchema,
+	JsonValue,
+	OperationData,
+	SimlaComEndpointInput,
+	SimlaComEndpointOutput,
+	SimlaComOperation,
+} from './operation-types';
 
-export type ExampleGetInput = z.infer<typeof ExampleGetInputSchema>;
+export {
+	SIMLACOM_INPUT_SCHEMAS as SimlaComEndpointInputSchemas,
+	SIMLACOM_OUTPUT_SCHEMAS as SimlaComEndpointOutputSchemas,
+} from './schemas';
 
-const ExampleGetResponseSchema = z.object({
-	id: z.string(),
-});
+export const SIMLACOM_OPERATIONS: readonly SimlaComOperation[] =
+	operationData.operations;
 
-export type ExampleGetResponse = z.infer<typeof ExampleGetResponseSchema>;
+export function getSimlaComOperation(id: string): SimlaComOperation {
+	const operation = SIMLACOM_OPERATIONS.find(
+		(candidate) => candidate.id === id,
+	);
+	if (!operation) throw new Error(`Unknown Simla.com operation: ${id}`);
+	return operation;
+}
 
-export type SimlaComEndpointInputs = {
-	exampleGet: ExampleGetInput;
-};
-
-export type SimlaComEndpointOutputs = {
-	exampleGet: ExampleGetResponse;
-};
-
-export const SimlaComEndpointInputSchemas = {
-	exampleGet: ExampleGetInputSchema,
-} as const;
-
-export const SimlaComEndpointOutputSchemas = {
-	exampleGet: ExampleGetResponseSchema,
-} as const;
+export const SIMLACOM_OPENAPI_SCHEMAS = new Map<string, JsonSchema>(
+	Object.entries(operationData.schemas),
+);
