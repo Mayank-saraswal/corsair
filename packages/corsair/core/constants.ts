@@ -331,6 +331,7 @@ export const BaseProviders = [
 	'instagram',
 	'instantly',
 	'intercom',
+	'interzoid',
 	'jigsawstack',
 	'jira',
 	'kadoa',
@@ -905,6 +906,7 @@ export const ProviderDisplayNames = {
 	instagram: 'Instagram',
 	instantly: 'Instantly',
 	intercom: 'Intercom',
+	interzoid: 'Interzoid',
 	jigsawstack: 'JigsawStack',
 	jira: 'Jira',
 	kadoa: 'Kadoa',
@@ -1486,6 +1488,7 @@ export type AllProviders =
 	| 'instagram'
 	| 'instantly'
 	| 'intercom'
+	| 'interzoid'
 	| 'jigsawstack'
 	| 'jira'
 	| 'kadoa'
