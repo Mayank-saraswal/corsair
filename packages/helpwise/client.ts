@@ -32,19 +32,20 @@ export function splitKeyAndSecret(value: string): HelpwiseCredentials | null {
 		try {
 			// `unknown` because JSON parsing yields untrusted payload that must be checked.
 			const parsed: unknown = JSON.parse(trimmed);
-			if (
-				parsed &&
-				typeof parsed === 'object' &&
-				'apiKey' in parsed &&
-				'apiSecret' in parsed &&
-				typeof (parsed as { apiKey: unknown }).apiKey === 'string' &&
-				typeof (parsed as { apiSecret: unknown }).apiSecret === 'string'
-			) {
-				const creds = parsed as HelpwiseCredentials;
-				if (creds.apiKey.trim() && creds.apiSecret.trim()) {
+			if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+				// `unknown` because parsed JSON properties are untrusted until checked.
+				const apiKey: unknown = Reflect.get(parsed, 'apiKey');
+				// `unknown` because parsed JSON properties are untrusted until checked.
+				const apiSecret: unknown = Reflect.get(parsed, 'apiSecret');
+				if (
+					typeof apiKey === 'string' &&
+					typeof apiSecret === 'string' &&
+					apiKey.trim() &&
+					apiSecret.trim()
+				) {
 					return {
-						apiKey: creds.apiKey.trim(),
-						apiSecret: creds.apiSecret.trim(),
+						apiKey: apiKey.trim(),
+						apiSecret: apiSecret.trim(),
 					};
 				}
 			}

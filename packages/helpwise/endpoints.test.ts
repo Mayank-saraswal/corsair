@@ -182,10 +182,7 @@ describe('Conversations endpoints', () => {
 	});
 
 	it('rejects invalid action input without calling network', async () => {
-		// `unknown` because catch error lacks static type.
-		await expect(
-			Conversations.close(ctx, { ids: [] } as unknown as { ids: number[] }),
-		).rejects.toThrow();
+		await expect(Conversations.close(ctx, { ids: [] })).rejects.toThrow();
 		expect(mockedRequest).not.toHaveBeenCalled();
 	});
 });

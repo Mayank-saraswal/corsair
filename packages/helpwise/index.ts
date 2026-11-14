@@ -42,7 +42,6 @@ export type HelpwisePluginOptions = {
 	apiKey?: string;
 	apiSecret?: string;
 	key?: string;
-	baseUrl?: string;
 	hooks?: InternalHelpwisePlugin['hooks'];
 	errorHandlers?: CorsairErrorHandler;
 	permissions?: PluginPermissionsConfig<typeof helpwiseEndpointsNested>;

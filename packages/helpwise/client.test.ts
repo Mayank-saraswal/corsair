@@ -75,8 +75,8 @@ describe('makeHelpwiseRequest', () => {
 
 		expect(mockRequest).toHaveBeenCalledTimes(1);
 		const call = mockRequest.mock.calls[0];
-		expect(call).toBeDefined();
-		const [config, reqOpts] = call as NonNullable<typeof call>;
+		if (call === undefined) throw new Error('Expected request to be called');
+		const [config, reqOpts] = call;
 		expect(config).toMatchObject({
 			BASE: HELPWISE_API_BASE,
 			USERNAME: 'my_key',
@@ -102,8 +102,8 @@ describe('makeHelpwiseRequest', () => {
 
 		expect(mockRequest).toHaveBeenCalledTimes(1);
 		const call = mockRequest.mock.calls[0];
-		expect(call).toBeDefined();
-		const [config, reqOpts] = call as NonNullable<typeof call>;
+		if (call === undefined) throw new Error('Expected request to be called');
+		const [config, reqOpts] = call;
 		expect(config.BASE).toBe(HELPWISE_APP_BASE);
 		expect(reqOpts).toMatchObject({
 			method: 'POST',
@@ -138,9 +138,12 @@ describe('makeHelpwiseRequest', () => {
 			'/conversations',
 			'k:s',
 		).catch((caught: unknown) => caught);
+		if (!(error instanceof ApiError)) {
+			throw new Error('Expected the rate-limit ApiError to propagate');
+		}
 		expect(error).toBe(rateLimited);
-		expect((error as ApiError).status).toBe(429);
-		expect((error as ApiError).retryAfter).toBe(2000);
+		expect(error.status).toBe(429);
+		expect(error.retryAfter).toBe(2000);
 	});
 });
 
@@ -159,18 +162,20 @@ describe('real transport execution', () => {
 
 		let capturedAuthHeader: string | undefined;
 
-		global.fetch = jest.fn(async (_url: unknown, init?: RequestInit) => {
-			const headers = new Headers(init?.headers);
-			capturedAuthHeader = headers.get('authorization') ?? undefined;
-			return new Response(JSON.stringify({ status: 'rate_limited' }), {
-				status: 429,
-				statusText: 'Too Many Requests',
-				headers: {
-					'Content-Type': 'application/json',
-					'retry-after': '3',
-				},
-			});
-		});
+		global.fetch = jest.fn(
+			async (_url: RequestInfo | URL, init?: RequestInit) => {
+				const headers = new Headers(init?.headers);
+				capturedAuthHeader = headers.get('authorization') ?? undefined;
+				return new Response(JSON.stringify({ status: 'rate_limited' }), {
+					status: 429,
+					statusText: 'Too Many Requests',
+					headers: {
+						'Content-Type': 'application/json',
+						'retry-after': '3',
+					},
+				});
+			},
+		);
 
 		const config: OpenAPIConfig = {
 			BASE: HELPWISE_API_BASE,
@@ -198,9 +203,11 @@ describe('real transport execution', () => {
 			},
 		}).catch((e: unknown) => e);
 
-		expect(thrown).toBeInstanceOf(ApiError);
-		expect((thrown as ApiError).status).toBe(429);
-		expect((thrown as ApiError).retryAfter).toBe(3000);
+		if (!(thrown instanceof ApiError)) {
+			throw new Error('Expected a rate-limit ApiError from the transport');
+		}
+		expect(thrown.status).toBe(429);
+		expect(thrown.retryAfter).toBe(3000);
 		expect(capturedAuthHeader).toBe(
 			`Basic ${Buffer.from('test_key:test_secret').toString('base64')}`,
 		);
