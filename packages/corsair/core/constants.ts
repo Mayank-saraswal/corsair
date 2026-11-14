@@ -322,6 +322,7 @@ export const BaseProviders = [
 	'huggingface',
 	'humanitix',
 	'hunterio',
+	'ignisign',
 	'imagekit',
 	'imagior',
 	'imejisio',
@@ -896,6 +897,7 @@ export const ProviderDisplayNames = {
 	huggingface: 'Hugging Face',
 	humanitix: 'Humanitix',
 	hunterio: 'Hunter.io',
+	ignisign: 'Ignisign',
 	imagekit: 'ImageKit',
 	imagior: 'Imagior',
 	imejisio: 'Imejis.io',
@@ -1477,6 +1479,7 @@ export type AllProviders =
 	| 'huggingface'
 	| 'humanitix'
 	| 'hunterio'
+	| 'ignisign'
 	| 'imagekit'
 	| 'imagior'
 	| 'imejisio'
