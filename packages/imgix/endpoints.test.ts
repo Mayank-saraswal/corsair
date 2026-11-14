@@ -336,7 +336,7 @@ describe('Imgix endpoints', () => {
 			);
 		});
 
-		it('assets.upload uploads binary buffer with octet-stream header', async () => {
+		it('assets.upload wraps decoded file bytes in an octet-stream Blob', async () => {
 			mockedRequest.mockResolvedValue({});
 
 			const result = await Assets.upload(mockCtx, {
@@ -356,6 +356,11 @@ describe('Imgix endpoints', () => {
 					headers: { 'Content-Type': 'application/octet-stream' },
 				}),
 			);
+			const requestBody = mockedRequest.mock.calls[0]?.[1]?.body;
+			expect(requestBody).toBeInstanceOf(Blob);
+			if (requestBody instanceof Blob) {
+				expect(await requestBody.text()).toBe('hello');
+			}
 		});
 	});
 

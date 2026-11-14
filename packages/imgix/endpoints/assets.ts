@@ -1,13 +1,6 @@
 import { logEventFromContext } from 'corsair/core';
 import type { ImgixEndpoints } from '..';
 import { makeImgixRequest } from '../client';
-import type {
-	AssetsAddFromOriginOutput,
-	AssetsGetOutput,
-	AssetsListOutput,
-	AssetsUpdateOutput,
-	AssetsUploadOutput,
-} from './types';
 import { ImgixEndpointInputSchemas, ImgixEndpointOutputSchemas } from './types';
 
 // Helper to encode origin paths preserving slashes
@@ -32,7 +25,7 @@ export const list: ImgixEndpoints['assets.list'] = async (ctx, input) => {
 	if (parsedInput.page_size !== undefined)
 		query['page[size]'] = parsedInput.page_size;
 
-	const response = await makeImgixRequest<AssetsListOutput>(ctx.key, {
+	const response = await makeImgixRequest(ctx.key, {
 		method: 'GET',
 		path: `assets/${encodeURIComponent(parsedInput.source_id)}`,
 		query,
@@ -56,7 +49,7 @@ export const get: ImgixEndpoints['assets.get'] = async (ctx, input) => {
 	const query: Record<string, string | number | boolean | undefined> = {};
 	if (parsedInput.fields !== undefined) query.fields = parsedInput.fields;
 
-	const response = await makeImgixRequest<AssetsGetOutput>(ctx.key, {
+	const response = await makeImgixRequest(ctx.key, {
 		method: 'GET',
 		path: `assets/${encodeURIComponent(parsedInput.source_id)}/${encodePath(parsedInput.origin_path)}`,
 		query,
@@ -87,7 +80,7 @@ export const update: ImgixEndpoints['assets.update'] = async (ctx, input) => {
 		},
 	};
 
-	const response = await makeImgixRequest<AssetsUpdateOutput>(ctx.key, {
+	const response = await makeImgixRequest(ctx.key, {
 		method: 'PATCH',
 		path: `sources/${encodeURIComponent(parsedInput.source_id)}/assets/${encodePath(parsedInput.origin_path)}`,
 		body,
@@ -112,7 +105,7 @@ export const addFromOrigin: ImgixEndpoints['assets.addFromOrigin'] = async (
 	const parsedInput =
 		ImgixEndpointInputSchemas['assets.addFromOrigin'].parse(input);
 
-	const response = await makeImgixRequest<AssetsAddFromOriginOutput>(ctx.key, {
+	const response = await makeImgixRequest(ctx.key, {
 		method: 'POST',
 		path: `sources/${encodeURIComponent(parsedInput.source_id)}/assets/add/${encodePath(parsedInput.origin_path)}`,
 	});
@@ -139,12 +132,13 @@ export const upload: ImgixEndpoints['assets.upload'] = async (ctx, input) => {
 	}
 
 	const buffer = Buffer.from(parsedInput.content_base64, 'base64');
+	const uploadBody = new Blob([buffer], { type: 'application/octet-stream' });
 
-	const response = await makeImgixRequest<AssetsUploadOutput>(ctx.key, {
+	const response = await makeImgixRequest(ctx.key, {
 		method: 'POST',
 		path: `sources/${encodeURIComponent(parsedInput.source_id)}/upload/${encodePath(parsedInput.origin_path)}`,
 		query,
-		body: buffer,
+		body: uploadBody,
 		headers: {
 			'Content-Type': 'application/octet-stream',
 		},

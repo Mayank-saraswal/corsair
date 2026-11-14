@@ -1,7 +1,6 @@
 import { logEventFromContext } from 'corsair/core';
 import type { ImgixEndpoints } from '..';
 import { makeImgixRequest } from '../client';
-import type { PurgesCreateOutput } from './types';
 import { ImgixEndpointInputSchemas, ImgixEndpointOutputSchemas } from './types';
 
 export const create: ImgixEndpoints['purges.create'] = async (ctx, input) => {
@@ -25,7 +24,7 @@ export const create: ImgixEndpoints['purges.create'] = async (ctx, input) => {
 		},
 	};
 
-	const response = await makeImgixRequest<PurgesCreateOutput>(ctx.key, {
+	const response = await makeImgixRequest(ctx.key, {
 		method: 'POST',
 		path: 'purge',
 		body,

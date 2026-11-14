@@ -1,12 +1,6 @@
 import { logEventFromContext } from 'corsair/core';
 import type { ImgixEndpoints } from '..';
 import { makeImgixRequest } from '../client';
-import type {
-	SourcesCreateOutput,
-	SourcesGetOutput,
-	SourcesListOutput,
-	SourcesUpdateOutput,
-} from './types';
 import { ImgixEndpointInputSchemas, ImgixEndpointOutputSchemas } from './types';
 
 export const list: ImgixEndpoints['sources.list'] = async (ctx, input) => {
@@ -35,7 +29,7 @@ export const list: ImgixEndpoints['sources.list'] = async (ctx, input) => {
 		query['page[size]'] = parsedInput.page_size;
 	}
 
-	const response = await makeImgixRequest<SourcesListOutput>(ctx.key, {
+	const response = await makeImgixRequest(ctx.key, {
 		method: 'GET',
 		path: 'sources',
 		query,
@@ -114,7 +108,7 @@ export const create: ImgixEndpoints['sources.create'] = async (ctx, input) => {
 		},
 	};
 
-	const response = await makeImgixRequest<SourcesCreateOutput>(ctx.key, {
+	const response = await makeImgixRequest(ctx.key, {
 		method: 'POST',
 		path: 'sources',
 		body,
@@ -140,7 +134,7 @@ export const get: ImgixEndpoints['sources.get'] = async (ctx, input) => {
 		query['fields[sources]'] = parsedInput.fields;
 	}
 
-	const response = await makeImgixRequest<SourcesGetOutput>(ctx.key, {
+	const response = await makeImgixRequest(ctx.key, {
 		method: 'GET',
 		path: `sources/${encodeURIComponent(parsedInput.source_id)}`,
 		query,
@@ -192,7 +186,7 @@ export const update: ImgixEndpoints['sources.update'] = async (ctx, input) => {
 		},
 	};
 
-	const response = await makeImgixRequest<SourcesUpdateOutput>(ctx.key, {
+	const response = await makeImgixRequest(ctx.key, {
 		method: 'PATCH',
 		path: `sources/${encodeURIComponent(parsedInput.source_id)}`,
 		body,

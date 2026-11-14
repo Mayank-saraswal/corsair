@@ -37,12 +37,15 @@ const SENSITIVE_REQUEST_FIELDS = new Set([
 	'authorization',
 	'azureaccesskey',
 	'clientemail',
+	'gcsclientemail',
+	'gcsprivatekey',
 	'password',
 	'privatekey',
 	'projectid',
 	's3accesskey',
 	's3secretkey',
 	'sastoken',
+	'secureurltoken',
 	'secret',
 	'secretaccesskey',
 	'sessiontoken',
@@ -93,10 +96,10 @@ function redactCredentialFields(value: unknown): {
  * Auth is `Authorization: Bearer <API key>`, documented at
  * https://docs.imgix.com/apis/management.
  */
-export async function makeImgixRequest<T>(
+export async function makeImgixRequest(
 	apiKey: string | undefined,
 	{ method = 'GET', path, query, body, headers }: ImgixRequest,
-): Promise<T> {
+): Promise<unknown> {
 	// An explicitly empty key means no credentials are configured
 	if (apiKey !== undefined && apiKey.length === 0) {
 		throw new AuthMissingError('imgix', 'api_key');
@@ -134,7 +137,17 @@ export async function makeImgixRequest<T>(
 	};
 
 	try {
-		return await request<T>(config, requestOptions);
+		const response = await request<unknown>(config, requestOptions);
+		if (typeof response === 'string') {
+			try {
+				// `unknown` because parsed API response JSON remains untrusted until its endpoint schema validates it.
+				const parsedResponse: unknown = JSON.parse(response);
+				return parsedResponse;
+			} catch {
+				return response;
+			}
+		}
+		return response;
 	} catch (error) {
 		if (error instanceof ApiError) {
 			const requestBody = redactCredentialFields(error.request.body);

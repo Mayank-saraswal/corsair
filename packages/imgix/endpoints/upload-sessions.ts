@@ -1,12 +1,6 @@
 import { logEventFromContext } from 'corsair/core';
 import type { ImgixEndpoints } from '..';
 import { makeImgixRequest } from '../client';
-import type {
-	UploadSessionsCancelOutput,
-	UploadSessionsCloseOutput,
-	UploadSessionsCreateOutput,
-	UploadSessionsGetStatusOutput,
-} from './types';
 import { ImgixEndpointInputSchemas, ImgixEndpointOutputSchemas } from './types';
 
 function encodePath(originPath: string): string {
@@ -23,7 +17,7 @@ export const create: ImgixEndpoints['uploadSessions.create'] = async (
 	const parsedInput =
 		ImgixEndpointInputSchemas['uploadSessions.create'].parse(input);
 
-	const response = await makeImgixRequest<UploadSessionsCreateOutput>(ctx.key, {
+	const response = await makeImgixRequest(ctx.key, {
 		method: 'POST',
 		path: `sources/${encodeURIComponent(parsedInput.source_id)}/upload-sessions/${encodePath(parsedInput.origin_path)}`,
 	});
@@ -48,13 +42,10 @@ export const getStatus: ImgixEndpoints['uploadSessions.getStatus'] = async (
 	const parsedInput =
 		ImgixEndpointInputSchemas['uploadSessions.getStatus'].parse(input);
 
-	const response = await makeImgixRequest<UploadSessionsGetStatusOutput>(
-		ctx.key,
-		{
-			method: 'GET',
-			path: `sources/${encodeURIComponent(parsedInput.source_id)}/upload-sessions/status/${encodeURIComponent(parsedInput.session_id)}`,
-		},
-	);
+	const response = await makeImgixRequest(ctx.key, {
+		method: 'GET',
+		path: `sources/${encodeURIComponent(parsedInput.source_id)}/upload-sessions/status/${encodeURIComponent(parsedInput.session_id)}`,
+	});
 
 	const parsed =
 		ImgixEndpointOutputSchemas['uploadSessions.getStatus'].parse(response);
@@ -76,7 +67,7 @@ export const close: ImgixEndpoints['uploadSessions.close'] = async (
 	const parsedInput =
 		ImgixEndpointInputSchemas['uploadSessions.close'].parse(input);
 
-	const response = await makeImgixRequest<UploadSessionsCloseOutput>(ctx.key, {
+	const response = await makeImgixRequest(ctx.key, {
 		method: 'POST',
 		path: `sources/${encodeURIComponent(parsedInput.source_id)}/upload-sessions/${encodeURIComponent(parsedInput.session_id)}`,
 	});
@@ -101,7 +92,7 @@ export const cancel: ImgixEndpoints['uploadSessions.cancel'] = async (
 	const parsedInput =
 		ImgixEndpointInputSchemas['uploadSessions.cancel'].parse(input);
 
-	const response = await makeImgixRequest<UploadSessionsCancelOutput>(ctx.key, {
+	const response = await makeImgixRequest(ctx.key, {
 		method: 'DELETE',
 		path: `sources/${encodeURIComponent(parsedInput.source_id)}/upload-sessions/cancel/${encodeURIComponent(parsedInput.session_id)}`,
 	});

@@ -11,7 +11,9 @@ apiExamples:
   sources.list:
     page_size: 10
   sources.create:
-    name: "Production Image Store"
+    call: >-
+      { name: "Production Image Store", deployment_type: "webfolder",
+      webfolder_base_url: "https://images.example.com" }
   sources.get:
     source_id: "src_1234567890abcdef"
   sources.update:

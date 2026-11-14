@@ -729,7 +729,7 @@ Create and deploy a new Imgix storage or web folder source
 **Risk:** `destructive`
 
 ```ts
-await corsair.imgix.api.sources.create({ name: 'Production Image Store' });
+await corsair.imgix.api.sources.create({ name: "Production Image Store", deployment_type: "webfolder", webfolder_base_url: "https://images.example.com" });
 ```
 
 **Input**

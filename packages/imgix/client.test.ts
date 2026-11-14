@@ -128,6 +128,9 @@ describe('makeImgixRequest', () => {
 				s3_bucket: 'my-bucket',
 				s3_access_key: 'AKIAEXAMPLEKEY',
 				s3_secret_key: 'top-secret-s3-key',
+				gcs_client_email: 'imgix-service@example.com',
+				gcs_private_key: 'gcs-private-key-data',
+				secure_url_token: 'secure-url-token-value',
 				azure_access_key: 'azure-key-123',
 				private_key: 'rsa-private-key-data',
 				token: 'secret-token-val',
@@ -176,6 +179,9 @@ describe('makeImgixRequest', () => {
 					s3_bucket: 'my-bucket',
 					s3_access_key: '[REDACTED]',
 					s3_secret_key: '[REDACTED]',
+					gcs_client_email: '[REDACTED]',
+					gcs_private_key: '[REDACTED]',
+					secure_url_token: '[REDACTED]',
 					azure_access_key: '[REDACTED]',
 					private_key: '[REDACTED]',
 					token: '[REDACTED]',
@@ -202,9 +208,8 @@ describe('makeImgixRequest', () => {
 	});
 
 	it('uses real transport to parse 429 Retry-After correctly', async () => {
-		const actualHttp = jest.requireActual('corsair/http') as {
-			request: typeof request;
-		};
+		const actualHttp =
+			jest.requireActual<typeof import('corsair/http')>('corsair/http');
 
 		const mockResponse = {
 			ok: false,
@@ -260,6 +265,42 @@ describe('makeImgixRequest', () => {
 			}
 		} finally {
 			global.fetch = originalFetch;
+		}
+	});
+
+	it('uses real transport to send Blob bytes and parse JSON:API responses', async () => {
+		const actualHttp =
+			jest.requireActual<typeof import('corsair/http')>('corsair/http');
+		mockedRequest.mockImplementation(actualHttp.request);
+
+		const bytes = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x00, 0xff]);
+		const responseBody = {
+			data: { id: 'src_123', type: 'sources', attributes: { name: 'Images' } },
+		};
+		const fetchSpy = jest.spyOn(global, 'fetch').mockResolvedValue(
+			new Response(JSON.stringify(responseBody), {
+				status: 200,
+				headers: { 'Content-Type': 'application/vnd.api+json' },
+			}),
+		);
+
+		try {
+			const response = await makeImgixRequest('fixture-key', {
+				method: 'POST',
+				path: 'sources/src_123/upload/image.png',
+				body: new Blob([bytes], { type: 'application/octet-stream' }),
+				headers: { 'Content-Type': 'application/octet-stream' },
+			});
+
+			expect(response).toEqual(responseBody);
+			expect(fetchSpy).toHaveBeenCalledTimes(1);
+			const sentBody = fetchSpy.mock.calls[0]?.[1]?.body;
+			expect(sentBody).toBeInstanceOf(Blob);
+			if (sentBody instanceof Blob) {
+				expect(new Uint8Array(await sentBody.arrayBuffer())).toEqual(bytes);
+			}
+		} finally {
+			fetchSpy.mockRestore();
 		}
 	});
 });

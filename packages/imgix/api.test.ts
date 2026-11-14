@@ -6,7 +6,6 @@
 //
 // Only performs read-only queries (sources.list, reports.list).
 import { makeImgixRequest } from './client';
-import type { ReportsListOutput, SourcesListOutput } from './endpoints/types';
 import { ImgixEndpointOutputSchemas } from './endpoints/types';
 
 const LIVE_KEY = process.env.IMGIX_API_KEY ?? '';
@@ -20,7 +19,7 @@ if (LIVE_KEY.length === 0) {
 
 describeLive('Imgix live API (env-gated)', () => {
 	it('GET /sources lists sources for the account', async () => {
-		const res = await makeImgixRequest<SourcesListOutput>(LIVE_KEY, {
+		const res = await makeImgixRequest(LIVE_KEY, {
 			method: 'GET',
 			path: 'sources',
 			query: { 'page[size]': 5 },
@@ -31,7 +30,7 @@ describeLive('Imgix live API (env-gated)', () => {
 	});
 
 	it('GET /reports lists analytics reports for the account', async () => {
-		const res = await makeImgixRequest<ReportsListOutput>(LIVE_KEY, {
+		const res = await makeImgixRequest(LIVE_KEY, {
 			method: 'GET',
 			path: 'reports',
 			query: { 'page[size]': 5 },
