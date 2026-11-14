@@ -20,6 +20,7 @@ jest.mock('corsair/http', () => {
 
 const mockRequest = jest.mocked(request);
 
+// `unknown` because ApiError body and requestBody can be arbitrary JSON test payloads in synthetic test scenarios.
 function makeApiError(
 	status: number,
 	message: string,

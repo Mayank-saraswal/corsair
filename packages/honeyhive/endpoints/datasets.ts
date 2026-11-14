@@ -66,7 +66,7 @@ export async function createDataset(
 	await logEventFromContext(
 		ctx,
 		'honeyhive.datasets.create',
-		{ project_id, name: parsedInput.name },
+		{ project_id, success: true },
 		'completed',
 	);
 
@@ -216,7 +216,7 @@ export async function createDatasetLegacy(
 	await logEventFromContext(
 		ctx,
 		'honeyhive.datasets.createLegacy',
-		{ name: parsedInput.name },
+		{ success: true },
 		'completed',
 	);
 

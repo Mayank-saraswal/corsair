@@ -36,7 +36,7 @@ export async function createProject(
 	await logEventFromContext(
 		ctx,
 		'honeyhive.projects.create',
-		{ workspace_id, name: parsedInput.name },
+		{ workspace_id, success: true },
 		'completed',
 	);
 
