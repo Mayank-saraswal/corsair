@@ -14,6 +14,8 @@ export class IgnisignAPIError extends Error {
 
 export const IGNISIGN_API_BASE = 'https://api.ignisign.io';
 export const IGNISIGN_TIMEOUT_MS = 30000;
+const BINARY_MAX_RETRIES = 2;
+const BINARY_MAX_RETRY_DELAY_MS = 30_000;
 
 // Set of field names to sanitize in error outputs and request logs.
 const SENSITIVE_FIELD_NAMES = new Set([
@@ -198,21 +200,48 @@ export async function makeIgnisignBinaryRequest(
 		headers.Authorization = `Bearer ${apiKey}`;
 	}
 
-	const response = await fetch(url.toString(), {
-		method,
-		headers,
-		signal: AbortSignal.timeout(IGNISIGN_TIMEOUT_MS),
-	});
+	for (let attempt = 0; ; attempt += 1) {
+		const response = await fetch(url.toString(), {
+			method,
+			headers,
+			signal: AbortSignal.timeout(IGNISIGN_TIMEOUT_MS),
+		});
 
-	if (!response.ok) {
+		if (response.ok) {
+			const buffer = Buffer.from(await response.arrayBuffer());
+			const contentType =
+				response.headers.get('content-type') || 'application/octet-stream';
+
+			return {
+				kind: 'binary',
+				contentType,
+				base64: buffer.toString('base64'),
+				size: buffer.byteLength,
+			};
+		}
+
 		const retryAfter =
 			response.status === 429
 				? parseRetryAfterMs(response.headers.get('retry-after'))
 				: undefined;
+		const canRetry =
+			method === 'GET' &&
+			response.status === 429 &&
+			attempt < BINARY_MAX_RETRIES;
 
 		// Best-effort body cancellation so stream is released.
 		// `unknown` because cancellation rejection has no static type.
 		await response.body?.cancel().catch((_e: unknown) => undefined);
+
+		if (canRetry) {
+			const fallbackDelay = 250 * 2 ** attempt;
+			const delay = Math.min(
+				retryAfter ?? fallbackDelay,
+				BINARY_MAX_RETRY_DELAY_MS,
+			);
+			await new Promise<void>((resolve) => setTimeout(resolve, delay));
+			continue;
+		}
 
 		throw new ApiError(
 			{ method, url: endpoint },
@@ -227,15 +256,4 @@ export async function makeIgnisignBinaryRequest(
 			retryAfter !== undefined ? { retryAfter } : undefined,
 		);
 	}
-
-	const buffer = Buffer.from(await response.arrayBuffer());
-	const contentType =
-		response.headers.get('content-type') || 'application/octet-stream';
-
-	return {
-		kind: 'binary',
-		contentType,
-		base64: buffer.toString('base64'),
-		size: buffer.byteLength,
-	};
 }

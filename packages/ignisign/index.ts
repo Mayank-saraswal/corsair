@@ -450,12 +450,12 @@ export const ignisignEndpointMeta = {
 			'List pending and accepted user invitations for an application',
 	},
 	'userInvitations.invite': {
-		riskLevel: 'write',
+		riskLevel: 'destructive',
 		description:
 			'Invite a new collaborator to an application with environment roles',
 	},
 	'userInvitations.resend': {
-		riskLevel: 'write',
+		riskLevel: 'destructive',
 		description: 'Resend invitation email to an invited user',
 	},
 	'userInvitations.cancel': {
@@ -501,6 +501,7 @@ export function ignisign<const T extends IgnisignPluginOptions>(
 	const orderedErrorHandlers = {
 		...callers,
 		...builtIns,
+		...callers,
 		DEFAULT: callerDefault ?? builtInDefault,
 	};
 

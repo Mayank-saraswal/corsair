@@ -1,3 +1,4 @@
+import type { IgnisignEndpointInputs } from './endpoints/types';
 import {
 	BinaryDataSchema,
 	IgnisignEndpointInputSchemas,
@@ -40,9 +41,42 @@ describe('Ignisign schema', () => {
 		expect(nestedKeys.sort()).toEqual(metaKeys.sort());
 		expect(nestedKeys.length).toBe(46);
 	});
+
+	it('marks invitation email operations as destructive', () => {
+		expect(ignisignEndpointMeta['userInvitations.invite'].riskLevel).toBe(
+			'destructive',
+		);
+		expect(ignisignEndpointMeta['userInvitations.resend'].riskLevel).toBe(
+			'destructive',
+		);
+	});
 });
 
 describe('Ignisign endpoint schemas validation', () => {
+	it('accepts omitted defaulted fields in public input types and fills them when parsed', () => {
+		const initInput: IgnisignEndpointInputs['signatureRequests.init'] = {
+			appId: 'appId_abc',
+		};
+		const tokenInput: IgnisignEndpointInputs['bareSignatures.getProofToken'] = {
+			appEnv: 'DEVELOPMENT',
+			client_id: 'client_123',
+			client_secret: 'secret',
+			code_verifier: 'verifier',
+			redirect_uri: 'https://example.com/callback',
+			code: 'auth_code',
+		};
+
+		expect(
+			IgnisignEndpointInputSchemas['signatureRequests.init'].parse(initInput)
+				.appEnv,
+		).toBe('DEVELOPMENT');
+		expect(
+			IgnisignEndpointInputSchemas['bareSignatures.getProofToken'].parse(
+				tokenInput,
+			).grant_type,
+		).toBe('authorization_code');
+	});
+
 	it('validates signatureRequests.createInOneCall input and output', () => {
 		const validInput = {
 			title: 'Employment Agreement',

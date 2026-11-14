@@ -849,7 +849,7 @@ export const IgnisignEndpointOutputSchemas = {
 } as const;
 
 export type IgnisignEndpointInputs = {
-	[K in keyof typeof IgnisignEndpointInputSchemas]: z.infer<
+	[K in keyof typeof IgnisignEndpointInputSchemas]: z.input<
 		(typeof IgnisignEndpointInputSchemas)[K]
 	>;
 };

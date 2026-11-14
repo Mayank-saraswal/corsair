@@ -101,4 +101,24 @@ describe('Ignisign errorHandlers', () => {
 		expect(handlerKeys[0]).toBe('CUSTOM_HANDLER');
 		expect(handlerKeys[handlerKeys.length - 1]).toBe('DEFAULT');
 	});
+
+	it('preserves caller handlers that override built-in names', async () => {
+		const customMatch = jest.fn().mockReturnValue(true);
+		const customHandler = jest.fn().mockResolvedValue({ maxRetries: 3 });
+		const plugin = ignisign({
+			errorHandlers: {
+				RATE_LIMIT_ERROR: {
+					match: customMatch,
+					handler: customHandler,
+				},
+			},
+		});
+		const callerRateLimit = plugin.errorHandlers?.RATE_LIMIT_ERROR;
+
+		expect(callerRateLimit?.match(new Error('custom error'))).toBe(true);
+		await callerRateLimit?.handler();
+		expect(customMatch).toHaveBeenCalledTimes(1);
+		expect(customHandler).toHaveBeenCalledTimes(1);
+		expect(Object.keys(plugin.errorHandlers ?? {}).at(-1)).toBe('DEFAULT');
+	});
 });

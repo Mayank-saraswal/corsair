@@ -211,19 +211,15 @@ describe('makeIgnisignBinaryRequest', () => {
 	});
 
 	it('throws ApiError with retryAfter on HTTP 429 binary response', async () => {
-		const stream = new ReadableStream({
-			start(controller) {
-				controller.enqueue(new Uint8Array([1, 2, 3]));
-				controller.close();
-			},
-		});
-		const cancelSpy = jest.spyOn(stream, 'cancel');
-		const fakeResponse = new Response(stream, {
-			status: 429,
-			statusText: 'Too Many Requests',
-			headers: { 'retry-after': '6' },
-		});
-		jest.spyOn(global, 'fetch').mockResolvedValue(fakeResponse);
+		const fetchSpy = jest.spyOn(global, 'fetch').mockImplementation(() =>
+			Promise.resolve(
+				new Response(null, {
+					status: 429,
+					statusText: 'Too Many Requests',
+					headers: { 'retry-after': '0' },
+				}),
+			),
+		);
 
 		// `unknown` because rejection value has no static type; assertions narrow it.
 		const error: unknown = await makeIgnisignBinaryRequest(
@@ -234,9 +230,64 @@ describe('makeIgnisignBinaryRequest', () => {
 		expect(error).toBeInstanceOf(ApiError);
 		if (error instanceof ApiError) {
 			expect(error.status).toBe(429);
-			expect(error.retryAfter).toBe(6000);
+			expect(error.retryAfter).toBe(0);
 		}
-		expect(cancelSpy).toHaveBeenCalled();
+		expect(fetchSpy).toHaveBeenCalledTimes(3);
+	});
+
+	it('retries a safe GET download after the Retry-After delay', async () => {
+		jest.useFakeTimers();
+		const fetchSpy = jest
+			.spyOn(global, 'fetch')
+			.mockResolvedValueOnce(
+				new Response(null, {
+					status: 429,
+					statusText: 'Too Many Requests',
+					headers: { 'retry-after': '2' },
+				}),
+			)
+			.mockResolvedValueOnce(
+				new Response(Buffer.from('document'), {
+					status: 200,
+					headers: { 'content-type': 'application/pdf' },
+				}),
+			);
+
+		const download = makeIgnisignBinaryRequest(
+			'/v4/documents/doc_1/file',
+			'sk_test_key',
+		);
+		await jest.advanceTimersByTimeAsync(0);
+		expect(fetchSpy).toHaveBeenCalledTimes(1);
+		await jest.advanceTimersByTimeAsync(1999);
+		expect(fetchSpy).toHaveBeenCalledTimes(1);
+		await jest.advanceTimersByTimeAsync(1);
+		await expect(download).resolves.toMatchObject({
+			kind: 'binary',
+			contentType: 'application/pdf',
+		});
+		expect(fetchSpy).toHaveBeenCalledTimes(2);
+		jest.useRealTimers();
+	});
+
+	it('does not retry a POST binary request after 429', async () => {
+		const fetchSpy = jest.spyOn(global, 'fetch').mockResolvedValue(
+			new Response(null, {
+				status: 429,
+				statusText: 'Too Many Requests',
+				headers: { 'retry-after': '0' },
+			}),
+		);
+
+		// `unknown` because rejection value has no static type; assertions narrow it.
+		const error: unknown = await makeIgnisignBinaryRequest(
+			'/v4/documents/doc_1/file',
+			'sk_test_key',
+			{ method: 'POST' },
+		).catch((caught: unknown) => caught);
+
+		expect(error).toBeInstanceOf(ApiError);
+		expect(fetchSpy).toHaveBeenCalledTimes(1);
 	});
 });
 
