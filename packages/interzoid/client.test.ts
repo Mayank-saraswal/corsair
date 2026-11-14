@@ -163,6 +163,8 @@ describe('makeInterzoidRequest', () => {
 				BASE: INTERZOID_API_BASE,
 				VERSION: '1.0.0',
 				HEADERS: { 'x-api-key': 'test-key' },
+				WITH_CREDENTIALS: false,
+				CREDENTIALS: 'omit',
 			};
 
 			// `unknown` because a rejection value has no static type; assertions below narrow it.

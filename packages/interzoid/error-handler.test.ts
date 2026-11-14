@@ -107,7 +107,7 @@ describe('Interzoid errorHandlers', () => {
 			},
 		});
 
-		expect(plugin.errorHandlers).toHaveProperty('CUSTOM_HANDLER');
-		expect(plugin.errorHandlers.CUSTOM_HANDLER).toBe(customRateLimit);
+		expect(plugin.errorHandlers).toBeDefined();
+		expect(plugin.errorHandlers?.CUSTOM_HANDLER).toBe(customRateLimit);
 	});
 });

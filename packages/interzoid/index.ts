@@ -14,11 +14,11 @@ import type {
 } from 'corsair/core';
 import { AuthMissingError } from 'corsair/core';
 import {
+	Intelligence,
 	Matching,
 	Standardization,
-	Intelligence,
-	Validation,
 	Utilities,
+	Validation,
 } from './endpoints';
 import type {
 	InterzoidEndpointInputs,

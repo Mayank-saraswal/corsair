@@ -9,14 +9,18 @@ describe('Interzoid Schemas', () => {
 		const plugin = interzoid();
 		const registeredKeys: string[] = [];
 
-		for (const [groupKey, groupEndpoints] of Object.entries(plugin.endpoints)) {
-			for (const opKey of Object.keys(groupEndpoints)) {
-				registeredKeys.push(`${groupKey}.${opKey}`);
+		for (const [groupKey, groupEndpoints] of Object.entries(
+			plugin.endpoints as object,
+		)) {
+			if (typeof groupEndpoints === 'object' && groupEndpoints !== null) {
+				for (const opKey of Object.keys(groupEndpoints)) {
+					registeredKeys.push(`${groupKey}.${opKey}`);
+				}
 			}
 		}
 
 		const schemaKeys = Object.keys(interzoidEndpointSchemas);
-		const metaKeys = Object.keys(plugin.endpointMeta);
+		const metaKeys = Object.keys(plugin.endpointMeta ?? {});
 
 		registeredKeys.sort();
 		schemaKeys.sort();

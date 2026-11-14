@@ -96,9 +96,15 @@ Auth: API key. Corsair prompts your tenant for credentials on first use.
 
 No webhooks.
 
+## Out-of-Scope Operations
+
+- **Batch Processing (`/enrich`)**: Hosted at `https://enrich-api.interzoid.com` for large multi-record/CSV file transformations, which operates outside Corsair's synchronous single-record request/response model.
+- **Key Display (`INTERZOID_GET_LICENSE`)**: Catalog helper operation; excluded because credentials must not be reflected through endpoints (R6 security rule).
+
 ## Reference
 
-Full docs, types, and examples: https://docs.corsair.dev/plugins/interzoid
+- Official Interzoid Documentation: https://www.interzoid.com/services/
+- Corsair Plugin Documentation: https://docs.corsair.dev/plugins/interzoid
 
 ## License
 

@@ -1,11 +1,11 @@
 import { logEventFromContext } from 'corsair/core';
 import { makeInterzoidRequest } from './client';
 import {
+	Intelligence,
 	Matching,
 	Standardization,
-	Intelligence,
-	Validation,
 	Utilities,
+	Validation,
 } from './endpoints';
 import type { InterzoidContext } from './index';
 
